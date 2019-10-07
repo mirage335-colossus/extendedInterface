@@ -1,0 +1,21 @@
+_Kneeboard_
+Separate kneeboard chapters by blank pages, to place the starting point of each at multiples of ten pages.
+Then say "Kneeboard 10 Forward" to move chapter to chapter.
+Mark and jump shortcuts can be used flexibly from there.
+
+
+
+_Nonstandard Keys_
+LShift+K	Make Kneeboard Shortcut
+LAlt+LWin+1	Kneeboard Jump To Shortcut 1
+
+Slider		Radar Elevation
+
+Thumbstick	Thrust Designator Control (TDC)
+
+ChaffOff/FlareOn, FlareOff, ChaffOn
+
+-F5E-
+LCtrl+F		Flaps Switch Step Aft
+LShift+F	Flaps Switch Step Fwd
+

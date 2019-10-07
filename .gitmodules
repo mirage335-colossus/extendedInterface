@@ -1,0 +1,3 @@
+[submodule "vendor/t16fcs"]
+	path = support/t16fcs
+	url = git@github.com:mirage335/t16fcs.git

@@ -14,12 +14,14 @@ JoystickGremlin XML files may be loaded directly or placed in "%USERPROFILE%\joy
 
 VoiceAttack profiles may be imported through the program GUI.
 
+
 # Recommended
 
 * OpenHMD
 
 * Arduino
 * OpenBuilds
+
 
 # Recommended - Vendor
 
@@ -60,6 +62,32 @@ Other hardware and software is compatible with the conventions. Configuration fi
 Some hardware and software has not been found compatible.
 
 * Universal Control Remapper
+
+
+# Backend - NIX
+
+Shared memory file, double or triple buffered.
+
+
+# Backend - MSW
+
+```
+*) VJoy
+	*) Device 1, 2, 3, 4
+		*) Axes - All
+		*) Buttons - 32+/-, <128
+			*) First device, 32buttons. Then, 31, 30, 29. 
+			*) Only buttons 1-24 to be used by vehicle/tool.
+			*) Always reserve last six buttons for comm/out-of-band control/signaling.
+				*) Devices 3-4 last six buttons used for out-of-band.
+		*) POV Hat Switch
+			*) Continious
+			*) POVs 1
+		*) Force Feedback - All
+
+*) Force Feedback
+	Most likely, force feeback support will need to be native. VJoy and similar would only be used for button mapping, not axis mapping.
+```
 
 
 # Included Works

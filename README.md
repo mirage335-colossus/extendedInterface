@@ -89,6 +89,10 @@ Shared memory file, double or triple buffered.
 	Most likely, force feeback support will need to be native. VJoy and similar would only be used for button mapping, not axis mapping.
 ```
 
+## Workarounds
+
+SimFFB, and possibly other software, apparently depends on the ordering of 'controller' devices. To reorder these devices as needed, remove them with the 'Bluetooth and other devices settings' panel. Removing the Force Feedback joystick, followed by physical reconnection, may be sufficient.
+
 
 # Included Works
 

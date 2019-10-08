@@ -1627,7 +1627,7 @@
                     </container>
                     <container type="basic">
                         <action-set>
-                            <play-sound file="C:/Users/commonadmin/joystick gremlin/sounds/custom/harmonics.wav" volume="5">
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/harmonics.wav" volume="5">
                                 <activation-condition rule="all">
                                     <condition comparison="inside" condition-type="joystick" device-guid="{A4608390-E525-11E9-802D-444553540000}" device-name="SideWinder Force Feedback 2 Joystick" id="2" input="axis" range-high="0.01" range-low="-0.01"/>
                                 </activation-condition>
@@ -1752,44 +1752,17 @@
                 <button description="" id="6"/>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
-                <hat description="Trim - MISUSE menus" id="1">
-                    <container type="basic">
-                        <action-set>
-                            <map-to-keyboard>
-                                <key extended="True" scan-code="72"/>
-                            </map-to-keyboard>
-                        </action-set>
-                        <virtual-button north="1"/>
-                    </container>
-                    <container type="basic">
-                        <action-set>
-                            <map-to-keyboard>
-                                <key extended="True" scan-code="80"/>
-                            </map-to-keyboard>
-                        </action-set>
-                        <virtual-button south="1"/>
-                    </container>
-                    <container type="basic">
-                        <action-set>
-                            <map-to-keyboard>
-                                <key extended="True" scan-code="75"/>
-                            </map-to-keyboard>
-                        </action-set>
-                        <virtual-button west="1"/>
-                    </container>
-                    <container type="basic">
-                        <action-set>
-                            <map-to-keyboard>
-                                <key extended="True" scan-code="77"/>
-                            </map-to-keyboard>
-                        </action-set>
-                        <virtual-button east="1"/>
-                    </container>
+                <hat description="Cycle - Cycle, MISUSE menus" id="1">
                     <container type="basic">
                         <action-set>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
                         </action-set>
                         <virtual-button east="1" north="1" south="1" west="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <remap hat="1" vjoy="1"/>
+                        </action-set>
                     </container>
                 </hat>
             </mode>
@@ -2343,15 +2316,15 @@
                                 <mapping type="cubic-bezier-spline">
                                     <control-point x="-1.0" y="-1.0"/>
                                     <control-point x="-1.0" y="-1.0"/>
-                                    <control-point x="-0.8" y="-0.35"/>
-                                    <control-point x="-0.75" y="-0.35"/>
-                                    <control-point x="-0.748" y="-0.3"/>
-                                    <control-point x="-0.04999999999999999" y="0.0"/>
-                                    <control-point x="0.0" y="0.0"/>
-                                    <control-point x="0.050000000000000044" y="0.0"/>
-                                    <control-point x="0.748" y="0.3"/>
-                                    <control-point x="0.75" y="0.35"/>
-                                    <control-point x="0.8" y="0.35"/>
+                                    <control-point x="-0.614" y="-0.298"/>
+                                    <control-point x="-0.5" y="-0.3"/>
+                                    <control-point x="-0.498" y="-0.19"/>
+                                    <control-point x="-0.04999999999999999" y="3.469446951953614e-18"/>
+                                    <control-point x="0" y="0"/>
+                                    <control-point x="0.05" y="3.469446951953614e-18"/>
+                                    <control-point x="0.498" y="0.19"/>
+                                    <control-point x="0.5" y="0.3"/>
+                                    <control-point x="0.614" y="0.298"/>
                                     <control-point x="1.0" y="1.0"/>
                                     <control-point x="1.0" y="1.0"/>
                                 </mapping>
@@ -2367,15 +2340,15 @@
                                 <mapping type="cubic-bezier-spline">
                                     <control-point x="-1.0" y="-1.0"/>
                                     <control-point x="-1.0" y="-1.0"/>
-                                    <control-point x="-0.8" y="-0.35"/>
-                                    <control-point x="-0.75" y="-0.35"/>
-                                    <control-point x="-0.75" y="-0.286"/>
-                                    <control-point x="-0.04999999999999999" y="0.0"/>
-                                    <control-point x="0.0" y="0.0"/>
-                                    <control-point x="0.04999999999999999" y="0.0"/>
-                                    <control-point x="0.75" y="0.286"/>
-                                    <control-point x="0.75" y="0.35"/>
-                                    <control-point x="0.8" y="0.35"/>
+                                    <control-point x="-0.602" y="-0.298"/>
+                                    <control-point x="-0.5" y="-0.3"/>
+                                    <control-point x="-0.498" y="-0.198"/>
+                                    <control-point x="-0.05" y="0.0"/>
+                                    <control-point x="0" y="0"/>
+                                    <control-point x="0.05000000000000002" y="0.0"/>
+                                    <control-point x="0.498" y="0.198"/>
+                                    <control-point x="0.5" y="0.3"/>
+                                    <control-point x="0.602" y="0.298"/>
                                     <control-point x="1.0" y="1.0"/>
                                     <control-point x="1.0" y="1.0"/>
                                 </mapping>
@@ -2391,15 +2364,15 @@
                                 <mapping type="cubic-bezier-spline">
                                     <control-point x="-1.0" y="-1.0"/>
                                     <control-point x="-1.0" y="-1.0"/>
-                                    <control-point x="-0.8" y="-0.35"/>
-                                    <control-point x="-0.75" y="-0.35"/>
-                                    <control-point x="-0.748" y="-0.292"/>
-                                    <control-point x="-0.04999999999999999" y="0.0"/>
-                                    <control-point x="0.0" y="0.0"/>
+                                    <control-point x="-0.598" y="-0.298"/>
+                                    <control-point x="-0.5" y="-0.3"/>
+                                    <control-point x="-0.498" y="-0.198"/>
+                                    <control-point x="-0.05" y="0.0"/>
+                                    <control-point x="0" y="0"/>
                                     <control-point x="0.050000000000000044" y="0.0"/>
-                                    <control-point x="0.748" y="0.292"/>
-                                    <control-point x="0.75" y="0.35"/>
-                                    <control-point x="0.8" y="0.35"/>
+                                    <control-point x="0.498" y="0.198"/>
+                                    <control-point x="0.5" y="0.3"/>
+                                    <control-point x="0.598" y="0.298"/>
                                     <control-point x="1.0" y="1.0"/>
                                     <control-point x="1.0" y="1.0"/>
                                 </mapping>

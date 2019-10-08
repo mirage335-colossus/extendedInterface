@@ -113,3 +113,5 @@ _local/h/.arduino15/staging/
 **/.config/Atom/Cookies-journal
 **/.config/Atom/Cookies*
 **/.config/Atom/IndexedDB/
+
+*.~lock.*#

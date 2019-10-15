@@ -110,13 +110,36 @@
                         <action-set>
                             <remap axis="4" axis-scaling="1.0" axis-type="absolute" vjoy="1"/>
                             <response-curve>
-                                <mapping type="cubic-spline">
+                                <mapping type="cubic-bezier-spline">
                                     <control-point x="-1.0" y="-1.0"/>
+                                    <control-point x="-1.0" y="-1.0"/>
+                                    <control-point x="-0.8500000000000001" y="-0.1"/>
+                                    <control-point x="-0.8" y="-0.1"/>
+                                    <control-point x="-0.7500000000000001" y="-0.1"/>
+                                    <control-point x="-0.05" y="0.0"/>
+                                    <control-point x="0" y="0"/>
+                                    <control-point x="0.05" y="0.0"/>
+                                    <control-point x="0.7500000000000001" y="0.1"/>
+                                    <control-point x="0.8" y="0.1"/>
+                                    <control-point x="0.8500000000000001" y="0.1"/>
+                                    <control-point x="1.0" y="1.0"/>
                                     <control-point x="1.0" y="1.0"/>
                                 </mapping>
                                 <deadzone center-high="0.4" center-low="-0.4" high="1.0" low="-1.0"/>
                             </response-curve>
                         </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                        <virtual-button direction="below" lower-limit="0.4" upper-limit="1.0"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                        <virtual-button direction="above" lower-limit="-0.4" upper-limit="-1.0"/>
                     </container>
                 </axis>
                 <axis description="" id="2">
@@ -124,13 +147,36 @@
                         <action-set>
                             <remap axis="5" axis-scaling="1.0" axis-type="absolute" vjoy="1"/>
                             <response-curve>
-                                <mapping type="cubic-spline">
+                                <mapping type="cubic-bezier-spline">
                                     <control-point x="-1.0" y="-1.0"/>
+                                    <control-point x="-1.0" y="-1.0"/>
+                                    <control-point x="-0.85" y="-0.1"/>
+                                    <control-point x="-0.8" y="-0.1"/>
+                                    <control-point x="-0.7500000000000001" y="-0.1"/>
+                                    <control-point x="-0.05" y="0.0"/>
+                                    <control-point x="0" y="0"/>
+                                    <control-point x="0.05" y="0.0"/>
+                                    <control-point x="0.7500000000000001" y="0.1"/>
+                                    <control-point x="0.8" y="0.1"/>
+                                    <control-point x="0.85" y="0.1"/>
+                                    <control-point x="1.0" y="1.0"/>
                                     <control-point x="1.0" y="1.0"/>
                                 </mapping>
                                 <deadzone center-high="0.4" center-low="-0.4" high="1.0" low="-1.0"/>
                             </response-curve>
                         </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                        <virtual-button direction="below" lower-limit="0.4" upper-limit="1.0"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                        <virtual-button direction="above" lower-limit="-0.4" upper-limit="-1.0"/>
                     </container>
                 </axis>
                 <axis description="" id="3">
@@ -748,21 +794,18 @@
                     </container>
                 </button>
                 <button description="Rough - Pull Wingman Target" id="10">
-                    <container type="basic">
-                        <action-set>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="56"/>
-                                <key extended="False" scan-code="21"/>
-                            </map-to-keyboard>
-                        </action-set>
-                    </container>
                     <container activate-on="release" delay="0.20000000000000004" type="tempo">
                         <action-set>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="56"/>
-                                <key extended="False" scan-code="21"/>
-                            </map-to-keyboard>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; pull &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="21"/>
+                                    <key extended="False" press="False" scan-code="21"/>
+                                    <key extended="False" press="False" scan-code="56"/>
+                                </actions>
+                            </macro>
                         </action-set>
                         <action-set/>
                     </container>
@@ -2320,7 +2363,7 @@
                                     <control-point x="-0.5" y="-0.3"/>
                                     <control-point x="-0.498" y="-0.19"/>
                                     <control-point x="-0.04999999999999999" y="3.469446951953614e-18"/>
-                                    <control-point x="0" y="0"/>
+                                    <control-point x="0.0" y="0.0"/>
                                     <control-point x="0.05" y="3.469446951953614e-18"/>
                                     <control-point x="0.498" y="0.19"/>
                                     <control-point x="0.5" y="0.3"/>
@@ -2344,7 +2387,7 @@
                                     <control-point x="-0.5" y="-0.3"/>
                                     <control-point x="-0.498" y="-0.198"/>
                                     <control-point x="-0.05" y="0.0"/>
-                                    <control-point x="0" y="0"/>
+                                    <control-point x="0.0" y="0.0"/>
                                     <control-point x="0.05000000000000002" y="0.0"/>
                                     <control-point x="0.498" y="0.198"/>
                                     <control-point x="0.5" y="0.3"/>
@@ -2368,7 +2411,7 @@
                                     <control-point x="-0.5" y="-0.3"/>
                                     <control-point x="-0.498" y="-0.198"/>
                                     <control-point x="-0.05" y="0.0"/>
-                                    <control-point x="0" y="0"/>
+                                    <control-point x="0.0" y="0.0"/>
                                     <control-point x="0.050000000000000044" y="0.0"/>
                                     <control-point x="0.498" y="0.198"/>
                                     <control-point x="0.5" y="0.3"/>

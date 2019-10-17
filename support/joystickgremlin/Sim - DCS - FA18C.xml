@@ -196,9 +196,9 @@
                                     <control-point x="-1.0" y="-1.0"/>
                                     <control-point x="-0.3" y="-0.3"/>
                                     <control-point x="1.0" y="1.0"/>
-                                    <control-point x="-0.05000000000000006" y="0.0"/>
+                                    <control-point x="-1.0" y="-1.0"/>
                                     <control-point x="0.0" y="0.0"/>
-                                    <control-point x="0.049999999999999906" y="0.0"/>
+                                    <control-point x="1.0" y="1.0"/>
                                     <control-point x="1.0" y="1.0"/>
                                     <control-point x="1.0" y="1.0"/>
                                 </mapping>

@@ -184,12 +184,25 @@
                         <action-set>
                             <remap axis="7" axis-scaling="1.0" axis-type="absolute" vjoy="1"/>
                             <response-curve>
-                                <mapping type="cubic-spline">
+                                <mapping type="cubic-bezier-spline">
                                     <control-point x="-1.0" y="-1.0"/>
+                                    <control-point x="-1.0" y="-1.0"/>
+                                    <control-point x="-0.65" y="-0.4"/>
+                                    <control-point x="-0.6" y="-0.4"/>
+                                    <control-point x="-0.5499999999999999" y="-0.4"/>
+                                    <control-point x="-0.45000000000000007" y="-0.4"/>
+                                    <control-point x="-0.4" y="-0.4"/>
+                                    <control-point x="-0.35" y="-0.4"/>
+                                    <control-point x="-1.0" y="-1.0"/>
+                                    <control-point x="-0.3" y="-0.3"/>
                                     <control-point x="1.0" y="1.0"/>
+                                    <control-point x="-0.05000000000000006" y="0.0"/>
                                     <control-point x="0.0" y="0.0"/>
+                                    <control-point x="0.049999999999999906" y="0.0"/>
+                                    <control-point x="1.0" y="1.0"/>
+                                    <control-point x="1.0" y="1.0"/>
                                 </mapping>
-                                <deadzone center-high="0.05" center-low="-0.05" high="0.99" low="-0.92"/>
+                                <deadzone center-high="0.0" center-low="0.0" high="0.99" low="-0.92"/>
                             </response-curve>
                         </action-set>
                     </container>

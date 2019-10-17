@@ -220,6 +220,13 @@
                     <container type="basic">
                         <action-set>
                             <remap axis="8" axis-scaling="1.0" axis-type="absolute" vjoy="1"/>
+                            <response-curve>
+                                <mapping type="cubic-spline">
+                                    <control-point x="-1.0" y="-1.0"/>
+                                    <control-point x="1.0" y="1.0"/>
+                                </mapping>
+                                <deadzone center-high="0.0" center-low="0.0" high="0.7" low="-0.7"/>
+                            </response-curve>
                         </action-set>
                     </container>
                 </axis>

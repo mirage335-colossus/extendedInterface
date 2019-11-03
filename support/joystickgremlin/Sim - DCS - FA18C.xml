@@ -413,8 +413,7 @@
                 <button description="" id="3"/>
                 <button description="" id="4"/>
                 <button description="" id="5"/>
-                <button description="Throttle Designator Controller – Depress
-" id="6">
+                <button description="Throttle Designator Controller – Depress " id="6">
                     <container type="basic">
                         <action-set>
                             <macro>
@@ -457,7 +456,7 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Quick Power - Wheel Steering " id="11">
+                <button description="Quick Power - SELF OVERLOAD [Undesignate] NoseWheelSteer" id="11">
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
@@ -467,7 +466,12 @@
                     </container>
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; wheel steer &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- wheel steer --&gt; un designate &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
                         </action-set>
                     </container>
                 </button>
@@ -582,8 +586,7 @@
                 <axis description="" id="6"/>
                 <axis description="" id="7"/>
                 <axis description="" id="8"/>
-                <button description="Paddle – Limiter, AP NWS Disengage
-" id="1">
+                <button description="Paddle – Limiter, AP NWS Disengage " id="1">
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
@@ -698,8 +701,7 @@
                 </hat>
             </mode>
             <mode inherit="00-Infrastructure" name="03-O-D">
-                <axis description="Throttle Lift
-" id="1"/>
+                <axis description="Throttle Lift " id="1"/>
                 <axis description="" id="2"/>
                 <axis description="" id="3"/>
                 <axis description="" id="4"/>
@@ -707,8 +709,7 @@
                 <axis description="" id="6"/>
                 <axis description="" id="7"/>
                 <axis description="" id="8"/>
-                <button description="Throttle Lift
-" id="1">
+                <button description="Throttle Lift " id="1">
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
@@ -810,9 +811,11 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Lockouts, Accessories - Master OFF" id="11">
-                    <container type="basic">
+                <button description="Lockouts, Accessories - Master OFF, _-_-_- Master ON -_-_-_" id="11">
+                    <container activate-on="release" delay="0.5" type="tempo">
                         <action-set>
+                            <description description="master OFF"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; master OFF &lt;/prosody&gt; &lt;/speak&gt;"/>
                             <macro>
                                 <properties/>
                                 <actions>
@@ -823,10 +826,18 @@
                                 </actions>
                             </macro>
                         </action-set>
-                    </container>
-                    <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; master OFF &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <description description="_-_-_- Master ON -_-_-_"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; ack, master ON &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="29"/>
+                                    <key extended="False" press="True" scan-code="50"/>
+                                    <key extended="False" press="False" scan-code="50"/>
+                                    <key extended="False" press="False" scan-code="29"/>
+                                </actions>
+                            </macro>
                         </action-set>
                     </container>
                 </button>
@@ -923,8 +934,7 @@
                 </axis>
                 <axis description="" id="7"/>
                 <axis description="" id="8"/>
-                <button description="AutoThrust
-" id="1">
+                <button description="AutoThrust " id="1">
                     <container type="basic">
                         <action-set>
                             <macro>
@@ -1031,8 +1041,7 @@
                 <axis description="" id="6"/>
                 <axis description="" id="7"/>
                 <axis description="" id="8"/>
-                <button description="Autopilot Attitude Hold (Macro)
-" id="1">
+                <button description="Autopilot Attitude Hold (Macro) " id="1">
                     <container type="basic">
                         <action-set>
                             <macro>
@@ -1053,14 +1062,10 @@
                 <button description="" id="4"/>
                 <button description="" id="5"/>
                 <button description="" id="6"/>
-                <button description="Convention - Scripted orders. Individual/wing specific.
-" id="7"/>
-                <button description="Convention - Scripted orders. Individual/wing specific.
-" id="8"/>
-                <button description="Convention - Scripted orders. Individual/wing specific.
-" id="9"/>
-                <button description="Convention - Scripted orders. Individual/wing specific.
-" id="10"/>
+                <button description="Convention - Scripted orders. Individual/wing specific. " id="7"/>
+                <button description="Convention - Scripted orders. Individual/wing specific. " id="8"/>
+                <button description="Convention - Scripted orders. Individual/wing specific. " id="9"/>
+                <button description="Convention - Scripted orders. Individual/wing specific. " id="10"/>
                 <button description="Panels - Left Panel" id="11"/>
                 <button description="Panels - Forward Panel OR View" id="12"/>
                 <button description="Panels - Right Panel" id="13"/>
@@ -1082,8 +1087,7 @@
                 <button description="" id="4"/>
                 <button description="" id="5"/>
                 <button description="" id="6"/>
-                <button description="Convention - Scripted orders. Menu/keys. Support/Tanker/Repair request.
-- F1" id="7">
+                <button description="Convention - Scripted orders. Menu/keys. Support/Tanker/Repair request. - F1" id="7">
                     <container type="basic">
                         <action-set>
                             <macro>
@@ -1096,8 +1100,7 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Convention - Scripted orders. Menu/keys. Support/Tanker/Repair request.
-- F2" id="8">
+                <button description="Convention - Scripted orders. Menu/keys. Support/Tanker/Repair request. - F2" id="8">
                     <container type="basic">
                         <action-set>
                             <macro>
@@ -1110,8 +1113,7 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Convention - Scripted orders. Menu/keys. Support/Tanker/Repair request.
-- F3" id="9">
+                <button description="Convention - Scripted orders. Menu/keys. Support/Tanker/Repair request. - F3" id="9">
                     <container type="basic">
                         <action-set>
                             <macro>
@@ -1124,8 +1126,7 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Convention - Scripted orders. Menu/keys. Support/Tanker/Repair request.
-- F12" id="10">
+                <button description="Convention - Scripted orders. Menu/keys. Support/Tanker/Repair request. - F12" id="10">
                     <container type="basic">
                         <action-set>
                             <macro>
@@ -1884,7 +1885,8 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="30"/>
                             </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;limiter&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!--limiter--&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/metal-rod-hit_C#_major.wav" volume="25"/>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="0.99" upper-limit="1.0"/>
                     </container>
@@ -1893,7 +1895,8 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="30"/>
                             </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;limiter&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!--limiter--&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/metal-rod-hit_C#_major.wav" volume="25"/>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="-0.99" upper-limit="-1.0"/>
                     </container>
@@ -1914,7 +1917,8 @@
                     <container type="basic">
                         <action-set>
                             <remap button="17" vjoy="1"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;wheel brake&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!-- wheel brake --&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="-0.99" upper-limit="-1.0"/>
                     </container>
@@ -1923,7 +1927,8 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="30"/>
                             </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;limiter&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!--limiter--&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/metal-rod-hit_C#_major.wav" volume="25"/>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="0.99" upper-limit="1.0"/>
                     </container>

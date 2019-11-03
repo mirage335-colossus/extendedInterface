@@ -243,30 +243,39 @@
                 <button description="- I_" id="3">
                     <container type="basic">
                         <action-set>
-                            <temporary-mode-switch name="05-I-U">
+                            <switch-mode name="05-I-U">
                                 <activation-condition rule="all">
                                     <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
                                 </activation-condition>
-                            </temporary-mode-switch>
+                            </switch-mode>
+                            <description description="I_U">
+                                <activation-condition rule="all"/>
+                            </description>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <temporary-mode-switch name="06-I-D">
+                            <switch-mode name="06-I-D">
                                 <activation-condition rule="all">
                                     <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
                                 </activation-condition>
-                            </temporary-mode-switch>
+                            </switch-mode>
+                            <description description="I_D">
+                                <activation-condition rule="all"/>
+                            </description>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <temporary-mode-switch name="04-I_M">
+                            <switch-mode name="04-I_M">
                                 <activation-condition rule="all">
                                     <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
                                     <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
                                 </activation-condition>
-                            </temporary-mode-switch>
+                            </switch-mode>
+                            <description description="I_M">
+                                <activation-condition rule="all"/>
+                            </description>
                         </action-set>
                     </container>
                     <container type="basic">
@@ -276,6 +285,29 @@
                                     <condition comparison="released" condition-type="action" input="action"/>
                                     <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
                                     <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
+                                </activation-condition>
+                            </switch-mode>
+                            <description description="O_M">
+                                <activation-condition rule="all"/>
+                            </description>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <switch-mode name="03-O-D">
+                                <activation-condition rule="all">
+                                    <condition comparison="released" condition-type="action" input="action"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
+                                </activation-condition>
+                            </switch-mode>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <switch-mode name="02-O-U">
+                                <activation-condition rule="all">
+                                    <condition comparison="released" condition-type="action" input="action"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>
@@ -284,20 +316,20 @@
                 <button description="- _U" id="4">
                     <container type="basic">
                         <action-set>
-                            <temporary-mode-switch name="02-O-U">
+                            <switch-mode name="02-O-U">
                                 <activation-condition rule="all">
                                     <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
-                            </temporary-mode-switch>
+                            </switch-mode>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <temporary-mode-switch name="05-I-U">
+                            <switch-mode name="05-I-U">
                                 <activation-condition rule="all">
                                     <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
-                            </temporary-mode-switch>
+                            </switch-mode>
                         </action-set>
                     </container>
                     <container type="basic">
@@ -310,24 +342,34 @@
                             </switch-mode>
                         </action-set>
                     </container>
+                    <container type="basic">
+                        <action-set>
+                            <switch-mode name="04-I_M">
+                                <activation-condition rule="all">
+                                    <condition comparison="released" condition-type="action" input="action"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
+                                </activation-condition>
+                            </switch-mode>
+                        </action-set>
+                    </container>
                 </button>
                 <button description="- _D" id="5">
                     <container type="basic">
                         <action-set>
-                            <temporary-mode-switch name="03-O-D">
+                            <switch-mode name="03-O-D">
                                 <activation-condition rule="all">
                                     <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
-                            </temporary-mode-switch>
+                            </switch-mode>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <temporary-mode-switch name="06-I-D">
+                            <switch-mode name="06-I-D">
                                 <activation-condition rule="all">
                                     <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
-                            </temporary-mode-switch>
+                            </switch-mode>
                         </action-set>
                     </container>
                     <container type="basic">
@@ -336,6 +378,16 @@
                                 <activation-condition rule="all">
                                     <condition comparison="released" condition-type="action" input="action"/>
                                     <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
+                                </activation-condition>
+                            </switch-mode>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <switch-mode name="04-I_M">
+                                <activation-condition rule="all">
+                                    <condition comparison="released" condition-type="action" input="action"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>

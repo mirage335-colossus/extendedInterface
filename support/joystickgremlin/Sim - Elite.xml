@@ -2022,7 +2022,7 @@
                 <button description="" id="7"/>
                 <button description="" id="8"/>
                 <hat description="Rough - imaging, hud" id="1">
-                    <container type="basic">
+                    <container activate-on="release" delay="0.2" type="tempo">
                         <action-set>
                             <macro>
                                 <properties/>
@@ -2036,9 +2036,12 @@
                             <description description="MIX imaging"/>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; imaging &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
+                        <action-set>
+                            <description description="VR Zoom"/>
+                        </action-set>
                         <virtual-button north="1"/>
                     </container>
-                    <container type="basic">
+                    <container activate-on="release" delay="0.5" type="tempo">
                         <action-set>
                             <macro>
                                 <properties/>
@@ -2051,6 +2054,21 @@
                             </macro>
                             <description description="MIX hud"/>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; hud &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <description description="VR Align"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="47"/>
+                                    <key extended="False" press="False" scan-code="47"/>
+                                    <key extended="False" press="False" scan-code="42"/>
+                                    <key extended="False" press="False" scan-code="56"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;align&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <virtual-button south="1"/>
                     </container>

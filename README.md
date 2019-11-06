@@ -95,12 +95,15 @@ SimFFB, and possibly other software, apparently depends on the ordering of 'cont
 
 
 # Alternative
-Modeling of existing systems as closely as possible may be accommodated by placing external functionality on dedicated wearable panel(s).
+Modeling of existing systems as closely as possible may be accommodated by placing external functionality on dedicated wearable board(s).
 
-Head/Chin/Chest/Arm/Knee Switch Panels
+Head/Chin/Chest/Arm/Knee Switch Boards
 	Aux Comms
 	VR/AR Align/Zoom
 	Helmet Imaging (Goggles, Binoculars)
+	Tactile Interface (North-Paw like Fail-Active IFR Backup providing some of Pitch/Roll/Heading Turn/Slip Climb RAlt/BAlt TAS/CAS/AOA Homing/ILS)
+	Alarm (Indepdendent Lound Warning if AutoPilot Disengaged, Maneuver Drift, or Collision Risk)
+	Panels (AR Desktop Computer Displays, Keyboard, Mouse)
 
 
 # Included Works

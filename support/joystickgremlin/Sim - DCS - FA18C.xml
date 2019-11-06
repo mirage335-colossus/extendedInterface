@@ -413,29 +413,21 @@
                 <axis description="AutoTargets - hostile+-, MISUSE - Radar Elevation Control" id="6">
                     <container type="basic">
                         <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="13"/>
-                                    <key extended="False" press="False" scan-code="13"/>
-                                </actions>
-                            </macro>
                             <description description="Radar Elevation Control – Up"/>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="13"/>
+                            </map-to-keyboard>
                         </action-set>
                         <virtual-button direction="above" lower-limit="-1.0" upper-limit="-0.75"/>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="12"/>
-                                    <key extended="False" press="False" scan-code="12"/>
-                                </actions>
-                            </macro>
                             <description description="Radar Elevation Control – Down"/>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="12"/>
+                            </map-to-keyboard>
                         </action-set>
                         <virtual-button direction="below" lower-limit="0.75" upper-limit="1.0"/>
                     </container>
@@ -468,14 +460,11 @@
                 <button description="Throttle Designator Controller – Depress " id="6">
                     <container type="basic">
                         <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="28"/>
-                                    <key extended="False" press="False" scan-code="28"/>
-                                </actions>
-                            </macro>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;acquisition&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="42"/>
+                                <key extended="False" scan-code="28"/>
+                            </map-to-keyboard>
                         </action-set>
                     </container>
                 </button>
@@ -1142,8 +1131,12 @@
                             </macro>
                         </action-set>
                         <action-set>
-                            <description description="DEPRESS"/>
+                            <description description="MIX DEPRESS"/>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; sensor depress &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <map-to-keyboard>
+                                <key extended="True" scan-code="56"/>
+                                <key extended="False" scan-code="40"/>
+                            </map-to-keyboard>
                         </action-set>
                         <virtual-button west="1"/>
                     </container>
@@ -1164,10 +1157,16 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
+                                    <key extended="False" press="True" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="30"/>
+                                    <pause duration="0.12"/>
+                                    <key extended="False" press="False" scan-code="30"/>
+                                    <key extended="False" press="False" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="2"/>
+                                    <pause duration="0.12"/>
+                                    <key extended="False" press="False" scan-code="2"/>
+                                    <key extended="False" press="False" scan-code="42"/>
                                 </actions>
                             </macro>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;attitude hold&lt;/prosody&gt; &lt;/speak&gt;"/>
@@ -1266,16 +1265,16 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Reference, Quick Nav - Waypoint Designate" id="12">
+                <button description="Reference, Quick Nav - Waypoint Designate, Waypoint Next" id="12">
                     <container activate-on="release" delay="0.2" type="tempo">
                         <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
+                                    <key extended="True" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="45"/>
+                                    <key extended="False" press="False" scan-code="45"/>
+                                    <key extended="True" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
                             <description description="Waypoint Designate"/>
@@ -1285,10 +1284,8 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
+                                    <key extended="False" press="True" scan-code="45"/>
+                                    <key extended="False" press="False" scan-code="45"/>
                                 </actions>
                             </macro>
                             <description description="Waypoint Next"/>
@@ -2174,10 +2171,11 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="56"/>
                                     <key extended="False" press="True" scan-code="18"/>
+                                    <pause duration="0.12"/>
                                     <key extended="False" press="False" scan-code="18"/>
-                                    <key extended="False" press="False" scan-code="42"/>
+                                    <key extended="False" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;mode a a&lt;/prosody&gt; &lt;/speak&gt;"/>
@@ -2198,10 +2196,11 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="True" press="True" scan-code="54"/>
+                                    <key extended="True" press="True" scan-code="56"/>
                                     <key extended="False" press="True" scan-code="18"/>
+                                    <pause duration="0.12"/>
                                     <key extended="False" press="False" scan-code="18"/>
-                                    <key extended="True" press="False" scan-code="54"/>
+                                    <key extended="True" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;mode a g&lt;/prosody&gt; &lt;/speak&gt;"/>
@@ -2212,7 +2211,7 @@
                     </container>
                 </button>
                 <button description="Variant unique buttons. Engine Anti-Ice On/Off." id="8">
-                    <container type="basic">
+                    <container activate-on="release" delay="0.2" type="tempo">
                         <action-set>
                             <macro>
                                 <properties/>
@@ -2225,7 +2224,21 @@
                                     <key extended="True" press="False" scan-code="29"/>
                                 </actions>
                             </macro>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;Engine Anti-Ice&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;Engine Anti-Ice ON&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="56"/>
+                                    <key extended="True" press="True" scan-code="54"/>
+                                    <key extended="False" press="True" scan-code="34"/>
+                                    <key extended="False" press="False" scan-code="34"/>
+                                    <key extended="True" press="False" scan-code="54"/>
+                                    <key extended="True" press="False" scan-code="56"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;Engine Anti-Ice OFF&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -2439,10 +2452,11 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
+                                    <key extended="True" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="35"/>
+                                    <pause duration="0.08"/>
+                                    <key extended="False" press="False" scan-code="35"/>
+                                    <key extended="True" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!--cueing--&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
@@ -2528,16 +2542,16 @@
                 <axis description="" id="7"/>
                 <button description="" id="1"/>
                 <button description="" id="2"/>
-                <button description="Countermeasures - waypoint designate" id="3">
+                <button description="Countermeasures - waypoint designate, waypoint next" id="3">
                     <container activate-on="release" delay="0.5" type="tempo">
                         <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
+                                    <key extended="True" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="45"/>
+                                    <key extended="False" press="False" scan-code="45"/>
+                                    <key extended="True" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
                             <description description="waypoint designate"/>
@@ -2547,10 +2561,8 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
-                                    <key extended="False" press="True" scan-code="1"/>
-                                    <key extended="False" press="False" scan-code="1"/>
+                                    <key extended="False" press="True" scan-code="45"/>
+                                    <key extended="False" press="False" scan-code="45"/>
                                 </actions>
                             </macro>
                             <description description="waypoint next"/>

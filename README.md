@@ -94,6 +94,15 @@ Shared memory file, double or triple buffered.
 SimFFB, and possibly other software, apparently depends on the ordering of 'controller' devices. To reorder these devices as needed, remove them with the 'Bluetooth and other devices settings' panel. Removing the Force Feedback joystick, followed by physical reconnection, may be sufficient.
 
 
+# Alternative
+Modeling of existing systems as closely as possible may be accommodated by placing external functionality on dedicated wearable panel(s).
+
+Head/Chin/Chest/Arm/Knee Switch Panels
+	Aux Comms
+	VR/AR Align/Zoom
+	Helmet Imaging (Goggles, Binoculars)
+
+
 # Included Works
 
 See included LICENSE files.

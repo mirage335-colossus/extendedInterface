@@ -465,6 +465,13 @@
                             <remap button="26" vjoy="1"/>
                         </action-set>
                     </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="118"/>
+                            </map-to-keyboard>
+                        </action-set>
+                    </container>
                 </button>
                 <button description="Quick Power - MISUSE Engines" id="11">
                     <container type="basic">
@@ -602,6 +609,13 @@
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
+                                <key extended="False" scan-code="109"/>
+                            </map-to-keyboard>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
                                 <key extended="False" scan-code="118"/>
                             </map-to-keyboard>
                         </action-set>
@@ -635,6 +649,13 @@
                     <container type="basic">
                         <action-set>
                             <remap button="29" vjoy="1"/>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="110"/>
+                            </map-to-keyboard>
                         </action-set>
                     </container>
                     <container type="basic">

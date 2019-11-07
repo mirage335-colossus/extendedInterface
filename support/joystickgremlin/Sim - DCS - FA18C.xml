@@ -454,6 +454,7 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="118"/>
                             </map-to-keyboard>
+                            <description description="F24"/>
                         </action-set>
                     </container>
                 </button>
@@ -479,6 +480,9 @@
                         </action-set>
                         <action-set>
                             <remap button="23" vjoy="1"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="118"/>
+                            </map-to-keyboard>
                         </action-set>
                     </container>
                 </button>
@@ -497,6 +501,9 @@
                         </action-set>
                         <action-set>
                             <remap button="24" vjoy="1"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="118"/>
+                            </map-to-keyboard>
                         </action-set>
                     </container>
                 </button>
@@ -651,8 +658,17 @@
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
+                                <key extended="False" scan-code="109"/>
+                            </map-to-keyboard>
+                            <description description="F22"/>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
                                 <key extended="False" scan-code="118"/>
                             </map-to-keyboard>
+                            <description description="F24"/>
                         </action-set>
                     </container>
                 </button>
@@ -696,6 +712,9 @@
                         </action-set>
                         <action-set>
                             <remap button="21" vjoy="1"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="118"/>
+                            </map-to-keyboard>
                         </action-set>
                     </container>
                 </button>
@@ -726,6 +745,9 @@
                         </action-set>
                         <action-set>
                             <remap button="26" vjoy="1"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="118"/>
+                            </map-to-keyboard>
                         </action-set>
                     </container>
                 </button>
@@ -779,8 +801,17 @@
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
+                                <key extended="False" scan-code="110"/>
+                            </map-to-keyboard>
+                            <description description="F23"/>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
                                 <key extended="False" scan-code="118"/>
                             </map-to-keyboard>
+                            <description description="F24"/>
                         </action-set>
                     </container>
                 </button>
@@ -824,6 +855,9 @@
                         </action-set>
                         <action-set>
                             <remap button="22" vjoy="1"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="118"/>
+                            </map-to-keyboard>
                         </action-set>
                     </container>
                 </button>
@@ -854,6 +888,9 @@
                         </action-set>
                         <action-set>
                             <remap button="25" vjoy="1"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="118"/>
+                            </map-to-keyboard>
                         </action-set>
                     </container>
                 </button>

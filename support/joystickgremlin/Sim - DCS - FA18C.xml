@@ -179,7 +179,7 @@
                         <virtual-button direction="above" lower-limit="-0.4" upper-limit="-1.0"/>
                     </container>
                 </axis>
-                <axis description="" id="3">
+                <axis description="Throttle - AB Detent" id="3">
                     <container type="basic">
                         <action-set>
                             <remap axis="7" axis-scaling="1.0" axis-type="absolute" vjoy="1"/>
@@ -187,15 +187,12 @@
                                 <mapping type="cubic-bezier-spline">
                                     <control-point x="-1.0" y="-1.0"/>
                                     <control-point x="-1.0" y="-1.0"/>
-                                    <control-point x="-0.65" y="-0.4"/>
-                                    <control-point x="-0.6" y="-0.4"/>
-                                    <control-point x="-0.5499999999999999" y="-0.4"/>
-                                    <control-point x="-0.45000000000000007" y="-0.4"/>
-                                    <control-point x="-0.4" y="-0.4"/>
-                                    <control-point x="-0.35" y="-0.4"/>
-                                    <control-point x="-0.152" y="-0.156"/>
-                                    <control-point x="0.0" y="-0.0"/>
-                                    <control-point x="1.0000000000000002" y="0.9999999999999999"/>
+                                    <control-point x="-1.0" y="-1.0"/>
+                                    <control-point x="-0.68" y="-0.56"/>
+                                    <control-point x="-0.668" y="-0.56"/>
+                                    <control-point x="-0.452" y="-0.56"/>
+                                    <control-point x="-0.4" y="-0.56"/>
+                                    <control-point x="1.0" y="1.0"/>
                                     <control-point x="1.0" y="1.0"/>
                                     <control-point x="1.0" y="1.0"/>
                                 </mapping>
@@ -207,7 +204,13 @@
                         <action-set>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="50"/>
                         </action-set>
-                        <virtual-button direction="anywhere" lower-limit="-0.6" upper-limit="-1.0"/>
+                        <virtual-button direction="anywhere" lower-limit="-0.63" upper-limit="-1.0"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/metal-rod-hit_C#_major.wav" volume="50"/>
+                        </action-set>
+                        <virtual-button direction="anywhere" lower-limit="-0.39" upper-limit="-1.0"/>
                     </container>
                 </axis>
                 <axis description="" id="4"/>
@@ -744,7 +747,7 @@
                 </hat>
             </mode>
             <mode inherit="00-Infrastructure" name="03-O-D">
-                <axis description="Throttle Lift " id="1"/>
+                <axis description="" id="1"/>
                 <axis description="" id="2"/>
                 <axis description="" id="3"/>
                 <axis description="" id="4"/>
@@ -757,7 +760,7 @@
                         <action-set>
                             <map-to-keyboard>
                                 <key extended="False" scan-code="56"/>
-                                <key extended="False" scan-code="16"/>
+                                <key extended="False" scan-code="36"/>
                             </map-to-keyboard>
                         </action-set>
                     </container>
@@ -917,10 +920,37 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="35"/>
-                                    <key extended="False" press="False" scan-code="35"/>
-                                    <key extended="False" press="False" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="50"/>
+                                    <key extended="False" press="False" scan-code="50"/>
+                                    <key extended="False" press="False" scan-code="42"/>
+                                    <key extended="True" press="True" scan-code="91"/>
+                                    <key extended="False" press="True" scan-code="2"/>
+                                    <key extended="False" press="False" scan-code="2"/>
+                                    <key extended="True" press="False" scan-code="91"/>
+                                    <key extended="True" press="True" scan-code="91"/>
+                                    <key extended="False" press="True" scan-code="3"/>
+                                    <key extended="False" press="False" scan-code="3"/>
+                                    <key extended="True" press="False" scan-code="91"/>
+                                    <key extended="True" press="True" scan-code="91"/>
+                                    <key extended="False" press="True" scan-code="4"/>
+                                    <pause duration="3.0"/>
+                                    <key extended="False" press="False" scan-code="4"/>
+                                    <key extended="True" press="False" scan-code="91"/>
+                                    <key extended="True" press="True" scan-code="91"/>
+                                    <key extended="False" press="True" scan-code="5"/>
+                                    <pause duration="3.0"/>
+                                    <key extended="False" press="False" scan-code="5"/>
+                                    <key extended="True" press="False" scan-code="91"/>
+                                    <key extended="True" press="True" scan-code="91"/>
+                                    <key extended="False" press="True" scan-code="6"/>
+                                    <key extended="False" press="False" scan-code="6"/>
+                                    <key extended="True" press="False" scan-code="91"/>
+                                    <key extended="True" press="True" scan-code="91"/>
+                                    <key extended="False" press="True" scan-code="7"/>
+                                    <pause duration="8.0"/>
+                                    <key extended="False" press="False" scan-code="7"/>
+                                    <key extended="True" press="False" scan-code="91"/>
                                 </actions>
                             </macro>
                         </action-set>
@@ -2454,7 +2484,7 @@
                                 <actions>
                                     <key extended="True" press="True" scan-code="56"/>
                                     <key extended="False" press="True" scan-code="35"/>
-                                    <pause duration="0.08"/>
+                                    <pause duration="1.65"/>
                                     <key extended="False" press="False" scan-code="35"/>
                                     <key extended="True" press="False" scan-code="56"/>
                                 </actions>

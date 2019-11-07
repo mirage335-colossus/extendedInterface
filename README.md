@@ -95,6 +95,7 @@ SimFFB, and possibly other software, apparently depends on the ordering of 'cont
 
 
 # Alternative
+
 Modeling of existing systems as closely as possible may be accommodated by placing external functionality on dedicated wearable board(s).
 
 Head/Chin/Chest/Arm/Knee Switch Boards

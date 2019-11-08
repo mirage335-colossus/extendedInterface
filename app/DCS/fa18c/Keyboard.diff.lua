@@ -71,6 +71,17 @@ local diff = {
 			},
 			["name"] = "UFC Function Selector Pushbutton - A/P",
 		},
+		["d3001pnilunilcd42vd0.1vpnilvunil"] = {
+			["added"] = {
+				[1] = {
+					["key"] = "5",
+					["reformers"] = {
+						[1] = "LWin",
+					},
+				},
+			},
+			["name"] = "RADAR Switch - STBY",
+		},
 		["d3002pnilu3002cd23vd1vpnilvu0"] = {
 			["added"] = {
 				[1] = {
@@ -141,6 +152,17 @@ local diff = {
 				},
 			},
 			["name"] = "Master Arm Switch - ARM",
+		},
+		["d3004pnilunilcd8vd0vpnilvunil"] = {
+			["added"] = {
+				[1] = {
+					["key"] = "2",
+					["reformers"] = {
+						[1] = "LWin",
+					},
+				},
+			},
+			["name"] = "LDG/TAXI LIGHT Switch - OFF",
 		},
 		["d3007pnilu3007cd25vd1vpnilvu0"] = {
 			["added"] = {
@@ -434,10 +456,43 @@ local diff = {
 			},
 			["name"] = "UFC COMM 1 Channel Selector Knob - CCW/Decrease",
 		},
+		["d3033pnilunilcd25vd1vpnilvunil"] = {
+			["added"] = {
+				[1] = {
+					["key"] = "Right",
+					["reformers"] = {
+						[1] = "RAlt",
+					},
+				},
+			},
+			["name"] = "UFC COMM 1 Channel Selector Knob - CW/Increase",
+		},
+		["d3034pnilunilcd25vd-1vpnilvunil"] = {
+			["added"] = {
+				[1] = {
+					["key"] = "Left",
+					["reformers"] = {
+						[1] = "RCtrl",
+					},
+				},
+			},
+			["name"] = "UFC COMM 2 Channel Selector Knob - CCW/Decrease",
+		},
+		["d3034pnilunilcd25vd1vpnilvunil"] = {
+			["added"] = {
+				[1] = {
+					["key"] = "Right",
+					["reformers"] = {
+						[1] = "RCtrl",
+					},
+				},
+			},
+			["name"] = "UFC COMM 2 Channel Selector Knob - CW/Increase",
+		},
 		["d3040pnilu3040cd13vd1vpnilvu0"] = {
 			["added"] = {
 				[1] = {
-					["key"] = "Q",
+					["key"] = "J",
 					["reformers"] = {
 						[1] = "LAlt",
 					},
@@ -450,6 +505,17 @@ local diff = {
 				},
 			},
 		},
+		["d3041pnilunilcd13vd0vpnilvunil"] = {
+			["added"] = {
+				[1] = {
+					["key"] = "1",
+					["reformers"] = {
+						[1] = "LWin",
+					},
+				},
+			},
+			["name"] = "Exterior Lights Switch - OFF",
+		},
 		["d3045pnilu3045cd13vd1vpnilvu0"] = {
 			["added"] = {
 				[1] = {
@@ -460,6 +526,17 @@ local diff = {
 				},
 			},
 			["name"] = "Sensor Control Switch - Depress",
+		},
+		["dnilp3002unilcd30vdnilvp-0.02vunil"] = {
+			["added"] = {
+				[1] = {
+					["key"] = "6",
+					["reformers"] = {
+						[1] = "LWin",
+					},
+				},
+			},
+			["name"] = "Push to Test Switch - CCW/Decrease",
 		},
 		["dnilp3002unilcd58vdnilvp1vunil"] = {
 			["added"] = {
@@ -472,38 +549,27 @@ local diff = {
 			},
 			["name"] = "HMD OFF/BRT Knob - CW/Increase",
 		},
-		["dnilp3036unilcd25vdnilvp-0.5vunil"] = {
+		["dnilp3005unilcd8vdnilvp-1vunil"] = {
 			["added"] = {
 				[1] = {
-					["key"] = "Left",
+					["key"] = "4",
 					["reformers"] = {
-						[1] = "RCtrl",
+						[1] = "LWin",
 					},
 				},
 			},
-			["name"] = "UFC COMM 1 Volume Control Knob - CCW/Decrease",
+			["name"] = "POSITION Lights Dimmer Control - CCW/Left",
 		},
-		["dnilp3036unilcd25vdnilvp0.5vunil"] = {
+		["dnilp3007unilcd8vdnilvp-1vunil"] = {
 			["added"] = {
 				[1] = {
-					["key"] = "Right",
+					["key"] = "3",
 					["reformers"] = {
-						[1] = "RCtrl",
+						[1] = "LWin",
 					},
 				},
 			},
-			["name"] = "UFC COMM 1 Volume Control Knob - CW/Increase",
-		},
-		["dnilp3040unilcd25vdnilvp0.5vunil"] = {
-			["added"] = {
-				[1] = {
-					["key"] = "Right",
-					["reformers"] = {
-						[1] = "RAlt",
-					},
-				},
-			},
-			["name"] = "UFC Brightness Control Knob - CW/Increase",
+			["name"] = "FORMATION Lights Dimmer Control - CCW/Left",
 		},
 	},
 }

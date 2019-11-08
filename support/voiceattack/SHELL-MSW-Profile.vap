@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Profile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <HasMB>false</HasMB>
-  <Id>5f770d3c-293b-443a-b295-4a915c8af885</Id>
+  <Id>77145f61-f905-4ada-8a1a-e816e9cc8765</Id>
   <Name>SHELL-MSW</Name>
   <Commands>
     <Command>
@@ -20,7 +20,7 @@
       <BaseId>31929b91-dfe8-47cd-a6b7-26b0f0787a0c</BaseId>
       <OriginId>00000000-0000-0000-0000-000000000000</OriginId>
       <SessionEnabled>true</SessionEnabled>
-      <Id>0887a5d4-c8b5-42f4-9ba0-c37fa3a9a883</Id>
+      <Id>7ef325ce-9221-4a76-bb08-5c8a6a1ad77d</Id>
       <CommandString>construct bridge</CommandString>
       <ActionSequence>
         <CommandAction>
@@ -32,7 +32,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>cea86972-762d-41c5-8db9-2d3a3b8a268a</Id>
+          <Id>5aa138e3-21b5-44a8-be96-010324d9b448</Id>
           <ActionType>Comment</ActionType>
           <Duration>0</Duration>
           <Delay>0</Delay>
@@ -64,7 +64,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>b18c3455-f88e-4bf5-b5ab-62fca1b35257</Id>
+          <Id>3b68c276-6267-4bd3-9413-ea1a5648327e</Id>
           <ActionType>ConditionStart</ActionType>
           <Duration>0</Duration>
           <Delay>0</Delay>
@@ -97,7 +97,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>debc6b20-116b-4ff8-a8ff-aa77db09a288</Id>
+          <Id>2835470b-232c-441c-b1e4-a3a585e90b9a</Id>
           <ActionType>Say</ActionType>
           <Duration>0</Duration>
           <Delay>0</Delay>
@@ -131,7 +131,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>3efc2eae-1aad-41a5-a6b6-174d0c3e5ada</Id>
+          <Id>e63b5882-5013-4ed7-96cb-b074ef303b53</Id>
           <ActionType>ExitCommand</ActionType>
           <Duration>0</Duration>
           <Delay>0</Delay>
@@ -162,7 +162,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>5ac2232d-6150-4a44-920c-5d92d30b36c2</Id>
+          <Id>cfcf88e0-47ca-4979-b3f3-440a8e6970ff</Id>
           <ActionType>ConditionEnd</ActionType>
           <Duration>0</Duration>
           <Delay>0</Delay>
@@ -193,7 +193,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>871d8e37-a486-453c-9bb0-f9f6fa078c7a</Id>
+          <Id>2765e6cc-9ddd-4fa4-b784-a4f8306fdd5f</Id>
           <ActionType>ExecuteCommand</ActionType>
           <Duration>0</Duration>
           <Delay>1</Delay>
@@ -226,7 +226,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>403667cb-44ce-4c89-960f-c6d0a9fc368c</Id>
+          <Id>5b87c755-5497-4f65-9acf-391b698db27c</Id>
           <ActionType>Kill</ActionType>
           <Duration>0</Duration>
           <Delay>0</Delay>
@@ -258,7 +258,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>c781efd4-5897-4bb9-b0bb-4a9992e8dcde</Id>
+          <Id>62cf2155-13bd-4e54-a1b6-3f5bca96d757</Id>
           <ActionType>Kill</ActionType>
           <Duration>0</Duration>
           <Delay>0</Delay>
@@ -290,7 +290,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>0f80bcf3-8774-4e0f-bcc1-efbc51159490</Id>
+          <Id>6c6634a5-50ed-42c9-b9df-28322b5804b6</Id>
           <ActionType>Pause</ActionType>
           <Duration>0.5</Duration>
           <Delay>0</Delay>
@@ -321,7 +321,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>0b1a688c-72c4-4ea6-b9b7-b066dd10bb50</Id>
+          <Id>bcda8ee6-ee86-4aa3-b2a6-5515b373728c</Id>
           <ActionType>Kill</ActionType>
           <Duration>0</Duration>
           <Delay>0</Delay>
@@ -353,7 +353,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>eca64f6e-1b91-4b43-9192-e0c1ea2253bd</Id>
+          <Id>6a4a9dae-45fe-4f97-b369-e2560ac51317</Id>
           <ActionType>Kill</ActionType>
           <Duration>0</Duration>
           <Delay>0</Delay>
@@ -385,7 +385,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>4842e975-5496-43f9-b6bf-bcd8b9257525</Id>
+          <Id>f4c237c5-bb24-4f23-8da3-836829e15461</Id>
           <ActionType>Pause</ActionType>
           <Duration>0.25</Duration>
           <Delay>0</Delay>
@@ -416,7 +416,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>092f6892-a6c3-46df-a0cd-7afbe382d50f</Id>
+          <Id>f598fcce-84d8-4cbc-a279-5ff597381039</Id>
           <ActionType>Launch</ActionType>
           <Duration>2</Duration>
           <Delay>0</Delay>
@@ -519,7 +519,7 @@
       <BaseId>79052b7a-0dec-4f2e-a353-fd39c2046cee</BaseId>
       <OriginId>00000000-0000-0000-0000-000000000000</OriginId>
       <SessionEnabled>true</SessionEnabled>
-      <Id>478a63ff-8699-4d84-91a5-f01f0770ca67</Id>
+      <Id>db85a300-bc6a-47d2-9f1e-ae7f8a24fa48</Id>
       <CommandString>profile covas d c s</CommandString>
       <ActionSequence>
         <CommandAction>
@@ -531,7 +531,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>93012286-0350-4f2f-b745-0ff40cc91897</Id>
+          <Id>815cb37c-6d76-4101-b120-a91522681652</Id>
           <ActionType>Say</ActionType>
           <Duration>1</Duration>
           <Delay>0</Delay>
@@ -565,7 +565,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>f675a72e-8f10-4536-a534-7bfb923dbbcb</Id>
+          <Id>a5573fff-2a0b-4d68-852e-6d936a5bf0d3</Id>
           <ActionType>ChangeProfile</ActionType>
           <Duration>0</Duration>
           <Delay>1</Delay>
@@ -665,7 +665,7 @@
       <BaseId>9ec0767a-bf65-48af-b664-e8880f171f38</BaseId>
       <OriginId>00000000-0000-0000-0000-000000000000</OriginId>
       <SessionEnabled>true</SessionEnabled>
-      <Id>58912d51-e728-4068-978a-c5dea5c15e35</Id>
+      <Id>d47c6e0d-2d0d-43d0-a1dc-4f839796e251</Id>
       <CommandString>profile covas elite</CommandString>
       <ActionSequence>
         <CommandAction>
@@ -677,7 +677,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>830f8429-0862-49d3-aed9-0a6e5834363d</Id>
+          <Id>f946f65d-79f7-4cf5-870c-0733140313fa</Id>
           <ActionType>Say</ActionType>
           <Duration>1</Duration>
           <Delay>0</Delay>
@@ -711,7 +711,7 @@
           <ConditionSkip>false</ConditionSkip>
           <IsSuffixAction>false</IsSuffixAction>
           <DecimalTransient1>0</DecimalTransient1>
-          <Id>99fd15de-09d4-4722-8b3c-40901d24c39b</Id>
+          <Id>b30328ba-1e45-46f6-b465-5d83b96dd8e5</Id>
           <ActionType>ChangeProfile</ActionType>
           <Duration>0</Duration>
           <Delay>1</Delay>

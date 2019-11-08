@@ -569,66 +569,7 @@
                         </action-set>
                     </container>
                 </button>
-                <hat description="Sensors - Targeting" id="1">
-                    <container type="basic">
-                        <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="21"/>
-                                    <key extended="False" press="False" scan-code="21"/>
-                                </actions>
-                            </macro>
-                            <description description="Ahead"/>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
-                        </action-set>
-                        <virtual-button west="1"/>
-                    </container>
-                    <container type="basic">
-                        <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="48"/>
-                                    <key extended="False" press="False" scan-code="48"/>
-                                </actions>
-                            </macro>
-                            <description description="Threat"/>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
-                        </action-set>
-                        <virtual-button east="1"/>
-                    </container>
-                    <container type="basic">
-                        <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="31"/>
-                                    <key extended="False" press="False" scan-code="31"/>
-                                </actions>
-                            </macro>
-                            <description description="subsystem+"/>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
-                        </action-set>
-                        <virtual-button north="1"/>
-                    </container>
-                    <container type="basic">
-                        <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="42"/>
-                                    <key extended="False" press="True" scan-code="31"/>
-                                    <key extended="False" press="False" scan-code="31"/>
-                                    <key extended="False" press="False" scan-code="42"/>
-                                </actions>
-                            </macro>
-                            <description description="subsystem-"/>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
-                        </action-set>
-                        <virtual-button south="1"/>
-                    </container>
-                </hat>
+                <hat description="Sensors - Targeting" id="1"/>
             </mode>
             <mode inherit="00-Infrastructure" name="02-O-U">
                 <axis description="" id="1"/>
@@ -1286,6 +1227,11 @@
                             </macro>
                         </action-set>
                     </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                    </container>
                 </button>
                 <button description="Convention - Scripted orders. Menu/keys. Support/Tanker/Repair request. - F2" id="8">
                     <container type="basic">
@@ -1297,6 +1243,11 @@
                                     <key extended="False" press="False" scan-code="60"/>
                                 </actions>
                             </macro>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
                         </action-set>
                     </container>
                 </button>
@@ -1312,6 +1263,11 @@
                             </macro>
                         </action-set>
                     </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                    </container>
                 </button>
                 <button description="Convention - Scripted orders. Menu/keys. Support/Tanker/Repair request. - F12" id="10">
                     <container type="basic">
@@ -1323,6 +1279,11 @@
                                     <key extended="False" press="False" scan-code="88"/>
                                 </actions>
                             </macro>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
                         </action-set>
                     </container>
                 </button>

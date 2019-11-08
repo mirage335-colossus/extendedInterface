@@ -684,6 +684,7 @@
                                 <actions>
                                     <key extended="True" press="True" scan-code="56"/>
                                     <key extended="True" press="True" scan-code="77"/>
+                                    <pause duration="0.04"/>
                                     <key extended="True" press="False" scan-code="77"/>
                                     <key extended="True" press="False" scan-code="56"/>
                                 </actions>
@@ -726,6 +727,7 @@
                                 <actions>
                                     <key extended="True" press="True" scan-code="56"/>
                                     <key extended="True" press="True" scan-code="75"/>
+                                    <pause duration="0.04"/>
                                     <key extended="True" press="False" scan-code="75"/>
                                     <key extended="True" press="False" scan-code="56"/>
                                 </actions>
@@ -827,6 +829,7 @@
                                 <actions>
                                     <key extended="True" press="True" scan-code="29"/>
                                     <key extended="True" press="True" scan-code="77"/>
+                                    <pause duration="0.04"/>
                                     <key extended="True" press="False" scan-code="77"/>
                                     <key extended="True" press="False" scan-code="29"/>
                                 </actions>
@@ -869,6 +872,7 @@
                                 <actions>
                                     <key extended="True" press="True" scan-code="29"/>
                                     <key extended="True" press="True" scan-code="75"/>
+                                    <pause duration="0.04"/>
                                     <key extended="True" press="False" scan-code="75"/>
                                     <key extended="True" press="False" scan-code="29"/>
                                 </actions>
@@ -1322,11 +1326,11 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Reference, Quick Nav - Sim Kneeboard Forward" id="11">
+                <button description="Reference, Quick Nav - Sim Kneeboard Back" id="11">
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
-                                <key extended="False" scan-code="27"/>
+                                <key extended="False" scan-code="26"/>
                             </map-to-keyboard>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
                         </action-set>
@@ -1361,11 +1365,11 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Reference, Quick Nav - Sim Kneeboard Back" id="13">
+                <button description="Reference, Quick Nav - Sim Kneeboard Forward" id="13">
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
-                                <key extended="False" scan-code="26"/>
+                                <key extended="False" scan-code="27"/>
                             </map-to-keyboard>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
                         </action-set>

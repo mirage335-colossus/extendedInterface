@@ -378,9 +378,15 @@
                     </container>
                     <container type="basic">
                         <action-set>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="30"/>
-                            </map-to-keyboard>
+                            <macro>
+                                <properties>
+                                    <repeat delay="0.07" type="hold"/>
+                                </properties>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="30"/>
+                                    <key extended="False" press="False" scan-code="30"/>
+                                </actions>
+                            </macro>
                         </action-set>
                     </container>
                 </button>
@@ -475,43 +481,91 @@
                 </button>
                 <button description="Quick Power - MISUSE Engines" id="11">
                     <container type="basic">
-                        <action-set>
-                            <map-to-keyboard>
-                                <key extended="True" scan-code="73"/>
-                            </map-to-keyboard>
-                        </action-set>
+                        <action-set/>
                     </container>
-                    <container type="basic">
+                    <container activate-on="release" delay="0.17" type="tempo">
                         <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="73"/>
+                                    <key extended="True" press="False" scan-code="73"/>
+                                </actions>
+                            </macro>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="81"/>
+                                    <key extended="True" press="False" scan-code="81"/>
+                                    <key extended="True" press="True" scan-code="73"/>
+                                    <key extended="True" press="False" scan-code="73"/>
+                                    <key extended="True" press="True" scan-code="73"/>
+                                    <key extended="True" press="False" scan-code="73"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; engines &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
                 <button description="Quick Power - MISUSE Weapons" id="12">
-                    <container type="basic">
+                    <container activate-on="release" delay="0.17" type="tempo">
                         <action-set>
-                            <map-to-keyboard>
-                                <key extended="True" scan-code="82"/>
-                            </map-to-keyboard>
-                        </action-set>
-                    </container>
-                    <container type="basic">
-                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="82"/>
+                                    <key extended="True" press="False" scan-code="82"/>
+                                </actions>
+                            </macro>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="81"/>
+                                    <key extended="True" press="False" scan-code="81"/>
+                                    <key extended="True" press="True" scan-code="82"/>
+                                    <key extended="True" press="False" scan-code="82"/>
+                                    <key extended="True" press="True" scan-code="82"/>
+                                    <key extended="True" press="False" scan-code="82"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; weapons &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
                 <button description="Quick Power - MISUSE Systems" id="13">
                     <container type="basic">
-                        <action-set>
-                            <map-to-keyboard>
-                                <key extended="True" scan-code="71"/>
-                            </map-to-keyboard>
-                        </action-set>
+                        <action-set/>
                     </container>
-                    <container type="basic">
+                    <container activate-on="release" delay="0.17" type="tempo">
                         <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="71"/>
+                                    <key extended="True" press="False" scan-code="71"/>
+                                </actions>
+                            </macro>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="81"/>
+                                    <key extended="True" press="False" scan-code="81"/>
+                                    <key extended="True" press="True" scan-code="71"/>
+                                    <key extended="True" press="False" scan-code="71"/>
+                                    <key extended="True" press="True" scan-code="71"/>
+                                    <key extended="True" press="False" scan-code="71"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; systems &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>

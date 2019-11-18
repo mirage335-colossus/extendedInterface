@@ -134,3 +134,15 @@ https://store.steampowered.com/app/586210/OVRdrop/
 https://store.steampowered.com/app/382110/Virtual_Desktop/
 
 http://vjoystick.sourceforge.net/site/index.php/download-a-install/download
+
+
+
+
+
+
+
+https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19980018292.pdf
+	"Helmet-Mounted Display Design Guide" - Richard L. Newman and Kevin W. Greeley - '3 November 1997'
+
+https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19960033220.pdf
+	"Helmet-Mounted Display Symbology and Stabilization Concepts" - Richard L. Newman - 'June 1995'

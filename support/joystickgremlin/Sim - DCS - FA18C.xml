@@ -1382,9 +1382,7 @@
                     <container activate-on="release" delay="0.2" type="tempo">
                         <action-set>
                             <macro>
-                                <properties>
-                                    <repeat delay="0.1" type="toggle"/>
-                                </properties>
+                                <properties/>
                                 <actions>
                                     <key extended="True" press="True" scan-code="81"/>
                                     <key extended="True" press="False" scan-code="81"/>

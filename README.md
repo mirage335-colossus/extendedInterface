@@ -1,5 +1,21 @@
 Conventions, device/application input configuration files, device programming software, and hardware abstraction software for comprehensive physical and virtual reality user interface solutions.
 
+# Conventions
+
+Layout and assignments documented under conventions tab of spreadsheet 'commonControlScheme.ods' .
+
+## Delays
+
+## Macro
+
+* 0.020 - Key Press/Release
+
+## Long/Short Press
+
+* 0.120 - Menu/PTT
+* 0.200 - Typical
+* 0.500 - DANGEROUS
+
 # Usage
 
 ## NIX
@@ -122,16 +138,26 @@ All content in this folder not owned by other authors is intended to be public d
 # Reference
 
 https://whitemagic.github.io/JoystickGremlin/
+
 https://www.autohotkey.com/boards/viewtopic.php?t=34890
 
+
+
 https://forums.eagle.ru/showpost.php?p=1628706&postcount=43
+
 https://forums.eagle.ru/showpost.php?p=2419366&postcount=152
+
 http://www.fs-force.com/support.php
+
+
 
 https://voiceattack.com/
 
 https://store.steampowered.com/app/586210/OVRdrop/
+
 https://store.steampowered.com/app/382110/Virtual_Desktop/
+
+
 
 http://vjoystick.sourceforge.net/site/index.php/download-a-install/download
 

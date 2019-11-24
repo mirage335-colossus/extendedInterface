@@ -896,14 +896,13 @@
                         </action-set>
                     </container>
                 </button>
-		<button description="Lockouts, Accessories - DARK - EMCON, Lights Off, Taxi Light Off, Formation Lights Off, Radar Off, Radar Altimeter Off" id="13">
-		
-		<container activate-on="release" delay="0.50" type="tempo">
+                <button description="Lockouts, Accessories - DARK - EMCON, Lights Off, Taxi Light Off, Formation Lights Off, Radar Off, Radar Altimeter Off" id="13">
+                    <container activate-on="release" delay="0.5" type="tempo">
                         <action-set>
                             <description description="DANGEROUS"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; error &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <action-set>
-
                             <macro>
                                 <properties/>
                                 <actions>
@@ -920,16 +919,6 @@
                                     <key extended="False" press="False" scan-code="3"/>
                                     <key extended="True" press="False" scan-code="91"/>
                                     <key extended="True" press="True" scan-code="91"/>
-                                    <key extended="False" press="True" scan-code="4"/>
-                                    <pause duration="3.0"/>
-                                    <key extended="False" press="False" scan-code="4"/>
-                                    <key extended="True" press="False" scan-code="91"/>
-                                    <key extended="True" press="True" scan-code="91"/>
-                                    <key extended="False" press="True" scan-code="5"/>
-                                    <pause duration="3.0"/>
-                                    <key extended="False" press="False" scan-code="5"/>
-                                    <key extended="True" press="False" scan-code="91"/>
-                                    <key extended="True" press="True" scan-code="91"/>
                                     <key extended="False" press="True" scan-code="6"/>
                                     <key extended="False" press="False" scan-code="6"/>
                                     <key extended="True" press="False" scan-code="91"/>
@@ -940,20 +929,17 @@
                                     <key extended="True" press="False" scan-code="91"/>
                                 </actions>
                             </macro>
-			    
-			    
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; DARK &lt;/prosody&gt; &lt;/speak&gt;"/>
-			    
-			    
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="100"/>
-			    
-			    
                         </action-set>
                     </container>
                 </button>
                 <button description="Lockouts, Accessories - Tool" id="14">
                     <container activate-on="release" delay="0.2" type="tempo">
-                        <action-set/>
+                        <action-set>
+                            <description description="DANGEROUS"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; error &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
                         <action-set>
                             <map-to-keyboard>
                                 <key extended="True" scan-code="56"/>

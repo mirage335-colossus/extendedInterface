@@ -767,7 +767,11 @@
                     </container>
                 </button>
                 <button description="Lockouts, Accessories - EMCON - Silent Running" id="13">
-                    <container type="basic">
+                    <container activate-on="release" delay="0.5" type="tempo">
+                        <action-set>
+                            <description description="DANGEROUS"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; error &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
                         <action-set>
                             <macro>
                                 <properties/>
@@ -778,15 +782,7 @@
                                     <key extended="False" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
-                        </action-set>
-                    </container>
-                    <container type="basic">
-                        <action-set>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- Silent Running --&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
-                        </action-set>
-                    </container>
-                    <container type="basic">
-                        <action-set>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="100"/>
                         </action-set>
                     </container>

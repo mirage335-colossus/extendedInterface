@@ -1,0 +1,115 @@
+
+
+_Alternative_
+
+Chroma Key
+Transparent regions to be recognized by VR overlay applications (eg. OVRDrop).
+	#503C14 (gold bright	- 80/60/20 R/G/B)
+	#080602 (gold dark	- 08/06/02 R/G/B)
+	#040301 (gold black	- 04/03/01 R/G/B)
+
+_Claimed_
+
+Pimax 8kX Raster
+	2160v/eye		3840x2160/eye	(native)
+	2700v/eye		4800x2700/eye	(1.25v)
+	3240v/eye		5760x3240/eye	(1.50v)
+	3780v/eye		6720x3780/eye	(1.75v)
+	
+	
+	3564v/eye				(1.65v)
+	
+	-			7680x2160/all	(native)
+
+Pimax 5kp Raster
+	1440v/eye		2560×1440/eye	(native)
+	1800v/eye		3200×1800/eye	(1.25v)
+	2160v/eye		3840×2160/eye	(1.50v)
+	
+	-			5120x1440/all	(native)
+
+
+_Derived_
+
+Pimax 8kX to SteamVR Resolution Equation (Predicted)
+2160v * [1.00 or 1.25 PiTool Rendering Quality] * [1.00 or 1.25 PiTool Parallel Projections]
+	= 2160v OR 2700v or 3375v
+
+Pimax 5kp to SteamVR Resolution Equation
+1440v * [1.00 or 1.25 PiTool Rendering Quality] * [1.00 or 1.25 PiTool Parallel Projections]
+	= 1440v OR 1800v or 2250v
+
+Pimax 5kp Raster, SteamVR Equivalents, PiTool Rendering Quality 1.00, PiTool Parallel Projections OFF, PiTool Field of View - Large
+	1440v/eye	30%	2336x1440/eye	(native)
+	
+Pimax 5kp Raster, SteamVR Equivalents, PiTool Rendering Quality 1.00, PiTool Parallel Projections OFF, PiTool Field of View - Normal
+	1440v/eye	30%	1752x1440/eye	(native)
+
+Pimax 5kp Raster, SteamVR Equivalents, PiTool Rendering Quality 1.00, PiTool Parallel Projections ON, PiTool Field of View - Large
+	1800v/eye	30%	3804x1800/eye	(native)
+	
+Pimax 5kp Raster, SteamVR Equivalents, PiTool Rendering Quality 1.00, PiTool Parallel Projections ON, PiTool Field of View - Normal
+	1800v/eye	30%	2108x1800/eye	(native)
+	
+	
+Pimax 5kp Raster, SteamVR Equivalents, PiTool Rendering Quality 1.25, PiTool Parallel Projections OFF, PiTool Field of View - Large
+	1800v/eye	30%	2920x1800/eye	(native)
+	
+Pimax 5kp Raster, SteamVR Equivalents, PiTool Rendering Quality 1.25, PiTool Parallel Projections OFF, PiTool Field of View - Normal
+	1800v/eye	30%	2192x1800/eye	(native)
+	
+Pimax 5kp Raster, SteamVR Equivalents, PiTool Rendering Quality 1.25, PiTool Parallel Projections ON, PiTool Field of View - Large
+	2250v/eye	30%	4756x2252/eye	(native)
+	
+Pimax 5kp Raster, SteamVR Equivalents, PiTool Rendering Quality 1.25, PiTool Parallel Projections ON, PiTool Field of View - Normal
+	2250v/eye	30%	2636x2252/eye	(native)
+
+
+_Experimental_
+
+Pimax 5kp Raster - SteamVR Equivalents
+	1440v/eye		2560×1440/eye	(native)
+		PiTool - 'Rendering Quality' - 1.00
+		PiTool - 'Compatible with parallel projections' - OFF*
+		PiTool - 'Field Of View' - Large
+		SteamVR Video Raster '30%'
+		SteamVR - 2336x1440	1.00v
+		Inferred 1.0v		VirtualDeskop demonstrated noticeable supersampling improvements up to at least ~ +1.5x.
+	
+	1440v/eye		2560×1440/eye	(native)	(parallel projection)
+		PiTool	- 'Rendering Quality' - 1.00
+		PiTool	- 'Compatible with parallel projections' - ON*
+		PiTool	- 'Field Of View' - Large
+		SteamVR	- Video Raster '30%'
+		SteamVR	- 3804x1800	1.25v
+		Inferred 1.0v		VirtualDeskop demonstrated noticeable supersampling improvements up to at least ~ +1.5x.
+
+_Historical_
+
+Long-term tested usable values. CPU i9-9900KF @ 5.1GHz . GPU GeForce RTX 2080 Ti Ftw3 Ultra - 11GB @ 2085MHz/8000MHz 124% with Precision XOC . RAM - 64GB @ DDR4-3400 .
+
+Pimax 5kp Raster
+	Steam VR Video Raster (Desktop Overlay)
+		PiTool	- 'Rendering Quality' - 1.25
+		PiTool	- 'Compatible with parallel projections' - ON*
+		PiTool	- 'Field Of View' - Normal
+		SteamVR	- Video Raster '50%'
+		SteamVR	-	3404x2908/eye
+
+	Elite Dangerous Application Raster -
+		PiTool	- 'Rendering Quality' - 1.25
+		PiTool	- 'Compatible with parallel projections' - ON*
+		PiTool	- 'Field Of View' - Normal
+		SteamVR	-	2584x2204, (1.25 Built-In 'HMD Image Quality')
+		Render	~	3230x2755
+
+	DCS World Application Raster -
+		PiTool	- 'Rendering Quality' - 1.25
+		PiTool	- 'Compatible with parallel projections' - ON*
+		PiTool	- 'Field Of View' - Normal
+		SteamVR	- 	4272x3649, (1.00 Built-In 'Pixel Density')
+		Render	~ 	4272x3649
+
+
+
+

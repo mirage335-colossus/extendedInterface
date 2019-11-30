@@ -1,5 +1,19 @@
 Conventions, device/application input configuration files, device programming software, and hardware abstraction software for comprehensive physical and virtual reality user interface solutions.
 
+# Param
+
+Precomputed application startup parameters are documented under spreadsheet "000-param.ods" .
+
+* Template checklist layout.
+* Same order as application settings and/or procedures.
+* Color warnings of expected quality or performance degration.
+* Drop-down alternative selections.
+
+* Alternative settings and peripherials included along with data and recommendations.
+
+* Automatic load calculation as a fraction of previous maximum-resolution long-term test results.
+* Angular resolution estimation.
+
 # Conventions
 
 Layout and assignments documented under conventions tab of spreadsheet 'commonControlScheme.ods' .
@@ -78,6 +92,11 @@ Other hardware and software is compatible with the conventions. Configuration fi
 Some hardware and software has not been found compatible.
 
 * Universal Control Remapper
+
+Some additional software and hardware is strongly recommended.
+
+* 'DCS-to-GPS 1.3' - https://www.digitalcombatsimulator.com/en/files/3303310/
+* 'com0com' - http://com0com.sourceforge.net/
 
 
 # Backend - NIX

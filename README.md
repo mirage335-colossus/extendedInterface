@@ -2,7 +2,7 @@ Conventions, device/application input configuration files, device programming so
 
 # Param
 
-Precomputed application startup parameters are documented under spreadsheet "000-param.ods" .
+Precomputed application startup parameters are documented under spreadsheet "param.ods" .
 
 * Template checklist layout.
 * Same order as application settings and/or procedures.

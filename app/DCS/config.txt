@@ -1,0 +1,91 @@
+
+
+
+
+
+
+
+
+
+
+_Extra_
+Shaders Mod - +PREFER ON
+*Water - Low (Unless Required Otherwise)
+Cockpit displays at 256 .
+
+
+Textures			Medium
+Terrain Textures		Low
+Civ. Traffic			Off
+Water				Medium
+Visib Range			Low
+Heat Blur			Off
+Shadows				Off
+Resolution			3840x2160
+Aspect Ratio			1.77777777...
+Monitors			1 Screen
+Res. of Cockpit Displays	256
+MSAA				Off
+Depth of Field			Off
+Lens Effects			Flare
+Motion Blur			Off
+SSAA				Off
+
+Clutter/Grass			0		<3ms GPU @ Max-Min, negligible at 41kft
+Trees Visibility		40%		<3ms GPU @ Max-Min, negligible at 41kft
+Preload Radius			150000
+Chimney Smoke Density		0
+Gamma				2.2
+
+Anistropic Filtering		8x
+Terrain Object Shadows		Off
+Cockpit Global Illumination	Off
+Messages font scale		1
+
+Rain Droplets			Off
+Vsync				Off
+Full Screen			On
+Scale GUI			Off
+
+
+
+
+
+
+
+
+_NTTR_
+#Waypoints CRAIG, APEX.
+
+
+_SimFFB_
+*Spring Force 100%
+*Damper Force 40%
+*Friction Force 0%
+*Swap Axis ON
+*Trimmer NONE
+
+
+_ Google Earth GPS - DCS_NMEA.lua , com0com _
+
+Google Earth must not be blocking serial ports.
+Beware 'Quit to Desktop' or full OS reboot may be required between flights.
+Destination port (COM2) will be read by application, source port (COM1) will be written by sim.
+
+sPort_Nr = 1
+
+COM1				COM2
++use Ports class		+use Ports class
+-emulate baud rate		-emulate baud rate
++enable buffer overrun		+enable buffer overrun
+
+_SRS_
+In client.cfg:
+	DisableWindowVisibilityCheck=true
+
+As necessary, under 'Settings', use 'Reset Radio Overlay' button.
+
+_Reference_
+https://youtu.be/4zFCtL8PsYs?t=427
+
+

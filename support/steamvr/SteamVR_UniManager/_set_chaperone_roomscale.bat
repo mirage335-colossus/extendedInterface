@@ -1,3 +1,3 @@
 cd "C:\Program Files (x86)\Steam\config\"
 
-copy "chaperone_info.vrchap" "chaperone_info.vrchap.roomscale"
+copy /Y "chaperone_info.vrchap" "chaperone_info.vrchap.roomscale"

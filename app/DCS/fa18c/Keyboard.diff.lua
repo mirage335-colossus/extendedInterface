@@ -1,5 +1,16 @@
 local diff = {
 	["keyDiffs"] = {
+		["d122pnilunilcdnilvdnilvpnilvunil"] = {
+			["name"] = "Sound On/Off",
+			["removed"] = {
+				[1] = {
+					["key"] = "S",
+					["reformers"] = {
+						[1] = "LCtrl",
+					},
+				},
+			},
+		},
 		["d1625pnilunilcdnilvdnilvpnilvunil"] = {
 			["added"] = {
 				[1] = {
@@ -79,8 +90,26 @@ local diff = {
 						[1] = "LWin",
 					},
 				},
+				[2] = {
+					["key"] = "R",
+					["reformers"] = {
+						[1] = "RAlt",
+						[2] = "RShift",
+					},
+				},
 			},
 			["name"] = "RADAR Switch - STBY",
+		},
+		["d3001pnilunilcd42vd0.2vpnilvunil"] = {
+			["added"] = {
+				[1] = {
+					["key"] = "R",
+					["reformers"] = {
+						[1] = "RAlt",
+					},
+				},
+			},
+			["name"] = "RADAR Switch - OPR",
 		},
 		["d3002pnilu3002cd23vd1vpnilvu0"] = {
 			["added"] = {
@@ -318,6 +347,17 @@ local diff = {
 				},
 			},
 			["name"] = "UFC Keyboard Pushbutton - 1",
+		},
+		["d3019pnilunilcd7vd1vpnilvunil"] = {
+			["added"] = {
+				[1] = {
+					["key"] = "S",
+					["reformers"] = {
+						[1] = "RAlt",
+					},
+				},
+			},
+			["name"] = "Smoke Device - ON/OFF",
 		},
 		["d3020pnilu3020cd25vd1vpnilvu0"] = {
 			["added"] = {

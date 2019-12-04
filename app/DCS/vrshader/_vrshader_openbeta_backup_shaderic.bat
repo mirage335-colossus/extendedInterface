@@ -14,6 +14,9 @@ SET vrshaderTask=EXCEPTION
 IF /I "%~n0" EQU "_vrshader_stable_delete" SET vrshaderTask=_vrshader_delete
 IF /I "%~n0" EQU "_vrshader_openbeta_delete" SET vrshaderTask=_vrshader_delete
 
+IF /I "%~n0" EQU "_vrshader_stable_disable" SET vrshaderTask=_vrshader_disable
+IF /I "%~n0" EQU "_vrshader_openbeta_disable" SET vrshaderTask=_vrshader_disable
+
 
 IF /I "%~n0" EQU "_vrshader_stable_backup_shadermod" SET vrshaderTask=_vrshader_backup_shadermod
 IF /I "%~n0" EQU "_vrshader_openbeta_backup_shadermod" SET vrshaderTask=_vrshader_backup_shadermod
@@ -32,6 +35,8 @@ IF /I "%~n0" EQU "_vrshader_openbeta_restore_ic" SET vrshaderTask=_vrshader_rest
 
 @REM SET vrshaderTask=_vrshader_delete
 
+@REM SET vrshaderTask=_vrshader_disable
+
 @REM SET vrshaderTask=_vrshader_backup_shadermod
 @REM SET vrshaderTask=_vrshader_restore_shadermod
 
@@ -45,12 +50,14 @@ IF /I "%vrshaderTask%" EQU "EXCEPTION" GOTO EXCEPTION
 SET vrshaderAppVersion=EXCEPTION
 
 IF /I "%~n0" EQU "_vrshader_stable_delete" SET vrshaderAppVersion=stable
+IF /I "%~n0" EQU "_vrshader_stable_disable" SET vrshaderAppVersion=stable
 IF /I "%~n0" EQU "_vrshader_stable_backup_shadermod" SET vrshaderAppVersion=stable
 IF /I "%~n0" EQU "_vrshader_stable_restore_shadermod" SET vrshaderAppVersion=stable
 IF /I "%~n0" EQU "_vrshader_stable_backup_ic" SET vrshaderAppVersion=stable
 IF /I "%~n0" EQU "_vrshader_stable_restore_ic" SET vrshaderAppVersion=stable
 
 IF /I "%~n0" EQU "_vrshader_openbeta_delete" SET vrshaderAppVersion=openbeta
+IF /I "%~n0" EQU "_vrshader_openbeta_disable" SET vrshaderAppVersion=openbeta
 IF /I "%~n0" EQU "_vrshader_openbeta_backup_shadermod" SET vrshaderAppVersion=openbeta
 IF /I "%~n0" EQU "_vrshader_openbeta_restore_shadermod" SET vrshaderAppVersion=openbeta
 IF /I "%~n0" EQU "_vrshader_openbeta_backup_ic" SET vrshaderAppVersion=openbeta
@@ -89,6 +96,7 @@ IF /I "%vrshaderProgramDir%" EQU "EXCEPTION" GOTO EXCEPTION
 echo **********************************************************************
 
 IF /I "%vrshaderTask%" EQU "_vrshader_delete" echo *****DELETE*****
+IF /I "%vrshaderTask%" EQU "_vrshader_disable" echo *****DISABLE*****
 IF /I "%vrshaderTask%" EQU "_vrshader_backup_shadermod" echo *****BACKUP SHADERMOD*****
 IF /I "%vrshaderTask%" EQU "_vrshader_restore_shadermod" echo *****RESTORE SHADERMOD*****
 IF /I "%vrshaderTask%" EQU "_vrshader_backup_ic" echo *****BACKUP IC*****
@@ -109,12 +117,13 @@ set /p AREYOUSURE=Are you sure? [y/N]:
 IF /I "%AREYOUSURE%" NEQ "Y" GOTO END
 
 IF /I "%vrshaderTask%" EQU "_vrshader_delete" GOTO _vrshader_delete
+IF /I "%vrshaderTask%" EQU "_vrshader_disable" GOTO _vrshader_disable
 IF /I "%vrshaderTask%" EQU "_vrshader_backup_shadermod" GOTO _vrshader_backup_shadermod
 IF /I "%vrshaderTask%" EQU "_vrshader_restore_shadermod" GOTO _vrshader_restore_shadermod
 IF /I "%vrshaderTask%" EQU "_vrshader_backup_ic" GOTO _vrshader_backup_ic
 IF /I "%vrshaderTask%" EQU "_vrshader_restore_ic" GOTO _vrshader_restore_ic
 
-echo XXXXX EXCEPTION XXXXX
+echo XXXXX EXCEPTION: No function! XXXXX
 exit /b
 exit'
 @REM -----PROMPT-----
@@ -127,6 +136,8 @@ exit'
 
 copy /Y "%~n0".bat _vrshader_stable_delete.bat
 copy /Y "%~n0".bat _vrshader_openbeta_delete.bat
+copy /Y "%~n0".bat _vrshader_stable_disable.bat
+copy /Y "%~n0".bat _vrshader_openbeta_disable.bat
 copy /Y "%~n0".bat _vrshader_stable_backup_shadermod.bat
 copy /Y "%~n0".bat _vrshader_openbeta_backup_shadermod.bat
 copy /Y "%~n0".bat _vrshader_stable_restore_shadermod.bat
@@ -207,6 +218,41 @@ exit /b
 exit
 @REM } **********************************************************************
 
+
+@REM () { **********************************************************************
+:_vrshader_disable
+@echo *****
+@echo on
+
+@echo.
+del /q "%vrshaderProfileDir%"\fxo
+@echo.
+
+@echo.
+del /q "%vrshaderProfileDir%"\metashaders2
+@echo.
+
+@echo.
+del /q "%vrshaderProgramDir%"\Mods\terrains\Caucasus\misc\metacache\dcs
+@echo.
+
+@echo.
+del /q "%vrshaderProgramDir%"\Mods\terrains\Nevada\misc\metacache\dcs
+@echo.
+
+@echo.
+del /q "%vrshaderProgramDir%"\Mods\terrains\Normandy\misc\metacache\dcs
+@echo.
+
+@echo.
+del /q "%vrshaderProgramDir%"\Mods\terrains\PersianGulf\misc\metacache\dcs
+@echo.
+
+@echo off
+GOTO COMPLETE_REBUILD
+exit /b
+exit
+@REM } **********************************************************************
 
 
 @REM () { **********************************************************************

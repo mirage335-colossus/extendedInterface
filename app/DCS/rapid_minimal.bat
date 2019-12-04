@@ -35,13 +35,6 @@ REM 005-EVGA Precision X1 (if installed)
 cd "C:\Program Files\EVGA\Precision X1"
 tasklist /nh /fi "imagename eq PrecisionX_x64.exe" | find /i "PrecisionX_x64.exe" > nul || (start /MIN "" "C:\Program Files\EVGA\Precision X1\PrecisionX_x64.exe" 0)
 
-REM 008-tmux
-REM taskkill /F /IM tmux.exe
-tasklist /nh /fi "imagename eq tmux.exe" | find /i "tmux.exe" > nul || (start /MIN "" C:\cygwin64\bin\mintty.exe -i /Cygwin-Terminal.ico /bin/bash --login -i -c '/usr/bin/tmux')
-REM timeout /NOBREAK 12
-REM taskkill /IM mintty.exe
-
-
 REM 008-Steam
 echo prepare - steam
 @echo off
@@ -78,8 +71,8 @@ REM start "" "steam://rungameid/250820"
 tasklist /nh /fi "imagename eq vrmonitor.exe" | find /i "vrmonitor.exe" > nul || (start "" "steam://rungameid/250820")
 
 REM 015-VoiceAttack - AS ADMIN - fa18c
-REM cd "C:\Program Files (x86)\VoiceAttack"
-REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%"
+cd "C:\Program Files (x86)\VoiceAttack"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%"
 
 
 REM 020- -JoystickGremlin-  - AS ADMIN - fa18c
@@ -95,51 +88,8 @@ REM cd "C:\Program Files (x86)\Thrustmaster\TARGET"
 REM start /MIN "" "C:\Program Files (x86)\Thrustmaster\TARGET\x64\TARGETGUI.exe"
 
 
-REM 200-Discord
-taskkill /IM Discord.exe
-cd "C:\Users\commonadmin\AppData\Local\Discord\"
-start /MIN "" C:\Users\commonadmin\AppData\Local\Discord\Update.exe --processStart Discord.exe
-
-
-REM 201-TeamSpeak
-taskkill /IM ts3client_win64.exe
-cd "C:\Program Files\TeamSpeak 3 Client"
-start /MIN "" "C:\Program Files\TeamSpeak 3 Client\ts3client_win64.exe"
-
-
-REM 202-SimpleRadioStandalone
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM SR-ClientRadio.exe
-cd "C:\Program Files\DCS-SimpleRadio-Standalone"
-start /MIN "" "C:\Program Files\DCS-SimpleRadio-Standalone\SR-ClientRadio.exe"
-
-REM 550-DCS-Waypoint-Editor
-taskkill /IM dcs_wp_editor.exe
-cd "C:\Users\commonadmin\Documents\project\_permanent\virtual\DCS\sequence\DCS\_bin\dcs_wp_editor"
-start /MIN "" "C:\Users\commonadmin\Documents\project\_permanent\virtual\DCS\sequence\DCS\_bin\dcs_wp_editor\dcs_wp_editor.exe"
-
-REM 552-Google Earth Pro
-taskkill /IM googleearth.exe
-cd "C:\Program Files\Google\Google Earth Pro\client\"
-start /MIN "" "C:\Program Files\Google\Google Earth Pro\client\googleearth.exe"
-
-REM 590-Atom - Mission
-taskkill /IM atom.exe
-cd "C:\Users\commonadmin\AppData\Local\atom\app-1.36.1"
-start /MIN "" C:\Users\commonadmin\AppData\Local\atom\atom.exe "C:\Users\commonadmin\Documents\project\_permanent\virtual\DCS\sequence\DCS\_doc" "C:\Users\commonadmin\Documents\project\_permanent\virtual\DCS\sequence\DCS\mission"
-
-
-
-timeout /NOBREAK 40
-
-REM 690-VoiceAttack - AS ADMIN - fa18c - construct desk relaxed
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskill /IM OVRdrop.exe
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskill /F /IM OVRdrop.exe
-cd "C:\Program Files (x86)\VoiceAttack"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%" -command "construct desk relaxed"
-
-
-
 timeout /NOBREAK 15
+
 
 REM 798- -SimFFB-
 REM taskkill /IM -simFFB-.exe
@@ -152,7 +102,7 @@ cd "C:\Program Files (x86)\VoiceAttack"
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%" -command "arrange desk"
 
 timeout 3
-start "" cmd /c "echo ***** RAPID COMPLETE ***** &echo(&timeout 10"
+start "" cmd /c "echo ***** RAPID COMPLETE ***** &echo(&timeout 5"
 
 
 

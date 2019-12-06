@@ -1231,13 +1231,13 @@
                     </container>
                     <container type="basic">
                         <action-set>
-                            <play-sound file="C:/Users/commonadmin/joystick gremlin/sounds/custom/harmonics.wav" volume="5">
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/harmonics.wav" volume="5">
                                 <activation-condition rule="all">
-                                    <condition comparison="inside" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-800C-444553540000}" device-name="T.16000M" id="2" input="axis" range-high="0.02" range-low="-0.02"/>
+                                    <condition comparison="inside" condition-type="joystick" device-guid="{A4608390-E525-11E9-802D-444553540000}" device-name="SideWinder Force Feedback 2 Joystick" id="2" input="axis" range-high="0.01" range-low="-0.01"/>
                                 </activation-condition>
                             </play-sound>
                         </action-set>
-                        <virtual-button direction="anywhere" lower-limit="-0.02" upper-limit="0.02"/>
+                        <virtual-button direction="anywhere" lower-limit="-0.01" upper-limit="0.01"/>
                     </container>
                 </axis>
                 <axis description="" id="2">
@@ -1277,14 +1277,6 @@
                 <button description="" id="6"/>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
-                <button description="" id="9"/>
-                <button description="" id="10"/>
-                <button description="" id="11"/>
-                <button description="" id="12"/>
-                <button description="" id="13"/>
-                <button description="" id="14"/>
-                <button description="" id="15"/>
-                <button description="" id="16"/>
                 <hat description="" id="1"/>
             </mode>
             <mode inherit="00-Infrastructure" name="01-O_M">
@@ -1338,14 +1330,14 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Countermeasures - OVERLOAD [Depart] Countermeasure" id="4">
+                <button description="Countermeasures - OVERLOAD [Depart, Menu Nest] Countermeasure" id="4">
                     <container type="basic">
                         <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
                                     <vjoy input-id="4" input-type="button" value="True" vjoy-id="1"/>
-                                    <vjoy input-id="4" input-type="button" value="True" vjoy-id="1"/>
+                                    <vjoy input-id="4" input-type="button" value="False" vjoy-id="1"/>
                                     <key extended="False" press="True" scan-code="56"/>
                                     <key extended="False" press="True" scan-code="36"/>
                                     <key extended="False" press="False" scan-code="36"/>
@@ -1364,15 +1356,13 @@
                 <button description="" id="6"/>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
-                <button description="" id="9"/>
-                <button description="" id="10"/>
-                <button description="" id="11"/>
-                <button description="" id="12"/>
-                <button description="" id="13"/>
-                <button description="" id="14"/>
-                <button description="" id="15"/>
-                <button description="" id="16"/>
-                <hat description="Cycle, MISUSE menus" id="1">
+                <hat description="Cycle - Cycle, MISUSE menus" id="1">
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                        <virtual-button east="1" north="1" south="1" west="1"/>
+                    </container>
                     <container type="basic">
                         <action-set>
                             <remap hat="1" vjoy="1"/>
@@ -1434,15 +1424,19 @@
                 <button description="" id="6"/>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
-                <button description="" id="9"/>
-                <button description="" id="10"/>
-                <button description="" id="11"/>
-                <button description="" id="12"/>
-                <button description="" id="13"/>
-                <button description="" id="14"/>
-                <button description="" id="15"/>
-                <button description="" id="16"/>
-                <hat description="" id="1"/>
+                <hat description="Cycle - Cycle, MISUSE menus" id="1">
+                    <container type="basic">
+                        <action-set>
+                            <remap hat="1" vjoy="1"/>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                        <virtual-button east="1" north="1" south="1" west="1"/>
+                    </container>
+                </hat>
             </mode>
             <mode inherit="00-Infrastructure" name="03-O-D">
                 <axis description="" id="1"/>
@@ -1500,7 +1494,7 @@
                                 <properties/>
                                 <actions>
                                     <vjoy input-id="4" input-type="button" value="True" vjoy-id="1"/>
-                                    <vjoy input-id="4" input-type="button" value="True" vjoy-id="1"/>
+                                    <vjoy input-id="4" input-type="button" value="False" vjoy-id="1"/>
                                 </actions>
                             </macro>
                         </action-set>
@@ -1528,19 +1522,16 @@
                             </macro>
                         </action-set>
                     </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                    </container>
                 </button>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
-                <button description="" id="9"/>
-                <button description="" id="10"/>
-                <button description="" id="11"/>
-                <button description="" id="12"/>
-                <button description="" id="13"/>
-                <button description="" id="14"/>
-                <button description="" id="15"/>
-                <button description="" id="16"/>
                 <hat description="Rough - imaging, hud" id="1">
-                    <container type="basic">
+                    <container activate-on="release" delay="0.2" type="tempo">
                         <action-set>
                             <macro>
                                 <properties/>
@@ -1554,21 +1545,39 @@
                             <description description="MIX imaging"/>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; imaging &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
+                        <action-set>
+                            <description description="VR Zoom"/>
+                        </action-set>
                         <virtual-button north="1"/>
                     </container>
-                    <container type="basic">
+                    <container activate-on="release" delay="0.5" type="tempo">
                         <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="True" press="True" scan-code="56"/>
                                     <key extended="False" press="True" scan-code="47"/>
                                     <key extended="False" press="False" scan-code="47"/>
-                                    <key extended="False" press="False" scan-code="56"/>
+                                    <key extended="True" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
                             <description description="MIX hud"/>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; hud &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <description description="VR Align"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="47"/>
+                                    <key extended="False" press="False" scan-code="47"/>
+                                    <key extended="False" press="False" scan-code="42"/>
+                                    <key extended="False" press="False" scan-code="56"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;align&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <virtual-button south="1"/>
                     </container>
@@ -1579,17 +1588,16 @@
                 <axis description="" id="2"/>
                 <axis description="" id="6"/>
                 <axis description="" id="7"/>
-                <button description="Primary Fire Cycle" id="1">
+                <button description="Weapons - Primary Fire Cycle" id="1">
                     <container type="basic">
                         <action-set>
                             <macro>
-                                <properties>
-                                    <repeat count="1" delay="0.1" type="count"/>
-                                </properties>
+                                <properties/>
                                 <actions>
-                                    <joystick device-guid="{53D24200-DEEB-11E9-8002-444553540000}" input-id="1" input-type="button" value="True"/>
-                                    <joystick device-guid="{53D24200-DEEB-11E9-8002-444553540000}" input-id="1" input-type="button" value="False"/>
-                                    <vjoy input-id="1" input-type="hat" value="north" vjoy-id="1"/>
+                                    <vjoy input-id="1" input-type="button" value="True" vjoy-id="1"/>
+                                    <pause duration="0.25"/>
+                                    <vjoy input-id="1" input-type="button" value="False" vjoy-id="1"/>
+                                    <vjoy input-id="1" input-type="hat" value="south" vjoy-id="1"/>
                                     <vjoy input-id="1" input-type="hat" value="center" vjoy-id="1"/>
                                 </actions>
                             </macro>
@@ -1636,14 +1644,6 @@
                 <button description="" id="6"/>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
-                <button description="" id="9"/>
-                <button description="" id="10"/>
-                <button description="" id="11"/>
-                <button description="" id="12"/>
-                <button description="" id="13"/>
-                <button description="" id="14"/>
-                <button description="" id="15"/>
-                <button description="" id="16"/>
                 <hat description="" id="1"/>
             </mode>
             <mode inherit="00-Infrastructure" name="05-I-U">
@@ -1710,17 +1710,9 @@
                 <button description="" id="6"/>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
-                <button description="" id="9"/>
-                <button description="" id="10"/>
-                <button description="" id="11"/>
-                <button description="" id="12"/>
-                <button description="" id="13"/>
-                <button description="" id="14"/>
-                <button description="" id="15"/>
-                <button description="" id="16"/>
                 <hat description="" id="1"/>
             </mode>
-            <mode inherit="00-Infrastructure" name="06-I-D">
+            <mode name="06-I-D">
                 <axis description="" id="1"/>
                 <axis description="" id="2"/>
                 <axis description="" id="6"/>
@@ -1759,20 +1751,28 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="" id="3"/>
+                <button description="Countermeasures - Waypoint Designate" id="3">
+                    <container activate-on="release" delay="0.2" type="tempo">
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="29"/>
+                                    <key extended="False" press="True" scan-code="41"/>
+                                    <key extended="False" press="False" scan-code="41"/>
+                                    <key extended="False" press="False" scan-code="29"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; waypoint designate &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set/>
+                    </container>
+                </button>
                 <button description="" id="4"/>
                 <button description="" id="5"/>
                 <button description="" id="6"/>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
-                <button description="" id="9"/>
-                <button description="" id="10"/>
-                <button description="" id="11"/>
-                <button description="" id="12"/>
-                <button description="" id="13"/>
-                <button description="" id="14"/>
-                <button description="" id="15"/>
-                <button description="" id="16"/>
                 <hat description="" id="1"/>
             </mode>
         </device>

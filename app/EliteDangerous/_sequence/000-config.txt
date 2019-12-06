@@ -1,0 +1,18 @@
+
+_Extra_
+*) Gamma. Saturated color, 4/10.
+*) HUD Brightness, 2/10.
+
+
+_SimFFB_
+*Spring Force 100%
+*Damper Force 40%
+*Friction Force 0%
+*Swap Axis ON
+*Trimmer NONE
+
+
+_Quality_
+-Quality Tradeoffs-
+
+

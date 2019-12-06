@@ -81,6 +81,8 @@ Only hardware and software currently under evaluation or in production use may h
 * MS SideWinder Force Feedback 2 (SFB2)
 * ThrustMaster TWCS Throttle (T16KTR_TH, T16KJG_TH)
 
+* Atom 1.36.1
+
 Other hardware and software is compatible with the conventions. Configuration files available may be correct, mostly correct, and/or adaptable by text editing. Occasional corrections may be provided as conventions are developed and tested.
 
 * DCS World - F5E

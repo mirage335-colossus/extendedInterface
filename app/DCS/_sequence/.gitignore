@@ -19,6 +19,9 @@ project/
 
 **/package/
 
+*.exe
+
+*.dat
 
 # Standard Ubiquitous Bash gitignore .
 # _lib/kit/all/.gitignore

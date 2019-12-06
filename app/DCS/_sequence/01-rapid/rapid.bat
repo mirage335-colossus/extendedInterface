@@ -118,8 +118,8 @@ start /MIN "" "C:\Program Files\DCS-SimpleRadio-Standalone\SR-ClientRadio.exe"
 
 REM 550-DCS-Waypoint-Editor
 taskkill /IM dcs_wp_editor.exe
-cd "%USERPROFILE%\Documents\project\_permanent\virtual\DCS\sequence\DCS\_bin\dcs_wp_editor"
-start /MIN "" "%USERPROFILE%\Documents\project\_permanent\virtual\DCS\sequence\DCS\_bin\dcs_wp_editor\dcs_wp_editor.exe"
+cd "C:\core\installations\dcs_wp_editor"
+start /MIN "" "C:\core\installations\dcs_wp_editor\dcs_wp_editor.exe"
 
 REM 552-Google Earth Pro
 taskkill /IM googleearth.exe
@@ -129,8 +129,7 @@ start /MIN "" "C:\Program Files\Google\Google Earth Pro\client\googleearth.exe"
 REM 590-Atom - Mission
 taskkill /IM atom.exe
 cd "%USERPROFILE%\AppData\Local\atom\app-1.36.1"
-start /MIN "" %USERPROFILE%\AppData\Local\atom\atom.exe "%USERPROFILE%\Documents\project\_permanent\virtual\DCS\sequence\DCS\_doc" "%USERPROFILE%\Documents\project\_permanent\virtual\DCS\sequence\DCS\mission"
-
+start /MIN "" "%USERPROFILE%\AppData\Local\atom\app-1.36.1\atom.exe" "C:\core\sequence\dcs\901-doc" "C:\core\sequence\dcs\930-mission"
 
 
 timeout /NOBREAK 40

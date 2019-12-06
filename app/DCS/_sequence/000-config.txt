@@ -1,0 +1,201 @@
+
+
+_Extra_
+*) Gamma. Typically 2.0. . Shaders mod may require +0.2 adjustment .
+*) Water. 'Low' for Nevada. 'Medium' or greater, if shaders mod enabled.
+*) Grass/Trees. Reduce during startup if needed.
+
+
+
+
+
+
+-
+
+_Shader Mod_
+*) Set "MASKSIZE" under "_HMD.hlsl" to 0.7 for Pimax 5kp at 'Normal' FOV.
+*) Maybe disable 'SIMPLE_GRASS' under "_HMD.hlsl". May be unaesthetic.
+*) Disable "shadows.hlsl". Use of shadows in VR is not recommended regardless.
+
+*) Fixed Foveated Rendering apparently compiles some shaders in addition to those compiled without.
+
+*) Water must be 'Medium' or greater. Removing the file for water from the mod did not resolve this.
+
+
+_NTTR_
+#Waypoints CRAIG, APEX.
+
+
+_SimFFB_
+*Spring Force 100%
+*Damper Force 40%
+*Friction Force 0%
+*Swap Axis ON
+*Trimmer NONE
+
+
+_ Google Earth GPS - DCS_NMEA.lua , com0com _
+
+Google Earth must not be blocking serial ports.
+Beware 'Quit to Desktop' or full OS reboot may be required between flights.
+Destination port (COM2) will be read by application, source port (COM1) will be written by sim.
+
+sPort_Nr = 1
+
+COM1				COM2
++use Ports class		+use Ports class
+-emulate baud rate		-emulate baud rate
++enable buffer overrun		+enable buffer overrun
+
+_SRS_
+In client.cfg:
+	DisableWindowVisibilityCheck=true
+
+As necessary, under 'Settings', use 'Reset Radio Overlay' button.
+
+
+
+_NVIDIA_
+-High Framerate-
+Image Sharpening						Off
+Ambient Occlusion						Off
+Anisotropic filtering						Off
+Antialiasing - FXAA						Off
+Antialiasing - Gamma correction					Off
+Antialiasing - Mode						Off
+Antialiasing - Setting						None
+Antialiasing - Transparency					Off
+CUDA - GPUs							All
+DSR - Factors							Off
+DSR - Smoothness						Off
+Low Latency Mode						Off
+Multi-Frame Sampled AA (MFAA)					Off
+OpenGL rendering GPU						Auto-select
+Power management mode						Prefer maximum performance
+Shader Cache							On
+Texture filtering - Anisotropic sample optimization		Off
+Texture filtering - Negative LOD bias				Allow
+Texture filtering - Quality					High performance
+Texture filtering - Trilinear optimization			On
+Threaded optimization						Auto
+Triple buffering						On
+Vertical Sync							Off
+Virtual Reality pre-rendered frames				2
+	Testing has shown this setting has little or no impact, but may affect smart smoothing margins and quality. CPU frame latency margins may be impacted at >2. GPU frame latency margins may be impacted at <2.
+
+
+
+
+_Quality_
+-High Quality Tradeoffs-
+A few features crucially impact readability, and should not be reduced unless necessary.
+*) Textures.		Anything less than 'High'...
+	*) May greatly reduce at least F5E instrument resolution.
+	*) Greatly reduces FA18C AMPCD (moving map), kneeboard resolution. May reduce FA18C DDI resolution.
+*) Terrain Textures	Only 'High'/'Low'.
+	*) 'High' is needed to clearly recognize some roads and other markers from altitude.
+
+A few features should not be enabled.
+*) Shadows, Terrain Object Shadows. Extreme CPU frametime cost.
+*) SSAA.
+
+Some settings may be traded quickly to maintain framerates without serious loss of visual quality.
+*) Water.
+	*) 'High', 'Medium'. Add detailed surface wave, reflection, and apparently, volumetric effects. Expensive.
+	*) 'Low'. Semi-transparent texture clearly usable for altitude estimation. Cheap, effective.
+	*) Rendered under terrain. Always set MIN ('Low') in land-only environments (ie. Nevada) if possible.
+*) Civ Traffic. 'Off' or 'Low'. May have performance impact on CPU/RAM and/or GPU/VRAM in some cases.
+*) MSAA. Eliminates pixelation of nearby object edges even at >2.2TotalSR. May be expensive in some cases.
+*) Visib Range. Keep 'Low' if possible.
+*) Res of Cockpit Displays. May have a high performance impact, may or may not be limited to if mirrors are enabled.
+
+-High Framerate-
+Shaders Mod - +PREFER ON
+*Water - Low (Unless Required Otherwise)
+Cockpit displays at 256 .
+
+Textures			Medium
+Terrain Textures		Low
+Civ Traffic			Off
+Water				Low		(Medium with Shader Mod)
+Visib Range			Low
+Heat Blur			Off
+Shadows				Off
+Resolution			3840x2160
+Aspect Ratio			1.77777777...
+Monitors			1 Screen
+Res. of Cockpit Displays	256
+MSAA				Off
+Depth of Field			Off
+Lens Effects			Flare
+Motion Blur			Off
+SSAA				Off
+
+Clutter/Grass			MIN (0)		<3ms GPU @ Max-Min, negligible at 41kft
+Trees Visibility		MIN (40%)	<3ms GPU @ Max-Min, negligible at 41kft
+Preload Radius			MAX (150000)
+Chimney Smoke Density		MIN (0)
+Gamma				2.0
+
+Anistropic Filtering		8x
+Terrain Object Shadows		Off
+Cockpit Global Illumination	Off
+Messages font scale		1
+
+Rain Droplets			Off
+Vsync				Off
+Full Screen			On
+Scale GUI			Off
+
+
+Birds				MIN (0)
+
+
+
+-High Quality-
+Shaders Mod - +TESTED OFF and ON
+*Water - High
+Cockpit displays at 1024 Every Frame .
+
+Textures			High
+Terrain Textures		High
+Civ Traffic			Low
+Water				Medium			Increase to High only if specifically needed.
+Visib Range			Low
+Heat Blur			Off
+Shadows				Off
+Resolution			3840x2160
+Aspect Ratio			1.77777777...
+Monitors			1 Screen
+Res. of Cockpit Displays	1024 Every Frame
+MSAA				4x			Major pixelation benefit.
+Depth of Field			Off
+Lens Effects			Flare
+Motion Blur			Off
+SSAA				Off
+
+Clutter/Grass			MAX			<3ms GPU @ Max-Min, negligible at 41kft
+Trees Visibility		MAX			<3ms GPU @ Max-Min, negligible at 41kft
+Preload Radius			MAX
+Chimney Smoke Density		MAX
+Gamma				2.0
+
+Anistropic Filtering		8x
+Terrain Object Shadows		Off
+Cockpit Global Illumination	Off
+Messages font scale		1
+
+Rain Droplets			ON
+Vsync				Off
+Full Screen			On
+Scale GUI			Off
+
+
+Birds				MAX (1000) OR 100	At low speed and in some specific places, birds have been seen.
+
+
+
+_Reference_
+https://youtu.be/4zFCtL8PsYs?t=427
+https://forums.eagle.ru/showpost.php?p=1813951&postcount=4
+

@@ -16,15 +16,19 @@ taskkill /IM vrmonitor.exe
 taskkill /IM vrmonitor.exe
 taskkill /IM vrmonitor.exe
 timeout /NOBREAK 7
+taskkill /F /IM vrmonitor.exe
+timeout /NOBREAK 1
 
 
 REM Terminate - VoiceAttack (Ensure correct microphone is available and used.)
-taskkill /IM VoiceAttack.exe
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
 timeout /NOBREAK 1
-taskkill /IM VoiceAttack.exe
-taskkill /IM VoiceAttack.exe
-taskkill /IM VoiceAttack.exe
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
 timeout /NOBREAK 7
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /F /IM VoiceAttack.exe
+timeout /NOBREAK 1
 
 
 REM 001-simpit
@@ -98,14 +102,11 @@ REM start /MIN "" "C:\core\installations\vJoyManagement\_bin\-SimFFB-.exe"
 
 
 REM 799-VoiceAttack - AS ADMIN - fa18c - arrange desk -OPTIONAL
-cd "C:\Program Files (x86)\VoiceAttack"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%" -command "arrange desk"
+REM cd "C:\Program Files (x86)\VoiceAttack"
+REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%" -command "arrange desk"
 
 timeout 3
 start "" cmd /c "echo ***** RAPID COMPLETE ***** &echo(&timeout 5"
 
 
 
-
-REM simulators
-REM start "" explorer.exe "C:\Users\commonadmin\Documents\specdesk\--"

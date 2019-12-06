@@ -16,15 +16,19 @@ taskkill /IM vrmonitor.exe
 taskkill /IM vrmonitor.exe
 taskkill /IM vrmonitor.exe
 timeout /NOBREAK 7
+taskkill /F /IM vrmonitor.exe
+timeout /NOBREAK 1
 
 
 REM Terminate - VoiceAttack (Ensure correct microphone is available and used.)
-taskkill /IM VoiceAttack.exe
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
 timeout /NOBREAK 1
-taskkill /IM VoiceAttack.exe
-taskkill /IM VoiceAttack.exe
-taskkill /IM VoiceAttack.exe
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
 timeout /NOBREAK 7
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /F /IM VoiceAttack.exe
+timeout /NOBREAK 1
 
 
 REM 001-simpit
@@ -78,8 +82,8 @@ REM start "" "steam://rungameid/250820"
 tasklist /nh /fi "imagename eq vrmonitor.exe" | find /i "vrmonitor.exe" > nul || (start "" "steam://rungameid/250820")
 
 REM 015-VoiceAttack - AS ADMIN - fa18c
-REM cd "C:\Program Files (x86)\VoiceAttack"
-REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%"
+cd "C:\Program Files (x86)\VoiceAttack"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%"
 
 
 REM 020- -JoystickGremlin-  - AS ADMIN - fa18c
@@ -97,8 +101,8 @@ REM start /MIN "" "C:\Program Files (x86)\Thrustmaster\TARGET\x64\TARGETGUI.exe"
 
 REM 200-Discord
 taskkill /IM Discord.exe
-cd "C:\Users\commonadmin\AppData\Local\Discord\"
-start /MIN "" C:\Users\commonadmin\AppData\Local\Discord\Update.exe --processStart Discord.exe
+cd "%USERPROFILE%\AppData\Local\Discord\"
+start /MIN "" %USERPROFILE%\AppData\Local\Discord\Update.exe --processStart Discord.exe
 
 
 REM 201-TeamSpeak
@@ -114,8 +118,8 @@ start /MIN "" "C:\Program Files\DCS-SimpleRadio-Standalone\SR-ClientRadio.exe"
 
 REM 550-DCS-Waypoint-Editor
 taskkill /IM dcs_wp_editor.exe
-cd "C:\Users\commonadmin\Documents\project\_permanent\virtual\DCS\sequence\DCS\_bin\dcs_wp_editor"
-start /MIN "" "C:\Users\commonadmin\Documents\project\_permanent\virtual\DCS\sequence\DCS\_bin\dcs_wp_editor\dcs_wp_editor.exe"
+cd "%USERPROFILE%\Documents\project\_permanent\virtual\DCS\sequence\DCS\_bin\dcs_wp_editor"
+start /MIN "" "%USERPROFILE%\Documents\project\_permanent\virtual\DCS\sequence\DCS\_bin\dcs_wp_editor\dcs_wp_editor.exe"
 
 REM 552-Google Earth Pro
 taskkill /IM googleearth.exe
@@ -124,8 +128,8 @@ start /MIN "" "C:\Program Files\Google\Google Earth Pro\client\googleearth.exe"
 
 REM 590-Atom - Mission
 taskkill /IM atom.exe
-cd "C:\Users\commonadmin\AppData\Local\atom\app-1.36.1"
-start /MIN "" C:\Users\commonadmin\AppData\Local\atom\atom.exe "C:\Users\commonadmin\Documents\project\_permanent\virtual\DCS\sequence\DCS\_doc" "C:\Users\commonadmin\Documents\project\_permanent\virtual\DCS\sequence\DCS\mission"
+cd "%USERPROFILE%\AppData\Local\atom\app-1.36.1"
+start /MIN "" %USERPROFILE%\AppData\Local\atom\atom.exe "%USERPROFILE%\Documents\project\_permanent\virtual\DCS\sequence\DCS\_doc" "%USERPROFILE%\Documents\project\_permanent\virtual\DCS\sequence\DCS\mission"
 
 
 
@@ -153,9 +157,3 @@ CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\
 
 timeout 3
 start "" cmd /c "echo ***** RAPID COMPLETE ***** &echo(&timeout 10"
-
-
-
-
-REM simulators
-REM start "" explorer.exe "C:\Users\commonadmin\Documents\specdesk\--"

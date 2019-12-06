@@ -14,6 +14,8 @@ Precomputed application startup parameters are documented under spreadsheet "par
 * Automatic load calculation as a fraction of previous maximum-resolution long-term test results.
 * Angular resolution estimation.
 
+Beware SteamVR by default imposes a 4096 '...upper bound on the calculated resolution' set under 'steamvr.vrsettings' file.
+
 # Conventions
 
 Layout and assignments documented under conventions tab of spreadsheet 'commonControlScheme.ods' .
@@ -182,6 +184,8 @@ http://vjoystick.sourceforge.net/site/index.php/download-a-install/download
 
 
 
+
+https://steamcommunity.com/app/250820/discussions/0/1739980540117192912/
 
 
 

@@ -60,6 +60,7 @@ VoiceAttack profiles may be imported through the program GUI.
 Only hardware and software currently under evaluation or in production use may have an up-to-date configuration following the most modern conventions and matching application input configuration files.
 
 * DCS World - FA18C
+	* DCS Waypoint Editor
 * Elite Dangerous
 
 * JoystickGremlin v13.3

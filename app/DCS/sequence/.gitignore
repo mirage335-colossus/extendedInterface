@@ -17,6 +17,9 @@ project/
 **/_lib
 
 
+**/package/
+
+
 # Standard Ubiquitous Bash gitignore .
 # _lib/kit/all/.gitignore
 

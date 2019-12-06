@@ -13,6 +13,6 @@ _SimFFB_
 
 
 _Quality_
--Quality Tradeoffs-
+-Tradeoffs-
 
 

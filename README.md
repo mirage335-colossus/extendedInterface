@@ -18,7 +18,7 @@ Beware SteamVR by default imposes a 4096 '...upper bound on the calculated resol
 
 # Conventions
 
-Layout and assignments documented under conventions tab of spreadsheet 'commonControlScheme.ods' .
+Layout and assignments documented under conventions tab of spreadsheet 'commonControlScheme.ods' . Sample implementations for some variants are also included.
 
 ## Delays
 

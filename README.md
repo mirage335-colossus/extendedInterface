@@ -49,6 +49,8 @@ VoiceAttack profiles may be imported through the program GUI.
 
 # Recommended
 
+* PanelBoard
+
 * OpenHMD
 
 * Arduino

@@ -131,9 +131,9 @@ cd "C:\Program Files\Google\Google Earth Pro\client\"
 start /MIN "" "C:\Program Files\Google\Google Earth Pro\client\googleearth.exe"
 
 REM 590-Atom - Mission
-taskkill /IM atom.exe
-cd "%USERPROFILE%\AppData\Local\atom\app-1.36.1"
-start /MIN "" "%USERPROFILE%\AppData\Local\atom\app-1.36.1\atom.exe" "C:\core\sequence\dcs\901-doc" "C:\core\sequence\dcs\930-mission"
+REM taskkill /IM atom.exe
+REM cd "%USERPROFILE%\AppData\Local\atom\app-1.36.1"
+start "" cmd /c atom "C:\core\sequence\dcs\901-doc" "C:\core\sequence\dcs\930-mission"
 
 
 timeout /NOBREAK 40

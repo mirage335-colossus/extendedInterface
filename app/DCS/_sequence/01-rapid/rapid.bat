@@ -34,6 +34,12 @@ timeout /NOBREAK 1
 REM 001-simpit
 CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_UniManager\simpit.bat"
 
+REM 002-_steamvrprofile_dcs_restore
+CALL "C:\core\infrastructure\extendedInterface\app\DCS\steamvrprofile\_steamvrprofile_dcs_restore.bat"
+
+REM 002-_steamvrprofile_dcs_restore_fast
+REM CALL "C:\core\infrastructure\extendedInterface\app\DCS\steamvrprofile\_steamvrprofile_dcs_restore_fast.bat"
+
 
 REM 005-EVGA Precision X1 (if installed)
 cd "C:\Program Files\EVGA\Precision X1"

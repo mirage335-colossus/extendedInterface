@@ -193,6 +193,12 @@
                             </response-curve>
                         </action-set>
                     </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/metal-rod-hit_C#_major.wav" volume="50"/>
+                        </action-set>
+                        <virtual-button direction="anywhere" lower-limit="0.03" upper-limit="0.03"/>
+                    </container>
                 </axis>
                 <axis description="" id="4"/>
                 <axis description="" id="5"/>
@@ -1277,6 +1283,14 @@
                 <button description="" id="6"/>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
+                <button description="" id="9"/>
+                <button description="" id="10"/>
+                <button description="" id="11"/>
+                <button description="" id="12"/>
+                <button description="" id="13"/>
+                <button description="" id="14"/>
+                <button description="" id="15"/>
+                <button description="" id="16"/>
                 <hat description="" id="1"/>
             </mode>
             <mode inherit="00-Infrastructure" name="01-O_M">

@@ -2486,8 +2486,30 @@
                 <axis description="" id="2"/>
                 <axis description="" id="6"/>
                 <axis description="" id="7"/>
-                <button description="" id="1"/>
-                <button description="" id="2"/>
+                <button description="Mouse - Left Click" id="1">
+                    <container type="basic">
+                        <action-set>
+                            <map-to-mouse button-id="1" direction="0" max-speed="15" min-speed="5" motion-input="False" time-to-max-speed="1.0"/>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/zap-homeagain.wav" volume="15"/>
+                        </action-set>
+                    </container>
+                </button>
+                <button description="" id="2">
+                    <container type="basic">
+                        <action-set>
+                            <map-to-mouse button-id="2" direction="0" max-speed="15" min-speed="5" motion-input="False" time-to-max-speed="1.0"/>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/zap-homeagain.wav" volume="15"/>
+                        </action-set>
+                    </container>
+                </button>
                 <button description="" id="3"/>
                 <button description="" id="4"/>
                 <button description="" id="5"/>

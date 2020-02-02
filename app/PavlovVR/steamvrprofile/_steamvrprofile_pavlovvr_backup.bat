@@ -6,14 +6,7 @@ echo Primary
 echo **********************************************************************
 
 REM Terminate - SteamVR (Ensure video parameter changes take effect.)
-taskkill /IM vrmonitor.exe
-timeout /NOBREAK 1
-taskkill /IM vrmonitor.exe
-taskkill /IM vrmonitor.exe
-taskkill /IM vrmonitor.exe
-timeout /NOBREAK 7
-taskkill /F /IM vrmonitor.exe
-timeout /NOBREAK 1
+CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.bat
 
 
 cd "C:\Program Files (x86)\Steam\config\"

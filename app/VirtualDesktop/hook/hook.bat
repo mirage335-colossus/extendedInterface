@@ -3,28 +3,8 @@ REM Depends:
 REM 'mswadminpriv.bat' - 'nircmd elevate'
 
 
-REM Terminate - SteamVR (Ensure video parameter changes take effect.)
-taskkill /IM vrmonitor.exe
-timeout /NOBREAK 1
-taskkill /IM vrmonitor.exe
-taskkill /IM vrmonitor.exe
-taskkill /IM vrmonitor.exe
-taskkill /IM vrserver.exe
-timeout /NOBREAK 7
-taskkill /F /IM vrmonitor.exe
-taskkill /F /IM vrserver.exe
-timeout /NOBREAK 1
-
-
 REM Terminate - VoiceAttack (Ensure correct microphone is available and used.)
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
-timeout /NOBREAK 1
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM VoiceAttack.exe
-timeout /NOBREAK 7
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /F /IM VoiceAttack.exe
-timeout /NOBREAK 1
+CALL C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voiceattack.bat
 
 REM *****
 REM VirtualDesktop should usually be configured to work acceptably well with any configuration.
@@ -38,6 +18,12 @@ REM CALL "C:\core\infrastructure\extendedInterface\app\VirtualBox\steamvrprofile
 
 REM 002-_steamvrprofile_dcs_restore_fast
 REM CALL "C:\core\infrastructure\extendedInterface\app\VirtualBox\steamvrprofile\_steamvrprofile_dcs_restore_fast.bat"
+
+REM Terminate - SteamVR (Ensure video parameter changes take effect.)
+REM CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.bat
+
+
+
 
 
 REM 005-EVGA Precision X1 (if installed)
@@ -69,29 +55,24 @@ MOVE "%OutputFile%" "%InputFile%"
 REM start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent
 tasklist /nh /fi "imagename eq Steam.exe" | find /i "Steam.exe" > nul || (start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent)
 
-REM May be started by "construct screen".
 REM 008-Steam-SteamVR-OPTIONAL
-REM REM taskkill /IM vrmonitor.exe
-REM REM timeout /NOBREAK 1
-REM REM taskkill /IM vrmonitor.exe
-REM REM taskkill /IM vrmonitor.exe
-REM REM taskkill /IM vrmonitor.exe
-REM REM taskkill /IM vrserver.exe
-REM REM timeout /NOBREAK 7
-REM REM taskkill /F /IM vrmonitor.exe
-REM REM taskkill /F /IM vrserver.exe
-REM REM timeout /NOBREAK 1
-REM REM start "" "steam://rungameid/250820"
+REM Terminate - SteamVR (Ensure video parameter changes take effect.)
+REM CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.bat
+REM start "" "steam://rungameid/250820"
 REM tasklist /nh /fi "imagename eq vrmonitor.exe" | find /i "vrmonitor.exe" > nul || (start "" "steam://rungameid/250820")
 
 REM ATTENTION: Disable if VirtualDesktop is to be started by voice command.
 REM 015-VoiceAttack - AS ADMIN - SHELL-MSW - construct screen
-cd "C:\Program Files (x86)\VoiceAttack"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SHELL-MSW" -command "construct screen virtualdesktop procedure"
+REM cd "C:\Program Files (x86)\VoiceAttack"
+REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SHELL-MSW" -command "construct screen virtualdesktop procedure"
+
+REM 080-VirtualDesktop
+tasklist /nh /fi "imagename eq Virtual Desktop.exe" | find /i "Virtual Desktop.exe" > nul || (start "" "steam://rungameid/382110")
+REM start "" "steam://rungameid/382110"
 
 REM 015-VoiceAttack - AS ADMIN - SHELL-MSW
 cd "C:\Program Files (x86)\VoiceAttack"
-REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SHELL-MSW"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SHELL-MSW"
 
 REM WARNING: Usually displays an unnecessary minimized window.
 REM start /MIN "" "C:\Program Files\Pimax\PVRHome\PVRHome_orig.exe"

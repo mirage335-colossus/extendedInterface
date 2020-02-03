@@ -4,18 +4,14 @@ _Extra_
 *) Gamma. Typically 2.0 . Shaders mod may or may not require +0.2 adjustment .
 *) Water. 'Low' for Nevada. 'Medium' or greater, if shaders mod enabled.
 *) Grass/Trees. Reduce during simulated aircraft startup procedure if needed.
-
-
-
-
-
+*) MSAA. Keep at 2x if possible, turn off if necessary.
 
 -
 
 _Shader Mod_
 *) Set "MASKSIZE" under "_HMD.hlsl" to 0.7 for Pimax 5kp at 'Normal' FOV.
 *) Maybe disable 'SIMPLE_GRASS' under "_HMD.hlsl". May be unaesthetic.
-*) Disable "shadows.hlsl". Use of shadows in VR is not recommended regardless.
+*) Some shader mod files may need to be disabled for compatibility with new DCS World versions.
 
 *) Fixed Foveated Rendering apparently compiles some shaders in addition to those compiled without.
 
@@ -63,7 +59,7 @@ A few features crucially impact readability, and should not be reduced unless ne
 	*) May greatly reduce at least F5E instrument resolution.
 	*) Greatly reduces FA18C AMPCD (moving map), kneeboard resolution. May reduce FA18C DDI resolution.
 *) Terrain Textures	Only 'High'/'Low'.
-	*) 'High' is needed to clearly recognize some roads and other markers from altitude.
+	*) Little if any visual quality improvement with 'High'.
 
 A few features should not be enabled.
 *) Shadows, Terrain Object Shadows. Extreme CPU frametime cost.

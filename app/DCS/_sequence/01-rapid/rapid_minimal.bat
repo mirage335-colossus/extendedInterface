@@ -167,11 +167,12 @@ REM tasklist /nh /fi "imagename eq obs64.exe" | find /i "obs64.exe" > nul || (st
 
 
 
-REM timeout /NOBREAK 15
+timeout /NOBREAK 15
 
+REM 799-VoiceAttack - AS ADMIN - fa18c - rapid complete -OPTIONAL
 REM 799-VoiceAttack - AS ADMIN - fa18c - arrange desk -OPTIONAL
 cd "C:\Program Files (x86)\VoiceAttack"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%" -command "arrange desk"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%" -command "rapid complete"
 
 timeout 3
 start "" cmd /c "echo ***** RAPID COMPLETE ***** &echo(&timeout 10"

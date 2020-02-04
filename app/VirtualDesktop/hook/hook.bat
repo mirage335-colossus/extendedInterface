@@ -59,7 +59,10 @@ REM 008-Steam-SteamVR-OPTIONAL
 REM Terminate - SteamVR (Ensure video parameter changes take effect.)
 REM CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.bat
 REM start "" "steam://rungameid/250820"
-REM tasklist /nh /fi "imagename eq vrmonitor.exe" | find /i "vrmonitor.exe" > nul || (start "" "steam://rungameid/250820")
+tasklist /nh /fi "imagename eq vrmonitor.exe" | find /i "vrmonitor.exe" > nul || (start "" "steam://rungameid/250820")
+
+
+timeout /NOBREAK 1
 
 REM ATTENTION: Disable if VirtualDesktop is to be started by voice command.
 REM 015-VoiceAttack - AS ADMIN - SHELL-MSW - construct screen

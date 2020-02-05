@@ -200,3 +200,19 @@ https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19980018292.pdf
 
 https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19960033220.pdf
 	"Helmet-Mounted Display Symbology and Stabilization Concepts" - Richard L. Newman - 'June 1995'
+
+
+
+
+
+
+
+
+
+
+https://www.youtube.com/watch?v=ywGhE1vnRVA
+
+
+
+
+

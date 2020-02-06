@@ -4,7 +4,11 @@ REM 'mswadminpriv.bat' - 'nircmd elevate'
 
 
 REM Terminate - VoiceAttack (Ensure correct microphone is available and used.)
-CALL C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voiceattack.bat
+REM CALL C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voiceattack.bat
+
+REM 015-VoiceAttack - AS ADMIN
+cd "C:\Program Files (x86)\VoiceAttack"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe"
 
 REM 005-EVGA Precision X1 (if installed)
 cd "C:\Program Files\EVGA\Precision X1"
@@ -25,7 +29,7 @@ REM CALL "C:\core\infrastructure\extendedInterface\app\VirtualBox\steamvrprofile
 
 
 cd C:\core\infrastructure\extendedInterface\support\steamvr\
-CALL C:\core\infrastructure\extendedInterface\support\steamvr\hook_lock.bat _start
+CALL C:\core\infrastructure\extendedInterface\support\steamvr\hook_lock.bat _restart_vd
 
 
 
@@ -34,7 +38,7 @@ REM WARNING: Usually displays an unnecessary minimized window.
 REM start /MIN "" "C:\Program Files\Pimax\PVRHome\PVRHome_orig.exe"
 
 timeout 3
-start "" cmd /c "echo ***** HOOK COMPLETE ***** &echo(&timeout 5"
+start "" cmd /c "echo ***** RAPID COMPLETE ***** &echo(&timeout 5"
 
 
 

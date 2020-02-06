@@ -4,7 +4,7 @@ REM 'mswadminpriv.bat' - 'nircmd elevate'
 
 SET rapidAircraftType=FA18C
 
-IF /I "%1" EQU "F5E" SET rapidAircraftType=FA18C
+IF /I "%1" EQU "FA18C" SET rapidAircraftType=FA18C
 IF /I "%1" EQU "F5E" SET rapidAircraftType=F5E
 
 
@@ -27,7 +27,9 @@ REM CALL "C:\core\infrastructure\extendedInterface\app\DCS\steamvrprofile\_steam
 
 
 REM Terminate - SteamVR (Ensure video parameter changes take effect.)
-CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.bat
+REM CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.bat
+cd C:\core\infrastructure\extendedInterface\support\steamvr\
+CALL C:\core\infrastructure\extendedInterface\support\steamvr\hook_lock.bat _restart_vd
 
 
 

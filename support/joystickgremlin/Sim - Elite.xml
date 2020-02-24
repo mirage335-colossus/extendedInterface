@@ -801,6 +801,7 @@
                                 <properties/>
                                 <actions>
                                     <key extended="False" press="True" scan-code="25"/>
+                                    <pause duration="0.17"/>
                                     <key extended="False" press="False" scan-code="25"/>
                                 </actions>
                             </macro>

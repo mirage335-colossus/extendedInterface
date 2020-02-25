@@ -1369,10 +1369,10 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="True" press="True" scan-code="29"/>
-                                    <key extended="True" press="True" scan-code="73"/>
-                                    <key extended="True" press="False" scan-code="73"/>
-                                    <key extended="True" press="False" scan-code="29"/>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="15"/>
+                                    <key extended="False" press="False" scan-code="15"/>
+                                    <key extended="False" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
                             <description description="Reference, Quick Nav - MISUSE WORKAROUND - Application - TabUp"/>
@@ -1396,10 +1396,12 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="True" press="True" scan-code="29"/>
-                                    <key extended="True" press="True" scan-code="81"/>
-                                    <key extended="True" press="False" scan-code="81"/>
-                                    <key extended="True" press="False" scan-code="29"/>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="15"/>
+                                    <key extended="False" press="False" scan-code="15"/>
+                                    <key extended="False" press="False" scan-code="42"/>
+                                    <key extended="False" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
                             <description description="Reference, Quick Nav - MISUSE WORKAROUND - Application - TabDown"/>

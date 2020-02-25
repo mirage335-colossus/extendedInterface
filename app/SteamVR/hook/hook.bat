@@ -25,7 +25,7 @@ REM CALL "C:\core\infrastructure\extendedInterface\app\VirtualBox\steamvrprofile
 
 
 cd C:\core\infrastructure\extendedInterface\support\steamvr\
-CALL C:\core\infrastructure\extendedInterface\support\steamvr\hook_lock.bat _start
+CALL C:\core\infrastructure\extendedInterface\support\steamvr\hook_lock.bat _restart
 
 
 

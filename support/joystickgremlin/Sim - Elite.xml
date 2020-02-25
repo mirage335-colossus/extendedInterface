@@ -390,6 +390,7 @@
                                 </properties>
                                 <actions>
                                     <key extended="False" press="True" scan-code="30"/>
+                                    <pause duration="0.65"/>
                                     <key extended="False" press="False" scan-code="30"/>
                                 </actions>
                             </macro>
@@ -474,7 +475,7 @@
                 <button description="Selected PTT - MISUSE built-in voice" id="10">
                     <container type="basic">
                         <action-set>
-                            <remap button="26" vjoy="1"/>
+                            <remap button="24" vjoy="1"/>
                         </action-set>
                     </container>
                     <container type="basic">
@@ -800,6 +801,7 @@
                                 <properties/>
                                 <actions>
                                     <key extended="False" press="True" scan-code="25"/>
+                                    <pause duration="0.17"/>
                                     <key extended="False" press="False" scan-code="25"/>
                                 </actions>
                             </macro>

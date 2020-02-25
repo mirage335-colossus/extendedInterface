@@ -93,29 +93,31 @@ GOTO FALSE
 
 
 REM 008-Steam
-echo prepare - steam
-@echo off
-setlocal disableDelayedExpansion
+REM echo prepare - steam
+REM @echo off
+REM setlocal disableDelayedExpansion
 
-:Variables
-set InputFile=config\loginusers.vdf
-set OutputFile=config\loginusers-temp.vdf
-set "_strFind0=		"WantsOfflineMode"		"0""
-set "_strReplace0=		"WantsOfflineMode"		"1""
-set "_strFind1=		"SkipOfflineModeWarning"		"0""
-set "_strReplace1=		"SkipOfflineModeWarning"		"1""
+REM :Variables
+REM set InputFile=config\loginusers.vdf
+REM set OutputFile=config\loginusers-temp.vdf
+REM set "_strFind0=		"WantsOfflineMode"		"0""
+REM set "_strReplace0=		"WantsOfflineMode"		"1""
+REM set "_strFind1=		"SkipOfflineModeWarning"		"0""
+REM set "_strReplace1=		"SkipOfflineModeWarning"		"1""
 
-:Replace
->"%OutputFile%" (
-  for /f "usebackq delims=" %%A in ("%InputFile%") do (
-    if "%%A" equ "%_strFind0%" (echo %_strReplace0%) else if "%%A" equ "%_strFind1%" (echo %_strReplace1%) else (echo %%A)
-  )
-)
+REM :Replace
+REM >"%OutputFile%" (
+REM   for /f "usebackq delims=" %%A in ("%InputFile%") do (
+REM     if "%%A" equ "%_strFind0%" (echo %_strReplace0%) else if "%%A" equ "%_strFind1%" (echo %_strReplace1%) else (echo %%A)
+REM   )
+REM )
 
-MOVE "%OutputFile%" "%InputFile%"
-@echo on
+REM MOVE "%OutputFile%" "%InputFile%"
+REM @echo on
 REM start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent
-tasklist /nh /fi "imagename eq Steam.exe" | find /i "Steam.exe" > nul || (start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent)
+REM tasklist /nh /fi "imagename eq Steam.exe" | find /i "Steam.exe" > nul || (start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent)
+
+timeout /NOBREAK 20
 
 REM 008-Steam-SteamVR-OPTIONAL
 REM Terminate - SteamVR (Ensure video parameter changes take effect.)
@@ -130,7 +132,7 @@ timeout /NOBREAK 1
 
 
 IF /I "%hookAction%" EQU "_start_vd" GOTO _start_vd
-IF /I "%hookAction%" EQU "_restart_vd" GOTO _restart_vd
+IF /I "%hookAction%" EQU "_restart_vd" GOTO _start_vd
 
 
 
@@ -143,7 +145,7 @@ REM WARNING: PREREQUSITE: _start .
 :_start_vd
 
 
-timeout /NOBREAK 25
+timeout /NOBREAK 7
 
 REM 080-VirtualDesktop
 REM tasklist /nh /fi "imagename eq Virtual Desktop.exe" | find /i "Virtual Desktop.exe" > nul || (start "" "steam://rungameid/382110")

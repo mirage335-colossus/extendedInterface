@@ -120,7 +120,7 @@ start /MIN "" "C:\Program Files\TeamSpeak 3 Client\ts3client_win64.exe"
 REM 590-Atom - Mission
 REM taskkill /IM atom.exe
 REM cd "%USERPROFILE%\AppData\Local\atom\app-1.36.1"
-start "" cmd /c atom "C:\core\sequence\elite\901-doc" "C:\core\sequence\elite\930-mission"
+REM start "" cmd /c atom "C:\core\sequence\elite\901-doc" "C:\core\sequence\elite\930-mission"
 
 
 

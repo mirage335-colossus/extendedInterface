@@ -462,6 +462,7 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="118"/>
                             </map-to-keyboard>
+                            <description description="Recorder PTT - VK_F24 0x87"/>
                         </action-set>
                     </container>
                 </button>
@@ -483,6 +484,7 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="118"/>
                             </map-to-keyboard>
+                            <description description="Recorder PTT - VK_F24 0x87"/>
                         </action-set>
                     </container>
                 </button>
@@ -672,6 +674,7 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="109"/>
                             </map-to-keyboard>
+                            <description description="Whisper PTT - VK_F22 0x85"/>
                         </action-set>
                     </container>
                     <container type="basic">
@@ -679,6 +682,7 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="118"/>
                             </map-to-keyboard>
+                            <description description="Recorder PTT - VK_F24 0x87"/>
                         </action-set>
                     </container>
                 </button>
@@ -717,6 +721,7 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="110"/>
                             </map-to-keyboard>
+                            <description description="Team PTT - VK_F23 0x86"/>
                         </action-set>
                     </container>
                     <container type="basic">
@@ -724,6 +729,7 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="118"/>
                             </map-to-keyboard>
+                            <description description="Recorder PTT - VK_F24 0x87"/>
                         </action-set>
                     </container>
                 </button>
@@ -887,6 +893,14 @@
                     <container type="basic">
                         <action-set>
                             <remap button="28" vjoy="1"/>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="118"/>
+                            </map-to-keyboard>
+                            <description description="Recorder PTT - VK_F24 0x87"/>
                         </action-set>
                     </container>
                 </button>

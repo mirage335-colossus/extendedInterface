@@ -243,11 +243,11 @@
             "push-to-talk": false,
             "push-to-talk-delay": 0,
             "settings": {
-                "cropbottom": 0.56999999999999995,
-                "cropleft": 0.070000000000000007,
+                "cropbottom": 0.54000000000000004,
+                "cropleft": 0.17999999999999999,
                 "croppreset": 0,
-                "cropright": 0.5,
-                "croptop": 0.42999999999999999,
+                "cropright": 0.59999999999999998,
+                "croptop": 0.39000000000000001,
                 "righteye": true
             },
             "sync": 0,
@@ -424,13 +424,13 @@
                         "name": "OpenVR Capture",
                         "pos": {
                             "x": 0.0,
-                            "y": -68.0
+                            "y": -27.0
                         },
                         "private_settings": {},
                         "rot": 0.0,
                         "scale": {
-                            "x": 0.99430346488952637,
-                            "y": 0.99393939971923828
+                            "x": 0.93294459581375122,
+                            "y": 0.93260318040847778
                         },
                         "scale_filter": "bicubic",
                         "visible": true
@@ -452,14 +452,14 @@
                         "locked": false,
                         "name": "OpenVR Capture - Detail",
                         "pos": {
-                            "x": 1192.0,
-                            "y": 610.0
+                            "x": 1130.290771484375,
+                            "y": 565.3975830078125
                         },
                         "private_settings": {},
                         "rot": 0.0,
                         "scale": {
-                            "x": 1.9836512804031372,
-                            "y": 1.9831223487854004
+                            "x": 1.8322718143463135,
+                            "y": 1.8313252925872803
                         },
                         "scale_filter": "bicubic",
                         "visible": true
@@ -481,8 +481,8 @@
                         "locked": false,
                         "name": "App - Elite Dangerous",
                         "pos": {
-                            "x": 184.0,
-                            "y": 90.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "private_settings": {},
                         "rot": 0.0,
@@ -491,7 +491,7 @@
                             "y": 1.0
                         },
                         "scale_filter": "bicubic",
-                        "visible": true
+                        "visible": false
                     },
                     {
                         "align": 5,

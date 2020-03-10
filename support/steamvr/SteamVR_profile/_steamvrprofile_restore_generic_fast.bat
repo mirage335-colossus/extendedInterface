@@ -1,0 +1,1 @@
+CALL C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_profile\_steamvrprofile_restore.bat generic_fast

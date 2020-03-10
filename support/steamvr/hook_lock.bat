@@ -91,6 +91,7 @@ GOTO FALSE
 
 :_start
 
+CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_allow_offline\steam_allow_offline.bat"
 
 REM 008-Steam
 REM echo prepare - steam
@@ -143,6 +144,8 @@ GOTO TRUE
 
 REM WARNING: PREREQUSITE: _start .
 :_start_vd
+
+CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_allow_offline\steam_allow_offline.bat"
 
 
 timeout /NOBREAK 7

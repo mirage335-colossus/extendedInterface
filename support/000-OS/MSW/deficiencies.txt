@@ -1,0 +1,9 @@
+*) Ongoing breaking changes to basic functionality - https://forum.voiceattack.com/smf/index.php?topic=3127 .
+
+*) Occasional high CPU usage from various services, updates, and changes - notably from recent updates to the Photos app.
+
+
+*) Apparent inability to configure a file manager with expandable folders (ie. Dolphin file manager is not suffiently stable on MSW platform).
+*) Apparent inability to create second taskbar on same desktop including all windows from all screens for management of 'fake' displays created by headless ghost devices.
+
+*) Occasional permissions issues with Cygwin SSH daemon.

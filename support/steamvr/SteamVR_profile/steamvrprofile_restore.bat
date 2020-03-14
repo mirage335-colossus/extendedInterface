@@ -28,4 +28,4 @@ copy /Y "steamvr.vrsettings.bak.%1" "steamvr.vrsettings"
 
 echo ________
 echo WARNING: SteamVR Restart Required!
-timeout 3
+timeout 1

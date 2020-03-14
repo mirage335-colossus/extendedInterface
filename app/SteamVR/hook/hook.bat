@@ -8,6 +8,10 @@ CALL C:\bin\PimaxAudioUSB_default.bat
 REM Terminate - VoiceAttack (Ensure correct microphone is available and used.)
 CALL C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voiceattack.bat
 
+REM 015-VoiceAttack - AS ADMIN
+cd "C:\Program Files (x86)\VoiceAttack"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe"
+
 REM 005-EVGA Precision X1 (if installed)
 cd "C:\Program Files\EVGA\Precision X1"
 tasklist /nh /fi "imagename eq PrecisionX_x64.exe" | find /i "PrecisionX_x64.exe" > nul || (start /MIN "" "C:\Program Files\EVGA\Precision X1\PrecisionX_x64.exe" 0)
@@ -27,7 +31,8 @@ REM CALL "C:\core\infrastructure\extendedInterface\app\VirtualBox\steamvrprofile
 
 
 cd C:\core\infrastructure\extendedInterface\support\steamvr\
-CALL C:\core\infrastructure\extendedInterface\support\steamvr\hook_lock.bat _restart
+CALL C:\core\infrastructure\extendedInterface\support\steamvr\hook_lock.bat _stop
+CALL C:\core\infrastructure\extendedInterface\support\steamvr\hook_lock.bat _start
 
 
 

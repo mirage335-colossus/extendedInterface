@@ -9,7 +9,7 @@ IF NOT EXIST "C:\Program Files\Pimax\PVRHome\PVRHome_orig.exe" CALL "C:\bin\mswa
 
 @echo on
 @echo **
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C copy /Y "C:\core\infrastructure\extendedInterface\app\VirtualDesktop\hook\hook.exe" "C:\Program Files\Pimax\PVRHome\PVRHome.exe"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C copy /Y "C:\core\infrastructure\extendedInterface\app\SteamVR\hook\hook.exe" "C:\Program Files\Pimax\PVRHome\PVRHome.exe"
 @echo off
 timeout 3
 

@@ -1,1 +1,1 @@
-CALL C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_profile\_steamvrprofile_restore_generic_fast.bat
+CALL C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_profile\steamvrprofile_restore.bat dcs_fast

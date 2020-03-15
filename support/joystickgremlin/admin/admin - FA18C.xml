@@ -480,9 +480,6 @@
                         </action-set>
                         <action-set>
                             <remap button="23" vjoy="1"/>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="118"/>
-                            </map-to-keyboard>
                             <description description="Recorder PTT - VK_F24 0x87"/>
                         </action-set>
                     </container>
@@ -502,9 +499,6 @@
                         </action-set>
                         <action-set>
                             <remap button="24" vjoy="1"/>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="118"/>
-                            </map-to-keyboard>
                             <description description="Recorder PTT - VK_F24 0x87"/>
                         </action-set>
                     </container>
@@ -691,9 +685,6 @@
                         </action-set>
                         <action-set>
                             <remap button="21" vjoy="1"/>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="118"/>
-                            </map-to-keyboard>
                             <description description="Recorder PTT - VK_F24 0x87"/>
                         </action-set>
                     </container>
@@ -726,9 +717,6 @@
                         </action-set>
                         <action-set>
                             <remap button="26" vjoy="1"/>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="118"/>
-                            </map-to-keyboard>
                             <description description="Recorder PTT - VK_F24 0x87"/>
                         </action-set>
                     </container>
@@ -838,9 +826,6 @@
                         </action-set>
                         <action-set>
                             <remap button="22" vjoy="1"/>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="118"/>
-                            </map-to-keyboard>
                             <description description="Recorder PTT - VK_F24 0x87"/>
                         </action-set>
                     </container>
@@ -873,9 +858,6 @@
                         </action-set>
                         <action-set>
                             <remap button="25" vjoy="1"/>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="118"/>
-                            </map-to-keyboard>
                             <description description="Recorder PTT - VK_F24 0x87"/>
                         </action-set>
                     </container>

@@ -219,3 +219,9 @@ https://www.youtube.com/watch?v=ywGhE1vnRVA
 
 
 https://gaming.stackexchange.com/questions/102867/remove-steam-is-currently-set-to-be-in-offline-mode-dialog/196778#196778
+
+
+
+
+https://github.com/Aussiedroid/AD-EDWarthogEnhancedScript
+

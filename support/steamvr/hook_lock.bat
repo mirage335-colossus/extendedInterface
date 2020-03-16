@@ -80,6 +80,8 @@ CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.
 
 timeout /NOBREAK 1
 
+CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_allow_offline\steam_allow_offline.bat"
+
 REM If hook causes SteamVR to start, it must call this script with _start parameter or similar.
 IF /I "%hookAction%" EQU "_restart" start "" cmd.exe /C CALL "C:\core\infrastructure\extendedInterface\support\steamvr\hook.bat" _start
 IF /I "%hookAction%" EQU "_restart_vd" start "" cmd.exe /C CALL "C:\core\infrastructure\extendedInterface\support\steamvr\hook.bat" _start_vd
@@ -91,6 +93,7 @@ GOTO FALSE
 
 :_start
 
+CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_allow_offline\steam_allow_offline.bat"
 
 REM 008-Steam
 REM echo prepare - steam
@@ -143,6 +146,8 @@ GOTO TRUE
 
 REM WARNING: PREREQUSITE: _start .
 :_start_vd
+
+CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_allow_offline\steam_allow_offline.bat"
 
 
 timeout /NOBREAK 7

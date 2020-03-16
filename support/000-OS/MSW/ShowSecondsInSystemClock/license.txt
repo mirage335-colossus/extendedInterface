@@ -1,0 +1,1 @@
+Trivial code - essentially a list of facts - obtained from https://www.howtogeek.com/325096/how-to-make-windows-10s-taskbar-clock-display-seconds/ without explicit license. Fair use or public domain assumed.

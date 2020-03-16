@@ -1,0 +1,10 @@
+Trivial modification of scripts found at
+
+https://gaming.stackexchange.com/questions/19234/is-there-any-way-to-start-steam-in-offline-mode-without-logging-in-first/184717#184717
+https://www.devguru.com/content/technologies/VBScript/regexp-replace.html
+https://devblogs.microsoft.com/scripting/how-can-i-find-and-replace-text-in-a-text-file/
+https://stackoverflow.com/questions/127318/is-there-any-sed-like-utility-for-cmd-exe
+
+without explicit license. Fair use or public domain assumed.
+
+

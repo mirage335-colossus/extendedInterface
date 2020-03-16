@@ -1909,8 +1909,11 @@
                                     <key extended="False" press="True" scan-code="18"/>
                                     <key extended="False" press="False" scan-code="18"/>
                                     <key extended="False" press="True" scan-code="42"/>
+                                    <pause duration="0.01"/>
                                     <key extended="False" press="True" scan-code="18"/>
+                                    <pause duration="0.11"/>
                                     <key extended="False" press="False" scan-code="18"/>
+                                    <pause duration="0.01"/>
                                     <key extended="False" press="False" scan-code="42"/>
                                 </actions>
                             </macro>
@@ -2066,8 +2069,11 @@
                                 <properties/>
                                 <actions>
                                     <key extended="False" press="True" scan-code="42"/>
+                                    <pause duration="0.01"/>
                                     <key extended="False" press="True" scan-code="18"/>
+                                    <pause duration="0.11"/>
                                     <key extended="False" press="False" scan-code="18"/>
+                                    <pause duration="0.01"/>
                                     <key extended="False" press="False" scan-code="42"/>
                                 </actions>
                             </macro>

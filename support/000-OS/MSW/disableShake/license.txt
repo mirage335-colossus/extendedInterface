@@ -1,0 +1,1 @@
+Trivial code - essentially a list of facts - obtained from https://www.howtogeek.com/howto/windows-7/disable-aero-shake-in-windows-7/ without explicit license. Fair use or public domain assumed.

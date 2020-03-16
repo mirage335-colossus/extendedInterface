@@ -135,6 +135,9 @@ Shared memory file, double or triple buffered.
 
 SimFFB, and possibly other software, apparently depends on the ordering of 'controller' devices. To reorder these devices as needed, remove them with the 'Bluetooth and other devices settings' panel. Removing the Force Feedback joystick, followed by physical reconnection, may be sufficient.
 
+Steam, SteamVR, and related apps, frequently are updated to versions which may break some use cases, particularly those relying on VR access to the physical desktop. Offline mode, and the related workaround to prevent a dialog box about offline mode, may be a solution.
+https://gaming.stackexchange.com/questions/102867/remove-steam-is-currently-set-to-be-in-offline-mode-dialog/196778#196778
+
 
 # Alternative
 
@@ -215,4 +218,4 @@ https://www.youtube.com/watch?v=ywGhE1vnRVA
 
 
 
-
+https://gaming.stackexchange.com/questions/102867/remove-steam-is-currently-set-to-be-in-offline-mode-dialog/196778#196778

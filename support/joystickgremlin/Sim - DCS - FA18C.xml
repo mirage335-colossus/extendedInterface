@@ -422,7 +422,7 @@
                                 <key extended="False" scan-code="13"/>
                             </map-to-keyboard>
                         </action-set>
-                        <virtual-button direction="above" lower-limit="-1.0" upper-limit="-0.75"/>
+                        <virtual-button direction="below" lower-limit="1.0" upper-limit="0.75"/>
                     </container>
                     <container type="basic">
                         <action-set>
@@ -432,7 +432,7 @@
                                 <key extended="False" scan-code="12"/>
                             </map-to-keyboard>
                         </action-set>
-                        <virtual-button direction="below" lower-limit="0.75" upper-limit="1.0"/>
+                        <virtual-button direction="above" lower-limit="-0.75" upper-limit="-1.0"/>
                     </container>
                     <container type="basic">
                         <action-set>
@@ -579,7 +579,42 @@
                 <axis description="" id="3"/>
                 <axis description="" id="4"/>
                 <axis description="" id="5"/>
-                <axis description="" id="6"/>
+                <axis description="AutoTargets - Emitter" id="6">
+                    <container type="basic">
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="19"/>
+                                    <key extended="False" press="False" scan-code="19"/>
+                                    <key extended="True" press="False" scan-code="56"/>
+                                </actions>
+                            </macro>
+                            <description description="Radar Operate"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; radar  operate &lt;/prosody&gt; &lt;/speak&gt; "/>
+                        </action-set>
+                        <virtual-button direction="anywhere" lower-limit="1.0" upper-limit="0.75"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="56"/>
+                                    <key extended="True" press="True" scan-code="54"/>
+                                    <key extended="False" press="True" scan-code="19"/>
+                                    <key extended="False" press="False" scan-code="19"/>
+                                    <key extended="True" press="False" scan-code="54"/>
+                                    <key extended="True" press="False" scan-code="56"/>
+                                </actions>
+                            </macro>
+                            <description description="Radar Standby"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; radar  standby &lt;/prosody&gt; &lt;/speak&gt; "/>
+                        </action-set>
+                        <virtual-button direction="anywhere" lower-limit="-1.0" upper-limit="-0.75"/>
+                    </container>
+                </axis>
                 <axis description="" id="7"/>
                 <axis description="" id="8"/>
                 <button description="Paddle – Limiter, AP NWS Disengage " id="1">
@@ -1300,12 +1335,32 @@
                     </container>
                 </button>
                 <button description="Reference, Quick Nav - Sim Kneeboard Back" id="11">
-                    <container type="basic">
+                    <container activate-on="release" delay="0.2" type="tempo">
                         <action-set>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="26"/>
-                            </map-to-keyboard>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="73"/>
+                                    <key extended="True" press="False" scan-code="73"/>
+                                </actions>
+                            </macro>
+                            <description description="Reference, Quick Nav - MISUSE WORKAROUND - Application - PageUp"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;PageUp&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="15"/>
+                                    <key extended="False" press="False" scan-code="15"/>
+                                    <key extended="False" press="False" scan-code="42"/>
+                                    <key extended="False" press="False" scan-code="56"/>
+                                </actions>
+                            </macro>
+                            <description description="Reference, Quick Nav - MISUSE WORKAROUND - Application - TabUp"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;TabUp&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -1339,12 +1394,30 @@
                     </container>
                 </button>
                 <button description="Reference, Quick Nav - Sim Kneeboard Forward" id="13">
-                    <container type="basic">
+                    <container activate-on="release" delay="0.2" type="tempo">
                         <action-set>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="27"/>
-                            </map-to-keyboard>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="81"/>
+                                    <key extended="True" press="False" scan-code="81"/>
+                                </actions>
+                            </macro>
+                            <description description="Reference, Quick Nav - MISUSE WORKAROUND - Application - PageDown"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;PageDown&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="15"/>
+                                    <key extended="False" press="False" scan-code="15"/>
+                                    <key extended="False" press="False" scan-code="56"/>
+                                </actions>
+                            </macro>
+                            <description description="Reference, Quick Nav - MISUSE WORKAROUND - Application - TabDown"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;TabDown&lt;/prosody&gt; &lt;/speak&gt; "/>
                         </action-set>
                     </container>
                 </button>
@@ -1380,15 +1453,17 @@
                                 <properties/>
                                 <actions>
                                     <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="42"/>
                                     <key extended="False" press="True" scan-code="15"/>
                                     <key extended="False" press="False" scan-code="15"/>
+                                    <key extended="False" press="False" scan-code="42"/>
                                     <key extended="False" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
                             <description description="Reference, Quick Nav - MISUSE WORKAROUND - Application - TabUp"/>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;TabUp&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
-                        <virtual-button east="1"/>
+                        <virtual-button west="1"/>
                     </container>
                     <container activate-on="release" delay="0.2" type="tempo">
                         <action-set>
@@ -1407,17 +1482,15 @@
                                 <properties/>
                                 <actions>
                                     <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="42"/>
                                     <key extended="False" press="True" scan-code="15"/>
                                     <key extended="False" press="False" scan-code="15"/>
-                                    <key extended="False" press="False" scan-code="42"/>
                                     <key extended="False" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
                             <description description="Reference, Quick Nav - MISUSE WORKAROUND - Application - TabDown"/>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;TabDown&lt;/prosody&gt; &lt;/speak&gt; "/>
                         </action-set>
-                        <virtual-button west="1"/>
+                        <virtual-button east="1"/>
                     </container>
                     <container activate-on="release" delay="0.2" type="tempo">
                         <action-set>

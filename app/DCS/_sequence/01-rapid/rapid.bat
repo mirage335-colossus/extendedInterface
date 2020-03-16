@@ -26,14 +26,6 @@ REM 002-_steamvrprofile_dcs_restore_fast
 REM CALL "C:\core\infrastructure\extendedInterface\app\DCS\steamvrprofile\_steamvrprofile_dcs_restore_fast.bat"
 
 
-REM Terminate - SteamVR (Ensure video parameter changes take effect.)
-REM CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.bat
-cd C:\core\infrastructure\extendedInterface\support\steamvr\
-CALL C:\core\infrastructure\extendedInterface\support\steamvr\hook_lock.bat _restart_vd
-
-
-
-
 REM 005-EVGA Precision X1 (if installed)
 cd "C:\Program Files\EVGA\Precision X1"
 tasklist /nh /fi "imagename eq PrecisionX_x64.exe" | find /i "PrecisionX_x64.exe" > nul || (start /MIN "" "C:\Program Files\EVGA\Precision X1\PrecisionX_x64.exe" 0)
@@ -45,44 +37,13 @@ REM timeout /NOBREAK 12
 REM taskkill /IM mintty.exe
 
 
-REM 008-Steam
-REM https://forums.nexusmods.com/index.php?/topic/6387951-start-steam-silently-on-system-startup-simply-stated/
 
-echo prepare - steam
-@echo off
-setlocal disableDelayedExpansion
-
-:Variables
-set InputFile=config\loginusers.vdf
-set OutputFile=config\loginusers-temp.vdf
-set "_strFind0=		"WantsOfflineMode"		"0""
-set "_strReplace0=		"WantsOfflineMode"		"1""
-set "_strFind1=		"SkipOfflineModeWarning"		"0""
-set "_strReplace1=		"SkipOfflineModeWarning"		"1""
-
-:Replace
->"%OutputFile%" (
-  for /f "usebackq delims=" %%A in ("%InputFile%") do (
-    if "%%A" equ "%_strFind0%" (echo %_strReplace0%) else if "%%A" equ "%_strFind1%" (echo %_strReplace1%) else (echo %%A)
-  )
-)
-
-MOVE "%OutputFile%" "%InputFile%"
-@echo on
-REM start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent
-tasklist /nh /fi "imagename eq Steam.exe" | find /i "Steam.exe" > nul || (start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent)
-
-REM 008-Steam-SteamVR-OPTIONAL
-REM Terminate - SteamVR (Ensure video parameter changes take effect.)
-REM CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.bat
-REM start "" "steam://rungameid/250820"
-REM tasklist /nh /fi "imagename eq vrmonitor.exe" | find /i "vrmonitor.exe" > nul || (start "" "steam://rungameid/250820")
-
+REM ATTENTION: Essential.
 REM 015-VoiceAttack - AS ADMIN - fa18c
 cd "C:\Program Files (x86)\VoiceAttack"
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%"
 
-
+REM ATTENTION: Essential.
 REM 020- -JoystickGremlin-  - AS ADMIN - fa18c
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM joystick_gremlin.exe
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /F /IM joystick_gremlin.exe
@@ -91,25 +52,26 @@ cd "C:\Program Files (x86)\H2ik\Joystick Gremlin"
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\H2ik\Joystick Gremlin" "" "C:\Program Files (x86)\H2ik\Joystick Gremlin\joystick_gremlin.exe" --profile "C:\core\infrastructure\extendedInterface\support\joystickgremlin\Sim - DCS - %rapidAircraftType%.xml" --enable --start-minimized
 
 
+REM OBSOLETE
 REM 020-TARGET
 REM cd "C:\Program Files (x86)\Thrustmaster\TARGET"
 REM start /MIN "" "C:\Program Files (x86)\Thrustmaster\TARGET\x64\TARGETGUI.exe"
 
 
-timeout /NOBREAK 35
+
 
 REM ATTENTION: Disable if VirtualDesktop is to be started by voice command.
 REM 015-VoiceAttack - AS ADMIN - SHELL-MSW - construct screen
 REM cd "C:\Program Files (x86)\VoiceAttack"
 REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SHELL-MSW" -command "construct screen virtualdesktop procedure"
-
 REM 080-VirtualDesktop
-tasklist /nh /fi "imagename eq Virtual Desktop.exe" | find /i "Virtual Desktop.exe" > nul || (start "" "steam://rungameid/382110")
+REM tasklist /nh /fi "imagename eq Virtual Desktop.exe" | find /i "Virtual Desktop.exe" > nul || (start "" "steam://rungameid/382110")
 REM start "" "steam://rungameid/382110"
 
 
 
 
+REM -----
 
 REM 200-Discord
 taskkill /IM Discord.exe
@@ -133,32 +95,36 @@ taskkill /IM dcs_wp_editor.exe
 cd "C:\core\installations\dcs_wp_editor"
 start /MIN "" "C:\core\installations\dcs_wp_editor\dcs_wp_editor.exe"
 
-REM 552-Google Earth Pro
-taskkill /IM googleearth.exe
-cd "C:\Program Files\Google\Google Earth Pro\client\"
-start /MIN "" "C:\Program Files\Google\Google Earth Pro\client\googleearth.exe"
 
+REM ATTENTION: Significant GPU load. Possibly unreliable GPS coordinate reception.
+REM 552-Google Earth Pro
+REM taskkill /IM googleearth.exe
+REM cd "C:\Program Files\Google\Google Earth Pro\client\"
+REM start /MIN "" "C:\Program Files\Google\Google Earth Pro\client\googleearth.exe"
+
+
+REM OBSOLETE
 REM 590-Atom - Mission
 REM taskkill /IM atom.exe
 REM cd "%USERPROFILE%\AppData\Local\atom\app-1.36.1"
 REM start "" cmd /c atom "C:\core\sequence\dcs\901-doc" "C:\core\sequence\dcs\930-mission"
 
 
+REM 590-panel - DCS
+cd "C:\Program Files\Oracle\VirtualBox"
+start /MIN "" "C:\Program Files\Oracle\VirtualBox\VirtualBoxVM.exe" --comment "panel - DCS" --startvm "panel - DCS"
 
 
 
-timeout /NOBREAK 40
-
+REM ATTENTION: Only necessary if experiencing severe unreliability starting OVRDrop while VR app is running.
 REM 690-VoiceAttack - AS ADMIN - fa18c - construct desk relaxed
 REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskill /IM OVRdrop.exe
 REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskill /F /IM OVRdrop.exe
-cd "C:\Program Files (x86)\VoiceAttack"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%" -command "construct desk relaxed"
+REM cd "C:\Program Files (x86)\VoiceAttack"
+REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%" -command "construct desk relaxed"
 
 
-
-
-
+REM ATTENTION: Not always desirable, and likely to be overridden on VR app start.
 REM 798- -SimFFB-
 REM taskkill /IM -simFFB-.exe
 REM cd "C:\core\infrastructure\extendedInterface\app\DCS\_sequence\05-maintenance\_lib\simffb"
@@ -167,14 +133,34 @@ REM start /MIN "" "C:\core\infrastructure\extendedInterface\app\DCS\_sequence\05
 REM 799- OBS Studio
 REM tasklist /nh /fi "imagename eq obs64.exe" | find /i "obs64.exe" > nul || (start "" "C:\Program Files (x86)\obs-studio\bin\64bit\obs64.exe")
 
+REM -----
 
 
-timeout /NOBREAK 15
+
+
 
 REM 799-VoiceAttack - AS ADMIN - fa18c - rapid complete -OPTIONAL
 REM 799-VoiceAttack - AS ADMIN - fa18c - arrange desk -OPTIONAL
+timeout 3
 cd "C:\Program Files (x86)\VoiceAttack"
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%" -command "rapid complete"
 
-timeout 3
-start "" cmd /c "echo ***** RAPID COMPLETE ***** &echo(&timeout 10"
+
+
+REM ATTENTION: Restart of SteamVR with Pimax headsets, automatic or interactive, may not be reliable.
+REM Terminate - SteamVR (Ensure video parameter changes take effect.)
+REM CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.bat
+REM cd C:\core\infrastructure\extendedInterface\support\steamvr\
+REM CALL C:\core\infrastructure\extendedInterface\support\steamvr\hook_lock.bat _restart_vd
+echo ________
+echo REQUEST
+echo ________
+echo WARNING: SteamVR Restart Required!
+
+timeout 1
+
+start "" cmd /c "echo ________ &echo REQUEST &echo ________ &echo WARNING: SteamVR Restart Required! &echo. &echo ***** RAPID COMPLETE *****  &echo(&timeout 10"
+
+
+
+

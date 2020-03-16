@@ -2,6 +2,8 @@
 REM Depends:
 REM 'mswadminpriv.bat' - 'nircmd elevate'
 
+REM Requires nircmdc, relevant Batch script, and Pimax headset sound device to be renamed 'PimaxAudioUSB'.
+CALL C:\bin\PimaxAudioUSB_default.bat
 
 REM Terminate - VoiceAttack (Ensure correct microphone is available and used.)
 CALL C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voiceattack.bat

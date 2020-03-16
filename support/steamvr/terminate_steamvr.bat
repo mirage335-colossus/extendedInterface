@@ -2,32 +2,40 @@ REM Terminate - SteamVR (Ensure video parameter changes take effect.)
 REM CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.bat
 
 REM Terminate - SteamVR (Ensure video parameter changes take effect.)
-taskkill /IM vrmonitor.exe
 taskkill /IM "Virtual Desktop.exe"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM vrmonitor.exe
+taskkill /IM vrmonitor.exe
+
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM "Virtual Desktop.exe"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM vrmonitor.exe
 
 
 CALL C:\core\infrastructure\extendedInterface\support\steamvr\running_steamvr.bat || GOTO TRUE
 timeout /NOBREAK 1
 CALL C:\core\infrastructure\extendedInterface\support\steamvr\running_steamvr.bat || GOTO TRUE
 
+REM Intended to allow user to answer any interactive warning messages blocking graceful SteamVR shutdown.
+timeout 7
 
 
-taskkill /IM vrmonitor.exe
 taskkill /IM "Virtual Desktop.exe"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM vrmonitor.exe
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM "Virtual Desktop.exe"
 taskkill /IM vrmonitor.exe
-taskkill /IM "Virtual Desktop.exe"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM vrmonitor.exe
+
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM "Virtual Desktop.exe"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM vrmonitor.exe
+
+taskkill /IM "Virtual Desktop.exe"
+taskkill /IM vrmonitor.exe
+
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM "Virtual Desktop.exe"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM vrmonitor.exe
+
+taskkill /IM "Virtual Desktop.exe"
 taskkill /IM vrmonitor.exe
 taskkill /IM vrserver.exe
-taskkill /IM "Virtual Desktop.exe"
+
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM "Virtual Desktop.exe"
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM vrmonitor.exe
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM vrserver.exe
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM "Virtual Desktop.exe"
 
 
 CALL C:\core\infrastructure\extendedInterface\support\steamvr\running_steamvr.bat || GOTO TRUE
@@ -36,13 +44,13 @@ CALL C:\core\infrastructure\extendedInterface\support\steamvr\running_steamvr.ba
 
 
 
-
+taskkill /F /IM "Virtual Desktop.exe"
 taskkill /F /IM vrmonitor.exe
 taskkill /F /IM vrserver.exe
-taskkill /F /IM "Virtual Desktop.exe"
+
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /F /IM "Virtual Desktop.exe"
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /F /IM vrmonitor.exe
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /F /IM vrserver.exe
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /F /IM "Virtual Desktop.exe"
 
 CALL C:\core\infrastructure\extendedInterface\support\steamvr\running_steamvr.bat || GOTO TRUE
 timeout /NOBREAK 1

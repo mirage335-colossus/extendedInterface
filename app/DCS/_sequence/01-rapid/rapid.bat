@@ -41,7 +41,7 @@ REM taskkill /IM mintty.exe
 REM ATTENTION: Essential.
 REM 015-VoiceAttack - AS ADMIN - fa18c
 cd "C:\Program Files (x86)\VoiceAttack"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SIM-DCS-%rapidAircraftType%"
 
 REM ATTENTION: Essential.
 REM 020- -JoystickGremlin-  - AS ADMIN - fa18c
@@ -121,7 +121,7 @@ REM 690-VoiceAttack - AS ADMIN - fa18c - construct desk relaxed
 REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskill /IM OVRdrop.exe
 REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskill /F /IM OVRdrop.exe
 REM cd "C:\Program Files (x86)\VoiceAttack"
-REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%" -command "construct desk relaxed"
+REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SIM-DCS-%rapidAircraftType%" -command "construct desk relaxed"
 
 
 REM ATTENTION: Not always desirable, and likely to be overridden on VR app start.
@@ -143,7 +143,7 @@ REM 799-VoiceAttack - AS ADMIN - fa18c - rapid complete -OPTIONAL
 REM 799-VoiceAttack - AS ADMIN - fa18c - arrange desk -OPTIONAL
 timeout 3
 cd "C:\Program Files (x86)\VoiceAttack"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "COVAS-DCS-%rapidAircraftType%" -command "rapid complete"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SIM-DCS-%rapidAircraftType%" -command "rapid complete"
 
 
 

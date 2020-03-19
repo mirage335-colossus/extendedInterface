@@ -7,7 +7,7 @@ SET rapidAircraftType=FA18C
 IF /I "%1" EQU "FA18C" SET rapidAircraftType=FA18C
 IF /I "%1" EQU "F5E" SET rapidAircraftType=F5E
 
-
+IF /I "%1" EQU "F15C-FC3" SET rapidAircraftType=F15C-FC3
 
 
 

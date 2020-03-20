@@ -626,6 +626,22 @@
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;limiter&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
+                    <container type="basic">
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="False" scan-code="42"/>
+                                    <key extended="False" press="False" scan-code="29"/>
+                                    <key extended="False" press="False" scan-code="56"/>
+                                    <key extended="True" press="False" scan-code="91"/>
+                                    <key extended="True" press="False" scan-code="54"/>
+                                    <key extended="True" press="False" scan-code="29"/>
+                                    <key extended="True" press="False" scan-code="56"/>
+                                </actions>
+                            </macro>
+                        </action-set>
+                    </container>
                 </button>
                 <button description="Comm - Whisper PTT" id="2">
                     <container type="basic">

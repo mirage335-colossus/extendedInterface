@@ -8,8 +8,10 @@ IF /I "%1" EQU "FA18C" SET rapidAircraftType=FA18C
 IF /I "%1" EQU "F5E" SET rapidAircraftType=F5E
 
 IF /I "%1" EQU "F15C-FC3" SET rapidAircraftType=F15C-FC3
+IF /I "%1" EQU "SU33-FC3" SET rapidAircraftType=SU33-FC3
+IF /I "%1" EQU "A10A-FC3" SET rapidAircraftType=A10A-FC3
 
-
+IF /I "%1" EQU "F22A-FC3-GrinelliDesigns" SET rapidAircraftType=F15C-FC3
 
 
 REM Terminate - VoiceAttack (Ensure correct microphone is available and used.)

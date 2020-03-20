@@ -61,8 +61,10 @@ VoiceAttack profiles may be imported through the program GUI.
 
 Only hardware and software currently under evaluation or in production use may have an up-to-date configuration following the most modern conventions and matching application input configuration files.
 
-* DCS World - FA18C
+* DCS World - FA18C, F5E, SU33, MIG29, F15C, F22A
 	* DCS Waypoint Editor
+	* Grinnelli Designs F-22A Raptor Mod
+		https://www.youtube.com/watch?v=PVZZIeB_icY
 * Elite Dangerous
 
 * JoystickGremlin v13.3
@@ -87,7 +89,6 @@ Only hardware and software currently under evaluation or in production use may h
 
 Other hardware and software is compatible with the conventions. Configuration files available may be correct, mostly correct, and/or adaptable by text editing. Occasional corrections may be provided as conventions are developed and tested.
 
-* DCS World - F5E
 * Descent Freespace
 * EVE Valkyrie
 * Descent (D2X)
@@ -224,4 +225,15 @@ https://gaming.stackexchange.com/questions/102867/remove-steam-is-currently-set-
 
 
 https://github.com/Aussiedroid/AD-EDWarthogEnhancedScript
+
+
+
+
+
+
+fhttps://www.youtube.com/watch?v=Oe3lB5WeCcU&feature=youtu.be
+https://www.youtube.com/watch?v=PVZZIeB_icY
+
+
+
 

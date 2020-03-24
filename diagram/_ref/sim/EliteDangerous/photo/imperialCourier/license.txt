@@ -1,0 +1,7 @@
+Obtained from https://www.elite-dangerous-blog.co.uk/post/Vehicle-icons .
+
+As stated by the site...
+As long as my blog gets a mention (somewhere) and nobody tries to take credit for the work I've done, I'm very happy for anyone to do this and actively encourage such creativity. 
+
+With this in mind, a CMDR had emailed me asking for vectors - this time of the isometric projections which were not included in the vectors I published previously. So, to address this I've created 256px x 256px icons for every vehicle in the game in PNG and SVG (vecor) formats. These are available to download in a single ZIP file here.
+

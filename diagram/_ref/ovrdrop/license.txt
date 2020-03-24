@@ -1,0 +1,3 @@
+Obtained from https://github.com/Hotrian/OVRdrop-Public withoug explicit license. Fair use or public domain assumed.
+
+Cropped icon extracted as "logo_crop.png".

@@ -1,0 +1,3 @@
+Obtained from installation. DCS SRS is under GPLv3 license.
+
+Additionally, fair use for the purpose of identifying the specific products represented by the logos assumed.

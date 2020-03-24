@@ -777,7 +777,7 @@
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
-                                <key extended="False" scan-code="6"/>
+                                <key extended="False" scan-code="7"/>
                             </map-to-keyboard>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;seek gun&lt;/prosody&gt; &lt;/speak&gt;"/>
                             <description description="Seek Gun - Dogfight/Resume FWD"/>
@@ -787,7 +787,7 @@
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
-                                <key extended="False" scan-code="7"/>
+                                <key extended="False" scan-code="6"/>
                             </map-to-keyboard>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;seek missile&lt;/prosody&gt; &lt;/speak&gt;"/>
                             <description description="Seek Missile - Dogfight/Resume AFT"/>

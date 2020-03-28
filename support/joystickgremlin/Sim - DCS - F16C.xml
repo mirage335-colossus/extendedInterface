@@ -2536,17 +2536,10 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Variant unique buttons. FCS BIT Switch (Consent)." id="5">
+                <button description="DISABLED - Variant unique buttons. FCS BIT Switch (Consent)." id="5">
                     <container type="basic">
                         <action-set>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="21"/>
-                            </map-to-keyboard>
-                        </action-set>
-                    </container>
-                    <container type="basic">
-                        <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;FCS BIT Consent&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!-- FCS BIT Consent --&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -3065,10 +3058,10 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="True" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="45"/>
-                                    <key extended="False" press="False" scan-code="45"/>
-                                    <key extended="True" press="False" scan-code="56"/>
+                                    <key extended="True" press="True" scan-code="29"/>
+                                    <key extended="True" press="True" scan-code="72"/>
+                                    <key extended="True" press="False" scan-code="72"/>
+                                    <key extended="True" press="False" scan-code="29"/>
                                 </actions>
                             </macro>
                             <description description="waypoint designate"/>

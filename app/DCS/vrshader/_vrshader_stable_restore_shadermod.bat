@@ -24,11 +24,11 @@ IF /I "%~n0" EQU "_vrshader_openbeta_backup_shadermod" SET vrshaderTask=_vrshade
 IF /I "%~n0" EQU "_vrshader_stable_restore_shadermod" SET vrshaderTask=_vrshader_restore_shadermod
 IF /I "%~n0" EQU "_vrshader_openbeta_restore_shadermod" SET vrshaderTask=_vrshader_restore_shadermod
 
-IF /I "%~n0" EQU "_vrshader_stable_backup_ic" SET vrshaderTask=_vrshader_backup_ic
-IF /I "%~n0" EQU "_vrshader_openbeta_backup_ic" SET vrshaderTask=_vrshader_backup_ic
+IF /I "%~n0" EQU "_vrshader_stable_backup_shaderic" SET vrshaderTask=_vrshader_backup_shaderic
+IF /I "%~n0" EQU "_vrshader_openbeta_backup_shaderic" SET vrshaderTask=_vrshader_backup_shaderic
 
-IF /I "%~n0" EQU "_vrshader_stable_restore_ic" SET vrshaderTask=_vrshader_restore_ic
-IF /I "%~n0" EQU "_vrshader_openbeta_restore_ic" SET vrshaderTask=_vrshader_restore_ic
+IF /I "%~n0" EQU "_vrshader_stable_restore_shaderic" SET vrshaderTask=_vrshader_restore_shaderic
+IF /I "%~n0" EQU "_vrshader_openbeta_restore_shaderic" SET vrshaderTask=_vrshader_restore_shaderic
 
 
 @REM --Uncomment one to force task.
@@ -40,8 +40,8 @@ IF /I "%~n0" EQU "_vrshader_openbeta_restore_ic" SET vrshaderTask=_vrshader_rest
 @REM SET vrshaderTask=_vrshader_backup_shadermod
 @REM SET vrshaderTask=_vrshader_restore_shadermod
 
-@REM SET vrshaderTask=_vrshader_backup_ic
-@REM SET vrshaderTask=_vrshader_restore_ic
+@REM SET vrshaderTask=_vrshader_backup_shaderic
+@REM SET vrshaderTask=_vrshader_restore_shaderic
 
 IF /I "%vrshaderTask%" EQU "EXCEPTION" GOTO EXCEPTION
 
@@ -53,15 +53,15 @@ IF /I "%~n0" EQU "_vrshader_stable_delete" SET vrshaderAppVersion=stable
 IF /I "%~n0" EQU "_vrshader_stable_disable" SET vrshaderAppVersion=stable
 IF /I "%~n0" EQU "_vrshader_stable_backup_shadermod" SET vrshaderAppVersion=stable
 IF /I "%~n0" EQU "_vrshader_stable_restore_shadermod" SET vrshaderAppVersion=stable
-IF /I "%~n0" EQU "_vrshader_stable_backup_ic" SET vrshaderAppVersion=stable
-IF /I "%~n0" EQU "_vrshader_stable_restore_ic" SET vrshaderAppVersion=stable
+IF /I "%~n0" EQU "_vrshader_stable_backup_shaderic" SET vrshaderAppVersion=stable
+IF /I "%~n0" EQU "_vrshader_stable_restore_shaderic" SET vrshaderAppVersion=stable
 
 IF /I "%~n0" EQU "_vrshader_openbeta_delete" SET vrshaderAppVersion=openbeta
 IF /I "%~n0" EQU "_vrshader_openbeta_disable" SET vrshaderAppVersion=openbeta
 IF /I "%~n0" EQU "_vrshader_openbeta_backup_shadermod" SET vrshaderAppVersion=openbeta
 IF /I "%~n0" EQU "_vrshader_openbeta_restore_shadermod" SET vrshaderAppVersion=openbeta
-IF /I "%~n0" EQU "_vrshader_openbeta_backup_ic" SET vrshaderAppVersion=openbeta
-IF /I "%~n0" EQU "_vrshader_openbeta_restore_ic" SET vrshaderAppVersion=openbeta
+IF /I "%~n0" EQU "_vrshader_openbeta_backup_shaderic" SET vrshaderAppVersion=openbeta
+IF /I "%~n0" EQU "_vrshader_openbeta_restore_shaderic" SET vrshaderAppVersion=openbeta
 
 
 @REM --Uncomment one to force app version.
@@ -99,8 +99,8 @@ IF /I "%vrshaderTask%" EQU "_vrshader_delete" echo *****DELETE*****
 IF /I "%vrshaderTask%" EQU "_vrshader_disable" echo *****DISABLE*****
 IF /I "%vrshaderTask%" EQU "_vrshader_backup_shadermod" echo *****BACKUP SHADERMOD*****
 IF /I "%vrshaderTask%" EQU "_vrshader_restore_shadermod" echo *****RESTORE SHADERMOD*****
-IF /I "%vrshaderTask%" EQU "_vrshader_backup_ic" echo *****BACKUP IC*****
-IF /I "%vrshaderTask%" EQU "_vrshader_restore_ic" echo *****RESTORE IC*****
+IF /I "%vrshaderTask%" EQU "_vrshader_backup_shaderic" echo *****BACKUP IC*****
+IF /I "%vrshaderTask%" EQU "_vrshader_restore_shaderic" echo *****RESTORE IC*****
 
 echo VR Shader Mod
 
@@ -120,8 +120,8 @@ IF /I "%vrshaderTask%" EQU "_vrshader_delete" GOTO _vrshader_delete
 IF /I "%vrshaderTask%" EQU "_vrshader_disable" GOTO _vrshader_disable
 IF /I "%vrshaderTask%" EQU "_vrshader_backup_shadermod" GOTO _vrshader_backup_shadermod
 IF /I "%vrshaderTask%" EQU "_vrshader_restore_shadermod" GOTO _vrshader_restore_shadermod
-IF /I "%vrshaderTask%" EQU "_vrshader_backup_ic" GOTO _vrshader_backup_ic
-IF /I "%vrshaderTask%" EQU "_vrshader_restore_ic" GOTO _vrshader_restore_ic
+IF /I "%vrshaderTask%" EQU "_vrshader_backup_shaderic" GOTO _vrshader_backup_shaderic
+IF /I "%vrshaderTask%" EQU "_vrshader_restore_shaderic" GOTO _vrshader_restore_shaderic
 
 echo XXXXX EXCEPTION: No function! XXXXX
 exit /b
@@ -326,7 +326,7 @@ exit
 
 
 @REM () { **********************************************************************
-:_vrshader_backup_ic
+:_vrshader_backup_shaderic
 @echo *****
 @echo on
 
@@ -360,7 +360,7 @@ exit
 @REM } **********************************************************************
 
 @REM () { **********************************************************************
-:_vrshader_restore_ic
+:_vrshader_restore_shaderic
 @echo *****
 @echo on
 

@@ -20,6 +20,12 @@ Beware SteamVR by default imposes a 4096 '...upper bound on the calculated resol
 
 Layout and assignments documented under conventions tab of spreadsheet 'commonControlScheme.ods' . Sample implementations for some variants are also included.
 
+Other conventions may also be worth integrating with or in addition to.
+
+* Bailey's VoiceAttack Profiles
+	OSB Keybindings
+	https://forums.eagle.ru/showthread.php?t=242416
+
 ## Delays
 
 ## Macro

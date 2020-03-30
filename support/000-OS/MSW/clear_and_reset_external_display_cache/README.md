@@ -1,0 +1,1 @@
+Intended to be used if OVRDrop window numbering changes. Disconnect non-primary external monitors, install the regedit file, reboot, connect non-primary external monitors in desired order. Some iteration of these steps may be required.

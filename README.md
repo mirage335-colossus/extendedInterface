@@ -71,6 +71,13 @@ Only hardware and software currently under evaluation or in production use may h
 	* DCS Waypoint Editor
 	* Grinnelli Designs F-22A Raptor Mod
 		https://www.youtube.com/watch?v=PVZZIeB_icY
+	* DCS Shader Mod
+		https://forums.eagle.ru/showthread.php?t=215373
+			Remove some shaders to pass integrity check and improve forward compatibility.
+				https://forums.mudspike.com/t/dcs-vr-shaders-mod-now-with-instructions/6434
+	* Systernals DebugView - Shows progress and errors compiling shaders.
+		https://docs.microsoft.com/en-us/sysinternals/downloads/debugview
+
 * Elite Dangerous
 
 * JoystickGremlin v13.3
@@ -91,8 +98,6 @@ Only hardware and software currently under evaluation or in production use may h
 * MS SideWinder Force Feedback 2 (SFB2)
 * ThrustMaster TWCS Throttle (T16KTR_TH, T16KJG_TH)
 
-* Atom 1.36.1
-
 Other hardware and software is compatible with the conventions. Configuration files available may be correct, mostly correct, and/or adaptable by text editing. Occasional corrections may be provided as conventions are developed and tested.
 
 * Descent Freespace
@@ -102,6 +107,9 @@ Other hardware and software is compatible with the conventions. Configuration fi
 * Thurstmaster T.A.R.G.E.T
 
 * Thrustmaster T16000M FCS HOTAS (T16KTR_ST & T16KTR_TH, T16KJG_ST & T16KJG_TH)
+
+* PanelBoard
+	https://raw.githubusercontent.com/mirage335/PanelBoard/master/presentation/examples/1024x768.png
 
 Some hardware and software has not been found compatible.
 

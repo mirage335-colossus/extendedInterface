@@ -430,7 +430,33 @@
                 </axis>
                 <axis description="" id="7"/>
                 <axis description="" id="8"/>
-                <button description="" id="1"/>
+                <button description="BAD MISUSE - Stabilization" id="1">
+                    <container activate-on="release" delay="0.20000000000000004" type="tempo">
+                        <action-set>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- Auto Thrust --&gt; Stability &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="91"/>
+                                    <key extended="False" press="True" scan-code="24"/>
+                                    <key extended="False" press="False" scan-code="24"/>
+                                    <key extended="True" press="False" scan-code="91"/>
+                                    <key extended="True" press="True" scan-code="91"/>
+                                    <key extended="False" press="True" scan-code="19"/>
+                                    <key extended="False" press="False" scan-code="19"/>
+                                    <key extended="True" press="False" scan-code="91"/>
+                                    <key extended="True" press="True" scan-code="91"/>
+                                    <key extended="False" press="True" scan-code="21"/>
+                                    <key extended="False" press="False" scan-code="21"/>
+                                    <key extended="True" press="False" scan-code="91"/>
+                                </actions>
+                            </macro>
+                        </action-set>
+                        <action-set>
+                            <description description="RESERVED - Thrust Reversal"/>
+                        </action-set>
+                    </container>
+                </button>
                 <button description="Comm - Standby PTT" id="2">
                     <container type="basic">
                         <action-set>
@@ -1084,8 +1110,8 @@
                                 <properties/>
                                 <actions>
                                     <key extended="True" press="True" scan-code="92"/>
-                                    <key extended="False" press="True" scan-code="25"/>
-                                    <key extended="False" press="False" scan-code="25"/>
+                                    <key extended="False" press="True" scan-code="24"/>
+                                    <key extended="False" press="False" scan-code="24"/>
                                     <key extended="True" press="False" scan-code="92"/>
                                     <key extended="True" press="True" scan-code="92"/>
                                     <key extended="False" press="True" scan-code="19"/>

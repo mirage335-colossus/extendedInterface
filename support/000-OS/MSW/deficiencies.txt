@@ -1,4 +1,6 @@
-*) Ongoing breaking changes to basic functionality - https://forum.voiceattack.com/smf/index.php?topic=3127 .
+*) Ongoing breaking changes to basic functionality.
+	https://forum.voiceattack.com/smf/index.php?topic=3127
+	https://www.osnews.com/story/23202/the-winp-mess-will-microsoft-ever-learn/
 
 *) Occasional high CPU usage from various services, updates, and changes - notably from recent updates to the Photos app.
 

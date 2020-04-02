@@ -187,12 +187,12 @@
                                 <mapping type="cubic-bezier-spline">
                                     <control-point x="-1.0" y="-1.0"/>
                                     <control-point x="-1.0" y="-1.0"/>
-                                    <control-point x="-1.0" y="-1.0"/>
-                                    <control-point x="-0.68" y="-0.56"/>
-                                    <control-point x="-0.668" y="-0.56"/>
-                                    <control-point x="-0.452" y="-0.56"/>
-                                    <control-point x="-0.4" y="-0.56"/>
-                                    <control-point x="1.0" y="1.0"/>
+                                    <control-point x="-0.76" y="-0.844"/>
+                                    <control-point x="-0.68" y="-0.79"/>
+                                    <control-point x="-0.668" y="-0.79"/>
+                                    <control-point x="-0.452" y="-0.79"/>
+                                    <control-point x="-0.4" y="-0.79"/>
+                                    <control-point x="1.0" y="0.77"/>
                                     <control-point x="1.0" y="1.0"/>
                                     <control-point x="1.0" y="1.0"/>
                                 </mapping>
@@ -444,7 +444,31 @@
                 </axis>
                 <axis description="" id="7"/>
                 <axis description="" id="8"/>
-                <button description="" id="1"/>
+                <button description="BAD MISUSE - Stabilization" id="1">
+                    <container activate-on="release" delay="0.20000000000000004" type="tempo">
+                        <action-set>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- Auto Thrust --&gt; Stability &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="True" press="True" scan-code="92"/>
+                                    <key extended="False" press="True" scan-code="24"/>
+                                    <key extended="False" press="False" scan-code="24"/>
+                                    <key extended="True" press="False" scan-code="92"/>
+                                    <key extended="True" press="True" scan-code="92"/>
+                                    <key extended="False" press="True" scan-code="19"/>
+                                    <key extended="False" press="False" scan-code="19"/>
+                                    <key extended="True" press="False" scan-code="92"/>
+                                    <key extended="True" press="True" scan-code="92"/>
+                                    <key extended="False" press="True" scan-code="21"/>
+                                    <key extended="False" press="False" scan-code="21"/>
+                                    <key extended="True" press="False" scan-code="92"/>
+                                </actions>
+                            </macro>
+                        </action-set>
+                        <action-set/>
+                    </container>
+                </button>
                 <button description="Comm - Standby PTT" id="2">
                     <container type="basic">
                         <action-set>
@@ -534,7 +558,7 @@
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
-                                <key extended="False" scan-code="29"/>
+                                <key extended="False" scan-code="42"/>
                                 <key extended="False" scan-code="48"/>
                             </map-to-keyboard>
                         </action-set>
@@ -562,7 +586,7 @@
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
-                                <key extended="False" scan-code="42"/>
+                                <key extended="False" scan-code="29"/>
                                 <key extended="False" scan-code="48"/>
                             </map-to-keyboard>
                         </action-set>
@@ -1138,10 +1162,8 @@
                                 <properties/>
                                 <actions>
                                     <key extended="False" press="True" scan-code="42"/>
-                                    <key extended="False" press="True" scan-code="56"/>
                                     <key extended="False" press="True" scan-code="33"/>
                                     <key extended="False" press="False" scan-code="33"/>
-                                    <key extended="False" press="False" scan-code="56"/>
                                     <key extended="False" press="False" scan-code="42"/>
                                 </actions>
                             </macro>
@@ -1177,12 +1199,8 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="29"/>
-                                    <key extended="False" press="True" scan-code="56"/>
                                     <key extended="False" press="True" scan-code="33"/>
                                     <key extended="False" press="False" scan-code="33"/>
-                                    <key extended="False" press="False" scan-code="56"/>
-                                    <key extended="False" press="False" scan-code="29"/>
                                 </actions>
                             </macro>
                         </action-set>
@@ -3034,7 +3052,7 @@
                             </map-to-keyboard>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; sweep aft &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
-                        <virtual-button east="1"/>
+                        <virtual-button west="1"/>
                     </container>
                     <container type="basic">
                         <action-set>
@@ -3044,7 +3062,7 @@
                             </map-to-keyboard>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; sweep forward &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
-                        <virtual-button west="1"/>
+                        <virtual-button east="1"/>
                     </container>
                 </hat>
             </mode>

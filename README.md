@@ -153,6 +153,8 @@ SimFFB, and possibly other software, apparently depends on the ordering of 'cont
 Steam, SteamVR, and related apps, frequently are updated to versions which may break some use cases, particularly those relying on VR access to the physical desktop. Offline mode, and the related workaround to prevent a dialog box about offline mode, may be a solution.
 https://gaming.stackexchange.com/questions/102867/remove-steam-is-currently-set-to-be-in-offline-mode-dialog/196778#196778
 
+SteamVR may require some settings files to be edited before full resolution may be obtained. This has not been consistent, and is still under investigation.
+
 
 # Alternative
 

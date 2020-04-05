@@ -13,6 +13,9 @@ IF /I "%1" EQU "F16C" SET rapidAircraftType=F16C
 IF /I "%1" EQU "AV8B" SET rapidAircraftType=AV8B
 IF /I "%1" EQU "F14" SET rapidAircraftType=F14
 
+IF /I "%1" EQU "KA50" SET rapidAircraftType=KA50
+IF /I "%1" EQU "P51D" SET rapidAircraftType=P51D
+
 IF /I "%1" EQU "F15C-FC3" SET rapidAircraftType=F15C-FC3
 IF /I "%1" EQU "SU33-FC3" SET rapidAircraftType=SU33-FC3
 IF /I "%1" EQU "A10A-FC3" SET rapidAircraftType=A10A-FC3

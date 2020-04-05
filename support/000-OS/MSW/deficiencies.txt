@@ -1,6 +1,9 @@
 *) Ongoing breaking changes to basic functionality.
 	https://forum.voiceattack.com/smf/index.php?topic=3127
 	https://www.osnews.com/story/23202/the-winp-mess-will-microsoft-ever-learn/
+	https://bugs.launchpad.net/ubuntu/+source/linux/+bug/539477
+
+*) Inability to move or delete some system files (notably 'C:\Windows\System32\DisplaySwitch.exe' ) from command line scripts, regardless of ADMIN privileges.
 
 *) Occasional high CPU usage from various services, updates, and changes - notably from recent updates to the Photos app.
 
@@ -9,3 +12,16 @@
 *) Apparent inability to create second taskbar on same desktop including all windows from all screens for management of 'fake' displays created by headless ghost devices.
 
 *) Occasional permissions issues with Cygwin SSH daemon.
+*) Occasional requirement for FileZilla (or comparable) instead of Dolphin file manager as SFTP client for Cygwin SSH daemon.
+
+
+*) Apparent inability to configure mouse three button scroll not to pass through middle click. Use of official 'ThinkPad Compact Keyboard - Drivers' results in catastrophic CPU usage while running VR apps. By contrast, Xorg would handle this hardware independently, with negligible overhead.
+	https://support.lenovo.com/us/en/accessories/pd026503
+
+
+
+*) Apparent relative lack of standardized graphics protocol. Notably, Xming compatibility issues were found with screen-scraping based programs like OVRDrop found while using TigerVNC clients.
+
+
+
+

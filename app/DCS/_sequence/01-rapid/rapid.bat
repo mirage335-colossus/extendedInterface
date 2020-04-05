@@ -168,10 +168,17 @@ echo REQUEST
 echo ________
 echo WARNING: SteamVR Restart Required!
 
+
+echo ________
+echo REQUEST
+echo ________
+echo WARNING: Native FFB required for some variants: F14,KA50,P51D!
+
+
 timeout 1
 
-start "" cmd /c "echo ________ &echo REQUEST &echo ________ &echo WARNING: SteamVR Restart Required! &echo. &echo ***** RAPID COMPLETE *****  &echo(&timeout 10"
+start "" cmd /c "echo ________ &echo REQUEST &echo ________ &echo WARNING: SteamVR Restart Required! &echo WARNING: Native FFB required for some variants: F14,KA50,P51D! &echo. &echo ***** RAPID COMPLETE *****  &echo(&timeout 10"
 
-
+timeout 3
 
 

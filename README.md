@@ -67,7 +67,7 @@ VoiceAttack profiles may be imported through the program GUI.
 
 Only hardware and software currently under evaluation or in production use may have an up-to-date configuration following the most modern conventions and matching application input configuration files.
 
-* DCS World - FA18C, F5E, SU33, MIG29, F15C, F22A
+* DCS World - FA18C, F16C, A10C, F5E, F14B, AV8B, P51D, KA50, F15C, F22A, A10C, SU33, MIG29
 	* DCS Waypoint Editor
 	* Grinnelli Designs F-22A Raptor Mod
 		https://www.youtube.com/watch?v=PVZZIeB_icY
@@ -174,6 +174,43 @@ Head/Chin/Chest/Arm/Knee Switch Boards
 See included LICENSE files.
 
 Various short sound clips '_ref/sound_clips/_thirdparty/' .
+
+
+
+# Future Work
+
+## Undocumented Conventions
+
+*) Wing sweep, if not an axis, is to be assigned to 'Primary I_D' .
+*) Engine coolant, or similar, if needed on HOTAS controls, will be "Primary I_D" .
+*) Extreme rudder axis position should activate Left/Right wheelbraking.
+
+*) TDC slew, or similar, additionally controls spotlight, or similar.
+
+*) TMS uses Left Control + Left/Right/Up/Down.
+
+*) CMS Hat Convention. Forward - LAlt+D. Aft - LCtl+D. Left - RALt+D. Right - RCtrl+D.
+
+
+## Variant Unique
+
+*) F14 RIO controls may only be partially implemented.
+
+*) F5E pitch dampers probably should be bound to TH-1 O_M, although this emerging 'convention' may be 'BAD MISUSE' .
+
+*) Some variants may not have correct keybindings for smoke control.
+*) Some variants probably should have Flare/Chaff O_D controls.
+
+*) Some variants may require cleanup of unused HOTAS controls. In particular, 'mode', 'lift', 'autothrust', 'stabilization', 'autopilot' controls.
+
+*) Base 'hat' may or may not be rotated one position counter-clockwise.
+
+
+## Testing
+
+*) KA50 controls - sensor, emitter, autopilot, waypoint.
+*) AV8B autothrust.
+
 
 
 # Copyright

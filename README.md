@@ -18,7 +18,11 @@ Beware SteamVR by default imposes a 4096 '...upper bound on the calculated resol
 
 # Conventions
 
-Layout and assignments documented under conventions tab of spreadsheet 'commonControlScheme.ods' . Sample implementations for some variants are also included.
+Generic guidance for developing new control systems is provided by "commonControlScheme.odt" diagram, also available as "commonControlScheme.pdf".
+
+Specifications of all controls are available from "referenceImplementations.odt" diagram, also available as "referenceImplementations.pdf".
+
+Typical layout and assignments historically assigned to legacy systems are documented under conventions tab of spreadsheet 'commonControlScheme.ods' . Some information on reference implementations for some variants are also included. Beware the spreadsheet may eventually be replaced entirely by the more efficient diagrams.
 
 Other conventions may also be worth integrating with or in addition to.
 
@@ -179,18 +183,10 @@ Various short sound clips '_ref/sound_clips/_thirdparty/' .
 
 # Future Work
 
-## Undocumented Conventions
+## Maintenance
 
-*) Wing sweep, if not an axis, is to be assigned to 'Primary I_D' .
-*) Engine coolant, or similar, if needed on HOTAS controls, will be "Primary I_D" .
-*) Extreme rudder axis position should activate Left/Right wheelbraking.
-
-*) TDC slew, or similar, additionally controls spotlight, or similar.
-
-*) TMS uses Left Control + Left/Right/Up/Down.
-
-*) CMS Hat Convention. Forward - LAlt+D. Aft - LCtl+D. Left - RALt+D. Right - RCtrl+D.
-
+*) Some Joystick Gremlin profiles have not been updated for T16000M Stick support.
+*) Some variants require controls diagrams.
 
 ## Variant Unique
 

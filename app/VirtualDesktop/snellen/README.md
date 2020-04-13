@@ -5,10 +5,19 @@ Unambigiously better than 20/32.
 Approximately 20/20.
 Total SR approximately 2.3x.
 
+
 ## Pimax 5k+
 Unambigiously better than 20/50.
 Approximately 20/40.
 
+
+# Pitfalls
+* Dim, standardized illumination may be used for eye exams, which is beyond the scope of this experiment.
+* At 20/20, discerning a P from an F, was marginal, which as I understand it, is a sub-clinical finding.
+* Blurring of the text was qualitatively very different from the kind of blurring expected from human vision defects. Small text tended to become subjectively more grey.
+* Headset IPD, sweet spot alignment, etc, were a little more carefully managed than usually practical.
+* Total SR was pushed rather high, >2x. Going beyond 1.5x was marginally different at most.
+* VirtualDesktop was conservatively used with distance/FOV estimations. Due to problems with dedicated VR headset test apps.
 
 
 # Procedure

@@ -126,7 +126,11 @@ REM @echo on
 REM start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent
 REM tasklist /nh /fi "imagename eq Steam.exe" | find /i "Steam.exe" > nul || (start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent)
 
+REM Wired network startup really should complete BEFORE any desktop GUI is started. MSW apparently disregards this. Therefore, delay.
 REM timeout /NOBREAK 20
+(ping 8.8.8.8 -n 2 -w 9000) || timeout /NOBREAK 20
+REM Testing only. Intended to fail, resulting in 18second delay.
+REM (ping 8.8.8.9 -n 2 -w 9000) || timeout /NOBREAK 20
 
 REM 008-Steam-SteamVR-OPTIONAL
 REM Terminate - SteamVR (Ensure video parameter changes take effect.)
@@ -156,7 +160,11 @@ REM WARNING: PREREQUSITE: _start .
 CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_allow_offline\steam_allow_offline.bat"
 
 
-timeout /NOBREAK 7
+REM Wired network startup really should complete BEFORE any desktop GUI is started. MSW apparently disregards this. Therefore, delay.
+REM timeout /NOBREAK 20
+(ping 8.8.8.8 -n 2 -w 9000) || timeout /NOBREAK 20
+REM Testing only. Intended to fail, resulting in 18second delay.
+REM (ping 8.8.8.9 -n 2 -w 9000) || timeout /NOBREAK 20
 
 REM 080-VirtualDesktop
 REM tasklist /nh /fi "imagename eq Virtual Desktop.exe" | find /i "Virtual Desktop.exe" > nul || (start "" "steam://rungameid/382110")

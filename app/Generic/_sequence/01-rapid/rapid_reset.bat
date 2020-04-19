@@ -2,9 +2,6 @@
 REM Depends:
 REM 'mswadminpriv.bat' - 'nircmd elevate'
 
-CALL C:\core\infrastructure\extendedInterface\support\oculus\_oculus_prohibit.bat
-REM CALL C:\core\infrastructure\extendedInterface\support\oculus\_oculus_allow.bat
-
 
 REM Terminate - VoiceAttack (Ensure correct microphone is available and used.)
 REM CALL C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voiceattack.bat

@@ -33,7 +33,6 @@ exit /b
 :: at a time. The lock will be released upon return from this routine,
 :: or when the script terminates for any reason
 
-
 IF /I "%hookAction%" EQU "_stop" GOTO _stop
 IF /I "%hookAction%" EQU "_force" GOTO _force
 IF /I "%hookAction%" EQU "_start" GOTO _start
@@ -83,15 +82,22 @@ timeout /NOBREAK 1
 CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_allow_offline\steam_allow_offline.bat"
 
 REM If hook causes SteamVR to start, it must call this script with _start parameter or similar.
-IF /I "%hookAction%" EQU "_restart" start "" cmd.exe /C CALL "C:\core\infrastructure\extendedInterface\support\steamvr\hook.bat" _start
-IF /I "%hookAction%" EQU "_restart_vd" start "" cmd.exe /C CALL "C:\core\infrastructure\extendedInterface\support\steamvr\hook.bat" _start_vd
+REM IF /I "%hookAction%" EQU "_restart" start "" cmd.exe /C CALL "C:\core\infrastructure\extendedInterface\support\steamvr\hook.bat" _start
+REM IF /I "%hookAction%" EQU "_restart_vd" start "" cmd.exe /C CALL "C:\core\infrastructure\extendedInterface\support\steamvr\hook.bat" _start_vd
 
+IF /I "%hookAction%" EQU "_restart" GOTO _start
+IF /I "%hookAction%" EQU "_restart_vd" GOTO _start_vd
 
 
 GOTO FALSE
 
 
 :_start
+
+REM Terminate - SteamVR (Ensure video parameter changes take effect.)
+CALL C:\core\infrastructure\extendedInterface\support\steamvr\terminate_steamvr.bat
+
+timeout /NOBREAK 1
 
 CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_allow_offline\steam_allow_offline.bat"
 
@@ -120,7 +126,11 @@ REM @echo on
 REM start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent
 REM tasklist /nh /fi "imagename eq Steam.exe" | find /i "Steam.exe" > nul || (start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent)
 
-timeout /NOBREAK 20
+REM Wired network startup really should complete BEFORE any desktop GUI is started. MSW apparently disregards this. Therefore, delay.
+REM timeout /NOBREAK 20
+(ping 8.8.8.8 -n 2 -w 9000) || timeout /NOBREAK 20
+REM Testing only. Intended to fail, resulting in 18second delay.
+REM (ping 8.8.8.9 -n 2 -w 9000) || timeout /NOBREAK 20
 
 REM 008-Steam-SteamVR-OPTIONAL
 REM Terminate - SteamVR (Ensure video parameter changes take effect.)
@@ -150,7 +160,11 @@ REM WARNING: PREREQUSITE: _start .
 CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_allow_offline\steam_allow_offline.bat"
 
 
-timeout /NOBREAK 7
+REM Wired network startup really should complete BEFORE any desktop GUI is started. MSW apparently disregards this. Therefore, delay.
+REM timeout /NOBREAK 20
+(ping 8.8.8.8 -n 2 -w 9000) || timeout /NOBREAK 20
+REM Testing only. Intended to fail, resulting in 18second delay.
+REM (ping 8.8.8.9 -n 2 -w 9000) || timeout /NOBREAK 20
 
 REM 080-VirtualDesktop
 REM tasklist /nh /fi "imagename eq Virtual Desktop.exe" | find /i "Virtual Desktop.exe" > nul || (start "" "steam://rungameid/382110")

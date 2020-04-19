@@ -23,6 +23,11 @@ IF /I "%1" EQU "A10A-FC3" SET rapidAircraftType=A10A-FC3
 IF /I "%1" EQU "F22A-FC3-GrinnelliDesigns" SET rapidAircraftType=F15C-FC3
 
 
+
+CALL C:\core\infrastructure\extendedInterface\support\oculus\_oculus_prohibit.bat
+REM CALL C:\core\infrastructure\extendedInterface\support\oculus\_oculus_allow.bat
+
+
 REM Terminate - VoiceAttack (Ensure correct microphone is available and used.)
 CALL C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voiceattack.bat
 

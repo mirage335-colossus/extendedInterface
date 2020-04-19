@@ -2,9 +2,6 @@
 REM Depends:
 REM 'mswadminpriv.bat' - 'nircmd elevate'
 
-CALL C:\core\infrastructure\extendedInterface\support\oculus\_oculus_prohibit.bat
-REM CALL C:\core\infrastructure\extendedInterface\support\oculus\_oculus_allow.bat
-
 
 REM *****
 REM VirtualDesktop should usually be configured to work acceptably well with any configuration.

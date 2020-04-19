@@ -20,9 +20,9 @@ Beware SteamVR by default imposes a 4096 '...upper bound on the calculated resol
 
 Generic guidance for developing new control systems is provided by "commonControlScheme.odt" diagram, also available as "commonControlScheme.pdf".
 
-Specifications of all controls are available from "referenceImplementations.odt" diagram, also available as "referenceImplementations.pdf".
+Specifications of all controls and conventions are available from "referenceImplementations.odt" diagram, also available as "referenceImplementations.pdf".
 
-Typical layout and assignments historically assigned to legacy systems are documented under conventions tab of spreadsheet 'commonControlScheme.ods' . Some information on reference implementations for some variants are also included. Beware the spreadsheet may eventually be replaced entirely by the more efficient diagrams.
+Typical layout and assignments historically assigned to legacy systems are documented under conventions tab of spreadsheet 'commonControlScheme.ods' . Some information on reference implementations for some variants are also included. Beware this spreadsheet is increasingly obsolete, with only the "Commands" page remaining more current than the more efficient diagrams.
 
 Other conventions may also be worth integrating with or in addition to.
 

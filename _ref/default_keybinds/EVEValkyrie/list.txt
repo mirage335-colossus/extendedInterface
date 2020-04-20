@@ -1,0 +1,42 @@
+_HOTAS_
+*) Yaw
+*) Pitch
+*) Roll
++) Primary Fire			DX01
++) Secondary Fire		DX02
++) Deploy Drone			DX11
++) Ship Ability			DX04
+
++) Ultra			DX12
+
++) Brake			DX13
++) Boost			DX14
+
++) Focus			DX07
+
++) Com Alerts			DX15
+*) Com Alerts X
+*) Com Alerts Yaw
+
++) Cancel Missile Lock		DX08
+
++) Reset HMD			DX20
+
++) Tactical Menu		DX16
++) Tactical Menu Quit		DX17
+
+*) Menu Advance
+*) Menu Back
+*) Menu Nav Horizontal
+*) Menu Nav Vertical
+*) Menu Selection Wheel
+*) Menu Left
+*) Menu Right
+
+
+
+
+
+_Voice_
++) Focus Sim
+

@@ -1,0 +1,11 @@
+Virtual Desktop (As Desired)
+210deg Size
+7m Distance
+75% Curve
+Dark Nebula Environment
+
+Freespace Flags
+-fov 1.47656273071
+-nomotiondebris -missile_lighting -3dshockwave -post_process
+-soft_particles -fxaa -nolightshafts -fb_explosions -fb_thrusters -no_deferred -enable_shadows -targetinfo
+-orbradar -rearm_timer -3dwarp -warp_flash -stretch_menu -snd_preload -fps -fov 1.47656273071

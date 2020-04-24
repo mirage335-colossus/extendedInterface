@@ -1,0 +1,115 @@
+
+_Stick_
+*) Primary Fire			DX01
+  x) Primary Fire Cycle		DX01, DXHATUP
+*) Secondary Fire		DX02
+*) Shield Equalize		q
+*) Countermeasure		x
+
+*) Primary+			'.'
+*) Primary-			'.'
+*) Secondary+			/
+*) Secondary-			LShift /
+
+*) LookUp			DXHATUP
+*) LookDown			DXHATDOWN
+*) LookLeft			DXHATLEFT
+*) LookRight			DXHATRIGHT
+
+*) ShieldForward		Up
+*) ShieldAft			Down
+*) ShieldLeft			Left
+*) ShieldRight			Right
+
+*) TargetGroup1			F09
+*) TargetGroup2			F10
+*) TargetGroup3			F11
+*) TargetGroup4			F12
+
+
+
+_Throttle_
+*) Afterburner			a
+
+*) ThrustReverse		z
+
+*) Depart			LAlt J (DISABLED)
+
+*) PTT				DX32 ?
+*) PTT Record			F24 ?
+*) PTT Alt			DX28 ?
+
+
+*) escort+			e
+*) escort-
+
+*) rescue			LAlt y
+*) TargetTarget			j
+
+*) repairs			LAlt r
+
+*) AlphaAttack			c,2,1,1
+*) BetaAttack			c,2,2,1
+*) DeltaAttack			c,2,3,1
+*) GammaAttack			c,2,4,1
+*) AllAttack			c,3,1
+
+*) engine			PGUP
+*) weapon			INS
+*) system			HOME
+
+*) stealth			LAlt g
+*) waypoint			LCtl `
+*) shield			q
+
+*) NavPanel			F2
+*) CommPanel			c
+*) ConfigPanel			F3
+*) Options			ESC
+
+*) HudToggle ?			LCtl LAlt g ?
+*) Camera Next ?		= ?
+*) Orbit Lines Toggle ?		LCtl h ?
+*) cam ?			LCtl [ ?
+
+*) toggle cam hud ?		LShift h ?
+*) screenshot ?			LAlt F10 ?
+*) control toggle ?		ENT ?
+*) toggle free cam ?		BSP ?
+
+
+*) sub+				s
+*) sub-				LShift s
+*) turret+			k
+*) turret-			LShift k
+
+*) TargetAhead			y
+*) SubsystemAhead		v
+*) TargetThreat			b
+*) TargetAttacker		r
+
+*) hostile+			h
+*) hostile-			LShift h
+*) target+			t
+*) target-			LShift t
+*) cargo+			u
+*) cargo-			LShift u
+
+
+
+... target view camera controls may be useful
+
+
+
+
+
+
+_Voice_
+focus sim
+
+
+
+
+
+
+

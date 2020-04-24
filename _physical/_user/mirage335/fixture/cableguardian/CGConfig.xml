@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<CGConfig>
+  <MinimizeAtUserStartup>false</MinimizeAtUserStartup>
+  <MinimizeAtAutoStartup>true</MinimizeAtAutoStartup>
+  <LockAtStartup>false</LockAtStartup>
+  <NotifyWhenVRConnectionLost>true</NotifyWhenVRConnectionLost>
+  <ConnLostNotificationIsSticky>true</ConnLostNotificationIsSticky>
+  <NotifyOnAPIQuit>false</NotifyOnAPIQuit>
+  <TrayMenuNotifications>true</TrayMenuNotifications>
+  <ShowResetMessageBox>false</ShowResetMessageBox>
+  <LastSessionProfileName>fixture</LastSessionProfileName>
+  <LastSession></LastSession>
+  <LastManualFOV>
+    <FOV>
+      <Y_Top>1</Y_Top>
+      <Y_Bottom>-1</Y_Bottom>
+      <X_Left>-1</X_Left>
+      <X_Right>1</X_Right>
+      <X_Diag1>0</X_Diag1>
+      <Y_Diag1>0</Y_Diag1>
+      <X_Diag2>0</X_Diag2>
+      <Y_Diag2>0</Y_Diag2>
+      <Z>1</Z>
+      <DiagCompensation>0</DiagCompensation>
+      <VisiblePixelsCompensation>0</VisiblePixelsCompensation>
+    </FOV>
+  </LastManualFOV>
+  <LastPlayAreaWidth>2000</LastPlayAreaWidth>
+  <LastPlayAreaLength>2000</LastPlayAreaLength>
+  <LastExitSeconds>0</LastExitSeconds>
+  <LastHalfTurn>1</LastHalfTurn>
+  <LastYawValue>0</LastYawValue>
+  <TurnCountMemoryMinutes>-1</TurnCountMemoryMinutes>
+  <Alarm>
+    <CGActionWaveFile>
+      <Wave>\default\sounds\CG_TickTock.cga</Wave>
+      <Pan>0</Pan>
+      <Volume>100</Volume>
+      <LoopCount>2</LoopCount>
+    </CGActionWaveFile>
+  </Alarm>
+  <AlarmOverlay>
+    <CGActionOverlay>
+      <Enabled>true</Enabled>
+      <Image>\default\images\CGP_AlarmClock.png</Image>
+      <FlipHorizontal>false</FlipHorizontal>
+      <FlipVertical>false</FlipVertical>
+      <X>0</X>
+      <Y>-0.3264766</Y>
+      <Z>-0.6793537</Z>
+      <Opacity>1</Opacity>
+      <Width>0.18</Width>
+      <Blink>false</Blink>
+      <ShowUntilParentCalls>false</ShowUntilParentCalls>
+      <TimeOut>9.4</TimeOut>
+    </CGActionOverlay>
+  </AlarmOverlay>
+  <CONSTANTS>
+    <!--Wait time when starting with Windows. The purpose is to ensure that all audio devices have been initialized before using them.-->
+    <WindowsStartupWaitInSeconds>30</WindowsStartupWaitInSeconds>
+    <!--DO NOT TOUCH. These are for future proofing. In case SteamVR or Oculus Home processes are named differently in an update (unlikely).-->
+    <OculusHomeProcessName>oculusclient</OculusHomeProcessName>
+    <SteamVRProcessName>vrserver</SteamVRProcessName>
+  </CONSTANTS>
+</CGConfig>

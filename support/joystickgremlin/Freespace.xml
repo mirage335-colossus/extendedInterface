@@ -1900,50 +1900,39 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Countermeasures - OVERLOAD [Shield] Cooling" id="3">
+                <button description="Countermeasures - Shield Equalize" id="3">
                     <container type="basic">
                         <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="18"/>
-                                    <key extended="False" press="False" scan-code="18"/>
-                                    <key extended="False" press="True" scan-code="42"/>
-                                    <pause duration="0.01"/>
-                                    <key extended="False" press="True" scan-code="18"/>
-                                    <pause duration="0.11"/>
-                                    <key extended="False" press="False" scan-code="18"/>
-                                    <pause duration="0.01"/>
-                                    <key extended="False" press="False" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="16"/>
+                                    <key extended="False" press="False" scan-code="16"/>
                                 </actions>
                             </macro>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; heat sink, shield cell &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; shield equalize &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
-                <button description="Countermeasures - OVERLOAD [Depart, Menu Nest] Countermeasure" id="4">
+                <button description="Countermeasures - Countermeasure" id="4">
                     <container type="basic">
                         <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <vjoy input-id="4" input-type="button" value="True" vjoy-id="1"/>
-                                    <vjoy input-id="4" input-type="button" value="False" vjoy-id="1"/>
-                                    <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="36"/>
-                                    <key extended="False" press="False" scan-code="36"/>
-                                    <key extended="False" press="False" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="45"/>
+                                    <key extended="False" press="False" scan-code="45"/>
                                 </actions>
                             </macro>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; chaff, high wake &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- countermeasure --&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -1951,7 +1940,7 @@
                 <button description="" id="6"/>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
-                <hat description="Cycle - Cycle, MISUSE menus" id="1">
+                <hat description="Trim - Cycle, MISUSE menus, MISUSE Shield" id="1">
                     <container type="basic">
                         <action-set>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
@@ -1960,8 +1949,35 @@
                     </container>
                     <container type="basic">
                         <action-set>
-                            <remap hat="1" vjoy="1"/>
+                            <map-to-keyboard>
+                                <key extended="True" scan-code="72"/>
+                            </map-to-keyboard>
                         </action-set>
+                        <virtual-button north="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="True" scan-code="80"/>
+                            </map-to-keyboard>
+                        </action-set>
+                        <virtual-button south="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="True" scan-code="75"/>
+                            </map-to-keyboard>
+                        </action-set>
+                        <virtual-button west="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="True" scan-code="77"/>
+                            </map-to-keyboard>
+                        </action-set>
+                        <virtual-button east="1"/>
                     </container>
                 </hat>
             </mode>
@@ -2002,15 +2018,15 @@
                                     <repeat delay="0.1" type="hold"/>
                                 </properties>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="18"/>
-                                    <key extended="False" press="False" scan-code="18"/>
+                                    <key extended="False" press="True" scan-code="16"/>
+                                    <key extended="False" press="False" scan-code="16"/>
                                 </actions>
                             </macro>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;shield cell&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;shield equalize&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -2019,17 +2035,49 @@
                 <button description="" id="6"/>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
-                <hat description="Cycle - Cycle, MISUSE menus" id="1">
-                    <container type="basic">
-                        <action-set>
-                            <remap hat="1" vjoy="1"/>
-                        </action-set>
-                    </container>
+                <hat description="Gadget Select" id="1">
                     <container type="basic">
                         <action-set>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
                         </action-set>
                         <virtual-button east="1" north="1" south="1" west="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="52"/>
+                            </map-to-keyboard>
+                            <description description="Primary+"/>
+                        </action-set>
+                        <virtual-button north="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="52"/>
+                            </map-to-keyboard>
+                            <description description="Primary-"/>
+                        </action-set>
+                        <virtual-button south="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="53"/>
+                            </map-to-keyboard>
+                            <description description="Secondary+"/>
+                        </action-set>
+                        <virtual-button east="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="42"/>
+                                <key extended="False" scan-code="53"/>
+                            </map-to-keyboard>
+                            <description description="Secondary-"/>
+                        </action-set>
+                        <virtual-button west="1"/>
                     </container>
                 </hat>
             </mode>
@@ -2134,14 +2182,11 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="47"/>
-                                    <key extended="False" press="False" scan-code="47"/>
-                                    <key extended="False" press="False" scan-code="56"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
                             <description description="MIX imaging"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; imaging &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- imaging --&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <action-set>
                             <description description="VR Zoom"/>
@@ -2153,10 +2198,7 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="True" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="47"/>
-                                    <key extended="False" press="False" scan-code="47"/>
-                                    <key extended="True" press="False" scan-code="56"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
                             <description description="MIX hud"/>
@@ -2178,6 +2220,18 @@
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;align&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <virtual-button south="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <remap hat="1" vjoy="1">
+                                <activation-condition rule="any">
+                                    <condition comparison="north" condition-type="joystick" device-guid="{A4608390-E525-11E9-802D-444553540000}" device-name="SideWinder Force Feedback 2 Joystick" id="1" input="hat"/>
+                                    <condition comparison="west" condition-type="joystick" device-guid="{A4608390-E525-11E9-802D-444553540000}" device-name="SideWinder Force Feedback 2 Joystick" id="1" input="hat"/>
+                                    <condition comparison="east" condition-type="joystick" device-guid="{A4608390-E525-11E9-802D-444553540000}" device-name="SideWinder Force Feedback 2 Joystick" id="1" input="hat"/>
+                                    <condition comparison="center" condition-type="joystick" device-guid="{A4608390-E525-11E9-802D-444553540000}" device-name="SideWinder Force Feedback 2 Joystick" id="1" input="hat"/>
+                                </activation-condition>
+                            </remap>
+                        </action-set>
                     </container>
                 </hat>
             </mode>

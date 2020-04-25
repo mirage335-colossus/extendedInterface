@@ -1,25 +1,25 @@
 
 _Stick_
-*) Primary Fire			DX01
+>) Primary Fire			DX01
   x) Primary Fire Cycle		DX01, DXHATUP
-*) Secondary Fire		DX02
-*) Shield Equalize		q
-*) Countermeasure		x
+>) Secondary Fire		DX02
+>) Shield Equalize		q
+>) Countermeasure		x
 
-*) Primary+			'.'
-*) Primary-			'.'
-*) Secondary+			/
-*) Secondary-			LShift /
++) Primary+			'.'
++) Primary-			'.'
++) Secondary+			/
++) Secondary-			LShift /
 
-*) LookUp			DXHATUP
-*) LookDown			DXHATDOWN
-*) LookLeft			DXHATLEFT
-*) LookRight			DXHATRIGHT
++) LookUp			DXHATUP
+x) LookDown			DXHATDOWN
++) LookLeft			DXHATLEFT
++) LookRight			DXHATRIGHT
 
-*) ShieldForward		Up
-*) ShieldAft			Down
-*) ShieldLeft			Left
-*) ShieldRight			Right
++) ShieldForward		Up
++) ShieldAft			Down
++) ShieldLeft			Left
++) ShieldRight			Right
 
 *) TargetGroup1			F09
 *) TargetGroup2			F10

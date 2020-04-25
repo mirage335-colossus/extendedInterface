@@ -1,0 +1,33 @@
+C:\Users\commonadmin\Documents\specdesk\_
+C:\Users\commonadmin\Documents\specdesk\--
+C:\Users\commonadmin\Documents\specdesk\=
+
+C:\bin
+C:\cygwin64
+
+C:\core\infrastructure\extendedInterface
+C:\core\infrastructure\panel
+
+C:\Program Files
+C:\Program Files (x86)
+
+C:\Program Files (x86)\Steam
+
+%USERPROFILE%
+
+%USERPROFILE%\Desktop
+%USERPROFILE%\Downloads
+%USERPROFILE%\Saved Games
+%USERPROFILE%\Pictures
+%USERPROFILE%\Videos
+%USERPROFILE%\Music
+
+%USERPROFILE%\Documents\Tacview
+
+
+%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup
+
+%LOCALAPPDATA%
+
+
+

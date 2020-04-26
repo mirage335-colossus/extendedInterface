@@ -189,15 +189,29 @@
                                     <control-point x="1.0" y="1.0"/>
                                     <control-point x="0.0" y="0.0"/>
                                 </mapping>
-                                <deadzone center-high="0.05" center-low="-0.05" high="0.99" low="-0.92"/>
+                                <deadzone center-high="0.05" center-low="-0.05" high="0.99" low="-0.39"/>
                             </response-curve>
+                            <description description="-0.92 full scale"/>
                         </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/metal-rod-hit_C#_major.wav" volume="0"/>
+                        </action-set>
+                        <virtual-button direction="anywhere" lower-limit="0.03" upper-limit="0.03"/>
                     </container>
                     <container type="basic">
                         <action-set>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/metal-rod-hit_C#_major.wav" volume="50"/>
                         </action-set>
-                        <virtual-button direction="anywhere" lower-limit="0.03" upper-limit="0.03"/>
+                        <virtual-button direction="anywhere" lower-limit="-0.39" upper-limit="-1.0"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="50"/>
+                            <remap button="13" vjoy="1"/>
+                        </action-set>
+                        <virtual-button direction="anywhere" lower-limit="-0.63" upper-limit="-1.0"/>
                     </container>
                 </axis>
                 <axis description="" id="4"/>
@@ -384,16 +398,9 @@
                     </container>
                     <container type="basic">
                         <action-set>
-                            <macro>
-                                <properties>
-                                    <repeat delay="0.07" type="hold"/>
-                                </properties>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="30"/>
-                                    <pause duration="0.65"/>
-                                    <key extended="False" press="False" scan-code="30"/>
-                                </actions>
-                            </macro>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="30"/>
+                            </map-to-keyboard>
                         </action-set>
                     </container>
                 </button>
@@ -413,34 +420,27 @@
                 <axis description="" id="3"/>
                 <axis description="" id="4"/>
                 <axis description="" id="5"/>
-                <axis description="AutoTargets - hostile+/-, MISUSE menu pageup/pagedown" id="6">
+                <axis description="AutoTargets - hostile+/-" id="6">
                     <container type="basic">
                         <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="26"/>
-                                    <key extended="False" press="False" scan-code="26"/>
-                                </actions>
-                            </macro>
-                            <description description="target+, PageUp"/>
+                            <description description="hostile+"/>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="35"/>
+                            </map-to-keyboard>
                         </action-set>
-                        <virtual-button direction="above" lower-limit="-1.0" upper-limit="-0.75"/>
+                        <virtual-button direction="below" lower-limit="0.75" upper-limit="1.0"/>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="27"/>
-                                    <key extended="False" press="False" scan-code="27"/>
-                                </actions>
-                            </macro>
-                            <description description="target-, PageDown"/>
+                            <description description="hostile-"/>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="42"/>
+                                <key extended="False" scan-code="35"/>
+                            </map-to-keyboard>
                         </action-set>
-                        <virtual-button direction="below" lower-limit="0.75" upper-limit="1.0"/>
+                        <virtual-button direction="above" lower-limit="-0.75" upper-limit="-1.0"/>
                     </container>
                     <container type="basic">
                         <action-set>
@@ -450,7 +450,15 @@
                 </axis>
                 <axis description="" id="7"/>
                 <axis description="" id="8"/>
-                <button description="" id="1"/>
+                <button description="Thrust Reversal" id="1">
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="44"/>
+                            </map-to-keyboard>
+                        </action-set>
+                    </container>
+                </button>
                 <button description="Comm - Standby PTT" id="2">
                     <container type="basic">
                         <action-set>
@@ -470,17 +478,94 @@
                 <button description="" id="4"/>
                 <button description="" id="5"/>
                 <button description="" id="6"/>
-                <button description="" id="7"/>
-                <button description="" id="8"/>
-                <button description="" id="9"/>
-                <button description="Selected PTT - MISUSE built-in voice" id="10">
-                    <container type="basic">
+                <button description="BAD MISUSE - Menu Option 1/3" id="7">
+                    <container activate-on="release" delay="0.12" type="tempo">
                         <action-set>
-                            <remap button="24" vjoy="1"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="2"/>
+                                    <key extended="False" press="False" scan-code="2"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;1&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="4"/>
+                                    <key extended="False" press="False" scan-code="4"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;3&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
-                    <container type="basic">
+                </button>
+                <button description="MISUSE - Scripted Command - ALL IGNORE TARGET, ALL PROTECT TARGET" id="8">
+                    <container activate-on="release" delay="0.2" type="tempo">
                         <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="23"/>
+                                    <key extended="False" press="False" scan-code="23"/>
+                                    <key extended="False" press="False" scan-code="42"/>
+                                </actions>
+                            </macro>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="25"/>
+                                    <key extended="False" press="False" scan-code="25"/>
+                                    <key extended="False" press="False" scan-code="42"/>
+                                </actions>
+                            </macro>
+                        </action-set>
+                    </container>
+                </button>
+                <button description="BAD MISUSE - Menu Option 2/4" id="9">
+                    <container activate-on="release" delay="0.12" type="tempo">
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="3"/>
+                                    <key extended="False" press="False" scan-code="3"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;2&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="5"/>
+                                    <key extended="False" press="False" scan-code="5"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;4&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                    </container>
+                </button>
+                <button description="Selected PTT - MISUSE built-in voice" id="10">
+                    <container activate-on="release" delay="0.12" type="tempo">
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="46"/>
+                                    <key extended="False" press="False" scan-code="46"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;com menu&lt;/prosody&gt; &lt;/speak&gt; "/>
+                        </action-set>
+                        <action-set>
+                            <remap button="24" vjoy="1"/>
                             <map-to-keyboard>
                                 <key extended="False" scan-code="118"/>
                             </map-to-keyboard>
@@ -489,9 +574,6 @@
                     </container>
                 </button>
                 <button description="Quick Power - MISUSE Engines" id="11">
-                    <container type="basic">
-                        <action-set/>
-                    </container>
                     <container activate-on="release" delay="0.17" type="tempo">
                         <action-set>
                             <macro>
@@ -548,9 +630,6 @@
                     </container>
                 </button>
                 <button description="Quick Power - MISUSE Systems" id="13">
-                    <container type="basic">
-                        <action-set/>
-                    </container>
                     <container activate-on="release" delay="0.17" type="tempo">
                         <action-set>
                             <macro>
@@ -582,7 +661,8 @@
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
-                                <key extended="True" scan-code="81"/>
+                                <key extended="False" scan-code="56"/>
+                                <key extended="False" scan-code="32"/>
                             </map-to-keyboard>
                         </action-set>
                     </container>
@@ -747,17 +827,14 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="19"/>
-                                    <key extended="False" press="False" scan-code="19"/>
-                                    <key extended="False" press="False" scan-code="56"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; hardpoints &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- hardpoints --&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -767,15 +844,14 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="38"/>
-                                    <key extended="False" press="False" scan-code="38"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; lights &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- lights --&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -790,8 +866,8 @@
                                 <properties/>
                                 <actions>
                                     <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="35"/>
-                                    <key extended="False" press="False" scan-code="35"/>
+                                    <key extended="False" press="True" scan-code="34"/>
+                                    <key extended="False" press="False" scan-code="34"/>
                                     <key extended="False" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
@@ -806,9 +882,7 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="25"/>
-                                    <pause duration="0.17"/>
-                                    <key extended="False" press="False" scan-code="25"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
                         </action-set>
@@ -820,11 +894,53 @@
                     </container>
                     <container type="basic">
                         <action-set>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="0"/>
                         </action-set>
                     </container>
                 </button>
-                <hat description="" id="1"/>
+                <hat description="Targeting - Turret, Attacker, Subsystem Ahead" id="1">
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="19"/>
+                            </map-to-keyboard>
+                            <description description="FWD - attacker"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;attacker&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <virtual-button east="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="47"/>
+                            </map-to-keyboard>
+                            <description description="AFT - Subsystem Ahead"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;subsystem ahead&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <virtual-button west="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="37"/>
+                            </map-to-keyboard>
+                            <description description="turret+"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;turret&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <virtual-button north="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="42"/>
+                                <key extended="False" scan-code="37"/>
+                            </map-to-keyboard>
+                            <description description="turret-"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;turret-&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <virtual-button south="1"/>
+                    </container>
+                </hat>
             </mode>
             <mode inherit="00-Infrastructure" name="04-I_M">
                 <axis description="" id="1"/>
@@ -835,29 +951,20 @@
                 <axis description="AutoTargets - target+/-" id="6">
                     <container type="basic">
                         <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="42"/>
-                                    <key extended="False" press="True" scan-code="20"/>
-                                    <key extended="False" press="False" scan-code="20"/>
-                                    <key extended="False" press="False" scan-code="42"/>
-                                </actions>
-                            </macro>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="42"/>
+                                <key extended="False" scan-code="20"/>
+                            </map-to-keyboard>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="-1.0" upper-limit="-0.75"/>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="20"/>
-                                    <key extended="False" press="False" scan-code="20"/>
-                                </actions>
-                            </macro>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="20"/>
+                            </map-to-keyboard>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="0.75" upper-limit="1.0"/>
                     </container>
@@ -870,10 +977,7 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="10"/>
-                                    <key extended="False" press="False" scan-code="10"/>
-                                    <key extended="False" press="False" scan-code="56"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
                         </action-set>
@@ -885,7 +989,7 @@
                     </container>
                     <container type="basic">
                         <action-set>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="0"/>
                         </action-set>
                     </container>
                 </button>
@@ -908,40 +1012,63 @@
                 <button description="" id="4"/>
                 <button description="" id="5"/>
                 <button description="" id="6"/>
-                <button description="Rough - Target Wingman 1" id="7">
+                <button description="Rough - Target wing 1" id="7">
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
-                                <key extended="False" scan-code="2"/>
+                                <key extended="False" scan-code="59"/>
                             </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; 1 &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; wing &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
-                <button description="Rough - Target Wingman 2" id="8">
+                <button description="Rough - Target wing 2" id="8">
                     <container type="basic">
                         <action-set>
                             <map-to-keyboard>
-                                <key extended="False" scan-code="3"/>
+                                <key extended="False" scan-code="60"/>
                             </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; 2 &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; wing &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
-                <button description="Rough - Target Wingman 3" id="9">
-                    <container type="basic">
+                <button description="Rough - Target wing 3/4" id="9">
+                    <container activate-on="release" delay="0.12" type="tempo">
                         <action-set>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="4"/>
-                            </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; 3 &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="61"/>
+                                    <key extended="False" press="False" scan-code="61"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; wing &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="62"/>
+                                    <key extended="False" press="False" scan-code="62"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; extra &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
-                <button description="Rough - Pull Wingman Target" id="10">
+                <button description="Rough - Pull Wingman Target, Rescue" id="10">
                     <container activate-on="release" delay="0.20000000000000004" type="tempo">
                         <action-set>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; pull &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="36"/>
+                                    <key extended="False" press="False" scan-code="36"/>
+                                </actions>
+                            </macro>
+                        </action-set>
+                        <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
@@ -951,8 +1078,8 @@
                                     <key extended="False" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; rescue &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
-                        <action-set/>
                     </container>
                 </button>
                 <button description="" id="11"/>
@@ -962,15 +1089,14 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="35"/>
-                                    <key extended="False" press="False" scan-code="35"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; Landing Gear &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- Landing Gear --&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -984,19 +1110,49 @@
                 <axis description="" id="3"/>
                 <axis description="" id="4"/>
                 <axis description="" id="5"/>
-                <axis description="" id="6"/>
+                <axis description="AutoTargets - escort+/-" id="6">
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="18"/>
+                            </map-to-keyboard>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;escort&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <virtual-button direction="below" lower-limit="0.75" upper-limit="1.0"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="42"/>
+                                <key extended="False" scan-code="18"/>
+                            </map-to-keyboard>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;escort&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <virtual-button direction="above" lower-limit="-0.75" upper-limit="-1.0"/>
+                    </container>
+                </axis>
                 <axis description="" id="7"/>
                 <axis description="" id="8"/>
-                <button description="" id="1"/>
+                <button description="Autopilot." id="1">
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="56"/>
+                                <key extended="False" scan-code="30"/>
+                            </map-to-keyboard>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; autopilot &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                    </container>
+                </button>
                 <button description="" id="2"/>
                 <button description="" id="3"/>
                 <button description="" id="4"/>
                 <button description="" id="5"/>
                 <button description="" id="6"/>
-                <button description="Rough - Fighter Order - Hold" id="7">
+                <button description="Rough - Fighter Order - Alpha Attack" id="7">
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; hold &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; alpha attack &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                     <container type="basic">
@@ -1004,39 +1160,23 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="2"/>
-                                    <key extended="False" press="False" scan-code="2"/>
-                                    <key extended="False" press="False" scan-code="56"/>
-                                </actions>
-                            </macro>
-                        </action-set>
-                    </container>
-                </button>
-                <button description="Rough - Fighter Order - Liberty" id="8">
-                    <container type="basic">
-                        <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; liberty &lt;/prosody&gt; &lt;/speak&gt;"/>
-                        </action-set>
-                    </container>
-                    <container type="basic">
-                        <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="46"/>
+                                    <key extended="False" press="False" scan-code="46"/>
                                     <key extended="False" press="True" scan-code="3"/>
                                     <key extended="False" press="False" scan-code="3"/>
-                                    <key extended="False" press="False" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="2"/>
+                                    <key extended="False" press="False" scan-code="2"/>
+                                    <key extended="False" press="True" scan-code="2"/>
+                                    <key extended="False" press="False" scan-code="2"/>
                                 </actions>
                             </macro>
                         </action-set>
                     </container>
                 </button>
-                <button description="Rough - Fighter Order COMMS" id="9">
+                <button description="Rough - Fighter Order - Beta Attack" id="8">
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; comms &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; beta attack &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                     <container type="basic">
@@ -1044,43 +1184,85 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="46"/>
+                                    <key extended="False" press="False" scan-code="46"/>
+                                    <key extended="False" press="True" scan-code="3"/>
+                                    <key extended="False" press="False" scan-code="3"/>
+                                    <key extended="False" press="True" scan-code="3"/>
+                                    <key extended="False" press="False" scan-code="3"/>
+                                    <key extended="False" press="True" scan-code="2"/>
+                                    <key extended="False" press="False" scan-code="2"/>
+                                </actions>
+                            </macro>
+                        </action-set>
+                    </container>
+                </button>
+                <button description="Rough - Fighter Order - Delta Attack" id="9">
+                    <container type="basic">
+                        <action-set>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; delta attack &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="46"/>
+                                    <key extended="False" press="False" scan-code="46"/>
+                                    <key extended="False" press="True" scan-code="3"/>
+                                    <key extended="False" press="False" scan-code="3"/>
                                     <key extended="False" press="True" scan-code="4"/>
                                     <key extended="False" press="False" scan-code="4"/>
-                                    <key extended="False" press="False" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="2"/>
+                                    <key extended="False" press="False" scan-code="2"/>
                                 </actions>
                             </macro>
                         </action-set>
                     </container>
                 </button>
-                <button description="Rough - Fighter Order - Attack" id="10">
-                    <container type="basic">
-                        <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; attack &lt;/prosody&gt; &lt;/speak&gt;"/>
-                        </action-set>
-                    </container>
-                    <container type="basic">
+                <button description="Rough - Fighter Order - All Attack, Gamma Attack" id="10">
+                    <container activate-on="release" delay="0.2" type="tempo">
                         <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="46"/>
+                                    <key extended="False" press="False" scan-code="46"/>
+                                    <key extended="False" press="True" scan-code="4"/>
+                                    <key extended="False" press="False" scan-code="4"/>
+                                    <key extended="False" press="True" scan-code="2"/>
+                                    <key extended="False" press="False" scan-code="2"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; all attack &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="46"/>
+                                    <key extended="False" press="False" scan-code="46"/>
+                                    <key extended="False" press="True" scan-code="3"/>
+                                    <key extended="False" press="False" scan-code="3"/>
                                     <key extended="False" press="True" scan-code="5"/>
                                     <key extended="False" press="False" scan-code="5"/>
-                                    <key extended="False" press="False" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="2"/>
+                                    <key extended="False" press="False" scan-code="2"/>
                                 </actions>
                             </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; gamma attack &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
-                <button description="Panels - Left Panel - Nav Panel" id="11">
+                <button description="Panels - Left Panel - Nav Panel - MISUSE GroupTargeting (Specialized Navigation) Panel" id="11">
                     <container type="basic">
                         <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="60"/>
-                                    <key extended="False" press="False" scan-code="60"/>
+                                    <key extended="False" press="True" scan-code="61"/>
+                                    <key extended="False" press="False" scan-code="61"/>
                                 </actions>
                             </macro>
                         </action-set>
@@ -1102,8 +1284,8 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="59"/>
-                                    <key extended="False" press="False" scan-code="59"/>
+                                    <key extended="False" press="True" scan-code="46"/>
+                                    <key extended="False" press="False" scan-code="46"/>
                                 </actions>
                             </macro>
                         </action-set>
@@ -1119,14 +1301,14 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Panels - Right Panel - Config Panel" id="13">
+                <button description="Panels - Right Panel - Config Panel - MISUSE Local Objectives Panel" id="13">
                     <container type="basic">
                         <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="61"/>
-                                    <key extended="False" press="False" scan-code="61"/>
+                                    <key extended="False" press="True" scan-code="62"/>
+                                    <key extended="False" press="False" scan-code="62"/>
                                 </actions>
                             </macro>
                         </action-set>
@@ -1138,7 +1320,7 @@
                     </container>
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; panel configuration &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; panel local &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -1164,7 +1346,27 @@
                 <axis description="" id="3"/>
                 <axis description="" id="4"/>
                 <axis description="" id="5"/>
-                <axis description="" id="6"/>
+                <axis description="AutoTargets - cargo+/-" id="6">
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="22"/>
+                            </map-to-keyboard>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                        <virtual-button direction="below" lower-limit="1.0" upper-limit="0.75"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="42"/>
+                                <key extended="False" scan-code="22"/>
+                            </map-to-keyboard>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                        </action-set>
+                        <virtual-button direction="above" lower-limit="-1.0" upper-limit="-0.75"/>
+                    </container>
+                </axis>
                 <axis description="" id="7"/>
                 <axis description="" id="8"/>
                 <button description="" id="1"/>
@@ -1173,65 +1375,136 @@
                 <button description="" id="4"/>
                 <button description="" id="5"/>
                 <button description="" id="6"/>
-                <button description="" id="7"/>
-                <button description="" id="8"/>
-                <button description="" id="9"/>
-                <button description="" id="10"/>
-                <button description="" id="11"/>
-                <button description="Quick Nav - Waypoint Designate" id="12">
-                    <container type="basic">
+                <button description="Scripted orders. Menu/keys. Support/Tanker/Repair request. - Menu Option 1/3" id="7">
+                    <container activate-on="release" delay="0.12" type="tempo">
                         <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="29"/>
-                                    <key extended="False" press="True" scan-code="41"/>
-                                    <key extended="False" press="False" scan-code="41"/>
-                                    <key extended="False" press="False" scan-code="29"/>
+                                    <key extended="False" press="True" scan-code="2"/>
+                                    <key extended="False" press="False" scan-code="2"/>
                                 </actions>
                             </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;1&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="4"/>
+                                    <key extended="False" press="False" scan-code="4"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;3&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
-                    <container type="basic">
+                </button>
+                <button description="Scripted orders. Menu/keys. Support/Tanker/Repair request. - MISUSE Menu Option 5/9" id="8">
+                    <container activate-on="release" delay="0.12" type="tempo">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; waypoint designate &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="6"/>
+                                    <key extended="False" press="False" scan-code="6"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;5&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="10"/>
+                                    <key extended="False" press="False" scan-code="10"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;9&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                    </container>
+                </button>
+                <button description="Scripted orders. Menu/keys. Support/Tanker/Repair request. - Menu Option 2/4" id="9">
+                    <container activate-on="release" delay="0.12" type="tempo">
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="3"/>
+                                    <key extended="False" press="False" scan-code="3"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;2&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="5"/>
+                                    <key extended="False" press="False" scan-code="5"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;4&lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                    </container>
+                </button>
+                <button description="Scripted orders. Menu/keys. Support/Tanker/Repair request." id="10">
+                    <container activate-on="release" delay="0.2" type="tempo">
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="46"/>
+                                    <key extended="False" press="False" scan-code="46"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;com menu&lt;/prosody&gt; &lt;/speak&gt; "/>
+                        </action-set>
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="19"/>
+                                    <key extended="False" press="False" scan-code="19"/>
+                                    <key extended="False" press="False" scan-code="56"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;repairs&lt;/prosody&gt; &lt;/speak&gt; "/>
+                        </action-set>
+                    </container>
+                </button>
+                <button description="" id="11"/>
+                <button description="Quick Nav - Waypoint Designate" id="12">
+                    <container activate-on="release" delay="0.2" type="tempo">
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <pause duration="0.01"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- waypoint designate --&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <action-set>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- waypoint designate --&gt; waypoint next &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="56"/>
+                                <key extended="False" scan-code="49"/>
+                            </map-to-keyboard>
                         </action-set>
                     </container>
                 </button>
                 <button description="" id="13"/>
                 <button description="" id="14"/>
                 <hat description="Sensors - Intelligence, Accessory" id="1">
-                    <container type="basic">
+                    <container activate-on="release" delay="0.5" type="tempo">
                         <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="True" press="True" scan-code="54"/>
-                                    <key extended="False" press="True" scan-code="43"/>
-                                    <key extended="False" press="False" scan-code="43"/>
-                                    <key extended="True" press="False" scan-code="54"/>
-                                </actions>
-                            </macro>
-                            <description description="Scan Spectrum Enter"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; Scan Spectrum Enter &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; deck &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
-                        <virtual-button north="1"/>
-                    </container>
-                    <container type="basic">
                         <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <key extended="True" press="True" scan-code="29"/>
-                                    <key extended="False" press="True" scan-code="43"/>
-                                    <key extended="False" press="False" scan-code="43"/>
-                                    <key extended="True" press="False" scan-code="29"/>
-                                </actions>
-                            </macro>
-                            <description description="Scan Spectrum Exit"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; Scan Spectrum Exit &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; alternate &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
-                        <virtual-button south="1"/>
+                        <virtual-button west="1"/>
                     </container>
                 </hat>
             </mode>
@@ -2010,7 +2283,7 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="Countermeasures - Shield" id="3">
+                <button description="Countermeasures - Shield Equalize" id="3">
                     <container type="basic">
                         <action-set>
                             <macro>
@@ -2116,20 +2389,14 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="42"/>
                                     <pause duration="0.01"/>
-                                    <key extended="False" press="True" scan-code="18"/>
-                                    <pause duration="0.11"/>
-                                    <key extended="False" press="False" scan-code="18"/>
-                                    <pause duration="0.01"/>
-                                    <key extended="False" press="False" scan-code="42"/>
                                 </actions>
                             </macro>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;heat sink&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!-- heat sink--&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -2139,15 +2406,15 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <vjoy input-id="4" input-type="button" value="True" vjoy-id="1"/>
-                                    <vjoy input-id="4" input-type="button" value="False" vjoy-id="1"/>
+                                    <key extended="False" press="True" scan-code="45"/>
+                                    <key extended="False" press="False" scan-code="45"/>
                                 </actions>
                             </macro>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; chaff &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- chaff --&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -2247,10 +2514,10 @@
                                 <properties/>
                                 <actions>
                                     <vjoy input-id="1" input-type="button" value="True" vjoy-id="1"/>
-                                    <pause duration="0.25"/>
+                                    <pause duration="0.1"/>
                                     <vjoy input-id="1" input-type="button" value="False" vjoy-id="1"/>
-                                    <vjoy input-id="1" input-type="hat" value="south" vjoy-id="1"/>
-                                    <vjoy input-id="1" input-type="hat" value="center" vjoy-id="1"/>
+                                    <key extended="False" press="True" scan-code="52"/>
+                                    <key extended="False" press="False" scan-code="52"/>
                                 </actions>
                             </macro>
                         </action-set>
@@ -2280,15 +2547,14 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="36"/>
-                                    <key extended="False" press="False" scan-code="36"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
                         </action-set>
                     </container>
                     <container type="basic">
                         <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; low wake &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- low wake --&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -2313,8 +2579,8 @@
                                 <actions>
                                     <joystick device-guid="{53D24200-DEEB-11E9-8002-444553540000}" input-id="1" input-type="button" value="True"/>
                                     <joystick device-guid="{53D24200-DEEB-11E9-8002-444553540000}" input-id="1" input-type="button" value="False"/>
-                                    <vjoy input-id="1" input-type="hat" value="north" vjoy-id="1"/>
-                                    <vjoy input-id="1" input-type="hat" value="center" vjoy-id="1"/>
+                                    <key extended="False" press="True" scan-code="52"/>
+                                    <key extended="False" press="False" scan-code="52"/>
                                 </actions>
                             </macro>
                         </action-set>
@@ -2339,7 +2605,10 @@
                 </button>
                 <button description="" id="3"/>
                 <button description="Countermeasures - Depart (HighWake)" id="4">
-                    <container type="basic">
+                    <container activate-on="release" delay="0.65" type="tempo">
+                        <action-set>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; error &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
                         <action-set>
                             <macro>
                                 <properties/>
@@ -2350,11 +2619,7 @@
                                     <key extended="False" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
-                        </action-set>
-                    </container>
-                    <container type="basic">
-                        <action-set>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; high wake &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- high wake --&gt; depart &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -2362,7 +2627,44 @@
                 <button description="" id="6"/>
                 <button description="" id="7"/>
                 <button description="" id="8"/>
-                <hat description="" id="1"/>
+                <hat description="Variant Unique - Target Management." id="1">
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="67"/>
+                            </map-to-keyboard>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; group 1 &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <virtual-button north="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="68"/>
+                            </map-to-keyboard>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; group 2 &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <virtual-button east="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="87"/>
+                            </map-to-keyboard>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; group 3 &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <virtual-button south="1"/>
+                    </container>
+                    <container type="basic">
+                        <action-set>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="88"/>
+                            </map-to-keyboard>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; group 4 &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                        <virtual-button west="1"/>
+                    </container>
+                </hat>
             </mode>
             <mode name="06-I-D">
                 <axis description="" id="1"/>
@@ -2379,8 +2681,8 @@
                                 <actions>
                                     <joystick device-guid="{53D24200-DEEB-11E9-8002-444553540000}" input-id="1" input-type="button" value="True"/>
                                     <joystick device-guid="{53D24200-DEEB-11E9-8002-444553540000}" input-id="1" input-type="button" value="False"/>
-                                    <vjoy input-id="1" input-type="hat" value="north" vjoy-id="1"/>
-                                    <vjoy input-id="1" input-type="hat" value="center" vjoy-id="1"/>
+                                    <key extended="False" press="True" scan-code="52"/>
+                                    <key extended="False" press="False" scan-code="52"/>
                                 </actions>
                             </macro>
                         </action-set>
@@ -2409,15 +2711,18 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="29"/>
-                                    <key extended="False" press="True" scan-code="41"/>
-                                    <key extended="False" press="False" scan-code="41"/>
-                                    <key extended="False" press="False" scan-code="29"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; waypoint designate &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;! -- waypoint designate --&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
-                        <action-set/>
+                        <action-set>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;! -- waypoint designate --&gt; waypoint next &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="56"/>
+                                <key extended="False" scan-code="49"/>
+                            </map-to-keyboard>
+                        </action-set>
                     </container>
                 </button>
                 <button description="" id="4"/>

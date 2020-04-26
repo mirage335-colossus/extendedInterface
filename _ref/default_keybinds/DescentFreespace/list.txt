@@ -1,10 +1,10 @@
 
 _Stick_
->) Primary Fire			DX01
-  x) Primary Fire Cycle		DX01, DXHATUP
->) Secondary Fire		DX02
->) Shield Equalize		q
->) Countermeasure		x
++) Primary Fire			DX01
+  +) Primary Fire Cycle		DX01, DXHATUP
++) Secondary Fire		DX02
++) Shield Equalize		q
++) Countermeasure		x
 
 +) Primary+			'.'
 +) Primary-			'.'
@@ -21,79 +21,80 @@ x) LookDown			DXHATDOWN
 +) ShieldLeft			Left
 +) ShieldRight			Right
 
-*) TargetGroup1			F09
-*) TargetGroup2			F10
-*) TargetGroup3			F11
-*) TargetGroup4			F12
++) TargetGroup1			F09
++) TargetGroup2			F10
++) TargetGroup3			F11
++) TargetGroup4			F12
 
 
 
 _Throttle_
-*) Afterburner			a
++) Afterburner			a,DX13
 
-*) ThrustReverse		z
++) ThrustReverse		z,DX14
 
-*) Depart			LAlt J (DISABLED)
++) Depart			LAlt J (LONG PRESS)
+x) Macro - Order all to depart.
 
-*) PTT				DX32 ?
-*) PTT Record			F24 ?
-*) PTT Alt			DX28 ?
++) PTT				DX32 ?
++) PTT Record			F24 ?
++) PTT Alt			DX28 ?
 
 
-*) escort+			e
-*) escort-
++) escort+			e
++) escort-
 
-*) rescue			LAlt y
-*) TargetTarget			j
++) rescue			LAlt y
++) TargetTarget			j
 
-*) repairs			LAlt r
++) repairs			LAlt r
 
-*) AlphaAttack			c,2,1,1
-*) BetaAttack			c,2,2,1
-*) DeltaAttack			c,2,3,1
-*) GammaAttack			c,2,4,1
-*) AllAttack			c,3,1
++) AlphaAttack			c,2,1,1
++) BetaAttack			c,2,2,1
++) DeltaAttack			c,2,3,1
++) GammaAttack			c,2,4,1
++) AllAttack			c,3,1
 
-*) engine			PGUP
-*) weapon			INS
-*) system			HOME
++) engine			PGUP
++) weapon			INS
++) system			HOME
 
-*) stealth			LAlt g
-*) waypoint			LCtl `
-*) shield			q
++) stealth			LAlt g
+x) waypoint			LCtl `
++) shield			q
 
-*) NavPanel			F2
-*) CommPanel			c
-*) ConfigPanel			F3
-*) Options			ESC
++) NavPanel			F3
++) CommPanel			c
++) ConfigPanel			F4
++) Options			ESC
 
-*) HudToggle ?			LCtl LAlt g ?
-*) Camera Next ?		= ?
-*) Orbit Lines Toggle ?		LCtl h ?
+x) HudToggle ?			LCtl LAlt g ?
+x) Camera Next ?		= ?
+x) Orbit Lines Toggle ?		LCtl h ?
 *) cam ?			LCtl [ ?
 
-*) toggle cam hud ?		LShift h ?
-*) screenshot ?			LAlt F10 ?
+x) toggle cam hud ?		LShift h ?
+x) screenshot ?			LAlt F10 ?
 *) control toggle ?		ENT ?
 *) toggle free cam ?		BSP ?
 
 
-*) sub+				s
-*) sub-				LShift s
-*) turret+			k
-*) turret-			LShift k
++) sub+				s
++) sub-				LShift s
++) turret+			k
++) turret-			LShift k
 
-*) TargetAhead			y
-*) SubsystemAhead		v
-*) TargetThreat			b
-*) TargetAttacker		r
++) TargetAhead			y
++) SubsystemAhead		v
++) TargetThreat			b
++) TargetAttacker		r
 
-*) hostile+			h
-*) hostile-			LShift h
-*) target+			t
-*) target-			LShift t
-*) cargo+			u
-*) cargo-			LShift u
++) hostile+			h
++) hostile-			LShift h
++) target+			t
++) target-			LShift t
++) cargo+			u
++) cargo-			LShift u
 
 
 
@@ -101,6 +102,30 @@ _Throttle_
 
 
 
++) Autopilot Toggle - Alt A
++) Waypoint Next - Alt N
+
++) Equalize Energy - Alt D
+
+*) Cycle Radar Range - '
+
+
+x) Top Down View		Shift 9
+
+*) Deck				ESC
+
+
+*) External View		.
+
++) Toggle External Camera Lock	Pad Enter
+
+*) Center View			Pad 5
+*) View Distance +/-		Pad +/-
+*) Current Target View		\
+
+
+x) Chase View			*
+x) Free Look View		Pad 0
 
 
 

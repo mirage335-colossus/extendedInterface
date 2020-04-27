@@ -107,21 +107,41 @@ x) screenshot ?			LAlt F10 ?
 
 +) Equalize Energy - Alt D
 
-*) Cycle Radar Range - '
++) Cycle Radar Range - '
 
 
 x) Top Down View		Shift 9
 
+
 *) Deck				ESC
 
-
+*) Current Target View		/
 *) External View		.
 
-+) Toggle External Camera Lock	Pad Enter
 
-*) Center View			Pad 5
-*) View Distance +/-		Pad +/-
-*) Current Target View		\
+*) Toggle External Camera Lock	PadEnter
+
+*) View Distance + -		Pad+ Pad-
+
+
+_
+
+Actions
+*) Deck view.
+	Withdraw camera - ESC
+	Toggle Target and External View - / .
+
+*) Look around - target.
+	Target View then External View  - / .
+	Unlock Camera - PadEnter
+
+*) View Distance
+	Pad+ Pad-
+
+_
+
+
+x) Center View			Pad 5
 
 
 x) Chase View			*

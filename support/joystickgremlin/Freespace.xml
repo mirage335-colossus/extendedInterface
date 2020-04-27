@@ -179,10 +179,10 @@
                         <virtual-button direction="above" lower-limit="-0.4" upper-limit="-1.0"/>
                     </container>
                 </axis>
-                <axis description="" id="3">
+                <axis description="Remap - Slider - BAD MISUSE Z Rotation" id="3">
                     <container type="basic">
                         <action-set>
-                            <remap axis="7" axis-scaling="1.0" axis-type="absolute" vjoy="1"/>
+                            <remap axis="6" axis-scaling="1.0" axis-type="absolute" vjoy="1"/>
                             <response-curve>
                                 <mapping type="cubic-spline">
                                     <control-point x="-1.0" y="-1.0"/>
@@ -216,13 +216,7 @@
                 </axis>
                 <axis description="" id="4"/>
                 <axis description="" id="5"/>
-                <axis description="" id="6">
-                    <container type="basic">
-                        <action-set>
-                            <remap axis="6" axis-scaling="1.0" axis-type="absolute" vjoy="1"/>
-                        </action-set>
-                    </container>
-                </axis>
+                <axis description="Remap - Z Rotation - BAD MISUSE DISABLED" id="6"/>
                 <axis description="" id="7">
                     <container type="basic">
                         <action-set>
@@ -589,8 +583,14 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="True" press="True" scan-code="81"/>
-                                    <key extended="True" press="False" scan-code="81"/>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="32"/>
+                                    <key extended="False" press="False" scan-code="32"/>
+                                    <key extended="False" press="False" scan-code="56"/>
+                                    <key extended="True" press="True" scan-code="73"/>
+                                    <key extended="True" press="False" scan-code="73"/>
+                                    <key extended="True" press="True" scan-code="73"/>
+                                    <key extended="True" press="False" scan-code="73"/>
                                     <key extended="True" press="True" scan-code="73"/>
                                     <key extended="True" press="False" scan-code="73"/>
                                     <key extended="True" press="True" scan-code="73"/>
@@ -617,8 +617,14 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="True" press="True" scan-code="81"/>
-                                    <key extended="True" press="False" scan-code="81"/>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="32"/>
+                                    <key extended="False" press="False" scan-code="32"/>
+                                    <key extended="False" press="False" scan-code="56"/>
+                                    <key extended="True" press="True" scan-code="82"/>
+                                    <key extended="True" press="False" scan-code="82"/>
+                                    <key extended="True" press="True" scan-code="82"/>
+                                    <key extended="True" press="False" scan-code="82"/>
                                     <key extended="True" press="True" scan-code="82"/>
                                     <key extended="True" press="False" scan-code="82"/>
                                     <key extended="True" press="True" scan-code="82"/>
@@ -645,8 +651,14 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="True" press="True" scan-code="81"/>
-                                    <key extended="True" press="False" scan-code="81"/>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="32"/>
+                                    <key extended="False" press="False" scan-code="32"/>
+                                    <key extended="False" press="False" scan-code="56"/>
+                                    <key extended="True" press="True" scan-code="71"/>
+                                    <key extended="True" press="False" scan-code="71"/>
+                                    <key extended="True" press="True" scan-code="71"/>
+                                    <key extended="True" press="False" scan-code="71"/>
                                     <key extended="True" press="True" scan-code="71"/>
                                     <key extended="True" press="False" scan-code="71"/>
                                     <key extended="True" press="True" scan-code="71"/>
@@ -789,7 +801,22 @@
                 <axis description="" id="6"/>
                 <axis description="" id="7"/>
                 <axis description="" id="8"/>
-                <button description="" id="1"/>
+                <button description="Variant Unique button. OR Match speed." id="1">
+                    <container type="basic">
+                        <action-set>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="50"/>
+                                    <key extended="False" press="False" scan-code="50"/>
+                                    <key extended="False" press="False" scan-code="56"/>
+                                </actions>
+                            </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; speed match &lt;/prosody&gt; &lt;/speak&gt;"/>
+                        </action-set>
+                    </container>
+                </button>
                 <button description="Comm - Team PTT" id="2">
                     <container type="basic">
                         <action-set>
@@ -2524,11 +2551,14 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <pause duration="0.01"/>
+                                    <key extended="False" press="True" scan-code="56"/>
+                                    <key extended="False" press="True" scan-code="35"/>
+                                    <key extended="False" press="False" scan-code="35"/>
+                                    <key extended="False" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
-                            <description description="MIX hud"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; hud &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <description description="cueing - auto targeting"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; target auto &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <action-set>
                             <description description="VR Align"/>
@@ -2627,8 +2657,7 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="40"/>
                             </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; radar range &lt;/prosody&gt; &lt;/speak&gt;
-"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; radar range &lt;/prosody&gt; &lt;/speak&gt; "/>
                         </action-set>
                         <virtual-button north="1"/>
                     </container>
@@ -2637,8 +2666,7 @@
                             <map-to-keyboard>
                                 <key extended="False" scan-code="40"/>
                             </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; radar range &lt;/prosody&gt; &lt;/speak&gt;
-"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; radar range &lt;/prosody&gt; &lt;/speak&gt; "/>
                         </action-set>
                         <virtual-button south="1"/>
                     </container>
@@ -2812,6 +2840,100 @@
                 <button description="" id="8"/>
                 <hat description="" id="1"/>
             </mode>
+        </device>
+        <device device-guid="{E441F0D0-39FC-11EA-8001-444553540000}" label="" name="TWCS Throttle" type="joystick">
+            <mode name="00-Infrastructure">
+                <axis description="" id="1"/>
+                <axis description="" id="2"/>
+                <axis description="" id="3"/>
+                <axis description="" id="4"/>
+                <axis description="" id="5"/>
+                <axis description="" id="6"/>
+                <axis description="" id="7"/>
+                <axis description="" id="8"/>
+                <button description="" id="1"/>
+                <button description="" id="2"/>
+                <button description="" id="3"/>
+                <button description="" id="4"/>
+                <button description="" id="5"/>
+                <button description="" id="6"/>
+                <button description="" id="7"/>
+                <button description="" id="8"/>
+                <button description="" id="9"/>
+                <button description="" id="10"/>
+                <button description="" id="11"/>
+                <button description="" id="12"/>
+                <button description="" id="13"/>
+                <button description="" id="14"/>
+                <hat description="" id="1"/>
+            </mode>
+            <mode name="01-O_M">
+                <axis description="" id="1"/>
+                <axis description="" id="2"/>
+                <axis description="" id="3"/>
+                <axis description="" id="4"/>
+                <axis description="" id="5"/>
+                <axis description="" id="6"/>
+                <axis description="" id="7"/>
+                <axis description="" id="8"/>
+                <button description="" id="1"/>
+                <button description="" id="2"/>
+                <button description="" id="3"/>
+                <button description="" id="4"/>
+                <button description="" id="5"/>
+                <button description="" id="6"/>
+                <button description="" id="7"/>
+                <button description="" id="8"/>
+                <button description="" id="9"/>
+                <button description="" id="10"/>
+                <button description="" id="11"/>
+                <button description="" id="12"/>
+                <button description="" id="13"/>
+                <button description="" id="14"/>
+                <hat description="" id="1"/>
+            </mode>
+            <mode name="02-O-U"/>
+            <mode name="03-O-D"/>
+            <mode name="04-I_M"/>
+            <mode name="05-I-U"/>
+            <mode name="06-I-D"/>
+        </device>
+        <device device-guid="{E4435060-39FC-11EA-8002-444553540000}" label="" name="SideWinder Force Feedback 2 Joystick" type="joystick">
+            <mode name="00-Infrastructure">
+                <axis description="" id="1"/>
+                <axis description="" id="2"/>
+                <axis description="" id="6"/>
+                <axis description="" id="7"/>
+                <button description="" id="1"/>
+                <button description="" id="2"/>
+                <button description="" id="3"/>
+                <button description="" id="4"/>
+                <button description="" id="5"/>
+                <button description="" id="6"/>
+                <button description="" id="7"/>
+                <button description="" id="8"/>
+                <hat description="" id="1"/>
+            </mode>
+            <mode name="01-O_M">
+                <axis description="" id="1"/>
+                <axis description="" id="2"/>
+                <axis description="" id="6"/>
+                <axis description="" id="7"/>
+                <button description="" id="1"/>
+                <button description="" id="2"/>
+                <button description="" id="3"/>
+                <button description="" id="4"/>
+                <button description="" id="5"/>
+                <button description="" id="6"/>
+                <button description="" id="7"/>
+                <button description="" id="8"/>
+                <hat description="" id="1"/>
+            </mode>
+            <mode name="02-O-U"/>
+            <mode name="03-O-D"/>
+            <mode name="04-I_M"/>
+            <mode name="05-I-U"/>
+            <mode name="06-I-D"/>
         </device>
     </devices>
     <vjoy-devices>

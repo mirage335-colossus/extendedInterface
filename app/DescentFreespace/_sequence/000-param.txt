@@ -1,13 +1,40 @@
 
 _Dynamic_
+Virtual Desktop (As Desired)
+180deg Size
+7m Distance
+100% Curve
 
+None Environment
+Transparency Disabled
+Head Lock Optional
+Snap To Horizon Enabled
 
-_Static_
+Freespace Flags
+-fov 1
+
+OpenTrack
+Valve SteamVR
+freetrack 2.0 Enhanced
+Accela Filter
+Mapping
+	All Axes
+		Max input 180deg, Max Output 180deg
+		2.5x0, 180x30
+		Keep in mind, slightly aggressive TrackIR emulation, with small deadzone, may help compensate for latency.
+	Bindings
+		Center - Alt Shift V
+		Restart tracking - Alt Shift V
+
+_Legacy_
 Virtual Desktop (As Desired)
 210deg Size
 7m Distance
 75% Curve
-Dark Nebula Environment
+
+None Environment
+Transparency Disabled
+Snap To Horizon Enabled
 
 Freespace Flags
 -fov 1.47656273071

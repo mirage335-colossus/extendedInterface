@@ -506,8 +506,11 @@
                                     <key extended="False" press="True" scan-code="23"/>
                                     <key extended="False" press="False" scan-code="23"/>
                                     <key extended="False" press="False" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="46"/>
+                                    <key extended="False" press="False" scan-code="46"/>
                                 </actions>
                             </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; ignore &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <action-set>
                             <macro>
@@ -517,8 +520,11 @@
                                     <key extended="False" press="True" scan-code="25"/>
                                     <key extended="False" press="False" scan-code="25"/>
                                     <key extended="False" press="False" scan-code="42"/>
+                                    <key extended="False" press="True" scan-code="46"/>
+                                    <key extended="False" press="False" scan-code="46"/>
                                 </actions>
                             </macro>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; protect &lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                     </container>
                 </button>
@@ -1149,11 +1155,7 @@
                     </container>
                     <container type="basic">
                         <action-set>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="42"/>
-                                <key extended="False" scan-code="18"/>
-                            </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;escort&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!-- escort --&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <virtual-button direction="above" lower-limit="-0.75" upper-limit="-1.0"/>
                     </container>
@@ -1490,6 +1492,14 @@
                             <macro>
                                 <properties/>
                                 <actions>
+                                    <key extended="False" press="True" scan-code="42"/>
+                                    <pause duration="0.1"/>
+                                    <key extended="False" press="True" scan-code="19"/>
+                                    <pause duration="0.45"/>
+                                    <key extended="False" press="False" scan-code="19"/>
+                                    <pause duration="0.1"/>
+                                    <key extended="False" press="False" scan-code="42"/>
+                                    <pause duration="0.15"/>
                                     <key extended="False" press="True" scan-code="56"/>
                                     <key extended="False" press="True" scan-code="19"/>
                                     <key extended="False" press="False" scan-code="19"/>

@@ -1,0 +1,7 @@
+*) 'Knossos' seems to work as an installer as of 2020-04-28 - https://fsnebula.org/knossos/ .
+*) 'Cockpit Mod 2.0' may be desirable for VR/TrackIR users.
+*) Apparently, scptrackir is NOT needed.
+*) JoystickGremlin profile mostly uses default keybindings, however, some will need to be added manually. Most notably...
+	*) Afterburner DirectX keybind used by throttle 'detent'.
+
+

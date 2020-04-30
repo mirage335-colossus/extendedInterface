@@ -2,25 +2,9 @@
 REM Depends:
 REM 'mswadminpriv.bat' - 'nircmd elevate'
 
-SET rapidAircraftType=FA18C
+SET rapidAircraftType=B737-800X-ZIBO
 
-IF /I "%1" EQU "FA18C" SET rapidAircraftType=FA18C
-IF /I "%1" EQU "F5E" SET rapidAircraftType=F5E
-
-IF /I "%1" EQU "A10C" SET rapidAircraftType=A10C
-IF /I "%1" EQU "F16C" SET rapidAircraftType=F16C
-
-IF /I "%1" EQU "AV8B" SET rapidAircraftType=AV8B
-IF /I "%1" EQU "F14" SET rapidAircraftType=F14
-
-IF /I "%1" EQU "KA50" SET rapidAircraftType=KA50
-IF /I "%1" EQU "P51D" SET rapidAircraftType=P51D
-
-IF /I "%1" EQU "F15C-FC3" SET rapidAircraftType=F15C-FC3
-IF /I "%1" EQU "SU33-FC3" SET rapidAircraftType=SU33-FC3
-IF /I "%1" EQU "A10A-FC3" SET rapidAircraftType=A10A-FC3
-
-IF /I "%1" EQU "F22A-FC3-GrinnelliDesigns" SET rapidAircraftType=F15C-FC3
+IF /I "%1" EQU "B737-800X" SET rapidAircraftType=B737-800X-ZIBO
 
 
 
@@ -35,11 +19,11 @@ CALL C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voic
 REM 001-simpit
 CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_UniManager\simpit.bat"
 
-REM 002-_steamvrprofile_dcs_restore
-CALL "C:\core\infrastructure\extendedInterface\app\DCS\steamvrprofile\_steamvrprofile_dcs_restore.bat"
+REM 002-_steamvrprofile_xplane_restore
+CALL "C:\core\infrastructure\extendedInterface\app\XPlane\steamvrprofile\_steamvrprofile_xplane_restore_fast.bat"
 
-REM 002-_steamvrprofile_dcs_restore_fast
-REM CALL "C:\core\infrastructure\extendedInterface\app\DCS\steamvrprofile\_steamvrprofile_dcs_restore_fast.bat"
+REM 002-_steamvrprofile_xplane_restore_fast
+REM CALL "C:\core\infrastructure\extendedInterface\app\DCS\steamvrprofile\_steamvrprofile_xplane_restore_fast.bat"
 
 
 REM 005-EVGA Precision X1 (if installed)
@@ -57,7 +41,7 @@ REM taskkill /IM mintty.exe
 REM ATTENTION: Essential.
 REM 015-VoiceAttack - AS ADMIN - fa18c
 cd "C:\Program Files (x86)\VoiceAttack"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SIM-DCS-%rapidAircraftType%"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SIM-XPLANE-%rapidAircraftType%"
 
 REM ATTENTION: Essential.
 REM 020- -JoystickGremlin-  - AS ADMIN - fa18c
@@ -65,7 +49,7 @@ CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM joystick_gremlin.exe
 CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /F /IM joystick_gremlin.exe
 timeout /NOBREAK 1
 cd "C:\Program Files (x86)\H2ik\Joystick Gremlin"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\H2ik\Joystick Gremlin" "" "C:\Program Files (x86)\H2ik\Joystick Gremlin\joystick_gremlin.exe" --profile "C:\core\infrastructure\extendedInterface\support\joystickgremlin\Sim - DCS - %rapidAircraftType%.xml" --enable --start-minimized
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\H2ik\Joystick Gremlin" "" "C:\Program Files (x86)\H2ik\Joystick Gremlin\joystick_gremlin.exe" --profile "C:\core\infrastructure\extendedInterface\support\joystickgremlin\Sim - XPlane - %rapidAircraftType%.xml" --enable --start-minimized
 
 
 REM OBSOLETE
@@ -102,14 +86,8 @@ REM start /MIN "" "C:\Program Files\TeamSpeak 3 Client\ts3client_win64.exe"
 
 
 REM 202-SimpleRadioStandalone
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM SR-ClientRadio.exe
-cd "C:\Program Files\DCS-SimpleRadio-Standalone"
-start /MIN "" "C:\Program Files\DCS-SimpleRadio-Standalone\SR-ClientRadio.exe"
 
 REM 550-DCS-Waypoint-Editor
-taskkill /IM dcs_wp_editor.exe
-cd "C:\core\installations\dcs_wp_editor"
-start /MIN "" "C:\core\installations\dcs_wp_editor\dcs_wp_editor.exe"
 
 
 REM ATTENTION: Significant GPU load. Possibly unreliable GPS coordinate reception.
@@ -126,9 +104,9 @@ REM cd "%USERPROFILE%\AppData\Local\atom\app-1.36.1"
 REM start "" cmd /c atom "C:\core\sequence\dcs\901-doc" "C:\core\sequence\dcs\930-mission"
 
 
-REM 590-panel - DCS
+REM 590-panel - XPlane
 cd "C:\Program Files\Oracle\VirtualBox"
-start /MIN "" "C:\Program Files\Oracle\VirtualBox\VirtualBoxVM.exe" --comment "panel - DCS" --startvm "panel - DCS"
+start /MIN "" "C:\Program Files\Oracle\VirtualBox\VirtualBoxVM.exe" --comment "panel - XPlane" --startvm "panel - XPlane"
 
 
 
@@ -137,7 +115,7 @@ REM 690-VoiceAttack - AS ADMIN - fa18c - construct desk relaxed
 REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskill /IM OVRdrop.exe
 REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskill /F /IM OVRdrop.exe
 REM cd "C:\Program Files (x86)\VoiceAttack"
-REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SIM-DCS-%rapidAircraftType%" -command "construct desk relaxed"
+REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SIM-XPLANE-%rapidAircraftType%" -command "construct desk relaxed"
 
 
 REM ATTENTION: Not always desirable, and likely to be overridden on VR app start.
@@ -155,12 +133,11 @@ REM -----
 
 
 
-
 REM 799-VoiceAttack - AS ADMIN - fa18c - rapid complete -OPTIONAL
 REM 799-VoiceAttack - AS ADMIN - fa18c - arrange desk -OPTIONAL
 timeout 3
 cd "C:\Program Files (x86)\VoiceAttack"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SIM-DCS-%rapidAircraftType%" -command "rapid complete"
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe" -profile "SIM-XPLANE-%rapidAircraftType%" -command "rapid complete"
 
 
 
@@ -178,7 +155,7 @@ echo WARNING: SteamVR Restart Required!
 echo ________
 echo REQUEST
 echo ________
-echo WARNING: Native FFB required for some variants: F14,KA50,P51D!
+echo WARNING: Native FFB may be required for some variants!
 
 
 timeout 1

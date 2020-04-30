@@ -1,25 +1,7 @@
 
 
 _Extra_
-*) Gamma. Typically 2.0 . Shaders mod may or may not require +0.2 adjustment .
-*) Water. 'Low' for Nevada. 'Medium' or greater, if shaders mod enabled.
-*) Grass/Trees. Reduce during simulated aircraft startup procedure if needed.
-*) MSAA. Keep at 2x if possible, turn off if necessary.
-
 -
-
-_Shader Mod_
-*) Set "MASKSIZE" under "_HMD.hlsl" to 0.7 for Pimax 5kp at 'Normal' FOV.
-*) Maybe disable 'SIMPLE_GRASS' under "_HMD.hlsl". May be unaesthetic.
-*) Some shader mod files may need to be disabled for compatibility with new DCS World versions.
-
-*) Fixed Foveated Rendering apparently compiles some shaders in addition to those compiled without.
-
-*) Water must be 'Medium' or greater. Removing the file for water from the mod did not resolve this.
-
-
-_NTTR_
-#Waypoints CRAIG, APEX.
 
 
 _SimFFB_
@@ -30,50 +12,12 @@ _SimFFB_
 *Trimmer NONE
 
 
-_ Google Earth GPS - DCS_NMEA.lua , com0com _
-
-Google Earth must not be blocking serial ports.
-Beware 'Quit to Desktop' or full OS reboot may be required between flights.
-Destination port (COM2) will be read by application, source port (COM1) will be written by sim.
-
-sPort_Nr = 1
-
-COM1				COM2
-+use Ports class		+use Ports class
--emulate baud rate		-emulate baud rate
-+enable buffer overrun		+enable buffer overrun
-
-_SRS_
-In client.cfg:
-	DisableWindowVisibilityCheck=true
-
-As necessary, under 'Settings', use 'Reset Radio Overlay' button.
-
+_ Google Earth GPS , com0com _
 
 
 
 _Quality_
 -High Quality Tradeoffs-
-A few features crucially impact readability, and should not be reduced unless necessary.
-*) Textures.		Anything less than 'High'...
-	*) May greatly reduce at least F5E instrument resolution.
-	*) Greatly reduces FA18C AMPCD (moving map), kneeboard resolution. May reduce FA18C DDI resolution.
-*) Terrain Textures	Only 'High'/'Low'.
-	*) Little if any visual quality improvement with 'High'.
-
-A few features should not be enabled.
-*) Shadows, Terrain Object Shadows. Extreme CPU frametime cost.
-*) SSAA.
-
-Some settings may be traded quickly to maintain framerates without serious loss of visual quality.
-*) Water.
-	*) 'High', 'Medium'. Add detailed surface wave, reflection, and apparently, volumetric effects. Expensive.
-	*) 'Low'. Semi-transparent texture clearly usable for altitude estimation. Cheap, effective.
-	*) Rendered under terrain. Always set MIN ('Low') in land-only environments (ie. Nevada) if possible.
-*) Civ Traffic. 'Off' or 'Low'. May have performance impact on CPU/RAM and/or GPU/VRAM in some cases.
-*) MSAA. Eliminates pixelation of nearby object edges even at >2.2TotalSR. May be expensive in some cases.
-*) Visib Range. Keep 'Low' if possible.
-*) Res of Cockpit Displays. May have a high performance impact, may or may not be limited to if mirrors are enabled.
 
 
 

@@ -1,5 +1,5 @@
-cd C:\core\infrastructure\extendedInterface\app\DCS\_sequence
+cd C:\core\infrastructure\extendedInterface\app\XPlane\_sequence
 
-mkdir C:\core\sequence\dcs\
+mkdir C:\core\sequence\xplane\
 
-xcopy /Y /E /C /I . C:\core\sequence\dcs
+xcopy /Y /E /C /I . C:\core\sequence\xplane

@@ -1,2 +1,4 @@
 # Variant Unique
-WARNING: Native FFB required for some variants: F14,KA50,P51D!
+Use of X-Force or similar plugins with specific variants needs further investigation.
+http://www.saphar.fr/x-plane/x-force/en/
+Also documented by echo statements in rapid batch scripts.

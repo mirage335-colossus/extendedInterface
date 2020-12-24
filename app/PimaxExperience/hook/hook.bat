@@ -3,12 +3,12 @@
 REM https://serverfault.com/questions/22443/do-windows-batch-files-have-a-construction/22541#22541
 set args=%1
 shift
-:start
+:do
 if [%1] == [] goto done
 set args=%args% %1
 shift
-goto start
-
+goto do
+:done
 
 
 REM Depends:
@@ -37,6 +37,7 @@ tasklist /nh /fi "imagename eq PrecisionX_x64.exe" | find /i "PrecisionX_x64.exe
 
 REM WARNING: May display an unnecessary minimized window.
 start /MIN "" "C:\Program Files\Pimax\PVRHome\PVRHome_orig.exe" %args%
+REM "C:\Program Files\Pimax\PVRHome\PVRHome_orig.exe" %args%
 
 timeout 3
 start "" cmd /c "echo ***** HOOK COMPLETE ***** &echo(&timeout 5"

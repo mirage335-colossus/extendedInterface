@@ -124,6 +124,8 @@ Some additional software and hardware is strongly recommended.
 * 'DCS-to-GPS 1.3' - https://www.digitalcombatsimulator.com/en/files/3303310/
 * 'com0com' - http://com0com.sourceforge.net/
 
+* 'nircmd' - https://www.nirsoft.net/utils/nircmd.html
+
 
 # Backend - NIX
 

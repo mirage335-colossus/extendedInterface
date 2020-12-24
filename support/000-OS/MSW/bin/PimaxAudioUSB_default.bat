@@ -1,0 +1,11 @@
+
+nircmdc setdefaultsounddevice PimaxAudioUSB
+nircmdc setdefaultsounddevice PimaxAudioUSB 0
+nircmdc setdefaultsounddevice PimaxAudioUSB 1
+nircmdc setdefaultsounddevice PimaxAudioUSB 2
+
+REM nircmdc setdefaultsounddevice PimaxMicrophoneUSB
+REM nircmdc setdefaultsounddevice PimaxMicrophoneUSB 0
+REM nircmdc setdefaultsounddevice PimaxMicrophoneUSB 1
+REM nircmdc setdefaultsounddevice PimaxMicrophoneUSB 2
+

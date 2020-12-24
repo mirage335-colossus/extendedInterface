@@ -21,8 +21,9 @@ REM Terminate - VoiceAttack (Ensure correct microphone is available and used.)
 CALL C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voiceattack.bat
 
 REM 015-VoiceAttack - AS ADMIN
-cd "C:\Program Files (x86)\VoiceAttack"
-CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe"
+REM cd "C:\Program Files (x86)\VoiceAttack"
+REM CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\Program Files (x86)\VoiceAttack" "" "C:\Program Files (x86)\VoiceAttack\VoiceAttack.exe"
+start "" cmd /c C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voiceattack.bat _restart
 
 REM 005-EVGA Precision X1 (if installed)
 cd "C:\Program Files\EVGA\Precision X1"

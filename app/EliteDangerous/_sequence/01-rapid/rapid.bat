@@ -14,7 +14,7 @@ REM 001-simpit
 CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_UniManager\simpit.bat"
 
 REM 002-_steamvrprofile_elite_restore
-CALL "C:\core\infrastructure\extendedInterface\app\EliteDangerous\steamvrprofile\_steamvrprofile_elite_restore.bat"
+REM CALL "C:\core\infrastructure\extendedInterface\app\EliteDangerous\steamvrprofile\_steamvrprofile_elite_restore.bat"
 
 REM 002-_steamvrprofile_elite_restore_fast
 REM CALL "C:\core\infrastructure\extendedInterface\app\EliteDangerous\steamvrprofile\_steamvrprofile_elite_restore_fast.bat"

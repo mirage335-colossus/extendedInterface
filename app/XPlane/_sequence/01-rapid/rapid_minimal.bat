@@ -20,7 +20,7 @@ REM 001-simpit
 CALL "C:\core\infrastructure\extendedInterface\support\steamvr\SteamVR_UniManager\simpit.bat"
 
 REM 002-_steamvrprofile_xplane_restore
-CALL "C:\core\infrastructure\extendedInterface\app\XPlane\steamvrprofile\_steamvrprofile_xplane_restore_fast.bat"
+REM CALL "C:\core\infrastructure\extendedInterface\app\XPlane\steamvrprofile\_steamvrprofile_xplane_restore_fast.bat"
 
 REM 002-_steamvrprofile_xplane_restore_fast
 REM CALL "C:\core\infrastructure\extendedInterface\app\DCS\steamvrprofile\_steamvrprofile_xplane_restore_fast.bat"

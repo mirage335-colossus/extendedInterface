@@ -17,7 +17,7 @@ REM 002-_steamvrprofile_elite_restore
 REM CALL "C:\core\infrastructure\extendedInterface\app\EliteDangerous\steamvrprofile\_steamvrprofile_elite_restore.bat"
 
 REM 002-_steamvrprofile_elite_restore_fast
-CALL "C:\core\infrastructure\extendedInterface\app\EliteDangerous\steamvrprofile\_steamvrprofile_elite_restore_fast.bat"
+REM CALL "C:\core\infrastructure\extendedInterface\app\EliteDangerous\steamvrprofile\_steamvrprofile_elite_restore_fast.bat"
 
 
 REM 005-EVGA Precision X1 (if installed)

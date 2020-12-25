@@ -3,6 +3,13 @@ Directory '_drivers-controllers' is intended as temporary user storage for Steam
 
 When Controller Emulation is not desired (ie. VR Application natively supports Leap Motion Hand Tracking), delete the relevant directory from 'SteamVR - Drivers' directory, leaving a copy under '_drivers-controllers' .
 
+
+
+Strongly recommended - bind 'leap_start' and 'leap_stop' or equivalents to macros, perhaps voice commands. This will allow hand tracking to be disabled when conflicting with other controls or otherwise inconvenient.
+
+
+_
+
 For best results, install all of the following.
 
 * Leap Motion SteamVR Driver

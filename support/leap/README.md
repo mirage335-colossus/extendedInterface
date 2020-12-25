@@ -40,3 +40,15 @@ https://github.com/SDraw/driver_leap
 ```
 
 
+_
+
+Scroll wheel and mouse buttons may be used in combination with emulated hand controllers, specifically in DCS World. A trackball with large scroll wheel and buttons is highly useful for such purposes.
+
+https://www.amazon.com/Kensington-Orbit-Trackball-Scroll-K72337US/dp/B002OOWB3O/
+
+
+
+
+
+
+

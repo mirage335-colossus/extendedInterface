@@ -14,6 +14,11 @@ goto do
 REM Depends:
 REM 'mswadminpriv.bat' - 'nircmd elevate'
 
+REM If previously stopped (presumably by VoiceAttack or similar macro), ensure 'LeapService' has started before PimaxExperience.
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C start /MIN /D "C:\WINDOWS\system32" "" "C:\WINDOWS\system32\sc.exe" start LeapService
+
+
+
 REM Requires nircmdc, relevant Batch script, and Pimax headset sound device to be renamed 'PimaxAudioUSB'.
 CALL C:\bin\PimaxAudioUSB_default.bat
 

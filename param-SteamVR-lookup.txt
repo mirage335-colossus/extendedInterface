@@ -1,0 +1,30 @@
+# Pimax Vision 8kX
+
+steamvr_res-percent-pi8kx-125rq-noParallel-3105v=62
+steamvr_res-percent-pi8kx-125rq-noParallel-2700v=46
+steamvr_res-percent-pi8kx-125rq-noParallel-2430v=38
+
+steamvr_res-percent-pi8kx-125rq-parallel-3543v=50
+steamvr_res-percent-pi8kx-125rq-parallel-3206v=42
+steamvr_res-percent-pi8kx-125rq-parallel-3105v=40
+steamvr_res-percent-pi8kx-125rq-parallel-2700v=30
+steamvr_res-percent-pi8kx-125rq-parallel-2430v=24
+
+
+
+# Pimax 5k+
+# If this is the user's alternate headset, it is recommended that all profiles created for it be regarded as '-flex' flexible profiles which may not always be entirely correct for any specific application.
+
+# TotalSR 1.75.
+steamvr_res-percent-pi5kp-125rq-noParallel-2520v=92
+
+# TotalSR 2.00.
+steamvr_res-percent-pi5kp-125rq-noParallel-2880v=120
+
+# Total SR 2.125.
+steamvr_res-percent-pi5kp-125rq-noParallel-3060v=136
+
+
+
+
+

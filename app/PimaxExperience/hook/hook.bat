@@ -23,7 +23,7 @@ REM Requires nircmdc, relevant Batch script, and Pimax headset sound device to b
 CALL C:\bin\PimaxAudioUSB_default.bat
 
 REM Terminate - VoiceAttack (Ensure correct microphone is available and used.)
-CALL C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voiceattack.bat
+REM CALL C:\core\infrastructure\extendedInterface\support\voiceattack\terminate_voiceattack.bat
 
 REM 015-VoiceAttack - AS ADMIN
 REM cd "C:\Program Files (x86)\VoiceAttack"
@@ -39,7 +39,13 @@ tasklist /nh /fi "imagename eq PrecisionX_x64.exe" | find /i "PrecisionX_x64.exe
 
 
 
-
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM PVRHome_orig.exe
+tasklist /nh /fi "imagename eq PVRHome_orig.exe" | find /i "PVRHome_orig.exe" > nul || timeout 1
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /IM PVRHome_orig.exe
+tasklist /nh /fi "imagename eq PVRHome_orig.exe" | find /i "PVRHome_orig.exe" > nul || timeout 1
+CALL "C:\bin\mswadminpriv.bat" cmd.exe /C taskkill /F /IM PVRHome_orig.exe
+tasklist /nh /fi "imagename eq PVRHome_orig.exe" | find /i "PVRHome_orig.exe" > nul || timeout 1
+timeout 1
 
 REM WARNING: May display an unnecessary minimized window.
 start /MIN "" "C:\Program Files\Pimax\PVRHome\PVRHome_orig.exe" %args%

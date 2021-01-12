@@ -17,13 +17,15 @@ steamvr_res-percent-pi8kx-125rq-parallel-2430v=24
 
 # TotalSR 1.75.
 steamvr_res-percent-pi5kp-125rq-noParallel-2520v=92
+steamvr_res-percent-pi5kp-125rq-parallel-3150v=92
 
 # TotalSR 2.00.
 steamvr_res-percent-pi5kp-125rq-noParallel-2880v=120
+steamvr_res-percent-pi5kp-125rq-parallel-3600v=120
 
 # Total SR 2.125.
 steamvr_res-percent-pi5kp-125rq-noParallel-3060v=136
-
+steamvr_res-percent-pi5kp-125rq-parallel-3825v=136
 
 
 

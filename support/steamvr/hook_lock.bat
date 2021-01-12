@@ -122,15 +122,16 @@ REM   )
 REM )
 
 REM MOVE "%OutputFile%" "%InputFile%"
-REM @echo on
-REM start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent
-REM tasklist /nh /fi "imagename eq Steam.exe" | find /i "Steam.exe" > nul || (start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent)
 
 REM Wired network startup really should complete BEFORE any desktop GUI is started. MSW apparently disregards this. Therefore, delay.
 REM timeout /NOBREAK 20
 (ping 8.8.8.8 -n 2 -w 9000) || timeout /NOBREAK 20
 REM Testing only. Intended to fail, resulting in 18second delay.
 REM (ping 8.8.8.9 -n 2 -w 9000) || timeout /NOBREAK 20
+
+REM @echo on
+REM start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent
+REM tasklist /nh /fi "imagename eq Steam.exe" | find /i "Steam.exe" > nul || (start "" "C:\Program Files (x86)\Steam\Steam.exe" -silent)
 
 REM 008-Steam-SteamVR-OPTIONAL
 REM Terminate - SteamVR (Ensure video parameter changes take effect.)

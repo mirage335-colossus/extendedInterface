@@ -1,8 +1,12 @@
 # Pimax Vision 8kX
 
+# solve(y=−49.7895+0.0358674*x and x=2430,y) ... apparently fits ... 125rq-noParallel
+
 steamvr_res-percent-pi8kx-125rq-noParallel-3105v=62
 steamvr_res-percent-pi8kx-125rq-noParallel-2700v=46
 steamvr_res-percent-pi8kx-125rq-noParallel-2430v=38
+
+# solve(y=−33.1579+0.0234777*x and x=2430,y) ... apparently fits ... 125rq-parallel
 
 steamvr_res-percent-pi8kx-125rq-parallel-3543v=50
 steamvr_res-percent-pi8kx-125rq-parallel-3206v=42
@@ -14,6 +18,10 @@ steamvr_res-percent-pi8kx-125rq-parallel-2430v=24
 
 # Pimax 5k+
 # If this is the user's alternate headset, it is recommended that all profiles created for it be regarded as '-flex' flexible profiles which may not always be entirely correct for any specific application.
+
+# solve(y=−112.286+0.0809524*x and x=2520,y) ... apparently fits ... 125rq-noParallel
+
+# solve(y=−112.286+0.0647619*x and x=3150,y) ... apparently fits ... 125rq-parallel
 
 # TotalSR 1.75.
 steamvr_res-percent-pi5kp-125rq-noParallel-2520v=92
@@ -29,4 +37,10 @@ steamvr_res-percent-pi5kp-125rq-parallel-3825v=136
 
 
 
+
+
+
+# Reference
+https://www.desmos.com/calculator/a0xvxxsxfu
+https://qalculate.github.io/
 

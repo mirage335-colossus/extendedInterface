@@ -10,12 +10,12 @@ Please regard as a loose specification intended to offer unallocated regions for
 		010-104	- rapid startup scripts (eg. batch, shell)
 		015-019	- GUI macro manager (eg. AutoHotKey, VoiceAttack)
 		020-	- external control interfaces for specific variants (eg. JoystickGremlin HOTAS profile for FA18C)
-		080-	- GUI reset (eg. rapid_reset, 'construct screen', 'VR Virtual Desktop')
+		080-	- GUI reset (eg. rapid_reset, &#39;construct screen&#39;, &#39;VR Virtual Desktop&#39;)
 		200-	- external communications software (eg. Discord, TeamSpeak)
 		550-	- external navigation software (eg. DCS-Waypoint-Editor, Google Earth)
 		590-	- external panel (VM or Computer with PanelBoard Installed)
 		600-	- external telemetry or real-time diagnostics software (eg. EDMC, EDEngineer)
-		690-	- multilayer display management (eg. OVRDrop, 'construct desk')
+		690-	- multilayer display management (eg. OVRDrop, &#39;construct desk&#39;)
 		798-	- external control feedback software for specific variants (eg. SimFFB for FA18C)
 		799-	- external workaround software (including both daemons and manually launched as needed)
 		800-	- start (tool, vehicle, application, etc)
@@ -30,6 +30,9 @@ Please regard as a loose specification intended to offer unallocated regions for
 	999-import
 		... log files and such that may need to be obtained for external use
 		... links to locations of files/directories that may need to be altered manually
+
+
+
 
 
 

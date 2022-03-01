@@ -1,0 +1,13 @@
+
+Options ->
+ Load Profile on Startup -> _SHELL-MSW
+ Global Profiles -> _THIN-MSW, _DEFAULT-MSW
+
+
+SIM-DCS-A10A-FC3 -> Edit Profile -> Options -> Include commands from other profiles -> SIM, SIM-DCS, _DEFAULT-MSW
+(similar is typical)
+
+SIM-DCS-A10C -> Edit Profile -> Options -> Include commands from other profiles -> SIM, SIM-DCS, _DEFAULT-MSW
+
+Default Text-to-speech voice -> Microsoft Zira Desktop
+

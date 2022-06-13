@@ -16,6 +16,14 @@ Precomputed application startup parameters are documented under spreadsheet "par
 
 Beware SteamVR by default imposes a 4096 '...upper bound on the calculated resolution' set under 'steamvr.vrsettings' file.
 
+
+# Request
+
+As appropriate...
+
+* Disable MSW 'Hardware GPU Scheduler' (aka. 'HAGS') . Suspected of causing severe VR performance degradation or artifacts.
+
+
 # Conventions
 
 Generic guidance for developing new control systems is provided by "commonControlScheme.odt" diagram, also available as "commonControlScheme.pdf".
@@ -284,6 +292,21 @@ https://github.com/Aussiedroid/AD-EDWarthogEnhancedScript
 
 fhttps://www.youtube.com/watch?v=Oe3lB5WeCcU&feature=youtu.be
 https://www.youtube.com/watch?v=PVZZIeB_icY
+
+
+
+
+
+
+https://community.openmr.ai/t/pitool-v1-0-1-279-beta/38744
+
+https://obsproject.com/wiki/How-to-disable-Windows-10-Hardware-GPU-Scheduler
+	'Settings App → System → Display → scroll down to Graphics Settings → Turn "Hardware-accelerated GPU scheduling" to Off'
+
+https://babeltechreviews.com/hardware-accelerated-gpu-scheduling-performance/
+	Possible benefit seems negligible, +/-1% .
+
+
 
 
 

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "language.dtd">
+<language name="lbom" version="0.1" kateversion="5.0" section="Database" extensions="*.lbom.csv;*.lbom.txt;*.lbom" casesensitive="1" author="mirage335" license="GPL">
+
+<!--
+Provides syntax highlighting for Leveled BOM files used by BOM_designer by "mirage335" .
+-->
+
+<!--
+This file is part of BOM_designer.
+
+BOM_designer is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+BOM_designer is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with BOM_designer.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!--
+Incorporated work from 'kdepart' documentation and default XML files used by KWrite for syntax highlighting.
+Fair use assumed (resulting work is at least very substantially transformative).
+https://docs.kde.org/trunk5/en/applications/katepart/highlight.html
+https://github.com/KDE/syntax-highlighting/blob/master/data/syntax/bash.xml
+https://github.com/KDE/syntax-highlighting/blob/master/data/syntax/ini.xml
+-->
+
+<highlighting>
+	<list name="magicCommentsStart">
+		<item>###COMMENTS-magic-START###</item>
+	</list>
+	<list name="magicCommentsStop">
+		<item>###COMMENTS-magic-stop###</item>
+	</list>
+	<list name="magicStart">
+		<item>###BUNDLE-magic-START###</item>
+	</list>
+	<list name="magicStop">
+		<item>###BUNDLE-magic-stop###</item>
+	</list>
+	<list name="magicMULTIPLIERstart">
+		<item>###MULTIPLIER-magic-START###</item>
+	</list>
+	<list name="magicMULTIPLIERstop">
+		<item>###MULTIPLIER-magic-stop###</item>
+	</list>
+	<list name="magicITEMstart">
+		<item>###ITEM-magic-START###</item>
+	</list>
+	<list name="magicITEMstop">
+		<item>###ITEM-magic-stop###</item>
+	</list>
+	<contexts>
+		<context attribute="Error" lineEndContext="#pop" name="Normal Text" >
+			<keyword attribute="Keyword" context="magic" String="magicStart" beginRegion="regionMagic" />
+			<keyword attribute="Keyword" context="magicComments" String="magicCommentsStart" beginRegion="regionMagic" />
+			<keyword attribute="MULTIPLIER" context="magicMULTIPLIER" String="magicMULTIPLIERstart" beginRegion="regionMagic" />
+			<keyword attribute="ITEM" context="magicITEM" String="magicITEMstart" beginRegion="regionMagic" />
+			<DetectChar attribute="String" context="string" char="&quot;" />
+			<DetectChar char="#" attribute="Comment" context="Comment" firstNonSpace="true" />
+		</context>
+		<context attribute="String" lineEndContext="#stay" name="string" >
+			<DetectChar attribute="String" context="#pop" char="&quot;" />
+		</context>
+		
+		<context name="Comment" attribute="Comment" lineEndContext="#pop">
+			<DetectSpaces />
+			<IncludeRules context="##Alerts" />
+			<IncludeRules context="##Modelines" />
+			<DetectIdentifier />
+		</context>
+		
+		<context attribute="Comment" lineEndContext="#stay" name="magic" >
+			<keyword attribute="Keyword" context="#pop" String="magicStop" endRegion="regionMagic" />
+			<!-- <RegExpr String="(.*)," insensitive="true" attribute="Field" context="field1" /> -->
+			<DetectChar attribute="String" context="string" char="&quot;" />
+			<DetectChar char="#" attribute="Comment" context="Comment" firstNonSpace="true" />
+		</context>
+		
+		<context attribute="Comment" lineEndContext="#stay" name="magicComments" >
+			<keyword attribute="Keyword" context="#pop" String="magicCommentsStop" endRegion="regionMagic" />
+			<DetectSpaces />
+			<IncludeRules context="##Alerts" />
+			<IncludeRules context="##Modelines" />
+			<DetectIdentifier />
+		</context>
+		
+		<context attribute="Value" lineEndContext="#stay" name="magicMULTIPLIER" >
+			<keyword attribute="MULTIPLIER" context="#pop" String="magicMULTIPLIERstop" endRegion="regionMagic" />
+			<DetectChar attribute="String" context="string" char="&quot;" />
+			<DetectChar char="#" attribute="Comment" context="Comment" firstNonSpace="true" />
+		</context>
+		
+		<context attribute="Normal Text" lineEndContext="#stay" name="magicITEM" >
+			<keyword attribute="ITEM" context="#pop" String="magicITEMstop" endRegion="regionMagic" />
+			<DetectChar attribute="String" context="string" char="&quot;" />
+			<DetectChar char="#" attribute="Comment" context="Comment" firstNonSpace="true" />
+		</context>
+		
+		<!--
+		<context attribute="Field" lineEndContext="#pop" name="field1" >
+			<StringDetect context="#pop" attribute="String" String="%1" dynamic="true" />
+		</context>
+		-->
+		
+	</contexts>
+	<itemDatas>
+		<itemData name="Normal Text"		defStyleNum="dsNormal" />
+		<itemData name="Comment"		defStyleNum="dsComment" />
+		<itemData name="Keyword"		defStyleNum="dsKeyword" />
+		<itemData name="String"			defStyleNum="dsString" />
+		<itemData name="Error"			defStyleNum="dsError" />
+		<itemData name="Field"			defStyleNum="dsDataType" />
+		
+		<itemData name="MULTIPLIER"		defStyleNum="dsFunction" />
+		<itemData name="ITEM"			defStyleNum="dsExtension" />
+		
+		<itemData name="Value"			defStyleNum="dsDecVal" />
+	</itemDatas>
+</highlighting>
+
+
+<general>
+	<comments>
+		<comment name="singleLine" start="#"/>
+	</comments>
+	<keywords casesensitive="false" weakDeliminator="-#" additionalDeliminator=","/>
+	<folding indentationsensitive="0"/>
+</general>
+
+</language>

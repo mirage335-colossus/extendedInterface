@@ -1,0 +1,315 @@
+
+name: build
+on:
+  workflow_dispatch:
+  # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+  schedule:
+    ##- cron: '5 1 * * 6'
+    ##- cron: '5 1 * * 2,4'
+    ##- cron: '5 1 * * 2'
+    - cron: '5 1 * * 5'
+    #- cron: '5 1 10 * *'
+
+# https://docs.github.com/en/actions/using-jobs/using-concurrency
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+
+
+
+# https://github.com/ncipollo/release-action
+# https://github.com/softprops/action-gh-release
+# https://svrooij.io/2021/08/17/github-actions-secret-file/
+jobs:
+  build_guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dev-drprasad/delete-tag-and-release@v1.0
+        with:
+            tag_name: build-${{ github.run_id }}-${{ github.run_attempt }} #(required) tag name to delete 
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            delete_release: true #(optional) default: true 
+  build_nix:
+    needs: [build_guard]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: compile
+        shell: bash
+        timeout-minutes: 10
+        run: |
+          ./compile.sh
+      - name: release! compile
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build
+          files: |
+            ./lean_compressed.sh
+            ./monolithic_compressed.sh
+            ./rotten_compressed.sh
+            ./ubcore_compressed.sh
+            ./ubiquitous_bash_compressed.sh
+  build_msw:
+    needs: [build_guard, build_nix]
+    runs-on: windows-latest
+    steps:
+      # https://adamtheautomator.com/powershell-get-disk-space/
+      #- name: build_ubcp_powershell
+        #run: |
+          #./_lib/kit/install/cloud/zSpecial/msw/build_ubcp/build_ubcp_powershell.ps1
+        #shell: pwsh
+      # _lib/kit/install/cloud/zSpecial/msw/build_ubcp/build_ubcp_powershell.ps1
+      - name: deleteme
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          echo deleteme | tee /deleteme
+        #continue-on-error: true
+      - name: release! deleteme
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build
+          files: |
+            /deleteme
+      - name: _getMinimal_cloud
+        shell: pwsh
+        timeout-minutes: 180
+        run: |
+          $ErrorActionPreference="SilentlyContinue"
+          $ErrorActionPreference = "Continue"
+          #Set-MpPreference -DisableRealtimeMonitoring $true
+          date > /wasHere.log
+          pwd >> /wasHere.log
+          cat /wasHere.log
+          choco install qalculate -y
+          choco install dos2unix -y
+          choco install nmap -y
+          git config --global core.autocrlf input
+          git config --global core.eol lf
+          choco install 7zip.install -y
+          choco install rclone -y
+      - uses: actions/checkout@v2
+      - name: statement! ls
+        shell: pwsh
+        run: |
+          ls /
+          ls
+          Get-CimInstance -ClassName Win32_LogicalDisk | Select-Object -Property DeviceID,@{'Name' = 'FreeSpace (GB)'
+          Expression= { [int]($_.FreeSpace / 1GB) }}
+      - name: ubcp-cygwin-portable-installer
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          cd ./_local/ubcp
+          .\ubcp-cygwin-portable-installer | tee /ubcp-cygwin-portable-installer.log
+          cp ubcp_rename-to-enable.cmd ubcp.cmd
+        #continue-on-error: true
+      - name: release! ubcp-cygwin-portable-installer.log
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build
+          files: |
+            /ubcp-cygwin-portable-installer.log
+      - name: statement! ubcp-cygwin-portable-installer
+        run: |
+          cat /ubcp-cygwin-portable-installer.log
+        shell: pwsh
+      - name: _disable_fileBlocking
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          mv _local/ubcp/cygwin/bin/ssh-pageant.exe _local/ubcp/cygwin/bin/ssh-pageant.disabled
+          cp _local/ubcp/cygwin/bin/true.exe _local/ubcp/cygwin/bin/ssh-pageant.exe
+      - name: _setupUbiquitous
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          .\_setupUbiquitous | tee /_setupUbiquitous.log
+      - name: release! _setupUbiquitous.log
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build
+          files: |
+            /_setupUbiquitous.log
+      - name: statement! _setupUbiquitous
+        run: |
+          Get-Content -Path /_setupUbiquitous.log | Measure-Object -Line -Word -Character
+          cat /_setupUbiquitous.log
+        shell: pwsh
+      - name: _test-lean
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          .\_test | tee /_test-lean.log
+          $SEL = cat /_test-lean.log | Select-String -Pattern 'FAIL' -CaseSensitive -SimpleMatch
+          if ($SEL -ne $null)
+          {
+          cat /bin/false/pwsh
+          }
+          else
+          {
+          echo true | Out-Null
+          }
+      - name: release! _test-lean.log
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build
+          files: |
+            /_test-lean.log
+      - name: statement! test-lean
+        run: |
+          cat /_test-lean.log
+        shell: pwsh
+      - name: _package-cygwinOnly noMitigation
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          ./_bin _package-cygwinOnly
+          mv ./_local/ubcp/package_ubcp-cygwinOnly.tar.xz /package_ubcp-cygwinOnly-noMitigation.tar.xz
+      - name: release! package_ubcp-cygwinOnly-noMitigation.tar.xz
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build
+          files: |
+            /package_ubcp-cygwinOnly-noMitigation.tar.xz
+      - name: rm - _package-cygwinOnly noMitigation
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          rm /package_ubcp-cygwinOnly-noMitigation.tar.xz
+      - name: _mitigate-ubcp
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          ./_bin _mitigate-ubcp | tee /_mitigate-ubcp.log
+          ./_bin _color_end
+      - name: release! _mitigate-ubcp.log
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build
+          files: |
+            /_mitigate-ubcp.log
+      - name: statement! statistics! _mitigate-ubcp
+        run: |
+          Get-Content -Path /_mitigate-ubcp.log | Measure-Object -Line -Word -Character
+        shell: pwsh
+      - name: _package-cygwinOnly
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          ./_bin _package-cygwinOnly
+      - name: release! package_ubcp-cygwinOnly.tar.xz
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build
+          files: |
+            ./_local/ubcp/package_ubcp-cygwinOnly.tar.xz
+      - name: _MSWpackage package_ubiquitous_bash-msw
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          cd ..
+          7z -y a -t7z /package_ubiquitous_bash-msw.7z ./ubiquitous_bash | tee /package_ubiquitous_bash-msw.log
+      - name: release! _MSWpackage package_ubiquitous_bash-msw
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build
+          files: |
+            /package_ubiquitous_bash-msw.log
+            /package_ubiquitous_bash-msw.7z
+      - name: rm - _MSWpackage package_ubiquitous_bash-msw
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          rm /package_ubiquitous_bash-msw.7z
+      - name: statement! package_ubiquitous_bash-msw
+        run: |
+          cat /package_ubiquitous_bash-msw.log
+        shell: pwsh
+      - name: statement! ls
+        shell: pwsh
+        run: |
+          ls /
+          ls
+          Get-CimInstance -ClassName Win32_LogicalDisk | Select-Object -Property DeviceID,@{'Name' = 'FreeSpace (GB)'
+          Expression= { [int]($_.FreeSpace / 1GB) }}
+      - name: _setup_ubcp
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          ./_bin _setup_ubcp / | tee /_setup_ubcp.log
+      - name: statement! ls
+        shell: pwsh
+        run: |
+          ls /
+          ls
+          Get-CimInstance -ClassName Win32_LogicalDisk | Select-Object -Property DeviceID,@{'Name' = 'FreeSpace (GB)'
+          Expression= { [int]($_.FreeSpace / 1GB) }}
+      - name: _MSWpackage package_ubcp-core
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          cd ..
+          7z -y a -t7z /package_ubcp-core.7z /core/infrastructure/ubcp /core/infrastructure/ubiquitous_bash /_bash.bat | tee /package_ubcp-core.log
+      - name: release! _MSWpackage package_ubcp-core
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build
+          files: |
+            /package_ubcp-core.log
+            /package_ubcp-core.7z
+      - name: rm - _MSWpackage package_ubcp-core
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          rm /package_ubcp-core.7z
+          Remove-Item -Recurse -Force /core/infrastructure/ubcp
+          Remove-Item -Recurse -Force /core/infrastructure/ubiquitous_bash
+      - name: _MSWpackage package_ubiquitous_bash-msw-rotten
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          cd ..
+          rm ./ubiquitous_bash/_local/ubcp/package_ubcp-cygwinOnly.tar.xz
+          7z -y a -t7z /package_ubiquitous_bash-msw-rotten.7z ./ubiquitous_bash | tee /package_ubiquitous_bash-msw-rotten.log
+      - name: release! _MSWpackage package_ubiquitous_bash-msw-rotten
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: build
+          files: |
+            /package_ubiquitous_bash-msw-rotten.log
+            /package_ubiquitous_bash-msw-rotten.7z
+      - name: rm - _MSWpackage package_ubiquitous_bash-msw-rotten
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          rm /package_ubiquitous_bash-msw-rotten.7z
+      # https://adamtheautomator.com/powershell-get-disk-space/
+      - name: statement! ls
+        shell: pwsh
+        run: |
+          ls /
+          ls
+          Get-CimInstance -ClassName Win32_LogicalDisk | Select-Object -Property DeviceID,@{'Name' = 'FreeSpace (GB)'
+          Expression= { [int]($_.FreeSpace / 1GB) }}
+
+
+
+
+
+
+

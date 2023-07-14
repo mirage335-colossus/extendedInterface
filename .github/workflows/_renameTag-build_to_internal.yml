@@ -1,0 +1,102 @@
+
+# Intended to designate a build (eg. of 'ubcp') as suitable for internal integration with a larger project (eg. 'ubdist') .
+# Before designating a new build internal, consider renaming an existing internal designated build to 'internal-YYYY-MM-DD' by the 'renameTag-build_to_internal' Github Actions workflow.
+# If compatible or successful as documented (eg. specific features tested) or expected (ie. all essential features tested), the next step would be to tag as 'certified' with a date.
+
+
+# ATTRIBUTION-AI - Largely attributable to ChatGPT GPT-4 2023-06-26 .
+
+
+name: _renameTag-build_to_internal
+
+
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
+permissions:
+  actions: write
+  checks: read
+  contents: write
+  deployments: read
+  issues: read
+  packages: read
+  pull-requests: read
+  repository-projects: read
+  security-events: none
+  statuses: read
+
+
+  
+on:
+  workflow_dispatch:
+    #inputs:
+      #source_tag:
+        #description: 'Source Tag'
+        #required: true
+      #target_tag:
+        #description: 'Target Tag'
+        #required: true
+        
+
+jobs:
+  copy-release:
+    runs-on: ubuntu-latest
+    steps:
+
+
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # we need fetch-depth: 0 to fetch all tags
+
+      - name: Update release
+        run: |
+          _safeEcho ()
+          {
+              printf '%s' "$1";
+              shift;
+              [[ "$@" == "" ]] && return 0;
+              local currentArg;
+              for currentArg in "$@";
+              do
+                  printf '%s' " ";
+                  printf '%s' "$currentArg";
+              done;
+              return 0
+          }
+          
+          
+          # Fetch all releases
+          releases=$(gh api repos/${{ github.repository }}/releases)
+
+
+          # Find the tag name for the release by its name
+          tag_name=$(echo "$releases" | jq -r '.[] | select(.name == "build") | .tag_name' | sed 's/\\n//g' | sort -n -r | head -n 1)
+
+          
+          # Find the tag name for the release by its name
+          body=$(echo "$releases" | jq -r '.[] | select(.tag_name == "$tag_name") | .body' | tr -dc 'a-zA-Z0-9.:\=\_\-/%+\ \n')
+          
+          # Edit the release using its tag name
+          _safeEcho "$body" | gh release edit "$tag_name" --title "internal" --notes -
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      # DANGER: Discouraged !
+      #- name: Setup upterm session
+        #if: ${{ failure() }}
+        #uses: lhotari/action-upterm@v1
+        #with:
+          ### limits ssh access and adds the ssh public key for the user which triggered the workflow
+          #limit-access-to-actor: true
+          ### limits ssh access and adds the ssh public keys of the listed GitHub users
+          ## DANGER: Discouraged. Prefer 'limit-access-to-actor' instead.
+          ##limit-access-to-users: githubuser1,githubuser2
+        #timeout-minutes: 320
+        # DANGER: Discouraged !
+        #env:
+          #GH_TOKEN: ${{ github.token }}
+
+
+
+
+

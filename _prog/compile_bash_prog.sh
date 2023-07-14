@@ -111,6 +111,9 @@ _compile_bash_deps_prog() {
 		
 		#_deps_build_bash
 		#_deps_build_bash_ubiquitous
+
+
+		export disUB_build="true"
 		
 		return 0
 	fi
@@ -131,6 +134,8 @@ _vars_compile_bash_prog() {
 	#export progScript="$scriptAbsoluteFolder"/ubiquitous_bash.sh
 	#[[ "$1" != "" ]] && export progScript="$scriptAbsoluteFolder"/"$1"
 	
+	export disUB_build=
+
 	true
 }
 
@@ -216,7 +221,8 @@ _compile_bash_environment_prog() {
 
 _compile_bash_installation_prog() {	
 	export includeScriptList
-	true
+	
+	[[ "$disUB_build" != "true" ]] && includeScriptList+=( "build-special.sh" )
 }
 
 _compile_bash_program_prog() {	

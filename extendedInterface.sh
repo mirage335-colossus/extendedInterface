@@ -4894,13 +4894,18 @@ _experiment() {
 
 
 
-# EXAMPLE ONLY.
+
+
+
+
+_test_rotten() {
+	"$scriptAbsoluteFolder"/extendedInterface.sh _test "$@"
+}
+
 _refresh_anchors() {
 	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_true.bat
 	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_false.bat
 }
-
-
 
 _anchor_special() {
 	_anchor_configure
@@ -4910,6 +4915,7 @@ _anchor_special() {
 	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_test.bat
 	"$scriptAbsoluteFolder"/ubiquitous_bash.sh _anchor_configure "$scriptAbsoluteFolder"/_test.bat
 	
+	"$scriptAbsoluteFolder"/extendedInterface.sh _anchor_configure "$scriptAbsoluteFolder"/_test_rotten.bat
 }
 
 

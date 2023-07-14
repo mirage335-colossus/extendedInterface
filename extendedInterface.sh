@@ -4855,6 +4855,65 @@ _package() {
 
 
 
+#####Program
+
+#Typically launches an application - ie. through virtualized container.
+_launch() {
+	false
+	#"$@"
+}
+
+#Typically gathers command/variable scripts from other (ie. yaml) file types (ie. AppImage recipes).
+_collect() {
+	false
+}
+
+#Typical program entry point, absent any instancing support.
+_enter() {
+	_launch "$@"
+}
+
+#Typical program entry point.
+_main() {
+	_start
+	
+	_collect
+	
+	_enter "$@"
+	
+	_stop
+}
+
+##### Core
+
+
+_experiment() {
+	echo test
+}
+
+
+
+
+# EXAMPLE ONLY.
+_refresh_anchors() {
+	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_true.bat
+	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_false.bat
+}
+
+
+
+_anchor_special() {
+	_anchor_configure
+	
+	"$scriptAbsoluteFolder"/extendedInterface.sh _anchor_configure "$scriptAbsoluteFolder"/_anchor.bat
+	
+	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_test.bat
+	"$scriptAbsoluteFolder"/ubiquitous_bash.sh _anchor_configure "$scriptAbsoluteFolder"/_test.bat
+	
+}
+
+
+
 #####Overrides
 
 [[ "$isDaemon" == "true" ]] && echo "$$" | _prependDaemonPID

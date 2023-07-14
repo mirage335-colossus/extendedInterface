@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1319523893'
+export ub_setScriptChecksum_contents='1373524668'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -29128,6 +29128,8 @@ _anchor() {
 	
 	_anchor_configure
 	_anchor_configure "$scriptAbsoluteFolder"/_anchor.bat
+
+	_tryExec "_anchor_special"
 	
 	! [[ -e "$scriptAbsoluteFolder"/_anchor ]] && ! [[ -e "$scriptAbsoluteFolder"/_anchor.bat ]] && return 1
 	
@@ -39617,8 +39619,6 @@ _experiment() {
 
 
 
-_anchor_configure
-
 # EXAMPLE ONLY.
 _refresh_anchors() {
 	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_true.bat
@@ -39637,60 +39637,6 @@ _anchor_special() {
 	
 }
 
-
-# ATTENTION: Unusual. Ensure this function includes upstream capabilities (eg. '_refresh_anchors_user').
-_anchor() {
-	_anchor_autoupgrade
-	
-	_anchor_configure
-	_anchor_configure "$scriptAbsoluteFolder"/_anchor.bat
-	
-	_anchor_special
-	
-	! [[ -e "$scriptAbsoluteFolder"/_anchor ]] && ! [[ -e "$scriptAbsoluteFolder"/_anchor.bat ]] && return 1
-	
-	[[ "$scriptAbsoluteFolder" == *"ubiquitous_bash" ]] && _refresh_anchors_ubiquitous
-	
-	if type "_refresh_anchors_cautossh" > /dev/null 2>&1 && [[ "$scriptAbsoluteLocation" == *"cautossh" ]]
-	then
-		_tryExec "_refresh_anchors_cautossh"
-		#return
-	fi
-	
-	
-	if type "_refresh_anchors" > /dev/null 2>&1
-	then
-		_tryExec "_refresh_anchors"
-		#return
-	fi
-	
-	# CAUTION: Anchor scripts MUST include code to ignore '--' suffix specific software name convention!
-	# WARNING: DO NOT enable in "core.sh". Intended to be enabled by "_local/ops.sh".
-	if type "_refresh_anchors_specific" > /dev/null 2>&1
-	then
-		_tryExec "_refresh_anchors_specific"
-		#return
-	fi
-	
-	# CAUTION: ONLY intended to be used either with generic software, or anchors following '--' suffix specific software name convention!
-	# WARNING: DO NOT enable in "core.sh". Intended to be enabled by "_local/ops.sh".
-	if type "_refresh_anchors_user" > /dev/null 2>&1
-	then
-		_tryExec "_refresh_anchors_user"
-		#return
-	fi
-	
-	# WARNING: Calls _refresh_anchors_user . Same variables required to enable, intended to be set by "_local/ops.sh".
-	#if type "_associate_anchors_request" > /dev/null 2>&1
-	#then
-		#_tryExec "_associate_anchors_request"
-		##return
-	#fi
-	
-	
-	
-	return 0
-}
 
 
 #####Program
@@ -42633,8 +42579,12 @@ _compile_bash() {
 			includeScriptList+=( "structure"/installation_prog.sh )
 		fi
 		
-		#includeScriptList+=( "structure"/program.sh )
-		
+		if [[ "$1" == "rotten_test-extendedInterface" ]] || [[ "$1" == "rotten_test-extendedInterface"* ]] || [[ "$1" == "rotten_test-"*"-MSW" ]] || [[ "$1" == "rotten_test-"*"-MSW"* ]]
+		then
+			includeScriptList+=( "structure"/program.sh )
+			_compile_bash_program
+			_compile_bash_program_prog
+		fi
 		
 		
 		#####Hardcoded

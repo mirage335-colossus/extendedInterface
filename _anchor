@@ -612,8 +612,8 @@ export anchorScriptAbsoluteFolder=$(_getScriptAbsoluteFolder)
 export anchorName=$(basename "$anchorScriptAbsoluteLocation" | sed 's/\.bat$//g')
 
 
-export anchorSourceDir="ubiquitous_bash"
-export anchorSource="ubiquitous_bash.sh"
+export anchorSourceDir="extendedInterface"
+export anchorSource="extendedInterface.sh"
 export anchorSourcePath="$anchorSourceDir"/"$anchorSource"
 
 export anchorLabName=anchorLabName

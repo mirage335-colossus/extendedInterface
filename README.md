@@ -1,5 +1,8 @@
 Conventions, device/application input configuration files, device programming software, and hardware abstraction software for comprehensive physical and virtual reality user interface solutions.
 
+You probably want the installer (which generates other files and includes ubcp) not just this repository by itself.
+
+
 # Param
 
 Precomputed application startup parameters are documented under spreadsheet "param.ods" .
@@ -181,6 +184,14 @@ Head/Chin/Chest/Arm/Knee Switch Boards
 	Tactile Interface (North-Paw like Fail-Active IFR Backup providing some of Pitch/Roll/Heading Turn/Slip Climb RAlt/BAlt TAS/CAS/AOA Homing/ILS)
 	Alarm (Indepdendent Lound Warning if AutoPilot Disengaged, Maneuver Drift, or Collision Risk)
 	Panels (AR Desktop Computer Displays, Keyboard, Mouse)
+
+
+
+# Design
+
+Batch files may be used natively (eg. to control SteamVR, run sequences of support software, etc), unusually. Nevertheless, some batch files here are anchor scripts. Do NOT assume a batch file does or does not point to a bash shell script function - look at the code of the batch file.
+
+
 
 
 # Included Works

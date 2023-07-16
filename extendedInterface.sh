@@ -4854,6 +4854,13 @@ _package() {
 
 
 
+_install_special() {
+    echo test
+}
+
+
+
+
 
 _configureLocal() {
 	_configureFile "$1" "_local"
@@ -5404,6 +5411,7 @@ _test_rotten() {
 }
 
 _refresh_anchors() {
+	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_bin.bat
 	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_true.bat
 	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_false.bat
 }

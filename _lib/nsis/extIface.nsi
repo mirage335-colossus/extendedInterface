@@ -90,11 +90,12 @@ SectionEnd
 ; Set the output directory and file name
 OutFile "..\..\..\extIface.exe"
 
-SetCompressor /SOLID /FINAL lzma
+;/SOLID
+SetCompressor /FINAL lzma
 
 Section
   SetOutPath "C:\core\infrastructure\extendedInterface"
-  File /r "..\..\..\extendedInterface\*"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface\*"
 SectionEnd
 
 

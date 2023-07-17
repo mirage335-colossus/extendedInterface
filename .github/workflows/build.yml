@@ -46,6 +46,16 @@ jobs:
         run: |
           cd ./_lib/ubiquitous_bash
           ./compile.sh
+      - name: _getMinimal_cloud
+        shell: bash
+        timeout-minutes: 120
+        run: |
+          ./ubiquitous_bash.sh _getMinimal_cloud
+      - name: _getMinimal-build_extendedInterface
+        shell: bash
+        timeout-minutes: 120
+        run: |
+          ./ubiquitous_bash.sh _getMinimal-build_extendedInterface
       - name: build-fetch
         shell: bash
         timeout-minutes: 120

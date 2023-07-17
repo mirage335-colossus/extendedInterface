@@ -3,28 +3,10 @@
 
 
 
-_getRelease-ubcp() {
-    mkdir -p "$currentAccessoriesDir"/integrations/ubcp
-    # Download ubcp release binary if not already present.
-    if [[ ! -e "$currentAccessoriesDir"/integrations/ubcp/"$1" ]]
-    then
-        #-H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
-        curl -L -o "$currentAccessoriesDir"/integrations/ubcp/"$1"  $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"internal\") | .assets[] | select(.name == \"""$1""\") | .browser_download_url" | sort -n -r | head -n1)
-    fi
-}
-
-
-_build_extendedInterface-fetch() {
-    _start
-    #mkdir -p "$shortTmp"
-    local functionEntryPWD="$PWD"
-
-
-    export currentAccessoriesDir="$scriptAbsoluteFolder"/../"$objectName"-accessories
-    [[ -e "$scriptAbsoluteFolder"/../"$objectName"-accessories/parts ]] && _messageFAIL && _stop 1
-    #export currentAccessoriesDir="$shortTmp"
+_getMinimal-build_extendedInterface() {
     
-    _discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+    ! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+    
     if ! type makensis
     then
         _getMost_backend apt-get update
@@ -56,8 +38,41 @@ _build_extendedInterface-fetch() {
         _getMost_backend_aptGetInstall p7zip
     fi
 
+    
     _getDep 'makensis'
     _getDep '7za'
+
+
+    ! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+}
+
+
+
+
+_getRelease-ubcp() {
+    mkdir -p "$currentAccessoriesDir"/integrations/ubcp
+    # Download ubcp release binary if not already present.
+    if [[ ! -e "$currentAccessoriesDir"/integrations/ubcp/"$1" ]]
+    then
+        #-H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
+        curl -L -o "$currentAccessoriesDir"/integrations/ubcp/"$1"  $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"internal\") | .assets[] | select(.name == \"""$1""\") | .browser_download_url" | sort -n -r | head -n1)
+    fi
+}
+
+
+_build_extendedInterface-fetch() {
+    _start
+    #mkdir -p "$shortTmp"
+    local functionEntryPWD="$PWD"
+
+
+    export currentAccessoriesDir="$scriptAbsoluteFolder"/../"$objectName"-accessories
+    [[ -e "$scriptAbsoluteFolder"/../"$objectName"-accessories/parts ]] && _messageFAIL && _stop 1
+    #export currentAccessoriesDir="$shortTmp"
+    
+    #! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+    _getMinimal-build_extendedInterface
+
 
     #_getRelease-ubcp 'package_ubiquitous_bash-msw-rotten.7z'
     #_getRelease-ubcp 'package_ubcp-cygwinOnly.tar.xz'
@@ -125,22 +140,9 @@ _build_extendedInterface-build() {
     export currentAccessoriesDir="$scriptAbsoluteFolder"/../"$objectName"-accessories
 
 
-   ! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
-    if ! type makensis
-    then
-        _getMost_backend apt-get update
-
-        #https://askubuntu.com/questions/876240/how-to-automate-setting-up-of-keyboard-configuration-package
-        #apt-get install -y debconf-utils
-        export DEBIAN_FRONTEND=noninteractive
-        
-        _set_getMost_backend "$@"
-        _test_getMost_backend "$@"
-        #_getMost_debian11_aptSources "$@"
-        
-        _getMost_backend_aptGetInstall nsis
-    fi
-
+    #! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+    _getMinimal-build_extendedInterface
+    
     cd "$scriptLib"/nsis
     makensis "$scriptLib"/nsis/extIface.nsi
 

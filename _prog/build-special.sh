@@ -44,6 +44,8 @@ _getMinimal-build_extendedInterface() {
 
 
     ! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+
+    type makensis > /dev/null 2>&1
 }
 
 

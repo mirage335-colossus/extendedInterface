@@ -88,9 +88,9 @@ SectionEnd
 
 
 ; Set the output directory and file name
-OutFile "example-installer.exe"
+OutFile "..\..\..\extIface.exe"
 
-
+SetCompressor /SOLID /FINAL lzma
 
 Section
   SetOutPath "C:\core\infrastructure\extendedInterface"

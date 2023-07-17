@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1195464726'
+export ub_setScriptChecksum_contents='1509504377'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -39646,6 +39646,15 @@ _build_extendedInterface-fetch() {
     if ! type makensis
     then
         _getMost_backend apt-get update
+
+        #https://askubuntu.com/questions/876240/how-to-automate-setting-up-of-keyboard-configuration-package
+        #apt-get install -y debconf-utils
+        export DEBIAN_FRONTEND=noninteractive
+        
+        _set_getMost_backend "$@"
+        _test_getMost_backend "$@"
+        #_getMost_debian11_aptSources "$@"
+        
         _getMost_backend_aptGetInstall nsis
     fi
 
@@ -39653,6 +39662,15 @@ _build_extendedInterface-fetch() {
     if ! type 7za
     then
         _getMost_backend apt-get update
+
+        #https://askubuntu.com/questions/876240/how-to-automate-setting-up-of-keyboard-configuration-package
+        #apt-get install -y debconf-utils
+        export DEBIAN_FRONTEND=noninteractive
+        
+        _set_getMost_backend "$@"
+        _test_getMost_backend "$@"
+        #_getMost_debian11_aptSources "$@"
+
         _getMost_backend_aptGetInstall p7zip
     fi
 
@@ -39725,10 +39743,19 @@ _build_extendedInterface-build() {
     export currentAccessoriesDir="$scriptAbsoluteFolder"/../"$objectName"-accessories
 
 
-    _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+   ! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
     if ! type makensis
     then
         _getMost_backend apt-get update
+
+        #https://askubuntu.com/questions/876240/how-to-automate-setting-up-of-keyboard-configuration-package
+        #apt-get install -y debconf-utils
+        export DEBIAN_FRONTEND=noninteractive
+        
+        _set_getMost_backend "$@"
+        _test_getMost_backend "$@"
+        #_getMost_debian11_aptSources "$@"
+        
         _getMost_backend_aptGetInstall nsis
     fi
 

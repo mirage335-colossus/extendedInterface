@@ -28,6 +28,15 @@ _build_extendedInterface-fetch() {
     if ! type makensis
     then
         _getMost_backend apt-get update
+
+        #https://askubuntu.com/questions/876240/how-to-automate-setting-up-of-keyboard-configuration-package
+        #apt-get install -y debconf-utils
+        export DEBIAN_FRONTEND=noninteractive
+        
+        _set_getMost_backend "$@"
+        _test_getMost_backend "$@"
+        #_getMost_debian11_aptSources "$@"
+        
         _getMost_backend_aptGetInstall nsis
     fi
 
@@ -35,6 +44,15 @@ _build_extendedInterface-fetch() {
     if ! type 7za
     then
         _getMost_backend apt-get update
+
+        #https://askubuntu.com/questions/876240/how-to-automate-setting-up-of-keyboard-configuration-package
+        #apt-get install -y debconf-utils
+        export DEBIAN_FRONTEND=noninteractive
+        
+        _set_getMost_backend "$@"
+        _test_getMost_backend "$@"
+        #_getMost_debian11_aptSources "$@"
+
         _getMost_backend_aptGetInstall p7zip
     fi
 
@@ -107,10 +125,19 @@ _build_extendedInterface-build() {
     export currentAccessoriesDir="$scriptAbsoluteFolder"/../"$objectName"-accessories
 
 
-    _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+   ! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
     if ! type makensis
     then
         _getMost_backend apt-get update
+
+        #https://askubuntu.com/questions/876240/how-to-automate-setting-up-of-keyboard-configuration-package
+        #apt-get install -y debconf-utils
+        export DEBIAN_FRONTEND=noninteractive
+        
+        _set_getMost_backend "$@"
+        _test_getMost_backend "$@"
+        #_getMost_debian11_aptSources "$@"
+        
         _getMost_backend_aptGetInstall nsis
     fi
 

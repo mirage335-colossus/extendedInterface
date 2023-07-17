@@ -9,7 +9,7 @@ _getRelease-ubcp() {
     if [[ ! -e "$currentAccessoriesDir"/integrations/ubcp/"$1" ]]
     then
         #-H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
-        curl -L -o "$currentAccessoriesDir"/integrations/ubcp/"$1"  $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"internal\") | .assets[] | select(.name == \"package_ubcp-core.7z\") | .browser_download_url" | sort -n -r | head -n1)
+        curl -L -o "$currentAccessoriesDir"/integrations/ubcp/"$1"  $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"internal\") | .assets[] | select(.name == \"""$1""\") | .browser_download_url" | sort -n -r | head -n1)
     fi
 }
 

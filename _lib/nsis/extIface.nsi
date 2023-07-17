@@ -46,17 +46,12 @@ From working directory   'C:\core\infrastructure\extendedInterface\'   run   'C:
 
 */
 
+  RequestExecutionLevel admin
 
+
+/*
 
 Section
-  ; If not Admin then fail with error message
-  UserInfo::GetAccountType
-  Pop $0
-  ${If} $0 != "admin"
-    MessageBox MB_OK "Administrator access required."
-    Quit
-  ${EndIf}
-
   ; WARNING: Untested.
   ; INSTDIR is C:\core\infrastructure and cannot be set to anything else by the user or otherwise
   SetOutPath "$INSTDIR"
@@ -68,25 +63,47 @@ Section
   Quit
 
   ; Embed and copy the directory from ../ to C:\core\infrastructure\extendedInterface
-  File /r "..\*" "$INSTDIR\extendedInterface\"
+  File "..\..\..\extendedInterface\*" "/oname=$INSTDIR\extendedInterface\"
 
-  ; Embed and copy the directory from $shortTmp/parts/ubcp/package_ubcp-core/ubcp to C:\core\infrastructure\extendedInterface\_local\ubcp
-  File /r "$shortTmp\parts\ubcp\package_ubcp-core\ubcp\*" "$INSTDIR\extendedInterface\_local\ubcp\"
+  ; Embed and copy the directory from ./parts/ubcp/package_ubcp-core/ubcp to C:\core\infrastructure\extendedInterface\_local\ubcp
+  File /r "..\..\extendedInterface\parts\ubcp\package_ubcp-core\ubcp\*" "$INSTDIR\extendedInterface\_local\ubcp\"
 
-  ; Embed and copy the directory from $shortTmp/parts/ubcp/package_ubcp-core/ubiquitous_bash to C:\core\infrastructure\ubiquitous_bash
-  File /r "$shortTmp\parts\ubcp\package_ubcp-core\ubiquitous_bash\*" "$INSTDIR\ubiquitous_bash\"
+  ; Embed and copy the directory from .../parts/ubcp/package_ubcp-core/ubiquitous_bash to C:\core\infrastructure\ubiquitous_bash
+  File /r "..\..\extendedInterface\parts\ubcp\package_ubcp-core\ubiquitous_bash\*" "$INSTDIR\ubiquitous_bash\"
 
   ; Copy the directory C:\core\infrastructure\extendedInterface\_local\ubcp to C:\core\infrastructure\ubcp
   SetOutPath "$INSTDIR\ubcp"
   File /r "$INSTDIR\extendedInterface\_local\ubcp\*" "$INSTDIR\ubcp\"
 
-  ; Embed and copy the file from $shortTmp/parts/ubcp/package_ubcp-core/_bash.bat to C:\core\infrastructure\_bash.bat
-  File "$shortTmp\parts\ubcp\package_ubcp-core\_bash.bat" "$INSTDIR\_bash.bat"
+  ; Embed and copy the file from .../parts/ubcp/package_ubcp-core/_bash.bat to C:\core\infrastructure\_bash.bat
+  File "..\..\extendedInterface\parts\ubcp\package_ubcp-core\_bash.bat" "$INSTDIR\_bash.bat"
 
   ; From working directory C:\core\infrastructure\extendedInterface\, run C:\core\infrastructure\extendedInterface\_lib\ubiquitous_bash\_bin.bat git reset --hard
   SetOutPath "$INSTDIR\extendedInterface"
   ExecWait '"$INSTDIR\extendedInterface\_lib\ubiquitous_bash\_bin.bat" git reset --hard'
 SectionEnd
+
+*/
+
+
+
+; Set the output directory and file name
+OutFile "example-installer.exe"
+
+
+
+Section
+  SetOutPath "C:\core\infrastructure\extendedInterface"
+  File /r "..\..\..\extendedInterface\*"
+SectionEnd
+
+
+Section "Install"
+  SetOutPath "C:\core\infrastructure\extendedInterface\_local\ubcp"
+  File /r "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\ubcp\*"
+SectionEnd
+
+
 
 
 

@@ -227,7 +227,7 @@ Section "Install"
   ExecWait '"$0" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _setup_install'
 
   ExpandEnvStrings $0 %COMSPEC%
-  ExecWait '"$0" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _setupUbiquitous'
+  ExecWait '"$0" /C "C:\core\infrastructure\ubiquitous_bash\_setupUbiquitous.bat"'
 
   ExpandEnvStrings $0 %COMSPEC%
   ExecWait '"$0" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _test_rotten'

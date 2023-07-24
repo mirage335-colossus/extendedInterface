@@ -1,0 +1,1 @@
+Trivial code - essentially a list of facts - obtained from https://www.majorgeeks.com/files/details/enable_or_disable_hardware_accelerated_gpu_scheduling.html without explicit license. Fair use or public domain assumed.

@@ -5,7 +5,7 @@
 
 _getMinimal-build_extendedInterface() {
     
-    ! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+    ! type makensis && _if_cygwin && _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
     
     if ! type makensis
     then
@@ -43,7 +43,7 @@ _getMinimal-build_extendedInterface() {
     _getDep '7za'
 
 
-    ! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+    ! type makensis && _if_cygwin && _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
 
     type makensis > /dev/null 2>&1
 }
@@ -72,7 +72,7 @@ _build_extendedInterface-fetch() {
     [[ -e "$scriptAbsoluteFolder"/../"$objectName"-accessories/parts ]] && _messageFAIL && _stop 1
     #export currentAccessoriesDir="$shortTmp"
     
-    #! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+    #! type makensis && _if_cygwin && _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
     _getMinimal-build_extendedInterface
 
 
@@ -84,6 +84,10 @@ _build_extendedInterface-fetch() {
     cd "$currentAccessoriesDir"/parts/ubcp/package_ubcp-core
     7za x "$currentAccessoriesDir"/integrations/ubcp/package_ubcp-core.7z
     cd "$functionEntryPWD"
+
+    cp "$scriptAbsoluteFolder"/support/000-OS/MSW/root/_bash_bat_lnk.zip "$currentAccessoriesDir"/parts/
+    unzip "$currentAccessoriesDir"/parts/_bash_bat_lnk.zip
+    rm -f "$currentAccessoriesDir"/parts/_bash_bat_lnk.zip
 
 
 
@@ -138,13 +142,17 @@ _build_extendedInterface-build() {
     mkdir -p "$shortTmp"
     local functionEntryPWD="$PWD"
 
+    rm -f "$scriptAbsoluteFolder"/../extIface.exe 2> /dev/null
 
     export currentAccessoriesDir="$scriptAbsoluteFolder"/../"$objectName"-accessories
 
 
-    #! type makensis && _if_cygwin _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
+    #! type makensis && _if_cygwin && _at_userMSW_probeCmd_discoverResource-cygwinNative-ProgramFiles 'makensis' 'NSIS/bin' false
     _getMinimal-build_extendedInterface
     
+
+    unix2dos "$scriptAbsoluteFolder"/license-installer.txt
+
     cd "$scriptLib"/nsis
     makensis "$scriptLib"/nsis/extIface.nsi
 

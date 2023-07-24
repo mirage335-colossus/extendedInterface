@@ -1,3 +1,11 @@
+
+Any third party works included, or other subdirectories, may have a different copyright license.
+
+In particular, the included 'ubcp' installation has many programs under a 'GNU GPLv2' or similar 'copyleft' license. Cygwin itself has a 'GNU GPLv3' license. Prominent notices of these licenses remain unchanged.
+
+
+
+
 http://creativecommons.org/publicdomain/zero/1.0/
 To the extent possible under law, mirage335 has waived all copyright and related or neighboring rights to extendedInterface. This work is published from: United States.
 Also see CC0_license.txt for details.
@@ -7,4 +15,3 @@ To the extent possible under law, mirage335 has waived all copyright and related
 Also see CC0_license.txt for details.
 
 
-Any third party works included, or other subdirectories, may have a different copyright license.

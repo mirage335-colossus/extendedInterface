@@ -6,95 +6,12 @@
 ; ATTRIBUTION - https://stackoverflow.com/questions/3265141/executing-batch-file-in-nsis-installer
 
 
-; copy ubcp home directories
-; uninstall (ie. if already installed and updating)
-
-
-; extract ubcp release to extendedInterface subdir
-; call bash scripts to set all filesystem permissions, etc
-; extract extendedInterface ".git" repository to core/infrastructure/...
-; checkout extendedInterface repository
-
-; call bash scripts to properly create developer ubcp infrastructure
-
-; restore ubcp home directories
 
 
 
-; show PDF with instructions to install and correctly configure other soft dependencies (eg. vJoy, VoiceAttack, etc)
- ; PDF instructions must also include calling interactive script through batch file to change USB identifiers for Joystick Gremlin
- ; PDF instructions must also refer to soft dependencies of 'ubiquitous_bash' (eg. TigerVNC, etc)
+RequestExecutionLevel admin
 
 
-
-
-/*
-
-Provide an NSIS script to
-   Install by doing the following:
-If not Admin then fail with error message
-INSTDIR is   C:\core\infrastructure  and cannot be set to anything else by the user or otherwise
-Create directory   C:\core\infrastructure   and fail with error message if this cannot be done
-Embed and copy the directory from ../   to C:\core\infrastructure\extendedInterface
-Embed and copy the directory from   "$shortTmp"/parts/ubcp/package_ubcp-core/ubcp   to   C:\core\infrastructure\extendedInterface\_local\ubcp
-Embed and copy the directory from   "$shortTmp"/parts/ubcp/package_ubcp-core/ubiquitous_bash   to   C:\core\infrastructure\ubiquitous_bash
-Copy the directory   C:\core\infrastructure\extendedInterface\_local\ubcp   to  C:\core\infrastructure\ubcp
-Embed and copy the file from   "$shortTmp"/parts/ubcp/package_ubcp-core/_bash.bat   to   C:\core\infrastructure\_bash.bat
-
-From working directory   'C:\core\infrastructure\extendedInterface\'   run   'C:\core\infrastructure\extendedInterface\_lib\ubiquitous_bash\_bin.bat' git reset --hard
-
-
-
-*/
-
-  RequestExecutionLevel admin
-
-
-/*
-
-Section
-  ; WARNING: Untested.
-  ; INSTDIR is C:\core\infrastructure and cannot be set to anything else by the user or otherwise
-  SetOutPath "$INSTDIR"
-
-  ; Create directory C:\core\infrastructure and fail with error message if this cannot be done
-  CreateDirectory $INSTDIR
-  IfErrors 0 +2
-  MessageBox MB_OK "Failed to create directory $INSTDIR"
-  Quit
-
-  ; Embed and copy the directory from ../ to C:\core\infrastructure\extendedInterface
-  File "..\..\..\extendedInterface\*" "/oname=$INSTDIR\extendedInterface\"
-
-  ; Embed and copy the directory from ./parts/ubcp/package_ubcp-core/ubcp to C:\core\infrastructure\extendedInterface\_local\ubcp
-  File /r "..\..\extendedInterface\parts\ubcp\package_ubcp-core\ubcp\*" "$INSTDIR\extendedInterface\_local\ubcp\"
-
-  ; Embed and copy the directory from .../parts/ubcp/package_ubcp-core/ubiquitous_bash to C:\core\infrastructure\ubiquitous_bash
-  File /r "..\..\extendedInterface\parts\ubcp\package_ubcp-core\ubiquitous_bash\*" "$INSTDIR\ubiquitous_bash\"
-
-  ; Copy the directory C:\core\infrastructure\extendedInterface\_local\ubcp to C:\core\infrastructure\ubcp
-  SetOutPath "$INSTDIR\ubcp"
-  File /r "$INSTDIR\extendedInterface\_local\ubcp\*" "$INSTDIR\ubcp\"
-
-  ; Embed and copy the file from .../parts/ubcp/package_ubcp-core/_bash.bat to C:\core\infrastructure\_bash.bat
-  File "..\..\extendedInterface\parts\ubcp\package_ubcp-core\_bash.bat" "$INSTDIR\_bash.bat"
-
-  ; From working directory C:\core\infrastructure\extendedInterface\, run C:\core\infrastructure\extendedInterface\_lib\ubiquitous_bash\_bin.bat git reset --hard
-  SetOutPath "$INSTDIR\extendedInterface"
-  ExecWait '"$INSTDIR\extendedInterface\_lib\ubiquitous_bash\_bin.bat" git reset --hard'
-SectionEnd
-
-*/
-
-
-/*
-
-
-Section "License"
-  File "..\..\license-installer.txt"
-SectionEnd
-
-*/
 
 
 SilentInstall normal
@@ -117,6 +34,15 @@ Page license
 ;Page directory
 Page instfiles
 
+;https://github.com/mirage335/extendedInterface/
+!define APPNAME "extendedInterface"
+!define COMPANYNAME "extendedInterface"
+!define DESCRIPTION "extendedInterface"
+!define HELPURL "https://github.com/mirage335/extendedInterface/"
+!define UPDATEURL "https://github.com/mirage335/extendedInterface/"
+!define ABOUTURL "https://github.com/mirage335/extendedInterface/"
+!define INSTALLSIZE 6500000
+
 
 Section "Install"
   SetShellVarContext all
@@ -133,10 +59,14 @@ Section "Install"
   Rename "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home" "C:\core\infrastructure\extendedInterface-home-backup-$0"
   Rename "C:\core\infrastructure\ubcp\cygwin\home" "C:\core\infrastructure\ubcp-home-backup-$0"
 
-  Delete "C:\core\infrastructure\extendedInterface"
-  Delete "C:\core\infrastructure\ubcp"
-  Delete "C:\core\infrastructure\ubiquitous_bash"
-  Delete "C:\core\infrastructure\_bash.bat"
+  RMDir /r "C:\core\infrastructure\extendedInterface"
+  ;RMDir /r /REBOOTOK "C:\core\infrastructure\extendedInterface"
+  RMDir /r "C:\core\infrastructure\ubcp"
+  ;RMDir /r /REBOOTOK "C:\core\infrastructure\ubcp"
+  RMDir /r "C:\core\infrastructure\ubiquitous_bash"
+  ;RMDir /r /REBOOTOK "C:\core\infrastructure\ubiquitous_bash"
+  RMDir /r "C:\core\infrastructure\_bash.bat"
+  ;RMDir /r /REBOOTOK "C:\core\infrastructure\_bash.bat"
 
   SetOutPath "C:\core\infrastructure\extendedInterface"
   File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface\*"
@@ -236,11 +166,82 @@ Section "Install"
 
   Exec "explorer.exe C:\core\infrastructure\extendedInterface\README-installer.pdf"
 
+
+
+
+
+  # Uninstaller - See function un.onInit and section "uninstall" for configuration
+	writeUninstaller "C:\core\infrastructure\extIface-uninst.exe"
+
+
+  # Start Menu
+	;createDirectory "$SMPROGRAMS\${COMPANYNAME}"
+	;createShortCut "$SMPROGRAMS\${COMPANYNAME}\${APPNAME}.lnk" "$INSTDIR\app.exe" "" "$INSTDIR\logo.ico"
+ 
+	# Registry information for add/remove programs
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "DisplayName" "${COMPANYNAME} - ${APPNAME} - ${DESCRIPTION}"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "UninstallString" "$\"C:\core\infrastructure\extIface-uninst.exe$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "QuietUninstallString" "$\"C:\core\infrastructure\extIface-uninst.exe$\" /S"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "InstallLocation" "$\"C:\core\infrastructure\extendedInterface$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "DisplayIcon" "$\"C:\core\infrastructure\extendedInterface\_lib\nsis\icon\icon.ico$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "Publisher" "$\"${COMPANYNAME}$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "HelpLink" "$\"${HELPURL}$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "URLUpdateInfo" "$\"${UPDATEURL}$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "URLInfoAbout" "$\"${ABOUTURL}$\""
+	;WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "DisplayVersion" "$\"${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}$\""
+	;WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "VersionMajor" ${VERSIONMAJOR}
+	;WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "VersionMinor" ${VERSIONMINOR}
+	# There is no option for modifying or repairing the install
+	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "NoModify" 1
+	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "NoRepair" 1
+	# Set the INSTALLSIZE constant (!defined at the top of this script) so Add/Remove Programs can accurately report the size
+	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "EstimatedSize" ${INSTALLSIZE}
+
 SectionEnd
 
 
 
+function un.onInit
+	SetShellVarContext all
+ 
+	#Verify the uninstaller - last chance to back out
+	MessageBox MB_OKCANCEL "Permanantly remove ${APPNAME}? If you made custom changes these may be lost!" IDOK next
+		Abort
+	next:
+    Nop
+functionEnd
+ 
+section "uninstall"
+ 
+	# Remove Start Menu launcher
+	;delete "$SMPROGRAMS\${COMPANYNAME}\${APPNAME}.lnk"
+	# Try to remove the Start Menu folder - this will only happen if it is empty
+	;rmDir "$SMPROGRAMS\${COMPANYNAME}"
+ 
+	# Remove files
+  RMDir /r "C:\core\infrastructure\extendedInterface-home-backup-uninstalled"
+	Rename "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home" "C:\core\infrastructure\extendedInterface-home-backup-uninstalled"
+  RMDir /r "C:\core\infrastructure\ubcp-home-backup-uninstalled"
+  Rename "C:\core\infrastructure\ubcp\cygwin\home" "C:\core\infrastructure\ubcp-home-backup-uninstalled"
 
+  ;RMDir /r "C:\core\infrastructure\extendedInterface"
+  RMDir /r /REBOOTOK "C:\core\infrastructure\extendedInterface"
+  ;RMDir /r "C:\core\infrastructure\ubcp"
+  RMDir /r /REBOOTOK "C:\core\infrastructure\ubcp"
+  ;RMDir /r "C:\core\infrastructure\ubiquitous_bash"
+  RMDir /r /REBOOTOK "C:\core\infrastructure\ubiquitous_bash"
+  ;RMDir /r "C:\core\infrastructure\_bash.bat"
+  RMDir /r /REBOOTOK "C:\core\infrastructure\_bash.bat"
+ 
+	# Always delete uninstaller as the last action
+	delete "C:\core\infrastructure\extIface-uninst.exe"
+ 
+	# Try to remove the install directory - this will only happen if it is empty
+	;rmDir $INSTDIR
+ 
+	# Remove uninstaller information from the registry
+	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}"
+sectionEnd
 
 
 

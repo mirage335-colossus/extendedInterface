@@ -94,7 +94,7 @@ jobs:
   # sleep 120
   # rclone --progress --config /rclone.conf copy distLLC_release_ro:ubcp/package_ubcp-core.7z ./
   # rclone --progress --config /rclone.conf copy distLLC_build_ubcp:package_ubcp-core.7z ./
-  test_ubcp_release_mswLatest:
+  test_extendedInterface_ubcp_release_mswLatest:
     runs-on: windows-latest
     #runs-on: windows-2022
     #runs-on: windows-2019
@@ -129,8 +129,9 @@ jobs:
         shell: pwsh
         timeout-minutes: 180
         run: |
-          mkdir /
+          #mkdir /
           cd /
+          #Invoke-WebRequest -Uri (((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/extendedInterface/releases") | Where-Object { $_.name -eq "internal" } | ForEach-Object { $_.assets } | Where-Object {$_.name -eq "extIface.exe"} | Sort-Object -Property {$_.browser_download_url -replace '\D+(\d+)-\d+$', '$1'} -Descending | Select-Object -First 1).browser_download_url) -OutFile ./extIface.exe
           Invoke-WebRequest -Uri (((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/extendedInterface/releases" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }) | Where-Object { $_.name -eq "internal" } | ForEach-Object { $_.assets } | Where-Object {$_.name -eq "extIface.exe"} | Sort-Object -Property {$_.browser_download_url -replace '\D+(\d+)-\d+$', '$1'} -Descending | Select-Object -First 1).browser_download_url) -OutFile ./extIface.exe
           start "Installer" /wait "extIface" /S
       - uses: actions/checkout@v2

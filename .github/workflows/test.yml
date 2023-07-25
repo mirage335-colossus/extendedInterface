@@ -59,19 +59,19 @@ jobs:
       - name: test-lean
         shell: bash
         run: |
-          ./lean.sh _test | sudo -n tee /_test-lean.log
+          ./_lib/ubiquitous_bash.sh/lean.sh _test | sudo -n tee /_test-lean.log
         timeout-minutes: 90
       - name: _compile
         shell: bash
         timeout-minutes: 90
         run: |
-          ./_bin.bat ./compile.sh | sudo -n tee /_compile.log
-          ./_bin.bat ./compile.sh
-          ./_bin.bat ./compile.sh
+          ./_lib/ubiquitous_bash.sh/_bin.bat ./compile.sh | sudo -n tee /_compile.log
+          ./_lib/ubiquitous_bash.sh/_bin.bat ./compile.sh
+          ./_lib/ubiquitous_bash.sh/_bin.bat ./compile.sh
       - name: test-lean
         shell: bash
         run: |
-          ./lean.sh _test | sudo -n tee /_test-lean-after_compile.log
+          ./_lib/ubiquitous_bash.sh/lean.sh _test | sudo -n tee /_test-lean-after_compile.log
         timeout-minutes: 90
       - name: test-extendedInterface
         shell: bash
@@ -83,13 +83,6 @@ jobs:
         run: |
           ./ubiquitous_bash.sh _test | sudo -n tee /_test-ubiquitous_bash.log
         timeout-minutes: 90
-      - name: Setup tmate session
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
-        # ssh -i <path-to-key> <tmate-connection-string>
-        with:
-          limit-access-to-actor: true
-        timeout-minutes: 25
   # Other 'ubcp' tests must be essentially identical.
   # sleep 120
   # rclone --progress --config /rclone.conf copy distLLC_release_ro:ubcp/package_ubcp-core.7z ./
@@ -189,26 +182,18 @@ jobs:
           git config --global core.eol lf
           choco install 7zip.install -y
           choco install rclone -y
-      - name: _getCore_ubcp
+      - name: _getCore_ubcp-extendedInterface
         shell: pwsh
         timeout-minutes: 180
         run: |
           mkdir /core
           mkdir /core/infrastructure
           cd /core/infrastructure
-          
-          #sleep 120
-          #rclone --progress --config /rclone.conf copy distLLC_build_ubcp:package_ubcp-core.7z ./
 
-          #curl -L -o package_ubcp-core.7z $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases/latest" | jq -r ".assets[] | select(.name == \"package_ubcp-core.7z\") | .browser_download_url")
-          #curl -L -o package_ubcp-core.7z $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"build\") | .assets[] | select(.name == \"package_ubcp-core.7z\") | .browser_download_url")
+          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/extendedInterface/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "extIface.exe"}).browser_download_url -OutFile ./extIface.exe
 
-          #Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/ubiquitous_bash/releases/latest").assets | Where-Object {$_.name -eq "package_ubcp-core.7z"}).browser_download_url -OutFile ./package_ubcp-core.7z
-
-          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/ubiquitous_bash/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "package_ubcp-core.7z"}).browser_download_url -OutFile ./package_ubcp-core.7z
-
-          7z -y x ./package_ubcp-core.7z | tee /_getCore_ubcp.log
-          rm ./package_ubcp-core.7z
+          #start "Installer" /wait "extIface" /S
+          Start-Process -FilePath ".\extIface.exe" -ArgumentList "/wait", ".\extIface.exe", "/S" -NoNewWindow -Wait
       - uses: actions/checkout@v2
       - name: statement! ls
         shell: pwsh
@@ -270,18 +255,10 @@ jobs:
           mkdir /core/infrastructure
           cd /core/infrastructure
 
-          #sleep 240
-          #rclone --progress --config /rclone.conf copy distLLC_build_ubcp:package_ubcp-core.7z ./
+          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/extendedInterface/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "extIface.exe"}).browser_download_url -OutFile ./extIface.exe
 
-          #curl -L -o package_ubcp-core.7z $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases/latest" | jq -r ".assets[] | select(.name == \"package_ubcp-core.7z\") | .browser_download_url")
-          #curl -L -o package_ubcp-core.7z $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"build\") | .assets[] | select(.name == \"package_ubcp-core.7z\") | .browser_download_url")
-
-          #Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/ubiquitous_bash/releases/latest").assets | Where-Object {$_.name -eq "package_ubcp-core.7z"}).browser_download_url -OutFile ./package_ubcp-core.7z
-
-          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/ubiquitous_bash/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "package_ubcp-core.7z"}).browser_download_url -OutFile ./package_ubcp-core.7z
-
-          7z -y x ./package_ubcp-core.7z | tee /_getCore_ubcp.log
-          rm ./package_ubcp-core.7z
+          #start "Installer" /wait "extIface" /S
+          Start-Process -FilePath ".\extIface.exe" -ArgumentList "/wait", ".\extIface.exe", "/S" -NoNewWindow -Wait
       - uses: actions/checkout@v2
       - name: statement! ls
         shell: pwsh

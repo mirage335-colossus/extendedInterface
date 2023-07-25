@@ -134,6 +134,11 @@ _build_extendedInterface-fetch() {
 
     
 
+    cd "$currentAccessoriesDir"/parts/extendedInterface/_lib/ubiquitous_bash/
+    ./compile.sh
+
+
+
     cd "$functionEntryPWD"
     _stop
 }

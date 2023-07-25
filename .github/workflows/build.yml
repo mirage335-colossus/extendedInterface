@@ -40,12 +40,6 @@ jobs:
         with:
           fetch-depth: 1
           submodules: 'recursive'
-      - name: compile
-        shell: bash
-        timeout-minutes: 45
-        run: |
-          cd ./_lib/ubiquitous_bash
-          ./compile.sh
       - name: _getMinimal_cloud
         shell: bash
         timeout-minutes: 120

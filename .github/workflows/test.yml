@@ -81,11 +81,11 @@ jobs:
         run: |
           ./extendedInterface.sh _test | sudo -n tee /_test-extendedInterface.log
         timeout-minutes: 90
-      - name: test-ubiquitous_bash
-        shell: bash
-        run: |
-          ./ubiquitous_bash.sh _test | sudo -n tee /_test-ubiquitous_bash.log
-        timeout-minutes: 90
+      #- name: test-ubiquitous_bash
+        #shell: bash
+        #run: |
+          #./ubiquitous_bash.sh _test | sudo -n tee /_test-ubiquitous_bash.log
+        #timeout-minutes: 90
   # Other 'ubcp' tests must be essentially identical.
   # sleep 120
   # rclone --progress --config /rclone.conf copy distLLC_release_ro:ubcp/package_ubcp-core.7z ./

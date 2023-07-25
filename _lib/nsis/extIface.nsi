@@ -151,6 +151,33 @@ Section "Install"
   File /r "..\..\..\extendedInterface-accessories\parts\_bash.bat.lnk"
 
 
+  SetOutPath "$WINDIR"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\nircmd\*"
+
+
+  ;start /wait
+  SetOutPath "$TEMP\extendedInterface_bundle\qalculate"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\qalculate\*"
+  IfSilent +2
+  ExecWait '"msiexec" /i "$TEMP\qalculate\qalculate-4.7.0-x64.msi"'
+  ExecWait '"msiexec" /i "$TEMP\qalculate\qalculate-4.7.0-x64.msi" /passive /norestart'
+
+
+  SetOutPath "$TEMP\extendedInterface_bundle\tigervnc"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\tigervnc\*"
+  IfSilent +2
+  ExecWait "$TEMP\tigervnc\tigervnc64-1.13.1.exe"
+  ExecWait "$TEMP\tigervnc\tigervnc64-1.13.1.exe /silent"
+
+
+  SetOutPath "$TEMP\extendedInterface_bundle\kate"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\kate\*"
+  IfSilent +2
+  ExecWait "$TEMP\kate\kate-23.04.3-2104-windows-cl-msvc2019-x86_64.exe"
+  ExecWait "$TEMP\kate\kate-23.04.3-2104-windows-cl-msvc2019-x86_64.exe /S"
+
+
+
 
 
   ExpandEnvStrings $0 %COMSPEC%

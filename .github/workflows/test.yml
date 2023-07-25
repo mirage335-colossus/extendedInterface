@@ -59,19 +59,19 @@ jobs:
       - name: test-lean
         shell: bash
         run: |
-          ./_lib/ubiquitous_bash.sh/lean.sh _test | sudo -n tee /_test-lean.log
+          ./_lib/ubiquitous_bash/lean.sh _test | sudo -n tee /_test-lean.log
         timeout-minutes: 90
       - name: _compile
         shell: bash
         timeout-minutes: 90
         run: |
-          ./_lib/ubiquitous_bash.sh/_bin.bat ./compile.sh | sudo -n tee /_compile.log
-          ./_lib/ubiquitous_bash.sh/_bin.bat ./compile.sh
+          ./_lib/ubiquitous_bash/_bin.bat ./compile.sh | sudo -n tee /_compile.log
+          ./_lib/ubiquitous_bash/_bin.bat ./compile.sh
           ./_lib/ubiquitous_bash.sh/_bin.bat ./compile.sh
       - name: test-lean
         shell: bash
         run: |
-          ./_lib/ubiquitous_bash.sh/lean.sh _test | sudo -n tee /_test-lean-after_compile.log
+          ./_lib/ubiquitous_bash/lean.sh _test | sudo -n tee /_test-lean-after_compile.log
         timeout-minutes: 90
       - name: test-extendedInterface
         shell: bash

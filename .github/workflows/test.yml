@@ -70,7 +70,7 @@ jobs:
         run: |
           ./_lib/ubiquitous_bash/_bin.bat ./compile.sh | sudo -n tee /_compile.log
           ./_lib/ubiquitous_bash/_bin.bat ./compile.sh
-          ./_lib/ubiquitous_bash.sh/_bin.bat ./compile.sh
+          ./_lib/ubiquitous_bash/_bin.bat ./compile.sh
       - name: test-lean
         shell: bash
         run: |

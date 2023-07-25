@@ -147,7 +147,8 @@ jobs:
         shell: pwsh
         timeout-minutes: 240
         run: |
-          C:\core\infrastructure\ubiquitous_bash\_test | tee /_test
+          cd C:\core\infrastructure\ubiquitous_bash\
+          ./_test | tee /_test
           $SEL = cat /_test | Select-String -Pattern 'FAIL' -CaseSensitive -SimpleMatch
           if ($SEL -ne $null)
           {

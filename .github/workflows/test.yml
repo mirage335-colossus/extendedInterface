@@ -125,27 +125,14 @@ jobs:
           git config --global core.eol lf
           choco install 7zip.install -y
           choco install rclone -y
-      - name: _getCore_ubcp
+      - name: _getCore_ubcp-extendedInterface
         shell: pwsh
         timeout-minutes: 180
         run: |
-          mkdir /core
-          mkdir /core/infrastructure
-          cd /core/infrastructure
-          #rclone --progress --config /rclone.conf copy distLLC_release_ro:ubcp/package_ubcp-core.7z ./
-
-          # ATTRIBUTION-AI
-          #curl -L -o package_ubcp-core.7z $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases/latest" | jq -r ".assets[] | select(.name == \"package_ubcp-core.7z\") | .browser_download_url")
-          #curl -L -o package_ubcp-core.7z $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"internal\") | .assets[] | select(.name == \"package_ubcp-core.7z\") | .browser_download_url")
-
-          $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/ubiquitous_bash/releases"
-          $specificRelease = $releases | Where-Object {$_.name -eq "internal"}
-          $asset = $specificRelease.assets | Where-Object {$_.name -eq "package_ubcp-core.7z"}
-          #Invoke-WebRequest -Uri $asset.browser_download_url -OutFile ./package_ubcp-core.7z
-          Invoke-WebRequest -Uri $asset.browser_download_url -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" } -OutFile ./package_ubcp-core.7z
-
-          7z -y x ./package_ubcp-core.7z | tee /_getCore_ubcp.log
-          rm ./package_ubcp-core.7z
+          mkdir /
+          cd /
+          Invoke-WebRequest -Uri (((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/extendedInterface/releases" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }) | Where-Object { $_.name -eq "internal" } | ForEach-Object { $_.assets } | Where-Object {$_.name -eq "extIface.exe"} | Sort-Object -Property {$_.browser_download_url -replace '\D+(\d+)-\d+$', '$1'} -Descending | Select-Object -First 1).browser_download_url) -OutFile ./extIface.exe
+          start "Installer" /wait "extIface" /S
       - uses: actions/checkout@v2
       - name: statement! ls
         shell: pwsh
@@ -158,7 +145,7 @@ jobs:
         shell: pwsh
         timeout-minutes: 240
         run: |
-          ./_test | tee /_test
+          C:\core\infrastructure\ubiquitous_bash\_test | tee /_test
           $SEL = cat /_test | Select-String -Pattern 'FAIL' -CaseSensitive -SimpleMatch
           if ($SEL -ne $null)
           {

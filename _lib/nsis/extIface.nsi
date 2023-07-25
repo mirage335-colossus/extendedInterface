@@ -175,9 +175,9 @@ Section "Install"
   SetOutPath "$TEMP\extendedInterface_bundle\kate"
   File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\kate\*"
   IfSilent +2
-  ExecWait "$TEMP\extendedInterface_bundle\kate\kate-23.04.3-2104-windows-cl-msvc2019-x86_64.exe"
+  ExecWait "$TEMP\extendedInterface_bundle\kate\kate-23.04.3-2100-windows-cl-msvc2019-x86_64.exe"
   IfSilent 0 +2
-  ExecWait "$TEMP\extendedInterface_bundle\kate\kate-23.04.3-2104-windows-cl-msvc2019-x86_64.exe /S"
+  ExecWait "$TEMP\extendedInterface_bundle\kate\kate-23.04.3-2100-windows-cl-msvc2019-x86_64.exe /S"
 
 
 

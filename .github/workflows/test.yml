@@ -45,7 +45,10 @@ jobs:
         #env:
           #rclone_limited_conf_base64: ${{ secrets.rclone_limited_conf_base64 }}
         #timeout-minutes: 5
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          submodules: 'recursive'
       - name: _getMinimal_cloud
         shell: bash
         run: |

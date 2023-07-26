@@ -1,0 +1,9 @@
+
+Ports 61001 to 61999 - VNC/RDP/SSH/etc VM/container and temporary VPS/codespaces ports. Blocks of 2 . Per project (eg. 'ubdist') allocations.
+ REFERENCE - '_findPort('   ,   https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers
+Ports 62001 to 62999 - Personal forks of projects assigned to Ports 61001 to 61999 .
+Ports 63001 to 63999 - Merging personal forks of projects assigned to Ports 62001 to 62999 (derived from Ports 61001 to 61999) .
+
+Port 51001-51025 static localhost x11vnc for forwarding .
+
+

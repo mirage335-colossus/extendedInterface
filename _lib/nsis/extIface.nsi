@@ -182,6 +182,25 @@ Section "Install"
 
 
 
+  SetOutPath "$TEMP\extendedInterface_bundle\vjoy"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\vjoy\*"
+  IfSilent +2
+  ExecWait "$TEMP\extendedInterface_bundle\vjoy\vJoy-v2.1.9.1\vJoySetup.exe"
+  IfSilent 0 +2
+  ExecWait "$TEMP\extendedInterface_bundle\vjoy\vJoy-v2.1.9.1\vJoySetup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART"
+
+
+  SetOutPath "$TEMP\extendedInterface_bundle\joystickgremlin"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\joystickgremlin\*"
+  IfSilent +2
+  ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\joystickgremlin\Joystick.Gremlin.R13.3.msi"'
+  IfSilent 0 +2
+  ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\joystickgremlin\Joystick.Gremlin.R13.3.msi" /passive /norestart'
+
+
+
+
+
 
   ExpandEnvStrings $0 %COMSPEC%
   ExecWait '"$0" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _setup_install'

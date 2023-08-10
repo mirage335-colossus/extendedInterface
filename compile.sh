@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1726750086'
+export ub_setScriptChecksum_contents='1915851566'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -760,6 +760,43 @@ then
 	ionice() {
 		false
 	}
+
+	_wsl() {
+		local currentBin_wsl
+		currentBin_wsl=$(type -p wsl)
+
+		if ( [[ "$1" != "-"* ]] || [[ "$1" == "-u" ]] || [[ "$1" == "-e" ]] || [[ "$1" == "--exec" ]] ) && ( [[ "$1" != "-d" ]] || [[ "$2" != "-d" ]] || [[ "$3" != "-d" ]] || [[ "$4" != "-d" ]] || [[ "$5" != "-d" ]] || [[ "$6" != "-d" ]] )
+		then
+			if "$currentBin_wsl" --list | tr -dc 'a-zA-Z0-9\n' | grep '^ubdist' > /dev/null 2>&1
+			then
+				#"$currentBin_wsl" -u root -d ubdist "$@"
+				"$currentBin_wsl" -d ubdist "$@"
+				return
+			elif "$currentBin_wsl" --list | tr -dc 'a-zA-Z0-9\n' | grep '^ubDistBuild' > /dev/null 2>&1
+			then
+				#"$currentBin_wsl" -u root -d ubDistBuild "$@"
+				"$currentBin_wsl" -d ubDistBuild "$@"
+				return
+			elif "$currentBin_wsl" --list | tr -dc 'a-zA-Z0-9\n' | grep '^ubdist_embedded' > /dev/null 2>&1
+			then
+				#"$currentBin_wsl" -u root -d ubdist_embedded "$@"
+				"$currentBin_wsl" -d ubdist_embedded "$@"
+				return
+			elif "$currentBin_wsl" --list | tr -dc 'a-zA-Z0-9\n' | grep '^Debian' > /dev/null 2>&1
+			then
+				#"$currentBin_wsl" -u root -d Debian "$@"
+				"$currentBin_wsl" -d Debian "$@"
+				return
+			fi
+			"$currentBin_wsl" "$@"
+			return
+		fi
+		"$currentBin_wsl" "$@"
+		return
+	}
+	l() {
+		_wsl "$@"
+	}
 fi
 
 
@@ -791,12 +828,26 @@ _sudo_cygwin_sequence() {
 	chmod u+x "$safeTmp"/cygwin_sudo_temp.sh
 	
 	
-	
+		
 	cp "$scriptAbsoluteLocation" "$safeTmp"/
-	chmod u+x "$safeTmp"/$(basename "$scriptAbsoluteLocation")
+	local currentScriptBasename
+	currentScriptBasename=$(basename "$scriptAbsoluteLocation")
+	chmod u+x "$safeTmp"/"$currentScriptBasename"
 	
-	cp "$scriptAbsoluteFolder"/_bin.bat "$safeTmp"/_bin.bat
+	cp "$scriptLib"/ubiquitous_bash/_bin.bat "$safeTmp"/_bin.bat 2>/dev/null
+	cp -f "$scriptAbsoluteFolder"/_bin.bat "$safeTmp"/_bin.bat 2>/dev/null
 	chmod u+x "$safeTmp"/_bin.bat
+
+	[[ ! -e "$safeTmp"/_bin.bat ]] && _messagePlain_bad 'bad: missing: _bin.bat' && _messageFAIL && _stop 1
+
+	if type _anchor_configure > /dev/null 2>&1
+	then
+		"$safeTmp"/"$currentScriptBasename" _anchor_configure "$safeTmp"/_bin.bat
+	else
+		_messagePlain_bad 'bad: missing: _anchor_configure'
+		_messageFAIL && _stop 1
+		_stop 1
+	fi
 	
 
 	# 'Do it as Administrator.'
@@ -805,7 +856,9 @@ _sudo_cygwin_sequence() {
 	if [[ "$scriptAbsoluteFolder" == "/cygdrive/c"* ]]
 	then
 		# WARNING: May be untested, or (especially under interactive shell) may call obsolete code.
-		cygstart --action=runas "$scriptAbsoluteFolder"/_bin.bat "$safeTmp"/cygwin_sudo_temp.sh
+		#cygstart --action=runas "$scriptAbsoluteFolder"/_bin.bat "$safeTmp"/cygwin_sudo_temp.sh
+
+		cygstart --action=runas "$safeTmp"/_bin.bat "$safeTmp"/cygwin_sudo_temp.sh
 	else
 		cygstart --action=runas "$safeTmp"/_bin.bat "$safeTmp"/cygwin_sudo_temp.sh
 	fi
@@ -823,6 +876,7 @@ _sudo_cygwin() {
 }
 
 # CAUTION: BROKEN !
+# (at least historically this did not work reliably though it may or may not be reliable now)
 if _if_cygwin && type cygstart > /dev/null 2>&1
 then
 	sudo_cygwin() {
@@ -840,6 +894,11 @@ then
 		
 		return 1
 	}
+	sudoc() {
+		[[ "$1" == "-n" ]] && return 1
+		sudo_cygwin "$@"
+	}
+	alias sudo=sudoc
 fi
 
 
@@ -875,6 +934,16 @@ _userMSW() {
 }
 
 
+_powershell() {
+    local currentPowershellBinary
+    currentPowershellBinary=$(find /cygdrive/c/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+    [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /cygdrive/d/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+    [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /cygdrive/e/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+    [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /cygdrive/f/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+
+	#_userMSW "$currentPowershellBinary" "$@"
+    "$currentPowershellBinary" "$@"
+}
 
 
 
@@ -883,7 +952,7 @@ _discoverResource-cygwinNative-ProgramFiles-declaration-ProgramFiles() {
 	currentBinary="$1"
 	
 	local currentBinary_functionName
-	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9')
+	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9\-_')
 	
 	local currentExpectedSubdir
 	currentExpectedSubdir="$2"
@@ -915,7 +984,7 @@ _discoverResource-cygwinNative-ProgramFiles-declaration-core() {
 	currentBinary="$1"
 	
 	local currentBinary_functionName
-	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9')
+	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9\-_')
 	
 	local currentExpectedSubdir
 	currentExpectedSubdir="$2"
@@ -949,7 +1018,7 @@ _discoverResource-cygwinNative-ProgramFiles() {
 	local currentBinary
 	currentBinary="$1"
 	local currentBinary_functionName
-	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9')
+	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9\-_')
 	[[ "$3" != "true" ]] && type "$currentBinary_functionName" > /dev/null 2>&1 && return 0
 	
 	local currentCygdriveC_equivalent
@@ -5678,6 +5747,8 @@ _init_deps() {
 	export enUb_abstractfs=""
 	export enUb_buildBash=""
 	export enUb_buildBashUbiquitous=""
+
+	export enUb_virt_translation_gui=""
 	
 	export enUb_command=""
 	export enUb_synergy=""
@@ -5952,6 +6023,12 @@ _deps_abstractfs() {
 	_deps_bup
 	_deps_virt
 	export enUb_abstractfs="true"
+}
+
+_deps_virt_translation_gui() {
+	_deps_virt_translation
+	
+	export enUb_virt_translation_gui="true"
 }
 
 _deps_command() {
@@ -6538,6 +6615,8 @@ _compile_bash_deps() {
 		_deps_abstractfs
 		
 		_deps_virt_translation
+
+		_deps_virt_translation_gui
 		
 		_deps_stopwatch
 		
@@ -6681,6 +6760,8 @@ _compile_bash_deps() {
 		
 		_deps_virt
 		#_deps_virt_thick
+
+		#_deps_virt_translation_gui
 		
 		#_deps_chroot
 		#_deps_bios
@@ -6770,6 +6851,8 @@ _compile_bash_deps() {
 		
 		_deps_virt
 		_deps_virt_thick
+
+		_deps_virt_translation_gui
 		
 		_deps_chroot
 		_deps_bios
@@ -6859,6 +6942,8 @@ _compile_bash_deps() {
 		
 		_deps_virt
 		_deps_virt_thick
+
+		_deps_virt_translation_gui
 		
 		_deps_chroot
 		_deps_bios
@@ -7158,6 +7243,17 @@ _compile_bash_utilities_virtualization() {
 	[[ "$enUb_docker" == "true" ]] && includeScriptList+=( "virtualization/docker"/dockertest.sh )
 	[[ "$enUb_docker" == "true" ]] && includeScriptList+=( "virtualization/docker"/dockerchecks.sh )
 	[[ "$enUb_docker" == "true" ]] && includeScriptList+=( "virtualization/docker"/dockeruser.sh )
+
+
+	if ( [[ "$enUb_notLean" == "true" ]] || [[ "$enUb_image" == "true" ]] || [[ "$enUb_docker" == "true" ]] || [[ "$enUb_virt" == "true" ]] || [[ "$enUb_virt_thick" == "true" ]] || [[ "$enUb_virt_translation" == "true" ]] || [[ "$enUb_virt_translation_gui" == "true" ]] )
+	then
+		includeScriptList+=( "virtualization/wsl2"/here_wsl2.sh )
+		includeScriptList+=( "virtualization/wsl2"/wsl2_internal.sh )
+
+		includeScriptList+=( "virtualization/wsl2"/here_wsl2_gui.sh )
+	fi
+
+	( [[ "$enUb_virt_translation_gui" == "true" ]] ) && includeScriptList+=( "virtualization/wsl2"/wsl2_gui_internal.sh )
 }
 
 # WARNING: Shortcuts must NOT cause _stop/exit failures in _test/_setup procedures!
@@ -7201,6 +7297,7 @@ _compile_bash_shortcuts() {
 	( [[ "$enUb_repo" == "true" ]] && [[ "$enUb_git" == "true" ]] ) && includeScriptList+=( "shortcuts/git"/git.sh )
 	( [[ "$enUb_repo" == "true" ]] && [[ "$enUb_git" == "true" ]] ) && includeScriptList+=( "shortcuts/git"/gitBare.sh )
 	includeScriptList+=( "shortcuts/git"/gitBest.sh )
+	includeScriptList+=( "shortcuts/git"/wget_githubRelease_internal.sh )
 	
 	[[ "$enUb_bup" == "true" ]] && includeScriptList+=( "shortcuts/bup"/bup.sh )
 	
@@ -7373,6 +7470,11 @@ _compile_bash_vars_spec() {
 	[[ "$enUb_virt" == "true" ]] && includeScriptList+=( "virtualization"/image/imagevars.sh )
 	
 	[[ "$enUb_proxy" == "true" ]] && includeScriptList+=( "generic/net/proxy/ssh"/sshvars.sh )
+
+	if ( [[ "$enUb_notLean" == "true" ]] || [[ "$enUb_image" == "true" ]] || [[ "$enUb_docker" == "true" ]] || [[ "$enUb_virt" == "true" ]] || [[ "$enUb_virt_thick" == "true" ]] || [[ "$enUb_virt_translation" == "true" ]] || [[ "$enUb_virt_translation_gui" == "true" ]] )
+	then
+		includeScriptList+=( "virtualization"/wsl2vars.sh )
+	fi
 	
 	
 	includeScriptList+=( "structure"/specglobalvars.sh )
@@ -7699,6 +7801,9 @@ _compile_bash() {
 		includeScriptList+=( "shortcuts"/importShortcuts.sh )
 		
 		includeScriptList+=( "shortcuts/prompt"/visualPrompt.sh )
+		
+		
+		includeScriptList+=( "shortcuts"/git/wget_githubRelease_internal.sh )
 		
 		
 		

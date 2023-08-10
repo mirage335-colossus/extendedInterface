@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='4030864191'
+export ub_setScriptChecksum_contents='4290078354'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -760,6 +760,43 @@ then
 	ionice() {
 		false
 	}
+
+	_wsl() {
+		local currentBin_wsl
+		currentBin_wsl=$(type -p wsl)
+
+		if ( [[ "$1" != "-"* ]] || [[ "$1" == "-u" ]] || [[ "$1" == "-e" ]] || [[ "$1" == "--exec" ]] ) && ( [[ "$1" != "-d" ]] || [[ "$2" != "-d" ]] || [[ "$3" != "-d" ]] || [[ "$4" != "-d" ]] || [[ "$5" != "-d" ]] || [[ "$6" != "-d" ]] )
+		then
+			if "$currentBin_wsl" --list | tr -dc 'a-zA-Z0-9\n' | grep '^ubdist' > /dev/null 2>&1
+			then
+				#"$currentBin_wsl" -u root -d ubdist "$@"
+				"$currentBin_wsl" -d ubdist "$@"
+				return
+			elif "$currentBin_wsl" --list | tr -dc 'a-zA-Z0-9\n' | grep '^ubDistBuild' > /dev/null 2>&1
+			then
+				#"$currentBin_wsl" -u root -d ubDistBuild "$@"
+				"$currentBin_wsl" -d ubDistBuild "$@"
+				return
+			elif "$currentBin_wsl" --list | tr -dc 'a-zA-Z0-9\n' | grep '^ubdist_embedded' > /dev/null 2>&1
+			then
+				#"$currentBin_wsl" -u root -d ubdist_embedded "$@"
+				"$currentBin_wsl" -d ubdist_embedded "$@"
+				return
+			elif "$currentBin_wsl" --list | tr -dc 'a-zA-Z0-9\n' | grep '^Debian' > /dev/null 2>&1
+			then
+				#"$currentBin_wsl" -u root -d Debian "$@"
+				"$currentBin_wsl" -d Debian "$@"
+				return
+			fi
+			"$currentBin_wsl" "$@"
+			return
+		fi
+		"$currentBin_wsl" "$@"
+		return
+	}
+	l() {
+		_wsl "$@"
+	}
 fi
 
 
@@ -791,12 +828,26 @@ _sudo_cygwin_sequence() {
 	chmod u+x "$safeTmp"/cygwin_sudo_temp.sh
 	
 	
-	
+		
 	cp "$scriptAbsoluteLocation" "$safeTmp"/
-	chmod u+x "$safeTmp"/$(basename "$scriptAbsoluteLocation")
+	local currentScriptBasename
+	currentScriptBasename=$(basename "$scriptAbsoluteLocation")
+	chmod u+x "$safeTmp"/"$currentScriptBasename"
 	
-	cp "$scriptAbsoluteFolder"/_bin.bat "$safeTmp"/_bin.bat
+	cp "$scriptLib"/ubiquitous_bash/_bin.bat "$safeTmp"/_bin.bat 2>/dev/null
+	cp -f "$scriptAbsoluteFolder"/_bin.bat "$safeTmp"/_bin.bat 2>/dev/null
 	chmod u+x "$safeTmp"/_bin.bat
+
+	[[ ! -e "$safeTmp"/_bin.bat ]] && _messagePlain_bad 'bad: missing: _bin.bat' && _messageFAIL && _stop 1
+
+	if type _anchor_configure > /dev/null 2>&1
+	then
+		"$safeTmp"/"$currentScriptBasename" _anchor_configure "$safeTmp"/_bin.bat
+	else
+		_messagePlain_bad 'bad: missing: _anchor_configure'
+		_messageFAIL && _stop 1
+		_stop 1
+	fi
 	
 
 	# 'Do it as Administrator.'
@@ -805,7 +856,9 @@ _sudo_cygwin_sequence() {
 	if [[ "$scriptAbsoluteFolder" == "/cygdrive/c"* ]]
 	then
 		# WARNING: May be untested, or (especially under interactive shell) may call obsolete code.
-		cygstart --action=runas "$scriptAbsoluteFolder"/_bin.bat "$safeTmp"/cygwin_sudo_temp.sh
+		#cygstart --action=runas "$scriptAbsoluteFolder"/_bin.bat "$safeTmp"/cygwin_sudo_temp.sh
+
+		cygstart --action=runas "$safeTmp"/_bin.bat "$safeTmp"/cygwin_sudo_temp.sh
 	else
 		cygstart --action=runas "$safeTmp"/_bin.bat "$safeTmp"/cygwin_sudo_temp.sh
 	fi
@@ -823,6 +876,7 @@ _sudo_cygwin() {
 }
 
 # CAUTION: BROKEN !
+# (at least historically this did not work reliably though it may or may not be reliable now)
 if _if_cygwin && type cygstart > /dev/null 2>&1
 then
 	sudo_cygwin() {
@@ -840,6 +894,11 @@ then
 		
 		return 1
 	}
+	sudoc() {
+		[[ "$1" == "-n" ]] && return 1
+		sudo_cygwin "$@"
+	}
+	alias sudo=sudoc
 fi
 
 
@@ -875,6 +934,16 @@ _userMSW() {
 }
 
 
+_powershell() {
+    local currentPowershellBinary
+    currentPowershellBinary=$(find /cygdrive/c/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+    [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /cygdrive/d/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+    [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /cygdrive/e/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+    [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /cygdrive/f/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+
+	#_userMSW "$currentPowershellBinary" "$@"
+    "$currentPowershellBinary" "$@"
+}
 
 
 
@@ -883,7 +952,7 @@ _discoverResource-cygwinNative-ProgramFiles-declaration-ProgramFiles() {
 	currentBinary="$1"
 	
 	local currentBinary_functionName
-	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9')
+	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9\-_')
 	
 	local currentExpectedSubdir
 	currentExpectedSubdir="$2"
@@ -915,7 +984,7 @@ _discoverResource-cygwinNative-ProgramFiles-declaration-core() {
 	currentBinary="$1"
 	
 	local currentBinary_functionName
-	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9')
+	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9\-_')
 	
 	local currentExpectedSubdir
 	currentExpectedSubdir="$2"
@@ -949,7 +1018,7 @@ _discoverResource-cygwinNative-ProgramFiles() {
 	local currentBinary
 	currentBinary="$1"
 	local currentBinary_functionName
-	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9')
+	currentBinary_functionName=$(echo "$1" | tr -dc 'a-zA-Z0-9\-_')
 	[[ "$3" != "true" ]] && type "$currentBinary_functionName" > /dev/null 2>&1 && return 0
 	
 	local currentCygdriveC_equivalent
@@ -4652,11 +4721,14 @@ _visualPrompt() {
 	
 	
 	
-	if ! _if_cygwin
+	if _if_cygwin
 	then
-		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
-	else
 		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	elif ( uname -a | grep -i 'microsoft' > /dev/null 2>&1 || uname -a | grep -i 'WSL2' > /dev/null 2>&1 )
+	then
+		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"-wsl2'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	else
+		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '	
 	fi
 	
 	#export PS1="$prompt_nixShell""$PS1"
@@ -4992,6 +5064,98 @@ _test_gitBest() {
 	_wantGetDep nmap
 	#_wantGetDep curl
 	#_wantGetDep wget
+}
+
+
+
+
+
+
+_wget_githubRelease-URL() {
+	local currentURL
+	if [[ "$2" != "" ]]
+	then
+		if [[ "$GH_TOKEN" == "" ]]
+		then
+			currentURL=$(curl -6 -s "https://api.github.com/repos/""$1""/releases" | jq -r ".[] | select(.name == \"""$2""\") | .assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			[[ "$currentURL" == "" ]] && currentURL=$(curl -4 -s "https://api.github.com/repos/""$1""/releases" | jq -r ".[] | select(.name == \"""$2""\") | .assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			echo "$currentURL"
+			return
+		else
+			currentURL=$(curl -6 -H "Authorization: Bearer $GH_TOKEN" -s "https://api.github.com/repos/""$1""/releases" | jq -r ".[] | select(.name == \"""$2""\") | .assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			[[ "$currentURL" == "" ]] && currentURL=$(curl -4 -H "Authorization: Bearer $GH_TOKEN" -s "https://api.github.com/repos/""$1""/releases" | jq -r ".[] | select(.name == \"""$2""\") | .assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			echo "$currentURL"
+			return
+		fi
+	else
+		if [[ "$GH_TOKEN" == "" ]]
+		then
+			currentURL=$(curl -6 -s "https://api.github.com/repos/""$1""/releases/latest" | jq -r ".assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			[[ "$currentURL" == "" ]] && currentURL=$(curl -4 -s "https://api.github.com/repos/""$1""/releases/latest" | jq -r ".assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			echo "$currentURL"
+			return
+		else
+			currentURL=$(curl -6 -H "Authorization: Bearer $GH_TOKEN" -s "https://api.github.com/repos/""$1""/releases/latest" | jq -r ".assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			[[ "$currentURL" == "" ]] && currentURL=$(curl -4 -H "Authorization: Bearer $GH_TOKEN" -s "https://api.github.com/repos/""$1""/releases/latest" | jq -r ".assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			echo "$currentURL"
+			return
+		fi
+	fi
+}
+
+_wget_githubRelease() {
+	local currentURL=$(_wget_githubRelease-URL "$@")
+	_messagePlain_probe curl -L -o "$3" "$currentURL" >&2
+	curl -L -o "$3" "$currentURL"
+	[[ ! -e "$3" ]] && _messagePlain_bad 'missing: '"$1"' '"$2"' '"$3" && return 1
+	return 0
+}
+
+_wget_githubRelease-stdout() {
+	local currentURL=$(_wget_githubRelease-URL "$@")
+	_messagePlain_probe curl -L -o - "$currentURL" >&2
+	curl -L -o - "$currentURL"
+}
+
+
+_wget_githubRelease_join-stdout() {
+	local currentURL
+	local currentURL_array
+
+	local currentIterationcurrentIteration=0
+	for currentIteration in $(seq -f "%02g" 0 32)
+	do
+		currentURL=$(_wget_githubRelease-URL "$1" "$2" "$3"".part""$currentIteration")
+		[[ "$currentURL" == "" ]] && break
+		[[ "$currentURL" != "" ]] && currentURL_array+=( "$currentURL" )
+	done
+
+	# https://unix.stackexchange.com/questions/412868/bash-reverse-an-array
+	local currentValue
+	for currentValue in "${currentURL_array[@]}"
+	do
+		currentURL_array_reversed=("$currentValue" "${currentURL_array_reversed[@]}")
+	done
+	
+	_messagePlain_probe curl -L "${currentURL_array_reversed[@]}" >&2
+
+	curl -L "${currentURL_array_reversed[@]}"
+}
+
+_wget_githubRelease_join() {
+	_messagePlain_probe _wget_githubRelease_join-stdout "$@" '>' "$3" >&2
+	_wget_githubRelease_join-stdout "$@" > "$3"
+	[[ ! -e "$3" ]] && _messagePlain_bad 'missing: '"$1"' '"$2"' '"$3" && return 1
+	return 0
+}
+
+
+_wget_githubRelease_internal-URL() {
+	_wget_githubRelease-URL "$1" "internal" "$2"
+}
+
+_wget_githubRelease_internal() {
+	_wget_githubRelease "$1" "internal" "$2"
 }
 
 
@@ -12493,6 +12657,10 @@ _test() {
 	
 	_tryExec "_test_packetDriveDevice"
 	_tryExec "_test_gparted"
+
+
+	_tryExec "_test_wsl2_internal"
+
 	
 	# WARNING: Disabled by default. Newer FLOSS (ie. 'barrier'), seems to have displaced the older 'synergy' software.
 	# ATTENTION: Override with 'ops' or similar.

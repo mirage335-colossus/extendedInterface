@@ -1710,11 +1710,14 @@ _visualPrompt() {
 	
 	
 	
-	if ! _if_cygwin
+	if _if_cygwin
 	then
-		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
-	else
 		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	elif ( uname -a | grep -i 'microsoft' > /dev/null 2>&1 || uname -a | grep -i 'WSL2' > /dev/null 2>&1 )
+	then
+		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"-wsl2'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	else
+		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '	
 	fi
 	
 	#export PS1="$prompt_nixShell""$PS1"
@@ -1726,6 +1729,98 @@ _request_visualPrompt() {
 	_messagePlain_request 'export profileScriptFolder="'"$scriptAbsoluteFolder"'"'
 	_messagePlain_request ". "'"'"$scriptAbsoluteLocation"'"' --profile _importShortcuts
 }
+
+
+_wget_githubRelease-URL() {
+	local currentURL
+	if [[ "$2" != "" ]]
+	then
+		if [[ "$GH_TOKEN" == "" ]]
+		then
+			currentURL=$(curl -6 -s "https://api.github.com/repos/""$1""/releases" | jq -r ".[] | select(.name == \"""$2""\") | .assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			[[ "$currentURL" == "" ]] && currentURL=$(curl -4 -s "https://api.github.com/repos/""$1""/releases" | jq -r ".[] | select(.name == \"""$2""\") | .assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			echo "$currentURL"
+			return
+		else
+			currentURL=$(curl -6 -H "Authorization: Bearer $GH_TOKEN" -s "https://api.github.com/repos/""$1""/releases" | jq -r ".[] | select(.name == \"""$2""\") | .assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			[[ "$currentURL" == "" ]] && currentURL=$(curl -4 -H "Authorization: Bearer $GH_TOKEN" -s "https://api.github.com/repos/""$1""/releases" | jq -r ".[] | select(.name == \"""$2""\") | .assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			echo "$currentURL"
+			return
+		fi
+	else
+		if [[ "$GH_TOKEN" == "" ]]
+		then
+			currentURL=$(curl -6 -s "https://api.github.com/repos/""$1""/releases/latest" | jq -r ".assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			[[ "$currentURL" == "" ]] && currentURL=$(curl -4 -s "https://api.github.com/repos/""$1""/releases/latest" | jq -r ".assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			echo "$currentURL"
+			return
+		else
+			currentURL=$(curl -6 -H "Authorization: Bearer $GH_TOKEN" -s "https://api.github.com/repos/""$1""/releases/latest" | jq -r ".assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			[[ "$currentURL" == "" ]] && currentURL=$(curl -4 -H "Authorization: Bearer $GH_TOKEN" -s "https://api.github.com/repos/""$1""/releases/latest" | jq -r ".assets[] | select(.name == \"""$3""\") | .browser_download_url" | sort -n -r | head -n 1)
+			echo "$currentURL"
+			return
+		fi
+	fi
+}
+
+_wget_githubRelease() {
+	local currentURL=$(_wget_githubRelease-URL "$@")
+	_messagePlain_probe curl -L -o "$3" "$currentURL" >&2
+	curl -L -o "$3" "$currentURL"
+	[[ ! -e "$3" ]] && _messagePlain_bad 'missing: '"$1"' '"$2"' '"$3" && return 1
+	return 0
+}
+
+_wget_githubRelease-stdout() {
+	local currentURL=$(_wget_githubRelease-URL "$@")
+	_messagePlain_probe curl -L -o - "$currentURL" >&2
+	curl -L -o - "$currentURL"
+}
+
+
+_wget_githubRelease_join-stdout() {
+	local currentURL
+	local currentURL_array
+
+	local currentIterationcurrentIteration=0
+	for currentIteration in $(seq -f "%02g" 0 32)
+	do
+		currentURL=$(_wget_githubRelease-URL "$1" "$2" "$3"".part""$currentIteration")
+		[[ "$currentURL" == "" ]] && break
+		[[ "$currentURL" != "" ]] && currentURL_array+=( "$currentURL" )
+	done
+
+	# https://unix.stackexchange.com/questions/412868/bash-reverse-an-array
+	local currentValue
+	for currentValue in "${currentURL_array[@]}"
+	do
+		currentURL_array_reversed=("$currentValue" "${currentURL_array_reversed[@]}")
+	done
+	
+	_messagePlain_probe curl -L "${currentURL_array_reversed[@]}" >&2
+
+	curl -L "${currentURL_array_reversed[@]}"
+}
+
+_wget_githubRelease_join() {
+	_messagePlain_probe _wget_githubRelease_join-stdout "$@" '>' "$3" >&2
+	_wget_githubRelease_join-stdout "$@" > "$3"
+	[[ ! -e "$3" ]] && _messagePlain_bad 'missing: '"$1"' '"$2"' '"$3" && return 1
+	return 0
+}
+
+
+_wget_githubRelease_internal-URL() {
+	_wget_githubRelease-URL "$1" "internal" "$2"
+}
+
+_wget_githubRelease_internal() {
+	_wget_githubRelease "$1" "internal" "$2"
+}
+
+
+
+
 
 #####Basic Variable Management
 
@@ -4372,6 +4467,10 @@ _test() {
 	
 	_tryExec "_test_packetDriveDevice"
 	_tryExec "_test_gparted"
+
+
+	_tryExec "_test_wsl2_internal"
+
 	
 	# WARNING: Disabled by default. Newer FLOSS (ie. 'barrier'), seems to have displaced the older 'synergy' software.
 	# ATTENTION: Override with 'ops' or similar.

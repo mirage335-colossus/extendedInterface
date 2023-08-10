@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1203419028'
+export ub_setScriptChecksum_contents='2583467864'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -10015,6 +10015,8 @@ _getMost_debian11_install() {
 	_getMost_backend /sbin/rcvboxadd setup
 	_getMost_backend /sbin/rcvboxadd quicksetup all
 	#_getMost_backend /sbin/rcvboxadd setup
+
+	_getMost_backend /sbin/rcvboxadd quicksetup $(_getMost_backend cat /boot/grub/grub.cfg 2>/dev/null | awk -F\' '/menuentry / {print $2}' | grep -v "Advanced options" | grep 'Linux [0-9]' | sed 's/ (.*//' | awk '{print $NF}' | head -n1)
 	
 	_getMost_backend rm -f /sbin/modprobe
 	_getMost_backend mv -f /sbin/modprobe.real /sbin/modprobe
@@ -10641,6 +10643,7 @@ _getMost() {
 	if [[ -e /etc/issue ]] && cat /etc/issue | grep 'Debian\|Raspbian' > /dev/null 2>&1 && [[ -e /etc/debian_version ]] && cat /etc/debian_version | head -c 2 | grep 12 > /dev/null 2>&1
 	then
 		_tryExecFull _getMost_debian12 "$@"
+		return
 	elif [[ -e /etc/issue ]] && cat /etc/issue | grep 'Debian\|Raspbian' > /dev/null 2>&1
 	then
 		_tryExecFull _getMost_debian11 "$@"
@@ -19822,6 +19825,69 @@ _userDocker() {
 	
 	"$scriptAbsoluteLocation" _userDocker_sequence "$@"
 	return "$?"
+}
+
+
+
+_write_wslconfig() {
+    ! _if_cygwin && _messagePlain_bad 'fail: Cygwin/MSW only' && return 1
+    if _if_cygwin
+    then
+        _here_wsl_conf > "$USERPROFILE"/.wslconfig
+        return
+    fi
+}
+
+
+
+
+
+# End user function .
+_setup_wsl2_procedure() {
+    ! _if_cygwin && _messagePlain_bad 'fail: Cygwin/MSW only' && return 1
+    
+    _messageNormal 'init: _setup_wsl2'
+    
+    _messagePlain_nominal 'setup: write: _write_msw_qt5ct'
+    _write_msw_qt5ct
+
+    _messagePlain_nominal 'setup: write: _write_msw_wslconfig'
+    _write_wslconfig
+
+    _messagePlain_nominal 'setup: wsl2'
+    
+    # https://www.omgubuntu.co.uk/how-to-install-wsl2-on-windows-10
+    
+    _messagePlain_probe dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+
+    _messagePlain_probe dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+    _messagePlain_probe wsl --set-default-version 2
+    wsl --set-default-version 2
+}
+_setup_wsl2() {
+    "$scriptAbsoluteLocation" _setup_wsl2_procedure "$@"
+}
+_setup_wsl() {
+    _setup_wsl2 "$@"
+}
+
+
+
+
+
+
+
+
+
+_here_wsl_config() {
+    cat << 'CZXWXcRMTo8EmM8i4d'
+[wsl2]
+memory=999GB
+
+CZXWXcRMTo8EmM8i4d
 }
 
 
@@ -43016,6 +43082,9 @@ _compile_bash_utilities_virtualization() {
 
 	if ( [[ "$enUb_notLean" == "true" ]] || [[ "$enUb_image" == "true" ]] || [[ "$enUb_docker" == "true" ]] || [[ "$enUb_virt" == "true" ]] || [[ "$enUb_virt_thick" == "true" ]] || [[ "$enUb_virt_translation" == "true" ]] || [[ "$enUb_virt_translation_gui" == "true" ]] )
 	then
+		includeScriptList+=( "virtualization/wsl2"/wsl2.sh )
+		includeScriptList+=( "virtualization/wsl2"/wsl2_setup.sh )
+		
 		includeScriptList+=( "virtualization/wsl2"/here_wsl2.sh )
 		includeScriptList+=( "virtualization/wsl2"/wsl2_internal.sh )
 

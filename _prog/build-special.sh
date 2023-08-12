@@ -82,7 +82,7 @@ _build_extendedInterface-fetch() {
 
     mkdir -p "$currentAccessoriesDir"/parts/ubcp/package_ubcp-core
     cd "$currentAccessoriesDir"/parts/ubcp/package_ubcp-core
-    7za x "$currentAccessoriesDir"/integrations/ubcp/package_ubcp-core.7z
+    7za -y x "$currentAccessoriesDir"/integrations/ubcp/package_ubcp-core.7z
     cd "$functionEntryPWD"
 
     cp "$scriptAbsoluteFolder"/support/000-OS/MSW/root/_bash_bat_lnk.zip "$currentAccessoriesDir"/parts/

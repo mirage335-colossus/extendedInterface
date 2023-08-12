@@ -61,6 +61,7 @@ jobs:
         shell: bash
         timeout-minutes: 120
         run: |
+          rm -f ../extendedInterface-accessories/integrations/ubcp/package_ubcp-core.7z
           ./ubiquitous_bash.sh _build_extendedInterface-build
       - name: release!
         uses: softprops/action-gh-release@v1

@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1543748902'
+export ub_setScriptChecksum_contents='2695950047'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -40780,10 +40780,52 @@ _experiment() {
 
 
 
-
-_setup_install() {
+_setup_install-restore() {
+	rsync -ax --delete --exclude "/.bash_profile" --exclude "/.bashrc" --exclude "/.config" --exclude "/.gitconfig" --exclude "/.inputrc" --exclude "/.lesshst" --exclude "/.octave_hist" --exclude "/.octaverc" --exclude "/.profile" --exclude "/.ssh" --exclude "/.ubcore" --exclude "/.ubcorerc_pythonrc.py" --exclude "/.ubcorerc-gnuoctave.m" --exclude "/.viminfo" --exclude "/.wget-hsts" --exclude "/bin" "$1" "$2"
+}
+_setup_install_procedure() {
 	_messageNormal 'init: _setup_install'
+	_messagePlain_probe "$@"
+
+
+	_messagePlain_nominal 'begin: _setup_install'
+
+	if [[ -e /cygdrive/c/core/infrastructure/ubcp-home-backup-"$1" ]]
+	then
+		_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-"$1"/. "$HOME"/.
+		
+		# CopyFiles "C:\core\infrastructure\extendedInterface-home-backup-$0\*" "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home\"
+		_setup_install-restore /cygdrive/c/core/infrastructure/extendedInterface-home-backup-"$1"/. /cygdrive/c/core/infrastructure/extendedInterface/_local/ubcp/cygwin/home/.
+
+		# CopyFiles "C:\core\infrastructure\ubcp-home-backup-$0\*" "C:\core\infrastructure\ubcp\cygwin\home\"
+		_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-"$1"/. /cygdrive/c/core/infrastructure/ubcp/cygwin/home/.
+	elif [[ -e /cygdrive/c/core/infrastructure/ubcp-home-backup-uninstalled ]]
+	then
+		_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-uninstalled/. "$HOME"/.
+
+		# CopyFiles "C:\core\infrastructure\extendedInterface-home-backup-uninstalled\*" "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home\"
+		_setup_install-restore /cygdrive/c/core/infrastructure/extendedInterface-home-backup-uninstalled/. /cygdrive/c/core/infrastructure/extendedInterface/_local/ubcp/cygwin/home/.
+
+		# CopyFiles "C:\core\infrastructure\ubcp-home-backup-uninstalled\*" "C:\core\infrastructure\ubcp\cygwin\home\"
+		_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-uninstalled/. /cygdrive/c/core/infrastructure/ubcp/cygwin/home/.
+	fi
+
+
+
+	_messagePlain_nominal 'end: _setup_install'
+	return 0
+}
+_setup_install() {
+	local currentExitStatus
+	
+	mkdir -p /cygdrive/c/core/logs
+	"$scriptAbsoluteLocation" _setup_install_procedure | tee /cygdrive/c/core/logs/setup_install.log
+	#_setup_install_procedure
+	currentExitStatus="$?"
+
+
 	sleep 25
+	exit "$?"
 }
 
 

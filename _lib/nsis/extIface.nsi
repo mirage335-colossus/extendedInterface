@@ -87,29 +87,29 @@ Section "Install"
 
   
 
-  ;ATTENTION
-  IfFileExists "C:\core\infrastructure\ubcp-home-backup-$0" 0 +3
-  Delete "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home"
-  CopyFiles "C:\core\infrastructure\extendedInterface-home-backup-$0\*" "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home\"
+  ;;ATTENTION
+  ;IfFileExists "C:\core\infrastructure\ubcp-home-backup-$0" 0 +3
+  ;Delete "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home"
+  ;CopyFiles "C:\core\infrastructure\extendedInterface-home-backup-$0\*" "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home\"
 
-  ;ATTENTION
-  IfFileExists "C:\core\infrastructure\ubcp-home-backup-$0" 0 +3
-  Delete "C:\core\infrastructure\ubcp\cygwin\home"
-  CopyFiles "C:\core\infrastructure\ubcp-home-backup-$0\*" "C:\core\infrastructure\ubcp\cygwin\home\"
+  ;;ATTENTION
+  ;IfFileExists "C:\core\infrastructure\ubcp-home-backup-$0" 0 +3
+  ;Delete "C:\core\infrastructure\ubcp\cygwin\home"
+  ;CopyFiles "C:\core\infrastructure\ubcp-home-backup-$0\*" "C:\core\infrastructure\ubcp\cygwin\home\"
 
 
 
   
 
-  ;ATTENTION
-  IfFileExists "C:\core\infrastructure\ubcp-home-backup-uninstalled" 0 +3
-  Delete "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home"
-  CopyFiles "C:\core\infrastructure\extendedInterface-home-backup-uninstalled\*" "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home\"
+  ;;ATTENTION
+  ;IfFileExists "C:\core\infrastructure\ubcp-home-backup-uninstalled" 0 +3
+  ;Delete "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home"
+  ;CopyFiles "C:\core\infrastructure\extendedInterface-home-backup-uninstalled\*" "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home\"
 
-  ;ATTENTION
-  IfFileExists "C:\core\infrastructure\ubcp-home-backup-uninstalled" 0 +3
-  Delete "C:\core\infrastructure\ubcp\cygwin\home"
-  CopyFiles "C:\core\infrastructure\ubcp-home-backup-uninstalled\*" "C:\core\infrastructure\ubcp\cygwin\home\"
+  ;;ATTENTION
+  ;IfFileExists "C:\core\infrastructure\ubcp-home-backup-uninstalled" 0 +3
+  ;Delete "C:\core\infrastructure\ubcp\cygwin\home"
+  ;CopyFiles "C:\core\infrastructure\ubcp-home-backup-uninstalled\*" "C:\core\infrastructure\ubcp\cygwin\home\"
 
 
 
@@ -206,14 +206,14 @@ Section "Install"
 
 
 
-  ExpandEnvStrings $0 %COMSPEC%
-  ExecWait '"$0" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _setup_install'
+  ExpandEnvStrings $5 %COMSPEC%
+  ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _setup_install '"$0"
 
   ExpandEnvStrings $0 %COMSPEC%
-  ExecWait '"$0" /C "C:\core\infrastructure\ubiquitous_bash\_setupUbiquitous_nonet.bat"'
+  ExecWait '"$5" /C "C:\core\infrastructure\ubiquitous_bash\_setupUbiquitous_nonet.bat"'
 
   ExpandEnvStrings $0 %COMSPEC%
-  ExecWait '"$0" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _test_rotten'
+  ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _test_rotten'
 
 
 

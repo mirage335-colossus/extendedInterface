@@ -9,7 +9,7 @@ _experiment() {
 
 
 _setup_install-restore() {
-	rsync -ax --delete --exclude "/.bash_profile" --exclude "/.bashrc" --exclude "/.config" --exclude "/.gitconfig" --exclude "/.inputrc" --exclude "/.lesshst" --exclude "/.octave_hist" --exclude "/.octaverc" --exclude "/.profile" --exclude "/.ssh" --exclude "/.ubcore" --exclude "/.ubcorerc_pythonrc.py" --exclude "/.ubcorerc-gnuoctave.m" --exclude "/.viminfo" --exclude "/.wget-hsts" --exclude "/bin" "$1" "$2"
+	_messagePlain_probe_cmd rsync -ax --delete --exclude "/.bash_profile" --exclude "/.bashrc" --exclude "/.config" --exclude "/.gitconfig" --exclude "/.inputrc" --exclude "/.lesshst" --exclude "/.octave_hist" --exclude "/.octaverc" --exclude "/.profile" --exclude "/.ssh" --exclude "/.ubcore" --exclude "/.ubcorerc_pythonrc.py" --exclude "/.ubcorerc-gnuoctave.m" --exclude "/.viminfo" --exclude "/.wget-hsts" --exclude "/bin" "$1" "$2"
 }
 _setup_install_procedure() {
 	_messageNormal 'init: _setup_install'
@@ -47,7 +47,7 @@ _setup_install() {
 	local currentExitStatus
 	
 	mkdir -p /cygdrive/c/core/logs
-	"$scriptAbsoluteLocation" _setup_install_procedure | tee /cygdrive/c/core/logs/setup_install.log
+	"$scriptAbsoluteLocation" _setup_install_procedure "$@" | tee /cygdrive/c/core/logs/setup_install.log
 	#_setup_install_procedure
 	currentExitStatus="$?"
 

@@ -137,8 +137,8 @@ Section "Install"
 
   CopyFiles "C:\core\infrastructure\extendedInterface\support\000-OS\MSW\blockWinP\blockWinP.exe" "$SMSTARTUP"
 
-  ExpandEnvStrings $0 %COMSPEC%
-  ExecWait '"$0" /C "C:\core\infrastructure\extendedInterface\support\000-OS\MSW\FreeCAD_NewDocument\install.bat"'
+  ExpandEnvStrings $5 %COMSPEC%
+  ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\support\000-OS\MSW\FreeCAD_NewDocument\install.bat"'
   ;ExecWait "cmd.exe /c C:\core\infrastructure\extendedInterface\support\000-OS\MSW\FreeCAD_NewDocument\install.bat"
   ;CreateDirectory "$WINDIR\ShellNew"
   ;CopyFiles "C:\core\infrastructure\extendedInterface\support\000-OS\MSW\FreeCAD_NewDocument\FreeCAD_Document.FCStd" "$WINDIR\ShellNew\"
@@ -207,12 +207,12 @@ Section "Install"
 
 
   ExpandEnvStrings $5 %COMSPEC%
-  ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _setup_install '"$0"
+  ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _setup_install "$0"'
 
-  ExpandEnvStrings $0 %COMSPEC%
+  ExpandEnvStrings $5 %COMSPEC%
   ExecWait '"$5" /C "C:\core\infrastructure\ubiquitous_bash\_setupUbiquitous_nonet.bat"'
 
-  ExpandEnvStrings $0 %COMSPEC%
+  ExpandEnvStrings $5 %COMSPEC%
   ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _test_rotten'
 
 

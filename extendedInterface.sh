@@ -5502,6 +5502,27 @@ _experiment() {
 
 
 _setup_install-restore() {
+	if [[ ! -e "$1" ]]
+	then
+		_messagePlain_bad 'fail: missing source: '"$1"
+		return 1
+	fi
+	if [[ ! -e "$2" ]]
+	then
+		_messagePlain_bad 'fail: missing destination: '"$2"
+		return 1
+	fi
+	if ! mkdir -p "$1"
+	then
+		_messagePlain_bad 'fail: mkdir: source: '"$1"
+		return 1
+	fi
+	if ! mkdir -p "$2"
+	then
+		_messagePlain_bad 'fail: missing destination: '"$2"
+		return 1
+	fi
+
 	_messagePlain_probe_cmd rsync -ax --delete --exclude "/.bash_profile" --exclude "/.bashrc" --exclude "/.config" --exclude "/.gitconfig" --exclude "/.inputrc" --exclude "/.lesshst" --exclude "/.octave_hist" --exclude "/.octaverc" --exclude "/.profile" --exclude "/.ssh" --exclude "/.ubcore" --exclude "/.ubcorerc_pythonrc.py" --exclude "/.ubcorerc-gnuoctave.m" --exclude "/.viminfo" --exclude "/.wget-hsts" --exclude "/bin" "$1" "$2"
 }
 _setup_install_procedure() {
@@ -5513,7 +5534,7 @@ _setup_install_procedure() {
 
 	if [[ -e /cygdrive/c/core/infrastructure/ubcp-home-backup-"$1" ]]
 	then
-		_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-"$1"/. "$HOME"/.
+		#_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-"$1"/. "$HOME"/.
 		
 		# CopyFiles "C:\core\infrastructure\extendedInterface-home-backup-$0\*" "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home\"
 		_setup_install-restore /cygdrive/c/core/infrastructure/extendedInterface-home-backup-"$1"/. /cygdrive/c/core/infrastructure/extendedInterface/_local/ubcp/cygwin/home/.
@@ -5522,7 +5543,7 @@ _setup_install_procedure() {
 		_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-"$1"/. /cygdrive/c/core/infrastructure/ubcp/cygwin/home/.
 	elif [[ -e /cygdrive/c/core/infrastructure/ubcp-home-backup-uninstalled ]]
 	then
-		_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-uninstalled/. "$HOME"/.
+		#_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-uninstalled/. "$HOME"/.
 
 		# CopyFiles "C:\core\infrastructure\extendedInterface-home-backup-uninstalled\*" "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home\"
 		_setup_install-restore /cygdrive/c/core/infrastructure/extendedInterface-home-backup-uninstalled/. /cygdrive/c/core/infrastructure/extendedInterface/_local/ubcp/cygwin/home/.

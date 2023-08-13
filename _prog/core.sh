@@ -27,29 +27,29 @@ _setup_install-restore() {
     fi
 
     
-	if [[ ! -e "$1" ]]
+	if [[ ! -e "$currentSource" ]]
 	then
-		_messagePlain_bad 'fail: missing source: '"$1"
+		_messagePlain_bad 'fail: missing source: '"$currentSource"
 		return 1
 	fi
-	if [[ ! -e "$2" ]]
+	if [[ ! -e "$currentDestination" ]]
 	then
-		_messagePlain_bad 'fail: missing destination: '"$2"
+		_messagePlain_bad 'fail: missing destination: '"$currentDestination"
 		return 1
 	fi
-	if ! mkdir -p "$1"
+	if ! mkdir -p "$currentSource"
 	then
-		_messagePlain_bad 'fail: mkdir: source: '"$1"
+		_messagePlain_bad 'fail: mkdir: source: '"$currentSource"
 		return 1
 	fi
-	if ! mkdir -p "$2"
+	if ! mkdir -p "$currentDestination"
 	then
-		_messagePlain_bad 'fail: missing destination: '"$2"
+		_messagePlain_bad 'fail: missing destination: '"$currentDestination"
 		return 1
 	fi
 
 	#--exclude ".ssh"
-	_messagePlain_probe_cmd rsync -ax --delete --exclude ".bash_profile" --exclude ".bashrc" --exclude ".config" --exclude ".gitconfig" --exclude ".inputrc" --exclude ".lesshst" --exclude ".octave_hist" --exclude ".octaverc" --exclude ".profile" --exclude ".ubcore" --exclude ".ubcorerc_pythonrc.py" --exclude ".ubcorerc-gnuoctave.m" --exclude ".viminfo" --exclude ".wget-hsts" --exclude "bin" "$1" "$2"
+	_messagePlain_probe_cmd rsync -ax --delete --exclude ".bash_profile" --exclude ".bashrc" --exclude ".config" --exclude ".gitconfig" --exclude ".inputrc" --exclude ".lesshst" --exclude ".octave_hist" --exclude ".octaverc" --exclude ".profile" --exclude ".ubcore" --exclude ".ubcorerc_pythonrc.py" --exclude ".ubcorerc-gnuoctave.m" --exclude ".viminfo" --exclude ".wget-hsts" --exclude "bin" "$currentSource" "$currentDestination"
 }
 _setup_install_procedure() {
 	_messageNormal 'init: _setup_install'

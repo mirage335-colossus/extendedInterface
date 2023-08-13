@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='3897282677'
+export ub_setScriptChecksum_contents='1325380972'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -13361,6 +13361,24 @@ _experiment() {
 
 
 _setup_install-restore() {
+    local currentSource
+    local currentDestination
+
+    currentSource="$1"
+    currentDestination="$2"
+
+    if [[ "$currentSource" == "" ]] || [[ "$currentSource" == "./." ]]
+    then
+        _messagePlain_bad 'fail: empty: source'
+        return 1
+    fi
+    if [[ "$currentDestination" == "" ]] || [[ "$currentDestination" == "./." ]]
+    then
+        _messagePlain_bad 'fail: empty: destination'
+        return 1
+    fi
+
+    
 	if [[ ! -e "$1" ]]
 	then
 		_messagePlain_bad 'fail: missing source: '"$1"
@@ -13382,7 +13400,8 @@ _setup_install-restore() {
 		return 1
 	fi
 
-	_messagePlain_probe_cmd rsync -ax --delete --exclude ".bash_profile" --exclude ".bashrc" --exclude ".config" --exclude ".gitconfig" --exclude ".inputrc" --exclude ".lesshst" --exclude ".octave_hist" --exclude ".octaverc" --exclude ".profile" --exclude ".ssh" --exclude ".ubcore" --exclude ".ubcorerc_pythonrc.py" --exclude ".ubcorerc-gnuoctave.m" --exclude ".viminfo" --exclude ".wget-hsts" --exclude "bin" "$1" "$2"
+	#--exclude ".ssh"
+	_messagePlain_probe_cmd rsync -ax --delete --exclude ".bash_profile" --exclude ".bashrc" --exclude ".config" --exclude ".gitconfig" --exclude ".inputrc" --exclude ".lesshst" --exclude ".octave_hist" --exclude ".octaverc" --exclude ".profile" --exclude ".ubcore" --exclude ".ubcorerc_pythonrc.py" --exclude ".ubcorerc-gnuoctave.m" --exclude ".viminfo" --exclude ".wget-hsts" --exclude "bin" "$1" "$2"
 }
 _setup_install_procedure() {
 	_messageNormal 'init: _setup_install'

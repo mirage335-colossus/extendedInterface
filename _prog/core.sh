@@ -9,6 +9,24 @@ _experiment() {
 
 
 _setup_install-restore() {
+    local currentSource
+    local currentDestination
+
+    currentSource="$1"
+    currentDestination="$2"
+
+    if [[ "$currentSource" == "" ]] || [[ "$currentSource" == "./." ]]
+    then
+        _messagePlain_bad 'fail: empty: source'
+        return 1
+    fi
+    if [[ "$currentDestination" == "" ]] || [[ "$currentDestination" == "./." ]]
+    then
+        _messagePlain_bad 'fail: empty: destination'
+        return 1
+    fi
+
+    
 	if [[ ! -e "$1" ]]
 	then
 		_messagePlain_bad 'fail: missing source: '"$1"
@@ -30,7 +48,8 @@ _setup_install-restore() {
 		return 1
 	fi
 
-	_messagePlain_probe_cmd rsync -ax --delete --exclude ".bash_profile" --exclude ".bashrc" --exclude ".config" --exclude ".gitconfig" --exclude ".inputrc" --exclude ".lesshst" --exclude ".octave_hist" --exclude ".octaverc" --exclude ".profile" --exclude ".ssh" --exclude ".ubcore" --exclude ".ubcorerc_pythonrc.py" --exclude ".ubcorerc-gnuoctave.m" --exclude ".viminfo" --exclude ".wget-hsts" --exclude "bin" "$1" "$2"
+	#--exclude ".ssh"
+	_messagePlain_probe_cmd rsync -ax --delete --exclude ".bash_profile" --exclude ".bashrc" --exclude ".config" --exclude ".gitconfig" --exclude ".inputrc" --exclude ".lesshst" --exclude ".octave_hist" --exclude ".octaverc" --exclude ".profile" --exclude ".ubcore" --exclude ".ubcorerc_pythonrc.py" --exclude ".ubcorerc-gnuoctave.m" --exclude ".viminfo" --exclude ".wget-hsts" --exclude "bin" "$1" "$2"
 }
 _setup_install_procedure() {
 	_messageNormal 'init: _setup_install'

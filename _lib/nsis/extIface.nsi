@@ -304,11 +304,28 @@ section "uninstall"
 	# Try to remove the Start Menu folder - this will only happen if it is empty
 	;rmDir "$SMPROGRAMS\${COMPANYNAME}"
  
+
+  ; Generate a random alphanumeric string
+  System::Call 'KERNEL32::GetTickCount()i.r0'
+  System::Call 'ADVAPI32::CryptAcquireContext(i0,t""i0,i0,i0,i0)i.r1'
+  System::Call 'ADVAPI32::CryptGenRandom(ir1,i10,i0)i'
+  System::Call 'ADVAPI32::CryptReleaseContext(ir1,i0)i'
+  IntCmp $0 0 0 +3
+  IntOp $0 $0 * -1
+
+
 	# Remove files
-  RMDir /r "C:\core\infrastructure\extendedInterface-home-backup-uninstalled"
+  #RMDir /r "C:\core\infrastructure\extendedInterface-home-backup-uninstalled"
+  Rename "C:\core\infrastructure\extendedInterface-home-backup-uninstalled" "C:\core\infrastructure\extendedInterface-home-backup-uninstalled-$0"
 	Rename "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home" "C:\core\infrastructure\extendedInterface-home-backup-uninstalled"
-  RMDir /r "C:\core\infrastructure\ubcp-home-backup-uninstalled"
+  #RMDir /r "C:\core\infrastructure\ubcp-home-backup-uninstalled"
+  Rename "C:\core\infrastructure\ubcp-home-backup-uninstalled" "C:\core\infrastructure\ubcp-home-backup-uninstalled-$0"
   Rename "C:\core\infrastructure\ubcp\cygwin\home" "C:\core\infrastructure\ubcp-home-backup-uninstalled"
+  DetailPrint '"$0"'
+  Sleep 2500
+
+
+
 
   ;RMDir /r "C:\core\infrastructure\extendedInterface"
   RMDir /r /REBOOTOK "C:\core\infrastructure\extendedInterface"

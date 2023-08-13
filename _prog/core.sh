@@ -30,7 +30,7 @@ _setup_install-restore() {
 		return 1
 	fi
 
-	_messagePlain_probe_cmd rsync -ax --delete --exclude "/.bash_profile" --exclude "/.bashrc" --exclude "/.config" --exclude "/.gitconfig" --exclude "/.inputrc" --exclude "/.lesshst" --exclude "/.octave_hist" --exclude "/.octaverc" --exclude "/.profile" --exclude "/.ssh" --exclude "/.ubcore" --exclude "/.ubcorerc_pythonrc.py" --exclude "/.ubcorerc-gnuoctave.m" --exclude "/.viminfo" --exclude "/.wget-hsts" --exclude "/bin" "$1" "$2"
+	_messagePlain_probe_cmd rsync -ax --delete --exclude ".bash_profile" --exclude ".bashrc" --exclude ".config" --exclude ".gitconfig" --exclude ".inputrc" --exclude ".lesshst" --exclude ".octave_hist" --exclude ".octaverc" --exclude ".profile" --exclude ".ssh" --exclude ".ubcore" --exclude ".ubcorerc_pythonrc.py" --exclude ".ubcorerc-gnuoctave.m" --exclude ".viminfo" --exclude ".wget-hsts" --exclude "bin" "$1" "$2"
 }
 _setup_install_procedure() {
 	_messageNormal 'init: _setup_install'

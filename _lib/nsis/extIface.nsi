@@ -59,7 +59,7 @@ Section "Install"
   Rename "C:\core\infrastructure\extendedInterface-home-backup-prev" "C:\core\infrastructure\extendedInterface-home-backup-$0"
   Rename "C:\core\infrastructure\ubcp-home-backup-prev" "C:\core\infrastructure\ubcp-home-backup-$0"
   DetailPrint "$0"
-  Sleep 750
+  Sleep 2500
 
   ; Generate a random alphanumeric string
   System::Call 'KERNEL32::GetTickCount()i.r0'
@@ -74,7 +74,7 @@ Section "Install"
   Rename "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home" "C:\core\infrastructure\extendedInterface-home-backup-$0"
   Rename "C:\core\infrastructure\ubcp\cygwin\home" "C:\core\infrastructure\ubcp-home-backup-$0"
   DetailPrint "$0"
-  Sleep 750
+  Sleep 2500
 
   RMDir /r "C:\core\infrastructure\extendedInterface"
   ;RMDir /r /REBOOTOK "C:\core\infrastructure\extendedInterface"
@@ -224,9 +224,9 @@ Section "Install"
 
 
   ExpandEnvStrings $5 %COMSPEC%
-  ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _setup_install "$0"'
+  ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _setup_install $0'
   DetailPrint '"$0"'
-  Sleep 750
+  Sleep 2500
 
   ; Generate a random alphanumeric string
   System::Call 'KERNEL32::GetTickCount()i.r0'
@@ -240,7 +240,7 @@ Section "Install"
   Rename "C:\core\infrastructure\extendedInterface-home-backup-prev" "C:\core\infrastructure\extendedInterface-home-backup-$0"
   Rename "C:\core\infrastructure\ubcp-home-backup-prev" "C:\core\infrastructure\ubcp-home-backup-$0"
   DetailPrint "$0"
-  Sleep 750
+  Sleep 2500
 
   ExpandEnvStrings $5 %COMSPEC%
   ExecWait '"$5" /C "C:\core\infrastructure\ubiquitous_bash\_setupUbiquitous_nonet.bat"'

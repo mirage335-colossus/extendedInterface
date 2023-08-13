@@ -5540,7 +5540,7 @@ _setup_install() {
 	local currentExitStatus
 	
 	mkdir -p /cygdrive/c/core/logs
-	"$scriptAbsoluteLocation" _setup_install_procedure "$@" | tee /cygdrive/c/core/logs/setup_install.log
+	_messagePlain_probe_cmd "$scriptAbsoluteLocation" _setup_install_procedure "$@" | tee /cygdrive/c/core/logs/setup_install.log
 	#_setup_install_procedure
 	currentExitStatus="$?"
 

@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='2243158316'
+export ub_setScriptChecksum_contents='703153812'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -9930,6 +9930,8 @@ _getMost_debian11_install() {
 	_getMost_backend_aptGetInstall bc nmap autossh socat sshfs tor
 	_getMost_backend_aptGetInstall sockstat
 	_getMost_backend_aptGetInstall x11-xserver-utils
+
+	_getMost_backend_aptGetInstall liblinear4 liblua5.3-0 lua-lpeg nmap nmap-common
 	
 	_getMost_backend_aptGetInstall uuid-runtime
 	
@@ -9998,6 +10000,14 @@ _getMost_debian11_install() {
 	
 	
 	_getMost_backend_aptGetInstall build-essential
+	_getMost_backend_aptGetInstall flex
+	_getMost_backend_aptGetInstall libelf-dev
+	_getMost_backend_aptGetInstall libncurses-dev
+	_getMost_backend_aptGetInstall autoconf
+	_getMost_backend_aptGetInstall libudev-dev
+
+	_getMost_backend_aptGetInstall dwarves
+	_getMost_backend_aptGetInstall pahole
 	
 	# ATTENTION: ONLY change (eg. to 'remove') if needed to ensure a kernel is installed AND custom kernel is not in use.
 	_getMost_backend_aptGetInstall linux-image-amd64
@@ -10190,6 +10200,13 @@ _getMost_debian11_install() {
 	_getMost_backend_aptGetInstall libelf-dev
 	_getMost_backend_aptGetInstall elfutils
 	
+	_getMost_backend_aptGetInstall patch
+	
+	_getMost_backend_aptGetInstall tar
+	_getMost_backend_aptGetInstall xz
+	_getMost_backend_aptGetInstall gzip
+	_getMost_backend_aptGetInstall bzip2
+	
 	_getMost_backend_aptGetInstall librecode0
 	_getMost_backend_aptGetInstall wkhtmltopdf
 	
@@ -10286,6 +10303,12 @@ _getMost_debian11_install() {
 	_getMost_backend_aptGetInstall synaptic
 	
 	_getMost_backend_aptGetInstall cifs-utils
+
+
+	_getMost_backend_aptGetInstall debhelper
+	
+	_getMost_backend_aptGetInstall p7zip
+	_getMost_backend_aptGetInstall nsis
 	
 	
 	# Sometimes may be useful as a workaround for docker 'overlay2' 'storage-driver' .
@@ -10872,6 +10895,7 @@ _getMinimal_cloud() {
 	_getMost_backend_aptGetInstall axel
 	
 	_getMost_backend_aptGetInstall dwarves
+	_getMost_backend_aptGetInstall pahole
 	
 	
 	_getMost_backend_aptGetInstall rsync
@@ -10902,8 +10926,13 @@ _getMinimal_cloud() {
 	_getMost_backend_aptGetInstall qemu-system-x86
 	
 	_getMost_backend_aptGetInstall cifs-utils
+
+
+	_getMost_backend_aptGetInstall debhelper
 	
-	
+	_getMost_backend_aptGetInstall p7zip
+	_getMost_backend_aptGetInstall nsis
+
 	
 	_getMost_backend_aptGetInstall iputils-ping
 	
@@ -19899,7 +19928,7 @@ _write_wslconfig() {
     ! _if_cygwin && _messagePlain_bad 'fail: Cygwin/MSW only' && return 1
     if _if_cygwin
     then
-        _here_wsl_config > "$USERPROFILE"/.wslconfig
+        _here_wsl_config "$1" > "$USERPROFILE"/.wslconfig
         return
     fi
 }
@@ -19918,7 +19947,7 @@ _setup_wsl2_procedure() {
     _write_msw_WSLENV
 
     _messagePlain_nominal 'setup: write: _write_msw_wslconfig'
-    _write_wslconfig
+    _write_wslconfig "ub_ignore_kernel_wsl"
 
     _messagePlain_nominal 'setup: wsl2'
     
@@ -19952,8 +19981,14 @@ _here_wsl_config() {
     cat << 'CZXWXcRMTo8EmM8i4d'
 [wsl2]
 memory=999GB
-
 CZXWXcRMTo8EmM8i4d
+
+    if [[ -e /cygdrive/c/core/infrastructure/ubdist-kernel/ubdist-kernel ]] && [[ "$1" != "ub_ignore_kernel_wsl" ]]
+    then
+        echo 'kernel=C:\\core\\infrastructure\\ubdist-kernel\\ubdist-kernel'
+    fi
+
+    echo
 }
 
 
@@ -29402,6 +29437,8 @@ _setupUbiquitous_accessories() {
 	_setupUbiquitous_accessories-gnuoctave "$@"
 	
 	_setupUbiquitous_accessories-python "$@"
+
+	git config --global checkout.workers -1
 	
 	return 0
 }

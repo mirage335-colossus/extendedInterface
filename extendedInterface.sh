@@ -5573,6 +5573,66 @@ _setup_install_procedure() {
 
 	_messagePlain_probe_cmd unzip -o "$scriptAbsoluteFolder"/support/000-OS/MSW/root_extra.zip -d /cygdrive/c
 
+	mkdir -p /cygdrive/c/core
+	mkdir -p /cygdrive/c/core/_buried
+	mkdir -p /cygdrive/c/core/backup/zSpecial/FanControl
+	mkdir -p /cygdrive/c/core/infrastructure
+	mkdir -p /cygdrive/c/core/installations
+	mkdir -p /cygdrive/c/core/investigation
+
+	# MSW really has issues with long paths. Virtual Machines need shared directories.
+	# Keeping everything in a short path location is helpful for MSW host and VM guests.
+	# "q" quick
+	# "p" projects
+	mkdir -p /cygdrive/c/q
+	mkdir -p /cygdrive/c/q/_slide
+	mkdir -p /cygdrive/c/q/Downloads/_buried
+	mkdir -p /cygdrive/c/q/Downloads/_preserve
+	mkdir -p /cygdrive/c/q/p
+
+	# "p" projects
+	# "_cur" current
+	# "_def" deferred
+	# "_perm" permanent
+	# "_pgrnd" playground
+	# "_release" release (eg. public websites)
+	# "cr" corporate (must be very short, others projects especially may have long paths)
+	# "og" org (must be very short, others projects especially may have long paths)
+	# z_mirage335-gizmos
+	# zSpecial
+	mkdir -p /cygdrive/c/q/p
+	mkdir -p /cygdrive/c/q/_cur
+	mkdir -p /cygdrive/c/q/_def
+	mkdir -p /cygdrive/c/q/_perm
+	mkdir -p /cygdrive/c/q/_pgrnd
+	mkdir -p /cygdrive/c/q/_release
+	mkdir -p /cygdrive/c/q/cr
+	mkdir -p /cygdrive/c/q/og
+	mkdir -p /cygdrive/c/q/z_mirage335-gizmos
+	mkdir -p /cygdrive/c/q/zSpecial
+
+
+	mkdir -p "$USERPROFILE"/_buried/Downloads/_buried
+	mkdir -p "$USERPROFILE"/_buried/project/corp
+	mkdir -p "$USERPROFILE"/_buried/project/current/_buried
+
+	# Template directory structure created by extendedInterface, but contents should be a separate project to simplify relevant git repository. Possibly a git submodule.
+	mkdir -p "$USERPROFILE"/Templates_/_command/mission
+	mkdir -p "$USERPROFILE"/Templates_/mechanical
+	mkdir -p "$USERPROFILE"/Templates_/_external/generic
+	mkdir -p "$USERPROFILE"/Templates_/_external/lib
+
+
+	# Some MSW apps download very huge amounts of data. Keeping a safe copy of these may help find a way to avoid full redownloading when applying automatic updates.
+	mkdir -p /cygdrive/c/core/webCache/_index
+	mkdir -p "/cygdrive/c/core/webCache/C/Program Files"
+	mkdir -p "/cygdrive/c/core/webCache/C/Program Files (x86)/Steam/steamapps/common"
+	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/Local"
+	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/DCS World OpenBeta"
+	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/Frontier_Developments"
+	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/Microsoft Flight Simulator - Steam"
+
+
 	_messagePlain_nominal 'end: _setup_install'
 	return 0
 }

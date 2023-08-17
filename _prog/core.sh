@@ -78,7 +78,7 @@ _setup_install_procedure() {
 		_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-uninstalled/. /cygdrive/c/core/infrastructure/ubcp/cygwin/home/.
 	fi
 
-
+	_messagePlain_probe_cmd unzip -o "$scriptAbsoluteFolder"/support/000-OS/MSW/root_extra.zip -d /cygdrive/c
 
 	_messagePlain_nominal 'end: _setup_install'
 	return 0
@@ -92,7 +92,7 @@ _setup_install() {
 	currentExitStatus="$?"
 
 
-	sleep 25
+	sleep 18
 	exit "$?"
 }
 

@@ -108,15 +108,15 @@ _setup_install_procedure() {
 	# z_mirage335-gizmos
 	# zSpecial
 	mkdir -p /cygdrive/c/q/p
-	mkdir -p /cygdrive/c/q/_cur
-	mkdir -p /cygdrive/c/q/_def
-	mkdir -p /cygdrive/c/q/_perm
-	mkdir -p /cygdrive/c/q/_pgrnd
-	mkdir -p /cygdrive/c/q/_release
-	mkdir -p /cygdrive/c/q/cr
-	mkdir -p /cygdrive/c/q/og
-	mkdir -p /cygdrive/c/q/z_mirage335-gizmos
-	mkdir -p /cygdrive/c/q/zSpecial
+	mkdir -p /cygdrive/c/q/p/_cur
+	mkdir -p /cygdrive/c/q/p/_def
+	mkdir -p /cygdrive/c/q/p/_perm
+	mkdir -p /cygdrive/c/q/p/_pgrnd
+	mkdir -p /cygdrive/c/q/p/_release
+	mkdir -p /cygdrive/c/q/p/cr
+	mkdir -p /cygdrive/c/q/p/og
+	mkdir -p /cygdrive/c/q/p/z_mirage335-gizmos
+	mkdir -p /cygdrive/c/q/p/zSpecial
 
 
 	mkdir -p "$USERPROFILE"/_buried/Downloads/_buried
@@ -139,7 +139,7 @@ _setup_install_procedure() {
 	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/Frontier_Developments"
 	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/Microsoft Flight Simulator - Steam"
 
-
+	_messagePlain_probe_cmd unzip -o "$scriptAbsoluteFolder"/support/000-OS/MSW/webCache_index.zip -d /cygdrive/c/core/webCache/_index
 
 
 

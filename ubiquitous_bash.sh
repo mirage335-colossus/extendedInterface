@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='571614921'
+export ub_setScriptChecksum_contents='3173820157'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -40960,15 +40960,15 @@ _setup_install_procedure() {
 	# z_mirage335-gizmos
 	# zSpecial
 	mkdir -p /cygdrive/c/q/p
-	mkdir -p /cygdrive/c/q/_cur
-	mkdir -p /cygdrive/c/q/_def
-	mkdir -p /cygdrive/c/q/_perm
-	mkdir -p /cygdrive/c/q/_pgrnd
-	mkdir -p /cygdrive/c/q/_release
-	mkdir -p /cygdrive/c/q/cr
-	mkdir -p /cygdrive/c/q/og
-	mkdir -p /cygdrive/c/q/z_mirage335-gizmos
-	mkdir -p /cygdrive/c/q/zSpecial
+	mkdir -p /cygdrive/c/q/p/_cur
+	mkdir -p /cygdrive/c/q/p/_def
+	mkdir -p /cygdrive/c/q/p/_perm
+	mkdir -p /cygdrive/c/q/p/_pgrnd
+	mkdir -p /cygdrive/c/q/p/_release
+	mkdir -p /cygdrive/c/q/p/cr
+	mkdir -p /cygdrive/c/q/p/og
+	mkdir -p /cygdrive/c/q/p/z_mirage335-gizmos
+	mkdir -p /cygdrive/c/q/p/zSpecial
 
 
 	mkdir -p "$USERPROFILE"/_buried/Downloads/_buried
@@ -40991,7 +40991,7 @@ _setup_install_procedure() {
 	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/Frontier_Developments"
 	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/Microsoft Flight Simulator - Steam"
 
-
+	_messagePlain_probe_cmd unzip -o "$scriptAbsoluteFolder"/support/000-OS/MSW/webCache_index.zip -d /cygdrive/c/core/webCache/_index
 
 
 

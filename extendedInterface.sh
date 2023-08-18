@@ -5633,6 +5633,22 @@ _setup_install_procedure() {
 	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/Microsoft Flight Simulator - Steam"
 
 
+
+
+
+
+	reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_ubcp-bash" /v "" /d "Open with ubcp-bash" /f
+	reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_ubcp-bash\command" /v "" /d "C:\_bash.bat" /f
+
+	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash" /v "" /d "Open with ubcp-bash" /f
+	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash\command" /v "" /d "C:\_bash.bat" /f
+
+	reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_ubcp-bash-admin" /v "" /d "Open with ubcp-bash-admin" /f
+	reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_ubcp-bash\command" /v "" /d "nircmdc elevate cmd /c \"cd \"%V\" && C:\_bash.bat\"" /f
+
+	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash-admin" /v "" /d "Open with ubcp-bash-admin" /f
+	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash-admin\command" /v "" /d "nircmdc elevate cmd /c \"cd \"%V\" && C:\_bash.bat\"" /f
+
 	_messagePlain_nominal 'end: _setup_install'
 	return 0
 }

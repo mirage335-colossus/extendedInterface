@@ -143,6 +143,8 @@ Section "Install"
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableShake\Disable Aero Shake.reg"
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\GameDVR_disable\GameDVR_disable.reg"
   
+  ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\Disable_Show_more_options_context_menu\Disable_Show_more_options_context_menu.reg"
+  
   ;https://www.youtube.com/watch?v=5wBxYQdN96s&t=321s
   ; 'Extra Monitors DO Hurt Your Gaming Performance'
   ;  'If the contents of that window need to be changing, all that optimization goes out the window.'

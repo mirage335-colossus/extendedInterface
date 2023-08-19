@@ -135,9 +135,9 @@ _setup_install_procedure() {
 	mkdir -p "/cygdrive/c/core/webCache/C/Program Files"
 	mkdir -p "/cygdrive/c/core/webCache/C/Program Files (x86)/Steam/steamapps/common"
 	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/Local"
-	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/DCS World OpenBeta"
-	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/Frontier_Developments"
-	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/Microsoft Flight Simulator - Steam"
+	mkdir -p "/cygdrive/c/core/webCache/named/DCS World OpenBeta"
+	mkdir -p "/cygdrive/c/core/webCache/named/Frontier_Developments"
+	mkdir -p "/cygdrive/c/core/webCache/named/Microsoft Flight Simulator - Steam"
 
 	_messagePlain_probe_cmd unzip -o "$scriptAbsoluteFolder"/support/000-OS/MSW/webCache_index.zip -d /cygdrive/c/core/webCache/_index
 

@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1083392645'
+export ub_setScriptChecksum_contents='617398774'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -13502,9 +13502,9 @@ _setup_install_procedure() {
 	mkdir -p "/cygdrive/c/core/webCache/C/Program Files"
 	mkdir -p "/cygdrive/c/core/webCache/C/Program Files (x86)/Steam/steamapps/common"
 	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/Local"
-	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/DCS World OpenBeta"
-	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/Frontier_Developments"
-	mkdir -p "/cygdrive/c/core/webCache/C/Users/user/AppData/named/Microsoft Flight Simulator - Steam"
+	mkdir -p "/cygdrive/c/core/webCache/named/DCS World OpenBeta"
+	mkdir -p "/cygdrive/c/core/webCache/named/Frontier_Developments"
+	mkdir -p "/cygdrive/c/core/webCache/named/Microsoft Flight Simulator - Steam"
 
 	_messagePlain_probe_cmd unzip -o "$scriptAbsoluteFolder"/support/000-OS/MSW/webCache_index.zip -d /cygdrive/c/core/webCache/_index
 

@@ -3,6 +3,8 @@ _compile_bash_deps_prog() {
 	then
 		_deps_git
 		#_deps_repo
+
+		_deps_github
 		
 		_deps_virt_translation
 		

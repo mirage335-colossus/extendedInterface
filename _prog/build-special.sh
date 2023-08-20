@@ -97,37 +97,39 @@ _build_extendedInterface-fetch() {
     mkdir -p "$currentAccessoriesDir"/parts/extendedInterface
     cd "$currentAccessoriesDir"/parts/extendedInterface
     cp -a "$scriptAbsoluteFolder"/.git ./
-    git config gc.pruneExpire now
-    git config gc.reflogExpire now
-    git config gc.reflogExpireUnreachable now
+    #git config gc.pruneExpire now
+    #git config gc.reflogExpire now
+    #git config gc.reflogExpireUnreachable now
     git reset --hard
     git submodule update
-    git gc --aggressive
+    #git gc --aggressive
 
-    git show-ref -s HEAD > $(git rev-parse --git-dir)/shallow
-    git reflog expire --expire-unreachable=now --all
-    git reflog expire --expire=0
-    git reflog expire --expire=now --all
-    git prune
-    git prune-packed
+    #git show-ref -s HEAD > $(git rev-parse --git-dir)/shallow
+    #git reflog expire --expire-unreachable=now --all
+    #git reflog expire --expire=0
+    #git reflog expire --expire=now --all
+    #git prune
+    #git prune-packed
 
     cd "$currentAccessoriesDir"/parts/extendedInterface/_lib/ubiquitous_bash/
-    git show-ref -s HEAD > $(git rev-parse --git-dir)/shallow
-    git reflog expire --expire-unreachable=now --all
-    git reflog expire --expire=0
-    git reflog expire --expire=now --all
-    git prune
-    git prune-packed
+    #git show-ref -s HEAD > $(git rev-parse --git-dir)/shallow
+    #git reflog expire --expire-unreachable=now --all
+    #git reflog expire --expire=0
+    #git reflog expire --expire=now --all
+    #git prune
+    #git prune-packed
 
     cd "$currentAccessoriesDir"/parts/extendedInterface/
-    git reflog expire --expire-unreachable=now --all
-    git reflog expire --expire=now --all
-    git reflog expire --expire=0
-    git prune
-    git prune-packed
-    git gc --prune=all
-    git gc --aggressive
+    #git reflog expire --expire-unreachable=now --all
+    #git reflog expire --expire=now --all
+    #git reflog expire --expire=0
+    #git prune
+    #git prune-packed
+    #git gc --prune=all
+    #git gc --aggressive
     git gc
+
+    _github_removeActionsHTTPS ./.git
 
 
     cd "$functionEntryPWD"

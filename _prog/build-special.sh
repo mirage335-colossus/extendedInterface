@@ -93,10 +93,17 @@ _build_extendedInterface-fetch() {
     cd "$functionEntryPWD"
 
 
+    cd "$currentAccessoriesDir"/parts
+    _gitBest clone --recursive git@github.com:mirage335/"$objectName".git
 
-    mkdir -p "$currentAccessoriesDir"/parts/extendedInterface
-    cd "$currentAccessoriesDir"/parts/extendedInterface
-    cp -a "$scriptAbsoluteFolder"/.git ./
+    mkdir -p "$currentAccessoriesDir"/parts/"$objectName"
+    cd "$currentAccessoriesDir"/parts/"$objectName"
+    if [[ ! -e ./.git ]]
+    then
+        cp -a "$scriptAbsoluteFolder"/.git ./
+    fi
+
+
     #git config gc.pruneExpire now
     #git config gc.reflogExpire now
     #git config gc.reflogExpireUnreachable now

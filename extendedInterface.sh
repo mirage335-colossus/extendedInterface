@@ -5593,7 +5593,7 @@ _setup_install_procedure() {
 	# "_cur" current
 	# "_def" deferred
 	# "_perm" permanent
-	# "_pgrnd" playground
+	# "_pgnd" playground
 	# "_release" release (eg. public websites)
 	# "cr" corporate (must be very short, others projects especially may have long paths)
 	# "og" org (must be very short, others projects especially may have long paths)
@@ -5603,7 +5603,7 @@ _setup_install_procedure() {
 	mkdir -p /cygdrive/c/q/p/_cur
 	mkdir -p /cygdrive/c/q/p/_def
 	mkdir -p /cygdrive/c/q/p/_perm
-	mkdir -p /cygdrive/c/q/p/_pgrnd
+	mkdir -p /cygdrive/c/q/p/_pgnd
 	mkdir -p /cygdrive/c/q/p/_release
 	mkdir -p /cygdrive/c/q/p/cr
 	mkdir -p /cygdrive/c/q/p/og

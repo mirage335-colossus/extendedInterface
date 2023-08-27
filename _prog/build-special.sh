@@ -66,6 +66,7 @@ _build_extendedInterface-fetch() {
     _start
     #mkdir -p "$shortTmp"
     local functionEntryPWD="$PWD"
+    cd "$scriptAbsoluteFolder"
 
 
     export currentAccessoriesDir="$scriptAbsoluteFolder"/../"$objectName"-accessories

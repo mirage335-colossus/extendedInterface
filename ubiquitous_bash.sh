@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1106482351'
+export ub_setScriptChecksum_contents='3076526649'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -10092,6 +10092,8 @@ _getMost_debian11_install() {
 	then
 		_getMost_backend_aptGetInstall linux-headers-$(uname -r)
 	fi
+
+	_getMost_backend_aptGetInstall initramfs-tools
 	
 	_getMost_backend_aptGetInstall net-tools wireless-tools rfkill
 	
@@ -10384,6 +10386,7 @@ _getMost_debian11_install() {
 	_getMost_backend_aptGetInstall debhelper
 	
 	_getMost_backend_aptGetInstall p7zip
+	_getMost_backend_aptGetInstall p7zip-full
 	_getMost_backend_aptGetInstall nsis
 
 	_getMost_backend_aptGetInstall dos2unix
@@ -17556,7 +17559,66 @@ _live_more() {
 
 
 
+_live_preload_here() {
+	cat << 'CZXWXcRMTo8EmM8i4d'
+#!/bin/sh
 
+PREREQ=""
+
+prereqs()
+{
+    echo "$PREREQ"
+}
+
+case "$1" in
+prereqs)
+    prereqs
+    exit 0
+;;
+esac
+
+
+
+echo "_____ preload: /root/usr/lib -maxdepth 9 -iname '*.so*'"
+find /root/usr/lib -maxdepth 9 -type f -iname '*.so*' -exec cat {} > /dev/null \;
+
+
+echo "_____ preload: /root/home -not core"
+find /root/home -not \( -path \/home/\*/core\* -prune \) -type f -exec cat {} > /dev/null \;
+
+
+echo "_____ preload: /root/root"
+find /root/root -type f -exec cat {} > /dev/null \;
+
+
+echo '_____ preload: /root/var'
+find /root/var -type f -exec cat {} > /dev/null \;
+
+
+echo '_____ preload: /root/usr/lib/modules'
+find /root/usr/lib/modules -type f -exec cat {} > /dev/null \;
+
+echo '_____ preload: /root/boot'
+find /root/boot -type f -exec cat {} > /dev/null \;
+
+echo '_____ preload: /root/usr/lib/systemd'
+find /root/usr/lib/systemd -type f -exec cat {} > /dev/null \;
+
+echo '_____ preload: /root/usr/bin'
+find /root/usr/bin -type f -exec cat {} > /dev/null \;
+
+echo '_____ preload: /root/bin'
+find /root/bin -type f -exec cat {} > /dev/null \;
+
+echo '_____ preload: /root/sbin'
+find /root/sbin -type f -exec cat {} > /dev/null \;
+
+echo '_____ preload: /root/etc'
+find /root/etc -type f -exec cat {} > /dev/null \;
+
+
+CZXWXcRMTo8EmM8i4d
+}
 
 
 # https://manpages.debian.org/testing/live-boot-doc/live-boot.7.en.html
@@ -17634,6 +17696,52 @@ _live_sequence_in() {
 	_start
 	
 	cd "$safeTmp"
+
+	_messagePlain_nominal 'Attempt: _openChRoot'
+	! "$scriptAbsoluteLocation" _openChRoot && _messagePlain_bad 'fail: _openChRoot' && _messageFAIL
+
+	##_chroot systemctl disable nfs-blkmap
+	##_chroot systemctl disable nfs-idmapd
+	##_chroot systemctl disable nfs-mountd
+	##_chroot systemctl disable nfs-server
+	##_chroot systemctl disable nfsdcld
+
+	##_chroot systemctl disable ssh
+	##_chroot systemctl disable sshd
+
+	#_chroot systemctl disable exim4
+
+
+	_live_preload_here | sudo -n tee "$globalVirtFS"/usr/share/initramfs-tools/scripts/init-bottom/preload_run > /dev/null
+	_chroot chown root:root /usr/share/initramfs-tools/scripts/init-bottom/preload_run
+	_chroot chmod 755 /usr/share/initramfs-tools/scripts/init-bottom/preload_run
+
+
+	sudo -n mv -n "$globalVirtFS"/etc/systemd/system.conf "$globalVirtFS"/etc/systemd/system.conf.orig
+	echo '[Manager]
+DefaultTasksMax=12' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev/null
+
+
+	_chroot update-initramfs -u -k all
+
+
+
+	# Solely to provide more information to convert 'vm-live.iso' back to 'vm.img' offline from only a Live BD-ROM disc .
+	mkdir -p "$safeTmp"/root002
+	sudo -n cp -a "$globalVirtFS"/boot  "$safeTmp"/root002/boot-copy
+	sudo -n cp -a "$globalVirtFS"/etc/fstab  "$safeTmp"/root002/fstab-copy
+
+
+
+	_messagePlain_nominal 'Attempt: _closeChRoot'
+	#sudo -n umount "$globalVirtFS"/boot/efi > /dev/null 2>&1
+	#sudo -n umount "$globalVirtFS"/boot > /dev/null 2>&1
+	! "$scriptAbsoluteLocation" _closeChRoot && _messagePlain_bad 'fail: _closeChRoot' && _messageFAIL
+
+
+
+
+
 	
 	[[ -e "$scriptLocal"/livefs ]] && _safeRMR "$scriptLocal"/livefs
 	[[ -e "$scriptLocal"/livefs ]] && _messageFAIL
@@ -17676,7 +17784,70 @@ _live_sequence_in() {
 	# TODO: Consider LZO compression and such.
 	# TODO: May need to install live-boot , firmware-amd-graphics
 	#sudo -n mksquashfs "$globalVirtFS" "$scriptLocal"/livefs/image/live/filesystem.squashfs -no-xattrs -noI -noD -noF -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
-	sudo -n mksquashfs "$globalVirtFS" "$scriptLocal"/livefs/image/live/filesystem.squashfs -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
+	#sudo -n mksquashfs "$globalVirtFS" "$scriptLocal"/livefs/image/live/filesystem.squashfs -b  -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
+
+
+
+
+	#mkdir -p "$safeTmp"/root001
+	#sudo -n cp -a "$globalVirtFS"/home  "$safeTmp"/root001/
+
+	#mkdir -p "$safeTmp"/recycle
+	#sudo -n mv -f "$safeTmp"/root001/home/user/* "$safeTmp"/recycle/
+	#sudo -n mv -f "$safeTmp"/recycle/core "$safeTmp"/root001/home/user/
+	#sudo -n chown "$USER":"$USER" "$safeTmp"/recycle
+	#_safeRMR "$safeTmp"/recycle
+
+	#mkdir -p "$safeTmp"/recycle
+	#sudo -n mv -f "$safeTmp"/root001/home/* "$safeTmp"/recycle/
+	#sudo -n mv -f "$safeTmp"/recycle/user "$safeTmp"/root001/home/
+	#sudo -n chown "$USER":"$USER" "$safeTmp"/recycle
+	#_safeRMR "$safeTmp"/recycle
+
+	#_messagePlain_probe_cmd ls -ld "$safeTmp"/root001
+	#_messagePlain_probe_cmd ls -ld "$safeTmp"/root001/home
+	#_messagePlain_probe_cmd ls -ld "$safeTmp"/root001/home/user
+	#_messagePlain_probe_cmd ls -ld "$safeTmp"/root001/home/user/core
+	#_messagePlain_probe_cmd ls -l "$safeTmp"/root001/home/user/core/
+
+	#sudo -n mksquashfs "$safeTmp"/root001 "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 65536 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
+	#sudo -n chown "$USER":"$USER" "$safeTmp"/root001
+	#_safeRMR "$safeTmp"/root001
+
+
+	# https://github.com/openwrt/openwrt/issues/9974
+	# http://neoscientists.org/~tmueller/binsort/
+	#sudo -n mksquashfs "$globalVirtFS" "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e home/user/core -e boot -e etc/fstab
+
+
+
+	# Solely to provide more information to convert 'vm-live.iso' back to 'vm.img' offline from only a Live BD-ROM disc .
+	sudo -n mksquashfs "$safeTmp"/root002 "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
+	du -sh "$scriptLocal"/livefs/image/live/filesystem.squashfs
+	sudo -n chown "$USER":"$USER" "$safeTmp"/root002
+	_safeRMR "$safeTmp"/root002
+
+	mkdir -p "$safeTmp"/root001
+	sudo -n cp -a "$globalVirtFS"/home  "$safeTmp"/root001/
+	_messagePlain_probe_cmd ls -l "$safeTmp"/root001/home/user/core/
+	_messagePlain_probe_cmd du -sh "$safeTmp"/root001/home
+	sudo -n mksquashfs "$safeTmp"/root001 "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
+	du -sh "$scriptLocal"/livefs/image/live/filesystem.squashfs
+	sudo -n chown "$USER":"$USER" "$safeTmp"/root001
+	_safeRMR "$safeTmp"/root001
+
+	sudo -n mksquashfs "$globalVirtFS" "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e home -e boot -e etc/fstab
+	du -sh "$scriptLocal"/livefs/image/live/filesystem.squashfs
+
+
+
+
+
+
+
+
+
+
 	
 	local currentFilesList
 	
@@ -17712,7 +17883,24 @@ _live_sequence_in() {
 	
 	
 	
-	
+	_messagePlain_nominal 'Attempt: _openChRoot'
+	! "$scriptAbsoluteLocation" _openChRoot && _messagePlain_bad 'fail: _openChRoot' && _messageFAIL
+
+	#_chroot systemctl enable nfs-blkmap
+	#_chroot systemctl enable nfs-idmapd
+	#_chroot systemctl enable nfs-mountd
+	#_chroot systemctl enable nfs-server
+	#_chroot systemctl enable nfsdcld
+
+	#_chroot systemctl enable ssh
+	#_chroot systemctl enable sshd
+
+	_chroot systemctl enable exim4
+
+	_messagePlain_nominal 'Attempt: _closeChRoot'
+	#sudo -n umount "$globalVirtFS"/boot/efi > /dev/null 2>&1
+	#sudo -n umount "$globalVirtFS"/boot > /dev/null 2>&1
+	! "$scriptAbsoluteLocation" _closeChRoot && _messagePlain_bad 'fail: _closeChRoot' && _messageFAIL
 	
 	
 	
@@ -31490,6 +31678,26 @@ then
 		( [[ "$tmpSelf" == "" ]] || [[ "$tmpMSW" == "" ]] ) && export tmpSelf=/tmp/"$sessionid"
 		true
 		
+	fi
+elif uname -a | grep -i 'microsoft' > /dev/null 2>&1 && uname -a | grep -i 'WSL2' > /dev/null 2>&1
+then
+	if [[ "$tmpSelf" == "" ]]
+	then
+		export tmpWSL="$HOME"/.ubtmp
+		[[ ! -e "$tmpWSL" ]] && mkdir -p "$tmpWSL"
+		
+		if [[ "$tmpWSL" != "" ]]
+		then
+			export descriptiveSelf="$sessionid"
+			type md5sum > /dev/null 2>&1 && [[ "$scriptAbsoluteLocation" != '/bin/'* ]] && [[ "$scriptAbsoluteLocation" != '/usr/'* ]] && export descriptiveSelf=$(_getScriptAbsoluteLocation | md5sum | head -c 2)$(echo "$sessionid" | head -c 16)
+			export tmpSelf="$tmpWSL"/"$descriptiveSelf"
+
+			[[ "$descriptiveSelf" == "" ]] && export tmpSelf="$tmpWSL"/"$sessionid"
+			true
+		fi
+
+		( [[ "$tmpSelf" == "" ]] || [[ "$tmpWSL" == "" ]] ) && export tmpSelf=/tmp/"$sessionid"
+		true
 	fi
 fi
 

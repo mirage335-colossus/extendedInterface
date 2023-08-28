@@ -41,7 +41,8 @@ Page instfiles
 !define HELPURL "https://github.com/mirage335/extendedInterface/"
 !define UPDATEURL "https://github.com/mirage335/extendedInterface/"
 !define ABOUTURL "https://github.com/mirage335/extendedInterface/"
-!define INSTALLSIZE 6500000
+!define INSTALLSIZE 2900000
+;!define INSTALLSIZE 6500000
 
 
 Section "Install"

@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='4029393654'
+export ub_setScriptChecksum_contents='501230176'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -2395,6 +2395,12 @@ _safeRMR() {
 			safeToRM="true"
 		fi
 	fi
+
+	if [[ -e "$HOME"/.ubtmp ]] && uname -a | grep -i 'microsoft' > /dev/null 2>&1 && uname -a | grep -i 'WSL2' > /dev/null 2>&1
+	then
+		[[ "$1" == "$HOME"/.ubtmp/* ]] && safeToRM="true"
+		[[ "$1" == "./"* ]] && [[ "$PWD" == "$HOME"/.ubtmp* ]] && safeToRM="true"
+	fi
 	
 	
 	[[ "$safeToRM" == "false" ]] && return 1
@@ -2491,6 +2497,12 @@ _safePath() {
 		then
 			safeToRM="true"
 		fi
+	fi
+
+	if [[ -e "$HOME"/.ubtmp ]] && uname -a | grep -i 'microsoft' > /dev/null 2>&1 && uname -a | grep -i 'WSL2' > /dev/null 2>&1
+	then
+		[[ "$1" == "$HOME"/.ubtmp/* ]] && safeToRM="true"
+		[[ "$1" == "./"* ]] && [[ "$PWD" == "$HOME"/.ubtmp* ]] && safeToRM="true"
 	fi
 	
 	
@@ -17716,10 +17728,10 @@ _live_sequence_in() {
 	_chroot chown root:root /usr/share/initramfs-tools/scripts/init-bottom/preload_run
 	_chroot chmod 755 /usr/share/initramfs-tools/scripts/init-bottom/preload_run
 
-
+	# Apparent repeated success with 'DefaultTasksMax=12' . In one case, some services - SMART and NetworkManager - may have failed to start within timeouts. Consider reducing iteratively.
 	sudo -n mv -n "$globalVirtFS"/etc/systemd/system.conf "$globalVirtFS"/etc/systemd/system.conf.orig
 	echo '[Manager]
-DefaultTasksMax=12' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev/null
+DefaultTasksMax=10' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev/null
 
 
 	_chroot update-initramfs -u -k all
@@ -17728,7 +17740,8 @@ DefaultTasksMax=12' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev
 
 	# Solely to provide more information to convert 'vm-live.iso' back to 'vm.img' offline from only a Live BD-ROM disc .
 	mkdir -p "$safeTmp"/root002
-	sudo -n cp -a "$globalVirtFS"/boot  "$safeTmp"/root002/boot-copy
+	#sudo -n cp -a "$globalVirtFS"/boot "$safeTmp"/root002/boot-copy
+	sudo -n rsync -a --progress --exclude "lost+found" "$globalVirtFS"/boot "$safeTmp"/root002/boot-copy
 	sudo -n cp -a "$globalVirtFS"/etc/fstab  "$safeTmp"/root002/fstab-copy
 
 
@@ -17742,7 +17755,7 @@ DefaultTasksMax=12' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev
 
 
 
-	
+	export safeToDeleteGit="true"
 	[[ -e "$scriptLocal"/livefs ]] && _safeRMR "$scriptLocal"/livefs
 	[[ -e "$scriptLocal"/livefs ]] && _messageFAIL
 	
@@ -17795,13 +17808,13 @@ DefaultTasksMax=12' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev
 	#mkdir -p "$safeTmp"/recycle
 	#sudo -n mv -f "$safeTmp"/root001/home/user/* "$safeTmp"/recycle/
 	#sudo -n mv -f "$safeTmp"/recycle/core "$safeTmp"/root001/home/user/
-	#sudo -n chown "$USER":"$USER" "$safeTmp"/recycle
+	#sudo -n chown -R "$USER":"$USER" "$safeTmp"/recycle
 	#_safeRMR "$safeTmp"/recycle
 
 	#mkdir -p "$safeTmp"/recycle
 	#sudo -n mv -f "$safeTmp"/root001/home/* "$safeTmp"/recycle/
 	#sudo -n mv -f "$safeTmp"/recycle/user "$safeTmp"/root001/home/
-	#sudo -n chown "$USER":"$USER" "$safeTmp"/recycle
+	#sudo -n chown -R "$USER":"$USER" "$safeTmp"/recycle
 	#_safeRMR "$safeTmp"/recycle
 
 	#_messagePlain_probe_cmd ls -ld "$safeTmp"/root001
@@ -17811,7 +17824,7 @@ DefaultTasksMax=12' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev
 	#_messagePlain_probe_cmd ls -l "$safeTmp"/root001/home/user/core/
 
 	#sudo -n mksquashfs "$safeTmp"/root001 "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 65536 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
-	#sudo -n chown "$USER":"$USER" "$safeTmp"/root001
+	#sudo -n chown -R "$USER":"$USER" "$safeTmp"/root001
 	#_safeRMR "$safeTmp"/root001
 
 
@@ -17824,7 +17837,8 @@ DefaultTasksMax=12' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev
 	# Solely to provide more information to convert 'vm-live.iso' back to 'vm.img' offline from only a Live BD-ROM disc .
 	sudo -n mksquashfs "$safeTmp"/root002 "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
 	du -sh "$scriptLocal"/livefs/image/live/filesystem.squashfs
-	sudo -n chown "$USER":"$USER" "$safeTmp"/root002
+	sudo -n chown -R "$USER":"$USER" "$safeTmp"/root002
+	export safeToDeleteGit="true"
 	_safeRMR "$safeTmp"/root002
 
 	mkdir -p "$safeTmp"/root001
@@ -17833,7 +17847,8 @@ DefaultTasksMax=12' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev
 	_messagePlain_probe_cmd du -sh "$safeTmp"/root001/home
 	sudo -n mksquashfs "$safeTmp"/root001 "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
 	du -sh "$scriptLocal"/livefs/image/live/filesystem.squashfs
-	sudo -n chown "$USER":"$USER" "$safeTmp"/root001
+	sudo -n chown -R "$USER":"$USER" "$safeTmp"/root001
+	export safeToDeleteGit="true"
 	_safeRMR "$safeTmp"/root001
 
 	sudo -n mksquashfs "$globalVirtFS" "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e home -e boot -e etc/fstab
@@ -17959,6 +17974,7 @@ _live() {
 		_stop 1
 	fi
 	
+	export safeToDeleteGit="true"
 	_safeRMR "$scriptLocal"/livefs
 	
 	

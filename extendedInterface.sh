@@ -1039,6 +1039,12 @@ _safeRMR() {
 			safeToRM="true"
 		fi
 	fi
+
+	if [[ -e "$HOME"/.ubtmp ]] && uname -a | grep -i 'microsoft' > /dev/null 2>&1 && uname -a | grep -i 'WSL2' > /dev/null 2>&1
+	then
+		[[ "$1" == "$HOME"/.ubtmp/* ]] && safeToRM="true"
+		[[ "$1" == "./"* ]] && [[ "$PWD" == "$HOME"/.ubtmp* ]] && safeToRM="true"
+	fi
 	
 	
 	[[ "$safeToRM" == "false" ]] && return 1
@@ -1135,6 +1141,12 @@ _safePath() {
 		then
 			safeToRM="true"
 		fi
+	fi
+
+	if [[ -e "$HOME"/.ubtmp ]] && uname -a | grep -i 'microsoft' > /dev/null 2>&1 && uname -a | grep -i 'WSL2' > /dev/null 2>&1
+	then
+		[[ "$1" == "$HOME"/.ubtmp/* ]] && safeToRM="true"
+		[[ "$1" == "./"* ]] && [[ "$PWD" == "$HOME"/.ubtmp* ]] && safeToRM="true"
 	fi
 	
 	

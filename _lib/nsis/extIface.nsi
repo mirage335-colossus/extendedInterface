@@ -139,6 +139,8 @@ Section "Install"
 
   SetShellVarContext all
 
+  ;;TODO - May be better for portability to migrate these steps to '_setupInstall' . Unless, MSW admin privileges, MSW startup dir, file copying, etc, are not as reliable from that context.
+
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\explorer\_thirdparty\Disable_Windows_Key_Hotkeys.reg"
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\AutoEndTasks\Turn_On_AutoEndTasks_for_all_users.reg"
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableShake\Disable Aero Shake.reg"

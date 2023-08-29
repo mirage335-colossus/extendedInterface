@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='3622020210'
+export ub_setScriptChecksum_contents='1192719641'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -16729,7 +16729,7 @@ _createVMimage() {
 	
 	# Root
 	# WARNING: Adjust vmSize to match +1MiB .
-	# Try to keep this <23841MiB-256MiB-1MiB ( ie. <23584MiB ) (exactly 25000000000Bytes is 23841MiB ) . 
+	# Try to keep this <23841MiB-256MiB-1MiB ( ie. <23584MiB ) (exactly 25000000000Bytes is 23841MiB ) . In practice, compression will obviate this issue, and the Live ISO may be more complete (ie. including 'accessories') for recovery purposes .
 	# https://www.mail-archive.com/kde-bugs-dist@kde.org/msg618604.html
 	#  '25025315816 bytes'   ...   'difference between the available space at the start and at the end is exactly 256M'
 	# http://fy.chalmers.se/~appro/linux/DVD+RW/Blu-ray/
@@ -23207,6 +23207,18 @@ _git_shallow() {
 }
 
 
+_self_gitMad_procedure() {
+	local functionEntryPWD
+	functionEntryPWD="$PWD"
+
+	cd "$scriptAbsoluteFolder"
+	_gitMad
+	
+	cd "$functionEntryPWD"
+}
+_self_gitMad() {
+	"$scriptAbsoluteLocation" _self_gitMad_procedure "$@"
+}
 # https://stackoverflow.com/questions/1580596/how-do-i-make-git-ignore-file-mode-chmod-changes
 _gitMad() {
 	git config core.fileMode false
@@ -41272,7 +41284,18 @@ _experiment() {
 
 
 
+_self_gitMad_procedure() {
+	local functionEntryPWD
+	functionEntryPWD="$PWD"
 
+	cd "$scriptAbsoluteFolder"
+	_gitMad
+	
+	cd "$functionEntryPWD"
+}
+_self_gitMad() {
+	"$scriptAbsoluteLocation" _self_gitMad_procedure "$@"
+}
 _setup_install-restore() {
     local currentSource
     local currentDestination
@@ -41423,6 +41446,10 @@ _setup_install_procedure() {
 
 	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash-admin" /v "" /d "Open with ubcp-bash-admin" /f
 	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash-admin\command" /v "" /d "nircmdc elevate cmd /c \"cd \"%V\" && C:\_bash.bat\"" /f
+
+
+
+	_messagePlain_probe_cmd _self_gitMad
 
 	_messagePlain_nominal 'end: _setup_install'
 	return 0

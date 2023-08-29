@@ -7,7 +7,18 @@ _experiment() {
 
 
 
+_self_gitMad_procedure() {
+	local functionEntryPWD
+	functionEntryPWD="$PWD"
 
+	cd "$scriptAbsoluteFolder"
+	_gitMad
+	
+	cd "$functionEntryPWD"
+}
+_self_gitMad() {
+	"$scriptAbsoluteLocation" _self_gitMad_procedure "$@"
+}
 _setup_install-restore() {
     local currentSource
     local currentDestination
@@ -158,6 +169,10 @@ _setup_install_procedure() {
 
 	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash-admin" /v "" /d "Open with ubcp-bash-admin" /f
 	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash-admin\command" /v "" /d "nircmdc elevate cmd /c \"cd \"%V\" && C:\_bash.bat\"" /f
+
+
+
+	_messagePlain_probe_cmd _self_gitMad
 
 	_messagePlain_nominal 'end: _setup_install'
 	return 0

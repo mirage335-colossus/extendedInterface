@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='457392193'
+export ub_setScriptChecksum_contents='1085313933'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -13417,7 +13417,18 @@ _experiment() {
 
 
 
+_self_gitMad_procedure() {
+	local functionEntryPWD
+	functionEntryPWD="$PWD"
 
+	cd "$scriptAbsoluteFolder"
+	_gitMad
+	
+	cd "$functionEntryPWD"
+}
+_self_gitMad() {
+	"$scriptAbsoluteLocation" _self_gitMad_procedure "$@"
+}
 _setup_install-restore() {
     local currentSource
     local currentDestination
@@ -13568,6 +13579,10 @@ _setup_install_procedure() {
 
 	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash-admin" /v "" /d "Open with ubcp-bash-admin" /f
 	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash-admin\command" /v "" /d "nircmdc elevate cmd /c \"cd \"%V\" && C:\_bash.bat\"" /f
+
+
+
+	_messagePlain_probe_cmd _self_gitMad
 
 	_messagePlain_nominal 'end: _setup_install'
 	return 0

@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1192719641'
+export ub_setScriptChecksum_contents='1413336315'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -1185,8 +1185,8 @@ then
 		_discoverResource-cygwinNative-ProgramFiles 'ykman' 'Yubico/YubiKey Manager' false
 		
 		
-		
-		_discoverResource-cygwinNative-ProgramFiles 'nmap' 'Nmap' false
+		# WARNING: Prefer to avoid 'nmap' for Cygwin/MSW .
+		#_discoverResource-cygwinNative-ProgramFiles 'nmap' 'Nmap' false
 		
 		_discoverResource-cygwinNative-ProgramFiles 'qalc' 'Qalculate' false
 		
@@ -1233,6 +1233,16 @@ fi
 [[ "$profileScriptLocation_new" == 'true' ]] && echo -n '.'
 
 
+
+
+
+
+
+_discoverResource-cygwinNative-nmap() {
+	type nmap > /dev/null 2>&1 && return 0
+	# WARNING: Prefer to avoid 'nmap' for Cygwin/MSW .
+	_if_cygwin && _discoverResource-cygwinNative-ProgramFiles 'nmap' 'Nmap' false
+}
 
 
 
@@ -1427,7 +1437,15 @@ _setup_ubcp_procedure() {
 	cd "$currentCygdriveC_equivalent"/core/infrastructure/
 	
 	#tar -xvf "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.gz
-	tar -xvf "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.xz
+	#tar -xvf "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.xz
+
+	if [[ "$skimfast" != "true" ]]
+	then
+		cat "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.flx | lz4 -d -c | tar -xvf -
+	else
+		cat "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.flx | lz4 -d -c | tar -xf -
+		#tar -xf "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.flx
+	fi
 	
 	_messagePlain_good 'done: _setup_ubcp_procedure: ubcp'
 	sleep 10
@@ -1446,7 +1464,9 @@ _setup_ubcp() {
 	_force_cygwin_symlinks
 	
 	# WARNING: May break if 'mitigation' has not been applied!
-	if ! [[ -e "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.gz ]] && ! [[ -e "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.xz ]] && [[ -e "$scriptLocal"/ubcp/cygwin ]]
+	#! [[ -e "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.gz ]] && 
+	#! [[ -e "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.xz ]] && 
+	if ! [[ -e "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.flx ]] && [[ -e "$scriptLocal"/ubcp/cygwin ]]
 	then
 		export ubPackage_enable_ubcp='true'
 		"$scriptAbsoluteLocation" _package_procedure-cygwinOnly
@@ -1462,9 +1482,8 @@ _setup_ubcp() {
 
 
 _mitigate-ubcp_rewrite_procedure() {
-	_messagePlain_nominal 'init: _mitigate-ubcp_rewrite_procedure'
+	[[ "$skimfast" != "true" ]] && _messagePlain_nominal 'init: _mitigate-ubcp_rewrite_procedure'
 	[[ "$currentPWD" != "" ]] && cd "$currentPWD"
-	
 	local currentRoot=$(_getAbsoluteLocation "$PWD")
 	
 	local currentLink="$1"
@@ -1475,11 +1494,11 @@ _mitigate-ubcp_rewrite_procedure() {
 	local currentLinkDirective=$(readlink "$1")
 	
 	
-	_messagePlain_probe_var currentRoot
-	_messagePlain_probe_var currentLink
-	_messagePlain_probe_var currentLinkFile
-	_messagePlain_probe_var currentLinkFolder
-	_messagePlain_probe_var currentLinkDirective
+	[[ "$skimfast" != "true" ]] && _messagePlain_probe_var currentRoot
+	[[ "$skimfast" != "true" ]] && _messagePlain_probe_var currentLink
+	[[ "$skimfast" != "true" ]] && _messagePlain_probe_var currentLinkFile
+	[[ "$skimfast" != "true" ]] && _messagePlain_probe_var currentLinkFolder
+	[[ "$skimfast" != "true" ]] && _messagePlain_probe_var currentLinkDirective
 	
 	[[ "$currentLinkDirective" == '/proc/'* ]] && return 0
 	[[ "$currentLinkDirective" == '/dev/'* ]] && return 0
@@ -1501,7 +1520,7 @@ _mitigate-ubcp_rewrite_procedure() {
 	else
 		while [[ "$currentMatch" == 'false' ]] && [[ "$currentIterations" -lt 14 ]]
 		do
-			_messagePlain_probe "$currentLinkFolder"/"$currentDots"
+			[[ "$skimfast" != "true" ]] && _messagePlain_probe "$currentLinkFolder"/"$currentDots"
 			currentLinkFolder_eval=$(_getAbsoluteLocation "$currentLinkFolder"/"$currentDots")
 			[[ "$currentLinkFolder_eval" == "$currentRoot" ]] && currentMatch='true'
 			
@@ -1519,7 +1538,7 @@ _mitigate-ubcp_rewrite_procedure() {
 	
 	
 	
-	_messagePlain_probe_var currentRelativeRoot
+	[[ "$skimfast" != "true" ]] && _messagePlain_probe_var currentRelativeRoot
 	
 	
 	local processedLinkDirective
@@ -1530,7 +1549,7 @@ _mitigate-ubcp_rewrite_procedure() {
 		
 	fi
 	
-	_messagePlain_probe_var processedLinkDirective
+	[[ "$skimfast" != "true" ]] && _messagePlain_probe_var processedLinkDirective
 	
 	
 	
@@ -1538,7 +1557,7 @@ _mitigate-ubcp_rewrite_procedure() {
 	then
 		cd "$currentLinkFolder"
 		
-		ls -l "$processedLinkDirective"
+		[[ "$skimfast" != "true" ]] && ls -l "$processedLinkDirective"
 		
 		
 		# ATTENTION: Forces scenario '2'!
@@ -1557,8 +1576,8 @@ _mitigate-ubcp_rewrite_procedure() {
 		
 		ln -sf "$processedLinkDirective" "$currentLinkFolder"/"$currentLinkFile"
 		
-		ls -ld "$currentLinkFolder"/"$currentLinkFile"
-		[[ -d "$currentLinkFolder"/"$currentLinkFile" ]] && ls -l "$currentLinkFolder"/"$currentLinkFile"
+		[[ "$skimfast" != "true" ]] && ls -ld "$currentLinkFolder"/"$currentLinkFile"
+		[[ "$skimfast" != "true" ]] && [[ -d "$currentLinkFolder"/"$currentLinkFile" ]] && ls -l "$currentLinkFolder"/"$currentLinkFile"
 		
 		#rm -f "$currentLink"
 		##currentLink=$(_getAbsoluteLocation "$currentLink)
@@ -1576,17 +1595,17 @@ _mitigate-ubcp_rewrite_procedure() {
 	then
 		cd "$currentLinkFolder"
 		
-		ls -ld "$currentLinkFolder"/"$currentLinkFile"
+		[[ "$skimfast" != "true" ]] && ls -ld "$currentLinkFolder"/"$currentLinkFile"
 		
 		
 		
-		_messagePlain_nominal 'directive: replace: true'
+		[[ "$skimfast" != "true" ]] && _messagePlain_nominal 'directive: replace: true'
 		cp -L -R --preserve=all "$currentLinkFolder"/"$currentLinkFile" "$currentLinkFolder"/"$currentLinkFile".replace
 		rm -f "$currentLinkFolder"/"$currentLinkFile"
 		mv "$currentLinkFolder"/"$currentLinkFile".replace "$currentLinkFolder"/"$currentLinkFile"
 		
-		ls -ld "$currentLinkFolder"/"$currentLinkFile"
-		[[ -d "$currentLinkFolder"/"$currentLinkFile" ]] && ls -l "$currentLinkFolder"/"$currentLinkFile"
+		[[ "$skimfast" != "true" ]] && ls -ld "$currentLinkFolder"/"$currentLinkFile"
+		[[ "$skimfast" != "true" ]] && [[ -d "$currentLinkFolder"/"$currentLinkFile" ]] && ls -l "$currentLinkFolder"/"$currentLinkFile"
 		
 		cd "$outerPWD"
 	fi
@@ -1652,6 +1671,16 @@ _mitigate-ubcp_rewrite_sequence() {
 	##find "$2" -type l -exec bash -c '_mitigate-ubcp_rewrite_procedure "$1"' _ {} \;
 	
 	
+	#_experimentInteractive ()
+	#{
+		#echo begin: "$@";
+		#sleep 1;
+		#echo end
+	#}
+	#export -f _experimentInteractive
+	#seq 1 500 | xargs -x -s 4096 -L 6 -P 4 bash -c 'echo begin: "$@" ; sleep 1 ; echo end' _
+	#seq 1 500 | xargs -x -s 4096 -L 6 -P 4 bash -c '_experimentInteractive "$@"' _
+
 	
 	# WARNING: Diagnostic output will be corrupted by parallelism.
 	# ATTENTION: Expect as much as 4x as many CPU threads may be saturated due to MSW (MSW, NOT Cygwin) inefficiencies.
@@ -1660,8 +1689,9 @@ _mitigate-ubcp_rewrite_sequence() {
 	# https://serverfault.com/questions/193319/a-better-unix-find-with-parallel-processing
 	# https://stackoverflow.com/questions/11003418/calling-shell-functions-with-xargs
 	export -f "_mitigate-ubcp_rewrite_parallel"
+	find "$2" -type l -print0 | xargs -0 -x -s 4096 -L 12 -P $(nproc) bash -c '_mitigate-ubcp_rewrite_parallel "$@"' _
 	#find "$2" -type l -print0 | xargs -0 -n 1 -P 4 -I {} bash -c '_mitigate-ubcp_rewrite_parallel "$@"' _ {}
-	find "$2" -type l -print0 | xargs -0 -n 1 -P 4 -I {} bash -c '_mitigate-ubcp_rewrite_procedure "$@"' _ {}
+	#find "$2" -type l -print0 | xargs -0 -n 1 -P 4 -I {} bash -c '_mitigate-ubcp_rewrite_procedure "$@"' _ {}
 	
 	return 0
 }
@@ -1766,6 +1796,14 @@ _package_procedure-cygwinOnly() {
 	rm -f "$scriptLocal"/package_ubcp-cygwinOnly.tar.xz > /dev/null 2>&1
 	rm -f "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.xz > /dev/null 2>&1
 	
+	rm -f "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar > /dev/null 2>&1
+	rm -f "$scriptLocal"/package_ubcp-cygwinOnly.tar > /dev/null 2>&1
+	rm -f "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar > /dev/null 2>&1
+	
+	rm -f "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.flx > /dev/null 2>&1
+	rm -f "$scriptLocal"/package_ubcp-cygwinOnly.tar.flx > /dev/null 2>&1
+	rm -f "$scriptLocal"/ubcp/package_ubcp-cygwinOnly.tar.flx > /dev/null 2>&1
+	
 	if [[ "$ubPackage_enable_ubcp" == 'true' ]]
 	then
 		_package_ubcp_copy "$@"
@@ -1780,11 +1818,22 @@ _package_procedure-cygwinOnly() {
 	
 	#tar -czvf "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.gz .
 	#env XZ_OPT="-5 -T0" tar -cJvf "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.xz .
-	env XZ_OPT="-0 -T0" tar -cJvf "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.xz .
+	#env XZ_OPT="-0 -T0" tar -cJvf "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.xz .
+	#tar -cvf "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar .
+
+	if [[ "$skimfast" != "true" ]]
+	then
+		tar -cvf - . | lz4 -z --fast=1 - "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.flx
+	else
+		tar -cf - . | lz4 -z --fast=1 - "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.flx
+		#tar -cf "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.flx .
+	fi
 	
 	mkdir -p "$scriptLocal"/ubcp/
 	mv "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.gz "$scriptLocal"/ubcp/ > /dev/null 2>&1
-	mv "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.xz "$scriptLocal"/ubcp/
+	mv "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.xz "$scriptLocal"/ubcp/ > /dev/null 2>&1
+	mv "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar "$scriptLocal"/ubcp/ > /dev/null 2>&1
+	mv "$scriptAbsoluteFolder"/package_ubcp-cygwinOnly.tar.flx "$scriptLocal"/ubcp/
 	
 	_messagePlain_request 'request: review contents of _local/ubcp/cygwin/home and similar directories'
 	sleep 20
@@ -4450,7 +4499,8 @@ _testFindPort() {
 	# WARNING: Not yet relying exclusively on 'netstat' - recommend continuing to install 'nmap' for Cygwin port range detection (and also for _waitPort) .
 	if uname -a | grep -i cygwin > /dev/null 2>&1
 	then
-		! type nmap > /dev/null 2>&1 && echo "missing socket detection: nmap" && _stop 1
+		# ATTENTION: Use of nmap on Cygwin/MSW is apparently unnecessary. Beginning to disable for this use case.
+		#! type nmap > /dev/null 2>&1 && echo "missing socket detection: nmap" && _stop 1
 		! type netstat | grep cygdrive > /dev/null 2>&1 && echo "missing socket detection: netstat" && _stop 1
 		return 0
 	fi
@@ -4503,7 +4553,7 @@ _checkPort_local() {
 		return $?
 	fi
 	
-	if type nmap
+	if type nmap > /dev/null 2>&1 && ! uname -a | grep -i cygwin > /dev/null
 	then
 		nmap --host-timeout 0.1 -Pn localhost -p "$1" 2> /dev/null | grep open > /dev/null 2>&1
 		return $?
@@ -4601,14 +4651,25 @@ _findPort() {
 }
 
 _test_waitport() {
+	_discoverResource-cygwinNative-nmap
+	
+	if _if_cygwin && ! type nmap > /dev/null 2>&1
+	then
+		echo 'warn: missing: nmap'
+	else
 	_getDep nmap
+	fi
 }
 
 _showPort_ipv6() {
+	_discoverResource-cygwinNative-nmap
+
 	nmap -6 --host-timeout "$netTimeout" -Pn "$1" -p "$2" 2> /dev/null
 }
 
 _showPort_ipv4() {
+	_discoverResource-cygwinNative-nmap
+	
 	nmap --host-timeout "$netTimeout" -Pn "$1" -p "$2" 2> /dev/null
 }
 
@@ -6930,6 +6991,8 @@ _ssh_latency() {
 
 # Checks common ports.
 _ssh_common_internal_procedure() {
+	_discoverResource-cygwinNative-nmap
+	
 	_messagePlain_nominal 'nmap: IPv4'
 	ssh "$@" nmap localhost -p 22,80,443
 	
@@ -6939,6 +7002,8 @@ _ssh_common_internal_procedure() {
 
 
 _ssh_common_external_public_procedure() {
+	_discoverResource-cygwinNative-nmap
+
 	_messagePlain_nominal 'nmap: public IPv4'
 	nmap "$remotePublicIPv4" -p 22,80,443
 	
@@ -6947,6 +7012,8 @@ _ssh_common_external_public_procedure() {
 }
 
 _ssh_common_external_route_procedure() {
+	_discoverResource-cygwinNative-nmap
+	
 	_messagePlain_nominal 'nmap: route IPv4'
 	nmap "$remoteRouteIPv4" -p 22,80,443
 	
@@ -7648,12 +7715,13 @@ _testProxyRouter_sequence() {
 _testProxyRouter() {
 	_getDep socat
 	
-	_getDep nmap
-	
 	_getDep curl
 	
 	# WARNING: Cygwin does not pass netcat tests.
 	uname -a | grep -i cygwin > /dev/null 2>&1 && return 0
+
+	_discoverResource-cygwinNative-nmap
+	_getDep nmap
 	
 	# WARNING: Do not rely on 'netcat' functionality. Relatively non-portable. Prefer "socat" .
 	_getDep nc
@@ -23493,7 +23561,7 @@ _test_gitBest() {
 	
 	_wantGetDep git
 	
-	_wantGetDep nmap
+	#_wantGetDep nmap
 	#_wantGetDep curl
 	#_wantGetDep wget
 }
@@ -40868,14 +40936,28 @@ _package_ubcp_copy_copy() {
 	#cp -a "$1" "$2"
 	if [[ "$ubPackage_enable_ubcp" != 'true' ]]
 	then
-		rsync -av --progress --exclude "/ubcp/conemu" --exclude "/ubcp/cygwin" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.gz" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.xz" "$1" "$2"
+		if [[ "$skimfast" != "true" ]]
+		then
+			rsync -av --progress --exclude "/ubcp/conemu" --exclude "/ubcp/cygwin" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.gz" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.xz" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.flx" "$1" "$2"
+		else
+			rsync -a --exclude "/ubcp/conemu" --exclude "/ubcp/cygwin" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.gz" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.xz" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.flx" "$1" "$2"
+		fi
 	else
-		rsync -av --progress --exclude "/ubcp/package_ubcp-cygwinOnly.tar.gz" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.xz" "$1" "$2"
+		if [[ "$skimfast" != "true" ]]
+		then
+			rsync -av --progress --exclude "/ubcp/package_ubcp-cygwinOnly.tar.gz" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.xz" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.flx" "$1" "$2"
+		else
+			rsync -a --exclude "/ubcp/package_ubcp-cygwinOnly.tar.gz" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.xz" --exclude "/ubcp/package_ubcp-cygwinOnly.tar.flx" "$1" "$2"
+		fi
 	fi
 	
 	
 	rm -f "$safeTmp"/package/_local/package_ubcp-cygwinOnly.tar.gz
+	rm -f "$safeTmp"/package/_local/package_ubcp-cygwinOnly.tar.xz
+	rm -f "$safeTmp"/package/_local/package_ubcp-cygwinOnly.tar.flx
 	rm -f "$safeTmp"/package/_local/ubcp/package_ubcp-cygwinOnly.tar.gz
+	rm -f "$safeTmp"/package/_local/ubcp/package_ubcp-cygwinOnly.tar.xz
+	rm -f "$safeTmp"/package/_local/ubcp/package_ubcp-cygwinOnly.tar.flx
 	
 	return 0
 }
@@ -41140,7 +41222,8 @@ _getRelease-ubcp() {
     if [[ ! -e "$currentAccessoriesDir"/integrations/ubcp/"$1" ]]
     then
         #-H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
-        curl -L -o "$currentAccessoriesDir"/integrations/ubcp/"$1"  $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"internal\") | .assets[] | select(.name == \"""$1""\") | .browser_download_url" | sort -n -r | head -n1)
+        #curl -L -o "$currentAccessoriesDir"/integrations/ubcp/"$1"  $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"internal\") | .assets[] | select(.name == \"""$1""\") | .browser_download_url" | sort -n -r | head -n1)
+        curl -L -o "$currentAccessoriesDir"/integrations/ubcp/"$1"  $(curl -s "https://api.github.com/repos/mirage335-colossus/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"internal\") | .assets[] | select(.name == \"""$1""\") | .browser_download_url" | sort -n -r | head -n1)
     fi
 }
 
@@ -41284,18 +41367,6 @@ _experiment() {
 
 
 
-_self_gitMad_procedure() {
-	local functionEntryPWD
-	functionEntryPWD="$PWD"
-
-	cd "$scriptAbsoluteFolder"
-	_gitMad
-	
-	cd "$functionEntryPWD"
-}
-_self_gitMad() {
-	"$scriptAbsoluteLocation" _self_gitMad_procedure "$@"
-}
 _setup_install-restore() {
     local currentSource
     local currentDestination

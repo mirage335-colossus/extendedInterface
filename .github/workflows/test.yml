@@ -2,6 +2,22 @@
 # WARNING: May be untested .
 
 name: test
+
+
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
+permissions:
+  actions: write
+  checks: read
+  contents: read
+  deployments: read
+  issues: none
+  packages: read
+  pull-requests: read
+  repository-projects: read
+  security-events: none
+  statuses: read
+
+
 on:
   push:
   workflow_dispatch:
@@ -62,6 +78,7 @@ jobs:
       - name: test-lean
         shell: bash
         run: |
+          #export devfast="true"
           ./_lib/ubiquitous_bash/lean.sh _test | sudo -n tee /_test-lean.log
         timeout-minutes: 90
       - name: _compile
@@ -143,6 +160,7 @@ jobs:
         shell: pwsh
         timeout-minutes: 240
         run: |
+          #Set-Item -Path Env:devfast -Value ("true")
           cd C:\core\infrastructure\ubiquitous_bash\
           ./_test | tee /_test
           $SEL = cat /_test | Select-String -Pattern 'FAIL' -CaseSensitive -SimpleMatch
@@ -209,6 +227,7 @@ jobs:
         shell: pwsh
         timeout-minutes: 240
         run: |
+          #Set-Item -Path Env:devfast -Value ("true")
           ./_test | tee /_test.log
           $SEL = cat /_test.log | Select-String -Pattern 'FAIL' -CaseSensitive -SimpleMatch
           if ($SEL -ne $null)
@@ -274,6 +293,7 @@ jobs:
         shell: pwsh
         timeout-minutes: 240
         run: |
+          #Set-Item -Path Env:devfast -Value ("true")
           ./_test | tee /_test.log
           $SEL = cat /_test.log | Select-String -Pattern 'FAIL' -CaseSensitive -SimpleMatch
           if ($SEL -ne $null)

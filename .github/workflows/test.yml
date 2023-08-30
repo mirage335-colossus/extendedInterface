@@ -30,7 +30,7 @@ jobs:
         run: |
           mkdir -p ~/core/infrastructure
           cd ~/core/infrastructure
-          git clone --depth 1 --recursive https://github.com/mirage335/ubiquitous_bash.git
+          git clone --depth 1 --recursive https://github.com/mirage335-colossus/ubiquitous_bash.git
           cd ubiquitous_bash
           ./_setupUbiquitous.bat
       - name: _getMinimal_cloud
@@ -127,8 +127,8 @@ jobs:
         run: |
           #mkdir /
           cd /
-          #Invoke-WebRequest -Uri (((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/extendedInterface/releases") | Where-Object { $_.name -eq "internal" } | ForEach-Object { $_.assets } | Where-Object {$_.name -eq "extIface.exe"} | Sort-Object -Property {$_.browser_download_url -replace '\D+(\d+)-\d+$', '$1'} -Descending | Select-Object -First 1).browser_download_url) -OutFile ./extIface.exe
-          Invoke-WebRequest -Uri (((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/extendedInterface/releases" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }) | Where-Object { $_.name -eq "internal" } | ForEach-Object { $_.assets } | Where-Object {$_.name -eq "extIface.exe"} | Sort-Object -Property {$_.browser_download_url -replace '\D+(\d+)-\d+$', '$1'} -Descending | Select-Object -First 1).browser_download_url) -OutFile ./extIface.exe
+          #Invoke-WebRequest -Uri (((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases") | Where-Object { $_.name -eq "internal" } | ForEach-Object { $_.assets } | Where-Object {$_.name -eq "extIface.exe"} | Sort-Object -Property {$_.browser_download_url -replace '\D+(\d+)-\d+$', '$1'} -Descending | Select-Object -First 1).browser_download_url) -OutFile ./extIface.exe
+          Invoke-WebRequest -Uri (((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }) | Where-Object { $_.name -eq "internal" } | ForEach-Object { $_.assets } | Where-Object {$_.name -eq "extIface.exe"} | Sort-Object -Property {$_.browser_download_url -replace '\D+(\d+)-\d+$', '$1'} -Descending | Select-Object -First 1).browser_download_url) -OutFile ./extIface.exe
           #start "Installer" /wait "extIface" /S
           Start-Process -FilePath ".\extIface.exe" -ArgumentList "/wait", ".\extIface.exe", "/S" -NoNewWindow -Wait
       - uses: actions/checkout@v2
@@ -193,7 +193,7 @@ jobs:
           mkdir /core/infrastructure
           cd /core/infrastructure
 
-          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/extendedInterface/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "extIface.exe"}).browser_download_url -OutFile ./extIface.exe
+          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "extIface.exe"}).browser_download_url -OutFile ./extIface.exe
 
           #start "Installer" /wait "extIface" /S
           Start-Process -FilePath ".\extIface.exe" -ArgumentList "/wait", ".\extIface.exe", "/S" -NoNewWindow -Wait
@@ -258,7 +258,7 @@ jobs:
           mkdir /core/infrastructure
           cd /core/infrastructure
 
-          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335/extendedInterface/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "extIface.exe"}).browser_download_url -OutFile ./extIface.exe
+          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "extIface.exe"}).browser_download_url -OutFile ./extIface.exe
 
           #start "Installer" /wait "extIface" /S
           Start-Process -FilePath ".\extIface.exe" -ArgumentList "/wait", ".\extIface.exe", "/S" -NoNewWindow -Wait

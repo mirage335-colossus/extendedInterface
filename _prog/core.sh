@@ -7,18 +7,6 @@ _experiment() {
 
 
 
-_self_gitMad_procedure() {
-	local functionEntryPWD
-	functionEntryPWD="$PWD"
-
-	cd "$scriptAbsoluteFolder"
-	_gitMad
-	
-	cd "$functionEntryPWD"
-}
-_self_gitMad() {
-	"$scriptAbsoluteLocation" _self_gitMad_procedure "$@"
-}
 _setup_install-restore() {
     local currentSource
     local currentDestination

@@ -3,4 +3,4 @@
 	url = git@github.com:mirage335/t16fcs.git
 [submodule "_lib/ubiquitous_bash"]
 	path = _lib/ubiquitous_bash
-	url = git@github.com:mirage335/ubiquitous_bash.git
+	url = git@github.com:mirage335-colossus/ubiquitous_bash.git

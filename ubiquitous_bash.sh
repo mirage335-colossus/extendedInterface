@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1413336315'
+export ub_setScriptChecksum_contents='107046096'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -23433,14 +23433,32 @@ _gitBest_detect() {
 _gitBest_override_config_insteadOf-core() {
 	git config --global url."file://""$realHome""/core/infrastructure/""$1".insteadOf git@github.com:mirage335/"$1".git git@github.com:mirage335/"$1"
 }
+_gitBest_override_config_insteadOf-core--colossus() {
+	git config --global url."file://""$realHome""/core/infrastructure/""$1".insteadOf git@github.com:mirage335-colossus/"$1".git git@github.com:mirage335-colossus/"$1"
+}
+_gitBest_override_config_insteadOf-core--gizmos() {
+	git config --global url."file://""$realHome""/core/infrastructure/""$1".insteadOf git@github.com:mirage335-gizmos/"$1".git git@github.com:mirage335-gizmos/"$1"
+}
+_gitBest_override_config_insteadOf-core--distllc() {
+	git config --global url."file://""$realHome""/core/infrastructure/""$1".insteadOf git@github.com:soaringDistributions/"$1".git git@github.com:soaringDistributions/"$1"
+}
 
 
 _gitBest_override_github-github_core() {
-	_gitBest_override_config_insteadOf-core ubiquitous_bash
-	_gitBest_override_config_insteadOf-core extendedInterface
+	_gitBest_override_config_insteadOf-core--colossus ubiquitous_bash
+	_gitBest_override_config_insteadOf-core--colossus extendedInterface
+
+	_gitBest_override_config_insteadOf-core--gizmos flightDeck
+	_gitBest_override_config_insteadOf-core--gizmos kinematicBase-large
+
+	_gitBest_override_config_insteadOf-core--distllc ubDistBuild
+	_gitBest_override_config_insteadOf-core--distllc ubDistFetch
+	
+	_gitBest_override_config_insteadOf-core mirage335_documents
+	_gitBest_override_config_insteadOf-core mirage335GizmoScience
+
 	_gitBest_override_config_insteadOf-core scriptedIllustrator
 	_gitBest_override_config_insteadOf-core arduinoUbiquitous
-	_gitBest_override_config_insteadOf-core mirage335_documents
 	
 	_gitBest_override_config_insteadOf-core BOM_designer
 	_gitBest_override_config_insteadOf-core CoreAutoSSH
@@ -41261,7 +41279,7 @@ _build_extendedInterface-fetch() {
 
 
     cd "$currentAccessoriesDir"/parts
-    _gitBest clone --recursive git@github.com:mirage335/"$objectName".git
+    _gitBest clone --recursive git@github.com:mirage335-colossus/"$objectName".git
 
     mkdir -p "$currentAccessoriesDir"/parts/"$objectName"
     cd "$currentAccessoriesDir"/parts/"$objectName"
@@ -41317,7 +41335,7 @@ _build_extendedInterface-fetch() {
 
 
     cd "$currentAccessoriesDir"/parts/
-    _gitBest clone --depth 1 --recursive git@github.com:mirage335/extendedInterface_bundle.git
+    _gitBest clone --depth 1 --recursive git@github.com:mirage335-colossus/extendedInterface_bundle.git
     cd "$functionEntryPWD"
 
 

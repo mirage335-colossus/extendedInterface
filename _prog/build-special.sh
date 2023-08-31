@@ -96,7 +96,7 @@ _build_extendedInterface-fetch() {
 
 
     cd "$currentAccessoriesDir"/parts
-    _gitBest clone --recursive git@github.com:mirage335/"$objectName".git
+    _gitBest clone --recursive git@github.com:mirage335-colossus/"$objectName".git
 
     mkdir -p "$currentAccessoriesDir"/parts/"$objectName"
     cd "$currentAccessoriesDir"/parts/"$objectName"
@@ -152,7 +152,7 @@ _build_extendedInterface-fetch() {
 
 
     cd "$currentAccessoriesDir"/parts/
-    _gitBest clone --depth 1 --recursive git@github.com:mirage335/extendedInterface_bundle.git
+    _gitBest clone --depth 1 --recursive git@github.com:mirage335-colossus/extendedInterface_bundle.git
     cd "$functionEntryPWD"
 
 

@@ -6,6 +6,10 @@ _experiment() {
 }
 
 
+_setup_install-permissions() {
+	_messagePlain_probe_cmd chmod 755 /home/root/.ssh/id_*.pub > /dev/null 2>&1
+	_messagePlain_probe_cmd chmod 600 /home/root/.ssh/id_* > /dev/null 2>&1
+}
 
 _setup_install-restore() {
     local currentSource
@@ -50,9 +54,7 @@ _setup_install-restore() {
 	#--exclude ".ssh"
 	#--exclude ".gitconfig"
 	_messagePlain_probe_cmd rsync -ax --delete --exclude ".bash_profile" --exclude ".bashrc" --exclude ".config" --exclude ".inputrc" --exclude ".lesshst" --exclude ".octave_hist" --exclude ".octaverc" --exclude ".profile" --exclude ".ubcore" --exclude ".ubcorerc_pythonrc.py" --exclude ".ubcorerc-gnuoctave.m" --exclude ".viminfo" --exclude ".wget-hsts" --exclude "bin" "$currentSource" "$currentDestination"
-	
-	chmod 755 /home/root/.ssh/id_*.pub > /dev/null 2>&1
-	chmod 600 /home/root/.ssh/id_* > /dev/null 2>&1
+	#_setup_install-permissions "$@"
 }
 _setup_install_procedure() {
 	_messageNormal 'init: _setup_install'
@@ -80,6 +82,7 @@ _setup_install_procedure() {
 		# CopyFiles "C:\core\infrastructure\ubcp-home-backup-uninstalled\*" "C:\core\infrastructure\ubcp\cygwin\home\"
 		_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-uninstalled/. /cygdrive/c/core/infrastructure/ubcp/cygwin/home/.
 	fi
+	#_setup_install-permissions "$@"
 
 	_messagePlain_probe_cmd unzip -o "$scriptAbsoluteFolder"/support/000-OS/MSW/root_extra.zip -d /cygdrive/c
 
@@ -162,6 +165,7 @@ _setup_install_procedure() {
 
 
 	_messagePlain_probe_cmd _self_gitMad
+	#_setup_install-permissions "$@"
 
 	_messagePlain_nominal 'end: _setup_install'
 	return 0

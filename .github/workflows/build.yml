@@ -6,7 +6,7 @@ name: build
 permissions:
   actions: write
   checks: read
-  contents: read
+  contents: write
   deployments: read
   issues: none
   packages: read
@@ -53,18 +53,18 @@ concurrency:
 # https://github.com/softprops/action-gh-release
 # https://svrooij.io/2021/08/17/github-actions-secret-file/
 jobs:
-  build_guard:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: dev-drprasad/delete-tag-and-release@v1.0
-        with:
-            tag_name: build-${{ github.run_id }}-${{ github.run_attempt }} #(required) tag name to delete 
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            delete_release: true #(optional) default: true 
+  #build_guard:
+    #runs-on: ubuntu-latest
+    #steps:
+      #- uses: actions/checkout@v3
+      #- uses: dev-drprasad/delete-tag-and-release@v1.0
+        #with:
+            #tag_name: build-${{ github.run_id }}-${{ github.run_attempt }} #(required) tag name to delete 
+            #github_token: ${{ secrets.GITHUB_TOKEN }}
+            #delete_release: true #(optional) default: true 
   build_nix:
-    needs: [build_guard]
-    runs-on: ubuntu-latest
+    #needs: [build_guard]
+    runs-on: ${{ github.event.inputs.runnerName == '' && 'ubuntu-latest' || github.event.inputs.runnerName }}
     steps:
       - uses: actions/checkout@v3
         with:

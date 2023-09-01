@@ -229,7 +229,7 @@ Section "Install"
 
 
   ExpandEnvStrings $5 %COMSPEC%
-  ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _setup_install $0'
+  ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _bin /cygdrive/c/core/infrastructure/extendedInterface/ubiquitous_bash.sh _setup_install $0'
   DetailPrint '"$0"'
   Sleep 2500
 

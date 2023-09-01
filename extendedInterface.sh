@@ -5589,8 +5589,8 @@ _setup_install-restore() {
 	#--exclude ".gitconfig"
 	_messagePlain_probe_cmd rsync -ax --delete --exclude ".bash_profile" --exclude ".bashrc" --exclude ".config" --exclude ".inputrc" --exclude ".lesshst" --exclude ".octave_hist" --exclude ".octaverc" --exclude ".profile" --exclude ".ubcore" --exclude ".ubcorerc_pythonrc.py" --exclude ".ubcorerc-gnuoctave.m" --exclude ".viminfo" --exclude ".wget-hsts" --exclude "bin" "$currentSource" "$currentDestination"
 	
-	_messagePlain_probe_cmd chmod 755 /home/root/.ssh/id_*.pub
-	_messagePlain_probe_cmd chmod 600 /home/root/.ssh/id_*
+	chmod 755 /home/root/.ssh/id_*.pub > /dev/null 2>&1
+	chmod 600 /home/root/.ssh/id_* > /dev/null 2>&1
 }
 _setup_install_procedure() {
 	_messageNormal 'init: _setup_install'

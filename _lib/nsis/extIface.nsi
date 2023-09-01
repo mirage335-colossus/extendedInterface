@@ -48,20 +48,27 @@ Page instfiles
 Section "Install"
   SetShellVarContext all
 
+
+
   ;https://stackoverflow.com/questions/2565215/checking-if-the-application-is-running-in-nsis-before-uninstalling
   ;ExecWait "TaskKill /IM bash.exe /F"
 
   ;https://stackoverflow.com/questions/2565215/checking-if-the-application-is-running-in-nsis-before-uninstalling
-  Delete "$TEMP\bashExe.bz"
+  ;cmd /c for /f "tokens=1,2" %i in ('tasklist') do (if /i %i EQU bash.exe fsutil file createnew .\bashExe.bz 0) & del .\bashExe.bz
+  Delete "$TEMP\extIface_bashExe.bzy"
   !macro IsRunning
-  ExecWait "cmd /c for /f $\"tokens=1,2$\" %i in ('tasklist') do (if /i %i EQU bash.exe fsutil file createnew $TEMP\bashExe.bz 0)"
-  IfFileExists $TEMP\bashExe.bz 0 notRunning
+  Delete "$TEMP\extIface_bashExe.bzy"
+  ExecWait "cmd /c for /f $\"tokens=1,2$\" %i in ('tasklist') do (if /i %i EQU bash.exe fsutil file createnew $TEMP\extIface_bashExe.bzy 0)"
+  IfFileExists $TEMP\extIface_bashExe.bzy 0 notRunning
     ;we have atleast one main window active
     MessageBox MB_OK|MB_ICONEXCLAMATION "Please close  bash.exe  and retry." /SD IDOK
     Abort
   notRunning:
   !macroEnd
-  Delete "$TEMP\bashExe.bz"
+  
+  !insertmacro IsRunning
+
+
 
   ; Generate a random alphanumeric string
   System::Call 'KERNEL32::GetTickCount()i.r0'

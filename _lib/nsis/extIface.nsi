@@ -57,8 +57,8 @@ Section "Install"
   IntOp $0 $0 * -1
 
   ;GUARD - Ensures non-random path '*-prev' is not occupied - presently.
-  Rename "C:\core\infrastructure\extendedInterface-home-backup-prev" "C:\core\infrastructure\extendedInterface-home-backup-$0"
-  Rename "C:\core\infrastructure\ubcp-home-backup-prev" "C:\core\infrastructure\ubcp-home-backup-$0"
+  Rename "C:\core\infrastructure\extendedInterface-home-backup-prev" "C:\core\infrastructure\extendedInterface-home-backup-prev-$0"
+  Rename "C:\core\infrastructure\ubcp-home-backup-prev" "C:\core\infrastructure\ubcp-home-backup-prev-$0"
   DetailPrint "$0"
   Sleep 2500
 
@@ -233,6 +233,12 @@ Section "Install"
   DetailPrint '"$0"'
   Sleep 2500
 
+  ExpandEnvStrings $5 %COMSPEC%
+  ExecWait '"$5" /C ""C:\core\infrastructure\ubiquitous_bash\_bin.bat" _bin _messagePlain_probe_cmd chmod 600 /home/root/.ssh/id_*'
+  ExecWait '"$5" /C ""C:\core\infrastructure\ubiquitous_bash\_bin.bat" _bin _messagePlain_probe_cmd chmod 755 /home/root/.ssh/id_*.pub'
+  DetailPrint '"$0"'
+  Sleep 2500
+
   ; Generate a random alphanumeric string
   System::Call 'KERNEL32::GetTickCount()i.r0'
   System::Call 'ADVAPI32::CryptAcquireContext(i0,t""i0,i0,i0,i0)i.r1'
@@ -242,8 +248,8 @@ Section "Install"
   IntOp $0 $0 * -1
 
   ;GUARD - Ensures non-random path '*-prev' is not occupied - for the future.
-  Rename "C:\core\infrastructure\extendedInterface-home-backup-prev" "C:\core\infrastructure\extendedInterface-home-backup-$0"
-  Rename "C:\core\infrastructure\ubcp-home-backup-prev" "C:\core\infrastructure\ubcp-home-backup-$0"
+  Rename "C:\core\infrastructure\extendedInterface-home-backup-prev" "C:\core\infrastructure\extendedInterface-home-backup-prev-prev-$0"
+  Rename "C:\core\infrastructure\ubcp-home-backup-prev" "C:\core\infrastructure\ubcp-home-backup-prev-prev-$0"
   DetailPrint "$0"
   Sleep 2500
 

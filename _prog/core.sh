@@ -7,8 +7,8 @@ _experiment() {
 
 
 _setup_install-permissions() {
-	_messagePlain_probe_cmd chmod 755 /home/root/.ssh/id_*.pub > /dev/null 2>&1
-	_messagePlain_probe_cmd chmod 600 /home/root/.ssh/id_* > /dev/null 2>&1
+	_messagePlain_probe_cmd chmod 755 /home/root/.ssh/id_*.pub
+	_messagePlain_probe_cmd chmod 600 /home/root/.ssh/id_*
 }
 
 _setup_install-restore() {

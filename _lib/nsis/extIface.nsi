@@ -255,6 +255,7 @@ Section "Install"
   DetailPrint '"$0"'
   Sleep 2500
 
+  ;cmd /C "C:\core\infrastructure\ubiquitous_bash\_bin.bat" _bin /cygdrive/c/core/infrastructure/extendedInterface/ubiquitous_bash.sh _setup_install-permissions
   ExpandEnvStrings $5 %COMSPEC%
   ;ExecWait '"$5" /C ""C:\core\infrastructure\ubiquitous_bash\_bin.bat" _bin _messagePlain_probe_cmd chmod 600 /home/root/.ssh/id_*'
   ;ExecWait '"$5" /C ""C:\core\infrastructure\ubiquitous_bash\_bin.bat" _bin _messagePlain_probe_cmd chmod 755 /home/root/.ssh/id_*.pub'

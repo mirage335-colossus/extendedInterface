@@ -121,6 +121,16 @@ jobs:
         #shell: pwsh
         #env:
           #rclone_limited_conf_base64: ${{ secrets.rclone_limited_conf_base64 }}
+      - name: _getCore_ubcp-extendedInterface
+        shell: pwsh
+        timeout-minutes: 180
+        run: |
+          #mkdir /
+          cd /
+          #Invoke-WebRequest -Uri (((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases") | Where-Object { $_.name -eq "internal" } | ForEach-Object { $_.assets } | Where-Object {$_.name -eq "extIface.exe"} | Sort-Object -Property {$_.browser_download_url -replace '\D+(\d+)-\d+$', '$1'} -Descending | Select-Object -First 1).browser_download_url) -OutFile ./extIface.exe
+          Invoke-WebRequest -Uri (((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }) | Where-Object { $_.name -eq "internal" } | ForEach-Object { $_.assets } | Where-Object {$_.name -eq "extIface.exe"} | Sort-Object -Property {$_.browser_download_url -replace '\D+(\d+)-\d+$', '$1'} -Descending | Select-Object -First 1).browser_download_url) -OutFile ./extIface.exe
+          #start "Installer" /wait "extIface" /S
+          Start-Process -FilePath ".\extIface.exe" -ArgumentList "/wait", ".\extIface.exe", "/S" -NoNewWindow -Wait
       - name: _getMinimal_cloud
         shell: pwsh
         timeout-minutes: 180
@@ -138,16 +148,6 @@ jobs:
           git config --global core.eol lf
           choco install 7zip.install -y
           choco install rclone -y
-      - name: _getCore_ubcp-extendedInterface
-        shell: pwsh
-        timeout-minutes: 180
-        run: |
-          #mkdir /
-          cd /
-          #Invoke-WebRequest -Uri (((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases") | Where-Object { $_.name -eq "internal" } | ForEach-Object { $_.assets } | Where-Object {$_.name -eq "extIface.exe"} | Sort-Object -Property {$_.browser_download_url -replace '\D+(\d+)-\d+$', '$1'} -Descending | Select-Object -First 1).browser_download_url) -OutFile ./extIface.exe
-          Invoke-WebRequest -Uri (((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }) | Where-Object { $_.name -eq "internal" } | ForEach-Object { $_.assets } | Where-Object {$_.name -eq "extIface.exe"} | Sort-Object -Property {$_.browser_download_url -replace '\D+(\d+)-\d+$', '$1'} -Descending | Select-Object -First 1).browser_download_url) -OutFile ./extIface.exe
-          #start "Installer" /wait "extIface" /S
-          Start-Process -FilePath ".\extIface.exe" -ArgumentList "/wait", ".\extIface.exe", "/S" -NoNewWindow -Wait
       - uses: actions/checkout@v2
       - name: statement! ls
         shell: pwsh
@@ -186,6 +186,18 @@ jobs:
         #shell: pwsh
         #env:
           #rclone_limited_conf_base64: ${{ secrets.rclone_limited_conf_base64 }}
+      - name: _getCore_ubcp-extendedInterface
+        shell: pwsh
+        timeout-minutes: 180
+        run: |
+          mkdir /core
+          mkdir /core/infrastructure
+          cd /core/infrastructure
+
+          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "extIface.exe"}).browser_download_url -OutFile ./extIface.exe
+
+          #start "Installer" /wait "extIface" /S
+          Start-Process -FilePath ".\extIface.exe" -ArgumentList "/wait", ".\extIface.exe", "/S" -NoNewWindow -Wait
       - name: _getMinimal_cloud
         shell: pwsh
         timeout-minutes: 180
@@ -203,18 +215,6 @@ jobs:
           git config --global core.eol lf
           choco install 7zip.install -y
           choco install rclone -y
-      - name: _getCore_ubcp-extendedInterface
-        shell: pwsh
-        timeout-minutes: 180
-        run: |
-          mkdir /core
-          mkdir /core/infrastructure
-          cd /core/infrastructure
-
-          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "extIface.exe"}).browser_download_url -OutFile ./extIface.exe
-
-          #start "Installer" /wait "extIface" /S
-          Start-Process -FilePath ".\extIface.exe" -ArgumentList "/wait", ".\extIface.exe", "/S" -NoNewWindow -Wait
       - uses: actions/checkout@v2
       - name: statement! ls
         shell: pwsh
@@ -252,6 +252,18 @@ jobs:
         #shell: pwsh
         #env:
           #rclone_limited_conf_base64: ${{ secrets.rclone_limited_conf_base64 }}
+      - name: _getCore_ubcp
+        shell: pwsh
+        timeout-minutes: 180
+        run: |
+          mkdir /core
+          mkdir /core/infrastructure
+          cd /core/infrastructure
+
+          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "extIface.exe"}).browser_download_url -OutFile ./extIface.exe
+
+          #start "Installer" /wait "extIface" /S
+          Start-Process -FilePath ".\extIface.exe" -ArgumentList "/wait", ".\extIface.exe", "/S" -NoNewWindow -Wait
       - name: _getMinimal_cloud
         shell: pwsh
         timeout-minutes: 180
@@ -269,18 +281,6 @@ jobs:
           git config --global core.eol lf
           choco install 7zip.install -y
           choco install rclone -y
-      - name: _getCore_ubcp
-        shell: pwsh
-        timeout-minutes: 180
-        run: |
-          mkdir /core
-          mkdir /core/infrastructure
-          cd /core/infrastructure
-
-          Invoke-WebRequest -Uri ((Invoke-RestMethod -Uri "https://api.github.com/repos/mirage335-colossus/extendedInterface/releases/latest" -Headers @{Authorization = "Bearer ${{ secrets.GITHUB_TOKEN }}" }).assets | Where-Object {$_.name -eq "extIface.exe"}).browser_download_url -OutFile ./extIface.exe
-
-          #start "Installer" /wait "extIface" /S
-          Start-Process -FilePath ".\extIface.exe" -ArgumentList "/wait", ".\extIface.exe", "/S" -NoNewWindow -Wait
       - uses: actions/checkout@v2
       - name: statement! ls
         shell: pwsh

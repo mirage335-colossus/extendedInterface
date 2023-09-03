@@ -111,6 +111,7 @@ _build_extendedInterface-fetch() {
     #git config gc.reflogExpireUnreachable now
     git reset --hard
     git submodule update
+    git submodule update --force --recursive
     #git gc --aggressive
 
     #git show-ref -s HEAD > $(git rev-parse --git-dir)/shallow

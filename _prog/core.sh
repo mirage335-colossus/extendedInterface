@@ -7,8 +7,18 @@ _experiment() {
 
 
 _setup_install-permissions() {
+	local functionEntryPWD
+	functionEntryPWD="$PWD"
+	
 	_messagePlain_probe_cmd chmod 755 /home/root/.ssh/id_*.pub
 	_messagePlain_probe_cmd chmod 600 /home/root/.ssh/id_*
+
+	cd /home/root/.ubcore/ubiquitous_bash
+	git config --global --add safe.directory /home/root/.ubcore/ubiquitous_bash
+	_gitMad
+
+
+	cd "$functionEntryPWD"
 }
 
 _setup_install-restore() {

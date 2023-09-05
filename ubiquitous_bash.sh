@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='781012143'
+export ub_setScriptChecksum_contents='62187947'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -8359,14 +8359,17 @@ _fetchDep_debianBookworm_special() {
 		wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo -n apt-key add -
 		
 		sudo -n env DEBIAN_FRONTEND=noninteractive apt-get -y update
-		sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y dkms virtualbox-6.1
+		#sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y dkms virtualbox-6.1
+		sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y dkms virtualbox-7.0
 		
 		# https://www.virtualbox.org/ticket/20949
 		if ! type -p virtualbox > /dev/null 2>&1 && ! type -p VirtualBox > /dev/null 2>&1
 		then
-			curl -L "https://download.virtualbox.org/virtualbox/6.1.34/virtualbox-6.1_6.1.34-150636.1~Debian~bookworm_amd64.deb" -o "$safeTmp"/"virtualbox-6.1_6.1.34-150636.1~Debian~bookworm_amd64.deb"
+			#curl -L "https://download.virtualbox.org/virtualbox/6.1.34/virtualbox-6.1_6.1.34-150636.1~Debian~bookworm_amd64.deb" -o "$safeTmp"/"virtualbox-6.1_6.1.34-150636.1~Debian~bookworm_amd64.deb"
+			curl -L "https://download.virtualbox.org/virtualbox/7.0.10/virtualbox-7.0_7.0.10-158379~Debian~bookworm_amd64.deb" -o "$safeTmp"/"virtualbox-7.0_7.0.10-158379~Debian~bookworm_amd64.deb"
 			sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y dkms
-			yes | sudo -n dpkg -i "$safeTmp"/"virtualbox-6.1_6.1.34-150636.1~Debian~bookworm_amd64.deb"
+			#yes | sudo -n dpkg -i "$safeTmp"/"virtualbox-6.1_6.1.34-150636.1~Debian~bookworm_amd64.deb"
+			yes | sudo -n dpkg -i "$safeTmp"/"virtualbox-7.0_7.0.10-158379~Debian~bookworm_amd64.deb"
 			sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y -f
 		fi
 		
@@ -10036,6 +10039,9 @@ _getMost_debian11_install() {
 		_getMost_backend apt-get update
 	fi
 	_getMost_backend_aptGetInstall wmctrl xprintidle
+
+
+	_getMost_backend_aptGetInstall dbus-x11
 
 
 	_getMost_backend_aptGetInstall gnulib
@@ -14121,6 +14127,7 @@ _fakeHome() {
 	#fakeHomeENVvars+=( SSH_AUTH_SOCK="$SSH_AUTH_SOCK" SSH_AGENT_PID="$SSH_AGENT_PID" GPG_AGENT_INFO="$GPG_AGENT_INFO" )
 	fakeHomeENVvars+=(SESSION_MANAGER="$SESSION_MANAGER" WINDOWID="$WINDOWID" QT_ACCESSIBILITY="$QT_ACCESSIBILITY" COLORTERM="$COLORTERM" XDG_SESSION_PATH="$XDG_SESSION_PATH" LANGUAGE="$LANGUAGE"  SHELL_SESSION_ID="$SHELL_SESSION_ID" DESKTOP_SESSION="$DESKTOP_SESSION" XCURSOR_SIZE="$XCURSOR_SIZE" GTK_MODULES="$GTK_MODULES" XDG_SEAT="$XDG_SEAT" XDG_SESSION_DESKTOP="$XDG_SESSION_DESKTOP" XDG_SESSION_TYPE="$XDG_SESSION_TYPE" XDG_CURRENT_DESKTOP="$XDG_CURRENT_DESKTOP" KONSOLE_DBUS_SERVICE="$KONSOLE_DBUS_SERVICE" PYTHONSTARTUP="$PYTHONSTARTUP" KONSOLE_DBUS_SESSION="$KONSOLE_DBUS_SESSION" PROFILEHOME="$PROFILEHOME" TMPDIR="$TMPDIR" XDG_SEAT_PATH="$XDG_SEAT_PATH" KDE_SESSION_UID="$KDE_SESSION_UID" XDG_SESSION_CLASS="$XDG_SESSION_CLASS" COLORFGBG="$COLORFGBG" KDE_SESSION_VERSION="$KDE_SESSION_VERSION" SHLVL="$SHLVL" LC_MEASUREMENT="$LC_MEASUREMENT" XDG_VTNR="$XDG_VTNR" XDG_SESSION_ID="$XDG_SESSION_ID" GS_LIB="$GS_LIB" XDG_RUNTIME_DIR="$XDG_RUNTIME_DIR" LC_TIME="$LC_TIME" QT_AUTO_SCREEN_SCALE_FACTOR="$QT_AUTO_SCREEN_SCALE_FACTOR" XCURSOR_THEME="$XCURSOR_THEME" KDE_FULL_SESSION="$KDE_FULL_SESSION" KONSOLE_PROFILE_NAME="$KONSOLE_PROFILE_NAME" DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" KONSOLE_DBUS_WINDOW="$KONSOLE_DBUS_WINDOW" LS_COLORS="$LS_COLORS")
 	
+	fakeHomeENVvars+=(QT_QPA_PLATFORMTHEME="$QT_QPA_PLATFORMTHEME")
 	
 	
 	if type dbus-run-session > /dev/null 2>&1 && [[ "$fakeHome_dbusRunSession_DISABLE" != "true" ]]
@@ -15158,7 +15165,7 @@ _here_bootdisc_startup_xdg() {
 cat << 'CZXWXcRMTo8EmM8i4d'
 [Desktop Entry]
 Comment=
-Exec=sudo -n mount -t iso9660 -o ro,nofail LABEL=uk4uPhB663kVcygT0q /media/bootdisc ; sudo -n /media/bootdisc/rootnix.sh ; /media/bootdisc/cmd.sh
+Exec=sudo -n mount -t iso9660 -o ro,nofail LABEL=uk4uPhB663kVcygT0q /media/bootdisc > /dev/null ; sudo -n /media/bootdisc/rootnix.sh > /dev/null ; /media/bootdisc/cmd.sh > /dev/null
 GenericName=
 Icon=exec
 MimeType=
@@ -15168,6 +15175,47 @@ StartupNotify=false
 Terminal=false
 TerminalOptions=
 Type=Application
+CZXWXcRMTo8EmM8i4d
+}
+
+_here_bootdisc_startup_systemd() {
+    cat << CZXWXcRMTo8EmM8i4d
+[Unit]
+After=xdg-desktop-autostart.target
+
+[Install]
+WantedBy=xdg-desktop-autostart.target
+
+[Service]
+Type=oneshot
+ExecStart="$1"/.config/startup.sh
+CZXWXcRMTo8EmM8i4d
+}
+
+_here_bootdisc_startup_script() {
+    cat << CZXWXcRMTo8EmM8i4d
+#!/usr/bin/env bash
+#export QT_QPA_PLATFORMTHEME= ; unset QT_QPA_PLATFORMTHEME ; export LANG="C"
+#export DESKTOP_SESSION=plasma
+#bash "$scriptAbsoluteLocation" _wsl_desktop-waitUp_wmctrl ; sleep 0.6
+export LANG="C"
+CZXWXcRMTo8EmM8i4d
+
+#dbus-run-session
+#_safeEcho_newline 'exec '"$@"' &'
+_safeEcho_newline 'sudo -n mount -t iso9660 -o ro,nofail LABEL=uk4uPhB663kVcygT0q /media/bootdisc > /dev/null ; sudo -n /media/bootdisc/rootnix.sh > /dev/null ; /media/bootdisc/cmd.sh > /dev/null'
+
+    cat << CZXWXcRMTo8EmM8i4d
+#disown -h \$!
+disown
+disown -a -h -r
+disown -a -r
+#rm -f "\$HOME"/.config/plasma-workspace/env/startup.sh
+#rm -f "\$HOME"/.config/startup.sh
+#sudo -n rm -f /etc/xdg/autostart/startup.desktop
+#rm -f "\$HOME"/.config/systemd/user/bootdiscStartup.service
+#bash "$scriptAbsoluteLocation" _wsl_desktop-waitDown_wmctrl
+#currentStopJobs=\$(jobs -p -r 2> /dev/null) ; [[ "\$displayStopJobs" != "" ]] && kill \$displayStopJobs > /dev/null 2>&1
 CZXWXcRMTo8EmM8i4d
 }
 
@@ -20440,6 +20488,8 @@ default = user
 [wsl2]
 nestedVirtualization=true
 
+[automount]
+options = "metadata"
 
 CZXWXcRMTo8EmM8i4d
 }
@@ -20542,7 +20592,101 @@ _write_msw_WSLENV() {
 
 
 
+_wsl_desktop-waitUp_wmctrl() {
+    while [[ $(wmctrl -d 2>/dev/null | wc -l) -lt 1 ]]
+    do
+        sleep 0.2
+    done
+}
+_wsl_desktop-waitDown_wmctrl() {
+    while [[ $(wmctrl -d 2>/dev/null | wc -l) -gt 1 ]]
+    do
+        sleep 0.4
+    done
+}
+_here_wsl_desktop_startup_script() {
+    cat << CZXWXcRMTo8EmM8i4d
+#!/usr/bin/env bash
+export DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS"
+export DBUS_SESSION_BUS_PID="$DBUS_SESSION_BUS_PID"
+export DBUS_SESSION_BUS_WINDOWID="$DBUS_SESSION_BUS_WINDOWID"
+export QT_QPA_PLATFORMTHEME= ; unset QT_QPA_PLATFORMTHEME ; export LANG="C"
+export DESKTOP_SESSION=plasma
+#bash "$scriptAbsoluteLocation" _wsl_desktop-waitUp_wmctrl ; sleep 0.6
+export LANG="C"
+CZXWXcRMTo8EmM8i4d
 
+#dbus-run-session
+_safeEcho_newline 'exec '"$@"' &'
+
+    cat << CZXWXcRMTo8EmM8i4d
+#disown -h \$!
+disown
+disown -a -h -r
+disown -a -r
+rm -f "\$HOME"/.config/plasma-workspace/env/tmp_wsl_desktop.sh
+rm -f "\$HOME"/.config/tmp_wsl_desktop.sh
+sudo -n rm -f /etc/xdg/autostart/tmp_wsl_desktop.desktop
+rm -f "\$HOME"/.config/systemd/user/tmp_wsl_desktop.service
+#bash "$scriptAbsoluteLocation" _wsl_desktop-waitDown_wmctrl
+#currentStopJobs=\$(jobs -p -r 2> /dev/null) ; [[ "\$displayStopJobs" != "" ]] && kill \$displayStopJobs > /dev/null 2>&1
+CZXWXcRMTo8EmM8i4d
+}
+_wsl_desktop_startup_plasmaWorkspaceEnv_write() {
+    mkdir -p "$HOME"/.config/plasma-workspace/env/
+    _here_wsl_desktop_startup_script "$@" > "$HOME"/.config/plasma-workspace/env/tmp_wsl_desktop.sh
+    chmod u+x "$HOME"/.config/plasma-workspace/env/tmp_wsl_desktop.sh
+}
+_here_wsl_desktop_startup_xdg() {
+    cat << CZXWXcRMTo8EmM8i4d
+[Desktop Entry]
+Comment=
+Exec="$HOME"/.config/tmp_wsl_desktop.sh > /dev/null
+GenericName=
+Icon=exec
+MimeType=
+Name=
+Path=
+StartupNotify=false
+Terminal=false
+TerminalOptions=
+Type=Application
+CZXWXcRMTo8EmM8i4d
+}
+_wsl_desktop_startup_xdg_write() {
+    mkdir -p "$HOME"/.config/
+    _here_wsl_desktop_startup_script "$@" > "$HOME"/.config/tmp_wsl_desktop.sh
+    chmod u+x "$HOME"/.config/tmp_wsl_desktop.sh
+
+    _here_wsl_desktop_startup_xdg | sudo -n tee /etc/xdg/autostart/tmp_wsl_desktop.desktop > /dev/null
+}
+# https://bbs.archlinux.org/viewtopic.php?id=279740
+_here_wsl_desktop_startup_systemd() {
+    cat << CZXWXcRMTo8EmM8i4d
+[Unit]
+After=xdg-desktop-autostart.target
+
+[Install]
+WantedBy=xdg-desktop-autostart.target
+
+[Service]
+Type=oneshot
+ExecStart="$HOME"/.config/tmp_wsl_desktop.sh
+CZXWXcRMTo8EmM8i4d
+}
+_wsl_desktop_startup_systemd_write() {
+    mkdir -p "$HOME"/.config/
+    _here_wsl_desktop_startup_script "$@" > "$HOME"/.config/tmp_wsl_desktop.sh
+    chmod u+x "$HOME"/.config/tmp_wsl_desktop.sh
+    
+    mkdir -p "$HOME"/.config/systemd/user/
+    _here_wsl_desktop_startup_systemd | sudo -n tee "$HOME"/.config/systemd/user/tmp_wsl_desktop.service > /dev/null
+
+    systemctl --user stop tmp_wsl_desktop
+    systemctl --user daemon-reload
+    systemctl --user enable tmp_wsl_desktop
+    systemctl --user enable tmp_wsl_desktop.service
+}
 _wsl_desktop() {
     local functionEntryPWD
     functionEntryPWD="$PWD"
@@ -20557,7 +20701,7 @@ _wsl_desktop() {
 
         export QT_QPA_PLATFORMTHEME=
         unset QT_QPA_PLATFORMTHEME
-        _set_qt5ct
+        #_set_qt5ct
 
         
         # nix-shell --run "locale -a" -p bash
@@ -20571,19 +20715,90 @@ _wsl_desktop() {
         local xephyrDisplay
         local xephyrDisplayValid
         xephyrDisplayValid="false"
-        # RESERVED - 53-79 (or greater) for PanelBoard
-        for (( xephyrDisplay = 13 ; xephyrDisplay <= 52 ; xephyrDisplay++ ))
-        do
-            ! [[ -e /tmp/.X"$xephyrDisplay"-lock ]] && ! [[ -e /tmp/.X11-unix/X"$xephyrDisplay" ]] && xephyrDisplayValid="true" && _messagePlain_good 'found: unused X11 display= '"$xephyrDisplay" && break
-        done
+        
+        if [[ "$2" == *"panel.sh" ]] || [[ "$2" == *"panel"*".sh" ]] || [[ "$2" == *"panel"*".bat" ]]
+        then
+            for (( xephyrDisplay = 53 ; xephyrDisplay <= 79 ; xephyrDisplay++ ))
+            do
+                ! [[ -e /tmp/.X"$xephyrDisplay"-lock ]] && ! [[ -e /tmp/.X11-unix/X"$xephyrDisplay" ]] && xephyrDisplayValid="true" && _messagePlain_good 'found: unused X11 display= '"$xephyrDisplay" && break
+            done
+        else
+            # RESERVED - 53-79 (or greater) for PanelBoard
+            for (( xephyrDisplay = 13 ; xephyrDisplay <= 52 ; xephyrDisplay++ ))
+            do
+                ! [[ -e /tmp/.X"$xephyrDisplay"-lock ]] && ! [[ -e /tmp/.X11-unix/X"$xephyrDisplay" ]] && xephyrDisplayValid="true" && _messagePlain_good 'found: unused X11 display= '"$xephyrDisplay" && break
+            done
+        fi
 
         _messagePlain_nominal 'Xephyr.'
         local xephyrResolution
         xephyrResolution="1600x1200"
-        [[ "$1" != "" ]] && xephyrResolution="$1"
-        if type -p dbus-run-session > /dev/null 2>&1 && type -p startplasma-x11 > /dev/null 2>&1
+        [[ "$1" == *"x"* ]] && xephyrResolution="$1"
+        shift
+        if type -p dbus-launch > /dev/null 2>&1 && type -p dbus-run-session > /dev/null 2>&1 && type -p startplasma-x11 > /dev/null 2>&1
         then
-            ( Xephyr -screen "$xephyrResolution" :"$xephyrDisplay" & ( export DISPLAY=:"$xephyrDisplay" ; "$HOME"/core/installations/xclipsync/xclipsync & dbus-run-session startplasma-x11 2>/dev/null ) )
+            export -f _wsl_desktop-waitUp_wmctrl
+            export -f _wsl_desktop-waitDown_wmctrl
+            export -f _set_qt5ct
+            
+            #if [[ "$descriptiveSelf" != ""]]
+            #then
+                #export currentPlasmaSession="$HOME"/.ubtmp/plasmaSession-"$descriptiveSelf"
+            #else
+                #export currentPlasmaSession="$HOME"/.ubtmp/plasmaSession-"$sessionid"
+            #fi
+
+            #_set_qt5ct
+            #"$@"
+            
+            (
+                Xephyr -screen "$xephyrResolution" :"$xephyrDisplay" &#disown -h $!
+                disown
+                disown -a -h -r
+                disown -a -r
+                (
+
+                    export DISPLAY=:"$xephyrDisplay"
+                    export QT_QPA_PLATFORMTHEME=
+                    unset QT_QPA_PLATFORMTHEME
+                    export LANG="C"
+
+                    export DESKTOP_SESSION=plasma
+
+                    export $(dbus-launch)
+
+                    "$HOME"/core/installations/xclipsync/xclipsync &
+                    disown
+                    disown -a -h -r
+                    disown -a -r
+
+                    #_wsl_desktop_startup_plasmaWorkspaceEnv_write "$@"
+                    _wsl_desktop_startup_xdg_write "$@"
+                    #_wsl_desktop_startup_systemd_write "$@"
+
+                    ##dbus-run-session 
+                    exec startplasma-x11 > /dev/null 2>&1 &
+
+
+                    #sleep 0.1
+                    #_wsl_desktop-waitUp_wmctrl
+                    ##sleep 3
+
+                    #exec "$@" > /dev/null 2>&1 &
+
+                    echo '---------------------------------------------'
+                    wait
+                    echo '+++++++++++++++++++++++++++++++++++++++++++++'
+                    
+                    export LANG="C"
+                    
+                    #_wsl_desktop-waitDown_wmctrl ; currentStopJobs=$(jobs -p -r 2> /dev/null) ; [[ "$displayStopJobs" != "" ]] && kill $displayStopJobs > /dev/null 2>&1
+
+                )
+
+                wait
+            )
+            #_wsl_desktop-waitDown_wmctrl ; currentStopJobs=$(jobs -p -r 2> /dev/null) ; [[ "$displayStopJobs" != "" ]] && kill $displayStopJobs > /dev/null 2>&1
             return 0
             cd "$functionEntryPWD"
         fi
@@ -32315,16 +32530,15 @@ _set_msw_qt5ct() {
 #  ~/.bash_profile
 #  ~/.profile
 _set_qt5ct() {
-    if [[ "$DISPLAY" != ":0" ]]
+    if [[ "$DISPLAY" == ":0" ]]
     then
+        export QT_QPA_PLATFORMTHEME=qt5ct
+    else
         export QT_QPA_PLATFORMTHEME=
         unset QT_QPA_PLATFORMTHEME
     fi
     
     _write_wsl_qt5ct_conf "$@"
-
-
-    export QT_QPA_PLATFORMTHEME=qt5ct
 
     return 0
 }
@@ -41399,8 +41613,18 @@ _experiment() {
 
 
 _setup_install-permissions() {
+	local functionEntryPWD
+	functionEntryPWD="$PWD"
+	
 	_messagePlain_probe_cmd chmod 755 /home/root/.ssh/id_*.pub
 	_messagePlain_probe_cmd chmod 600 /home/root/.ssh/id_*
+
+	cd /home/root/.ubcore/ubiquitous_bash
+	git config --global --add safe.directory /home/root/.ubcore/ubiquitous_bash
+	_gitMad
+
+
+	cd "$functionEntryPWD"
 }
 
 _setup_install-restore() {

@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='2917812676'
+export ub_setScriptChecksum_contents='3699385930'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -1400,7 +1400,14 @@ _setup_ubiquitousBash_cygwin() {
 }
 
 
+_report_setup_ubcp() {
+	local currentCygdriveC_equivalent
+	currentCygdriveC_equivalent="$1"
+	[[ "$currentCygdriveC_equivalent" == "" ]] && currentCygdriveC_equivalent=$(cygpath -S | sed 's/\/Windows\/System32//g')
+	[[ "$1" == "/" ]] && currentCygdriveC_equivalent=$(echo "$PWD" | sed 's/\(\/cygdrive\/[a-zA-Z]*\).*/\1/')
 
+	find /bin/ /usr/bin/ /sbin/ /usr/sbin/ | tee "$currentCygdriveC_equivalent"/core/infrastructure/ubcp-binReport > /dev/null
+}
 
 
 _setup_ubcp_procedure() {
@@ -1474,6 +1481,8 @@ _setup_ubcp() {
 	
 	"$scriptAbsoluteLocation" _setup_ubcp_procedure "$1"
 	"$scriptAbsoluteLocation" _setup_ubiquitousBash_cygwin_procedure "$1"
+
+	"$scriptAbsoluteLocation" _report_setup_ubcp "$1"
 }
 
 
@@ -1689,7 +1698,7 @@ _mitigate-ubcp_rewrite_sequence() {
 	# https://serverfault.com/questions/193319/a-better-unix-find-with-parallel-processing
 	# https://stackoverflow.com/questions/11003418/calling-shell-functions-with-xargs
 	export -f "_mitigate-ubcp_rewrite_parallel"
-	find "$2" -type l -print0 | xargs -0 -x -s 4096 -L 12 -P $(nproc) bash -c '_mitigate-ubcp_rewrite_parallel "$@"' _
+	find "$2" -type l -print0 | xargs -0 -x -s 4096 -L 6 -P $(nproc) bash -c '_mitigate-ubcp_rewrite_parallel "$@"' _
 	#find "$2" -type l -print0 | xargs -0 -n 1 -P 4 -I {} bash -c '_mitigate-ubcp_rewrite_parallel "$@"' _ {}
 	#find "$2" -type l -print0 | xargs -0 -n 1 -P 4 -I {} bash -c '_mitigate-ubcp_rewrite_procedure "$@"' _ {}
 	
@@ -1698,6 +1707,17 @@ _mitigate-ubcp_rewrite_sequence() {
 
 _mitigate-ubcp_rewrite() {
 	"$scriptAbsoluteLocation" _mitigate-ubcp_rewrite_sequence "$@"
+
+	# CAUTION: This may not catch mitigate failure . The actual issue with 'getconf' was removal of the 'ARG_MAX' value , which was not caused by mitigate failure .
+	if [[ ! -e /usr/bin/getconf ]]
+	then
+		_messagePlain_bad 'missing: bad: /usr/bin/getconf'
+		echo 'Usually, this is a symlink, if missing, indicative of failed symlink mitigation due to xargs parameter length or parallelism failure.'
+		_messageFAIL
+		_stop 1
+		return 1
+	fi
+	return 0
 }
 
 
@@ -16865,7 +16885,7 @@ _createVMimage() {
 	
 	_messageNormal 'create: vm.img'
 	
-	export vmSize=26880
+	export vmSize=26572
 	_createRawImage
 	
 	
@@ -16955,10 +16975,11 @@ _createVMimage() {
 	#sudo -n parted --script "$vmImageFile" 'mkpart primary '"384"'MiB '"23582"'MiB'
 
 	# 25.95GiB-1MiB
-	#sudo -n parted --script "$vmImageFile" 'mkpart primary '"384"'MiB '"26571"'MiB'
+	sudo -n parted --script "$vmImageFile" 'mkpart primary '"384"'MiB '"26571"'MiB'
 
+	# Tested successfully.
 	# 26.25GiB-1MiB
-	sudo -n parted --script "$vmImageFile" 'mkpart primary '"384"'MiB '"26879"'MiB'
+	#sudo -n parted --script "$vmImageFile" 'mkpart primary '"384"'MiB '"26879"'MiB'
 	
 	
 	
@@ -18082,20 +18103,40 @@ DefaultTasksMax=24' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev
 
 
 	# Solely to provide more information to convert 'vm-live.iso' back to 'vm.img' offline from only a Live BD-ROM disc .
-	sudo -n mksquashfs "$safeTmp"/root002 "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
+	_messagePlain_nominal 'mksquashfs: root002: boot-copy , fstab-copy'
+	_messagePlain_probe_cmd df -h
+	if ! _messagePlain_probe_cmd sudo -n mksquashfs "$safeTmp"/root002 "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
+	then
+		_messageFAIL
+		_stop 1
+		return 1
+	fi
 	du -sh "$scriptLocal"/livefs/image/live/filesystem.squashfs
 	sudo -n chown -R "$USER":"$USER" "$safeTmp"/root002
 	export safeToDeleteGit="true"
 	_safeRMR "$safeTmp"/root002
+	if [[ -e "$safeTmp"/root002 ]]
+	then
+		_messageFAIL
+		_stop 1
+		return 1
+	fi
 
 	mkdir -p "$safeTmp"/root001
 	sudo -n mkdir -p "$safeTmp"/root001/home
 	#sudo -n cp -a "$globalVirtFS"/home "$safeTmp"/root001/
 	sudo -n mount --bind "$globalVirtFS"/home "$safeTmp"/root001/home
 	_messagePlain_probe_cmd mountpoint "$safeTmp"/root001/home
-	_messagePlain_probe_cmd ls -l "$safeTmp"/root001/home/user/core/
-	_messagePlain_probe_cmd du -sh "$safeTmp"/root001/home
-	sudo -n mksquashfs "$safeTmp"/root001 "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
+	_messagePlain_probe_cmd sudo -n ls -l "$safeTmp"/root001/home/user/core/
+	_messagePlain_probe_cmd sudo -n du -sh "$safeTmp"/root001/home
+	_messagePlain_nominal 'mksquashfs: root001: home'
+	_messagePlain_probe_cmd df -h
+	if ! _messagePlain_probe_cmd sudo -n mksquashfs "$safeTmp"/root001 "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e boot -e etc/fstab
+	then
+		_messageFAIL
+		_stop 1
+		return 1
+	fi
 	du -sh "$scriptLocal"/livefs/image/live/filesystem.squashfs
 	sudo -n umount "$safeTmp"/root001/home
 	if mountpoint "$safeTmp"/root001/home
@@ -18107,8 +18148,21 @@ DefaultTasksMax=24' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev
 	sudo -n chown -R "$USER":"$USER" "$safeTmp"/root001
 	export safeToDeleteGit="true"
 	_safeRMR "$safeTmp"/root001
+	if [[ -e "$safeTmp"/root001 ]]
+	then
+		_messageFAIL
+		_stop 1
+		return 1
+	fi
 
-	sudo -n mksquashfs "$globalVirtFS" "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e home -e boot -e etc/fstab
+	_messagePlain_nominal 'mksquashfs: globalVirtFS'
+	_messagePlain_probe_cmd df -h
+	if ! _messagePlain_probe_cmd sudo -n mksquashfs "$globalVirtFS" "$scriptLocal"/livefs/image/live/filesystem.squashfs -b 262144 -no-xattrs -noI -noX -comp lzo -Xalgorithm lzo1x_1 -e home -e boot -e etc/fstab
+	then
+		_messageFAIL
+		_stop 1
+		return 1
+	fi
 	du -sh "$scriptLocal"/livefs/image/live/filesystem.squashfs
 
 
@@ -39584,6 +39638,13 @@ _testarglength() {
 	then
 		# Typical Cygwin. Marginal result at best.
 		[[ "$testArgLength" -ge 32000 ]] && uname -a | grep -i 'cygwin' > /dev/null 2>&1 && _messagePASS && return 0
+		if _if_cygwin
+		then
+			# Unfortunately, as of 2023-09-07 , apparently Cygwin has removed the 'ARG_MAX' definition from the provided 'getconf' .
+			# Due to the narrower use case of Cygwin/MSW (as opposed to GNU/Linux) - not expecting to compile gEDA for Cygwin anytime soon - it will be more of a concern if other binaries in 'ubcp' cease to exist because newer versions of Cygwin packages upstream were failing to compile as a result. Hopefully, Cygwin itself has adequate testing to prevent release of such breakage.
+			#echo "$testArgLength"
+			return 0
+		fi
 		
 		_messageFAIL && _stop 1
 	fi

@@ -56,17 +56,17 @@ Section "Install"
   ;https://stackoverflow.com/questions/2565215/checking-if-the-application-is-running-in-nsis-before-uninstalling
   ;cmd /c for /f "tokens=1,2" %i in ('tasklist') do (if /i %i EQU bash.exe fsutil file createnew .\bashExe.bz 0) & del .\bashExe.bz
   Delete "$TEMP\extIface_bashExe.bzy"
-  !macro IsRunning
+  !macro IsRunningInstall
   Delete "$TEMP\extIface_bashExe.bzy"
   ExecWait "cmd /c for /f $\"tokens=1,2$\" %i in ('tasklist') do (if /i %i EQU bash.exe fsutil file createnew $TEMP\extIface_bashExe.bzy 0)"
-  IfFileExists $TEMP\extIface_bashExe.bzy 0 notRunning
+  IfFileExists $TEMP\extIface_bashExe.bzy 0 notRunningInstall
     ;we have atleast one main window active
     MessageBox MB_OK|MB_ICONEXCLAMATION "Please close  bash.exe  and retry." /SD IDOK
     Abort
-  notRunning:
+  notRunningInstall:
   !macroEnd
   
-  !insertmacro IsRunning
+  !insertmacro IsRunningInstall
 
 
 
@@ -334,7 +334,29 @@ function un.onInit
 functionEnd
  
 section "uninstall"
- 
+  
+  ;https://stackoverflow.com/questions/2565215/checking-if-the-application-is-running-in-nsis-before-uninstalling
+  ExecWait "TaskKill /IM bash.exe /F"
+
+  ;https://stackoverflow.com/questions/2565215/checking-if-the-application-is-running-in-nsis-before-uninstalling
+  ;cmd /c for /f "tokens=1,2" %i in ('tasklist') do (if /i %i EQU bash.exe fsutil file createnew .\bashExe.bz 0) & del .\bashExe.bz
+  Delete "$TEMP\extIface_bashExe.bzy"
+  !macro IsRunningUninstall
+  Delete "$TEMP\extIface_bashExe.bzy"
+  ExecWait "cmd /c for /f $\"tokens=1,2$\" %i in ('tasklist') do (if /i %i EQU bash.exe fsutil file createnew $TEMP\extIface_bashExe.bzy 0)"
+  IfFileExists $TEMP\extIface_bashExe.bzy 0 notRunningUninstall
+    ;we have atleast one main window active
+    MessageBox MB_OK|MB_ICONEXCLAMATION "Please close  bash.exe  and retry." /SD IDOK
+    Abort
+  notRunningUninstall:
+  !macroEnd
+  
+  !insertmacro IsRunningUninstall
+
+
+
+
+
 	# Remove Start Menu launcher
 	;delete "$SMPROGRAMS\${COMPANYNAME}\${APPNAME}.lnk"
 	# Try to remove the Start Menu folder - this will only happen if it is empty

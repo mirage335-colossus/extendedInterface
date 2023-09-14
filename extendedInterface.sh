@@ -1942,6 +1942,7 @@ then
 	if [[ "$tmpSelf" == "" ]]
 	then
 		export tmpWSL="$HOME"/.ubtmp
+		[[ "$realHome" != "" ]] && export tmpWSL="$realHome"/.ubtmp
 		[[ ! -e "$tmpWSL" ]] && mkdir -p "$tmpWSL"
 		
 		if [[ "$tmpWSL" != "" ]]
@@ -2176,7 +2177,12 @@ _prepare_abstract() {
 	else
 		if ! chown "$USER":"$USER" "$abstractfs_root" > /dev/null 2>&1
 		then
-			! /sbin/chown "$USER" "$abstractfs_root" && exit 1
+			if [[ -e /sbin/chown ]]
+			then
+				! /sbin/chown "$USER" "$abstractfs_root" && exit 1
+			else
+				! /usr/bin/chown "$USER" "$abstractfs_root" && exit 1
+			fi
 		fi
 	fi
 	
@@ -2196,7 +2202,12 @@ _prepare_abstract() {
 	else
 		if ! chown "$USER":"$USER" "$abstractfs_lock" > /dev/null 2>&1
 		then
-			! /sbin/chown "$USER" "$abstractfs_lock" && exit 1
+			if [[ -e /sbin/chown ]]
+			then
+				! /sbin/chown "$USER" "$abstractfs_lock" && exit 1
+			else
+				! /usr/bin/chown "$USER" "$abstractfs_lock" && exit 1
+			fi
 		fi
 	fi
 }

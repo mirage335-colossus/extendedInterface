@@ -179,6 +179,12 @@ Section "Install"
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableHardwareAssistedGPUScheduling\Hardware Accelerated GPU Scheduling - Disable.reg"
 
 
+
+  
+  ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\zSettings\updates-getLatest\Turn_ON_Get_latest_updates_as_soon_as_they_are_available.reg"
+
+
+
   CopyFiles "C:\core\infrastructure\extendedInterface\support\000-OS\MSW\blockWinP\blockWinP.exe" "$SMSTARTUP"
 
   ExpandEnvStrings $5 %COMSPEC%

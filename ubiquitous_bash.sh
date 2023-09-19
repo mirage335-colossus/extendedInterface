@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='2216598883'
+export ub_setScriptChecksum_contents='3569303902'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -17868,25 +17868,14 @@ prereqs)
 ;;
 esac
 
-if type dd > /dev/null 2>&1
+if type dd > /dev/null 2>&1 && type chroot > /dev/null 2>&1 && [ -e /root/bin/bash ] && [ -e /root/bin/sh ] && env -i HOME="/root" SHELL="/bin/bash" PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" USER="root" chroot /root /bin/bash -c 'type dd' > /dev/null 2>&1
 then
 	progressFeed() {
-		! dd of=/dev/null bs=1M count=1 && return 0
-
-		! dd of=/dev/null bs=1M count=9 && return 0
-		echo x1 10MB
-		
-		! dd of=/dev/null bs=1M count=90 && return 0
-		echo x1 100MB
-		
-		while dd of=/dev/null bs=1M count=100
-		do
-			echo "x1 100MB"
-		done
+		env -i HOME="/root" SHELL="/bin/bash" PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" USER="root" chroot /root dd of=/dev/null bs=1M status=progress
 	}
 
 	echo "_____ preload: /root/home -not core -not .nix -not .gcloud"
-	find /root/home -not \( -path \/home/\*/core\* -prune \) -not \( -path \/home/\*/.nix\* -prune \) -not \( -path \/home/\*/.gcloud\* -prune \) -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
+	find /root/home -not \( -path \/root/home/\*/core\* -prune \) -not \( -path \/root/home/\*/.nix\* -prune \) -not \( -path \/root/home/\*/.gcloud\* -prune \) -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
 	find /root/home/*/klipper -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
 	find /root/home/*/moonraker -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
 	find /root/home/*/moonraker-env -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
@@ -17934,7 +17923,7 @@ then
 	find /root/etc -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
 else
 	echo "_____ preload: /root/home -not core -not .nix -not .gcloud"
-	find /root/home -not \( -path \/home/\*/core\* -prune \) -not \( -path \/home/\*/.nix\* -prune \) -not \( -path \/home/\*/.gcloud\* -prune \) -type f -exec cat {} > /dev/null \;
+	find /root/home -not \( -path \/root/home/\*/core\* -prune \) -not \( -path \/root/home/\*/.nix\* -prune \) -not \( -path \/root/home/\*/.gcloud\* -prune \) -type f -exec cat {} > /dev/null \;
 	find /root/home/*/klipper -type f -exec cat {} > /dev/null \;
 	find /root/home/*/moonraker -type f -exec cat {} > /dev/null \;
 	find /root/home/*/moonraker-env -type f -exec cat {} > /dev/null \;

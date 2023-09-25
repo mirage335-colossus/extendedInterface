@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='680910625'
+export ub_setScriptChecksum_contents='3033878518'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -10223,6 +10223,9 @@ _getMost_debian11_install() {
 	
 	_getMost_backend_aptGetInstall p7zip
 	_getMost_backend_aptGetInstall p7zip-full
+
+	
+	_getMost_backend_aptGetInstall jp2a
 	
 	
 	
@@ -10622,10 +10625,18 @@ _getMost_debian11_install() {
 
 
 
-
+	_getMost_backend_aptGetInstall fldigi
 	
 	
 	_getMost_backend apt-get remove --autoremove -y plasma-discover
+
+
+	_getMost_backend_aptGetInstall tboot
+
+	_getMost_backend_aptGetInstall trousers
+	_getMost_backend_aptGetInstall tpm-tools
+	_getMost_backend_aptGetInstall trousers-dbg
+	
 	
 	
 	_getMost_debian11_special_late
@@ -11158,6 +11169,9 @@ _getMinimal_cloud() {
 	_getMost_backend_aptGetInstall nsis
 
 	
+	_getMost_backend_aptGetInstall jp2a
+
+	
 	_getMost_backend_aptGetInstall iputils-ping
 	
 	_getMost_backend_aptGetInstall btrfs-tools
@@ -11262,6 +11276,15 @@ _getMinimal_cloud() {
 	
 	
 	_getMost_backend apt-get remove --autoremove -y plasma-discover
+
+
+	
+	_getMost_backend_aptGetInstall tboot
+
+	_getMost_backend_aptGetInstall trousers
+	_getMost_backend_aptGetInstall tpm-tools
+	_getMost_backend_aptGetInstall trousers-dbg
+
 	
 	_getMost_backend apt-get -y clean
 	
@@ -15725,6 +15748,8 @@ _dropBootdisc() {
 	fi
 	sleep 0.3
 	
+	[[ -e "$HOME"/.config/plasma-workspace/env/profile.sh ]] && /bin/bash "$HOME"/.config/plasma-workspace/env/profile.sh
+
 	cd "$localPWD"
 	
 	"$@"
@@ -17896,6 +17921,23 @@ then
 	echo "_____ preload: /root/root"
 	find /root/root -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
 
+	
+	# CAUTION: DUBIOUS .
+	echo "_____ preload: /VBoxGuestAdditions"
+	find /root/VBoxGuestAdditions -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
+
+	# CAUTION: DUBIOUS .
+	echo "_____ preload: /opt"
+	find /root/opt -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
+	
+	# CAUTION: DUBIOUS .
+	echo "_____ preload: /run"
+	find /root/run -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
+	
+	# CAUTION: DUBIOUS .
+	echo "_____ preload: /srv"
+	find /root/srv -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
+
 
 	echo '_____ preload: /root/var'
 	find /root/var -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
@@ -17921,6 +17963,7 @@ then
 
 	echo '_____ preload: /root/etc'
 	find /root/etc -type f -exec dd if={} bs=16384 2>/dev/null \; | progressFeed
+# WARNING: May be untested.
 else
 	echo "_____ preload: /root/home -not core -not .nix -not .gcloud"
 	find /root/home -not \( -path \/root/home/\*/core\* -prune \) -not \( -path \/root/home/\*/.nix\* -prune \) -not \( -path \/root/home/\*/.gcloud\* -prune \) -type f -exec cat {} > /dev/null \;
@@ -17943,6 +17986,24 @@ else
 
 	echo "_____ preload: /root/root"
 	find /root/root -type f -exec cat {} > /dev/null \;
+
+
+
+	# CAUTION: DUBIOUS .
+	echo '_____ preload: /root/VBoxGuestAdditions'
+	find /root/VBoxGuestAdditions -type f -exec cat {} > /dev/null \;
+
+	# CAUTION: DUBIOUS .
+	echo '_____ preload: /root/opt'
+	find /root/opt -type f -exec cat {} > /dev/null \;
+
+	# CAUTION: DUBIOUS .
+	echo '_____ preload: /root/run'
+	find /root/run -type f -exec cat {} > /dev/null \;
+
+	# CAUTION: DUBIOUS .
+	echo '_____ preload: /root/srv'
+	find /root/srv -type f -exec cat {} > /dev/null \;
 
 
 	echo '_____ preload: /root/var'
@@ -17975,6 +18036,31 @@ CZXWXcRMTo8EmM8i4d
 }
 
 
+# https://master.dl.sourceforge.net/project/tboot/intel-txt-software-development-guide.pdf?viasf=1
+# 'Measured Launched Environment Developer-s Guide'
+# ...
+# https://wiki.gentoo.org/wiki/Trusted_Boot#TXT_Errors
+#  MAJOR - 'error will be preserved across a reboot (but not a hard poweroff).'
+#   'txt-parse_err'
+#  'Sometimes it'll hang. That usually means /boot/list.data doesn't reflect the current configuration - this will often happen after a configuration change.'
+# ...
+# https://fedoraproject.org/wiki/Tboot
+# 'last edited on 22 June 2012'
+#  As of 2023-09-23 .
+# 'module /2nd_gen_i5_i7_SINIT_51.BIN'
+# 'module /list.data'
+#  MAJOR - 'You may download all of the ACM modules into /boot and list them all as modules in your grub.conf. tboot will pick the right module for your platform.'
+# ...
+# https://sourceforge.net/p/tboot/mailman/tboot-devel/?page=1
+#  'when multiple SINITs is loaded, there is a chance that one (or more) of them will be overwritten by some TBOOT data structures that have hardcoded addresses'
+#   'Fri, 11 Mar 2022'
+#  'Being able to use e.g. the same Live CD on all pieces of hardware would be a huge win.'
+# ...
+# https://sourceforge.net/projects/tboot/files/
+#  'The location of SINIT Authenticated Code Module (ACM) files has been moved from this site to the following location: http://software.intel.com/en-us/articles/intel-trusted-execution-technology/'
+#  'The content, license, etc. of the ACMs has not changed.'
+#  'New ACMs and updates to existing ACMs will only be posted to the new site.'
+# ...
 # https://manpages.debian.org/testing/live-boot-doc/live-boot.7.en.html
 # https://github.com/bugra9/persistent
 # https://manpages.debian.org/testing/live-boot-doc/persistence.conf.5.en.html
@@ -18000,16 +18086,53 @@ menuentry "Live" {
     #linux /vmlinuz boot=live config debug=1 noeject nopersistence selinux=0 mem=3712M resume=PARTUUID=469457fc-293f-46ec-92da-27b5d0c36b17
     linux /vmlinuz boot=live config debug=1 noeject nopersistence selinux=0 mem=3712M resume=/dev/sda5
     initrd /initrd
+	
+    #linux /vmlinuz-lts boot=live config debug=1 noeject nopersistence selinux=0 mem=3712M resume=UUID=469457fc-293f-46ec-92da-27b5d0c36b17
+    #linux /vmlinuz-lts boot=live config debug=1 noeject nopersistence selinux=0 mem=3712M resume=PARTUUID=469457fc-293f-46ec-92da-27b5d0c36b17
+    linux /vmlinuz-lts boot=live config debug=1 noeject nopersistence selinux=0 mem=3712M resume=/dev/sda5
+    initrd /initrd-lts
 }
 
 menuentry "Live - ( persistence )" {
     linux /vmlinuz boot=live config debug=1 noeject persistence persistence-path=/persist persistence-label=bulk persistence-storage=directory selinux=0 mem=3712M resume=/dev/sda5
     initrd /initrd
+
+    #linux /vmlinuz-lts boot=live config debug=1 noeject persistence persistence-path=/persist persistence-label=bulk persistence-storage=directory selinux=0 mem=3712M resume=/dev/sda5
+    #initrd /initrd-lts
 }
 
 menuentry "Live - ( hint: ignored: resume disabled ) ( mem: all )" {
-    linux /vmlinuz boot=live config debug=1 noeject nopersistence selinux=0
+	linux /vmlinuz boot=live config debug=1 noeject nopersistence selinux=0
     initrd /initrd
+	
+	#linux /vmlinuz-lts boot=live config debug=1 noeject nopersistence selinux=0
+    #initrd /initrd-lts
+}
+
+menuentry "Live - ( hint: ignored: resume disabled ) ( mem: all ) - tboot" {
+	##linux /vmlinuz boot=live config debug=1 noeject nopersistence selinux=0
+    ##initrd /initrd
+	
+	#linux /vmlinuz-lts boot=live config debug=1 noeject nopersistence selinux=0
+    #initrd /initrd-lts
+
+    insmod multiboot2
+	multiboot2 /tboot.gz logging=serial,memory,vga
+	module2 /vmlinuz boot=live config debug=1 noeject nopersistence selinux=0
+	module2 /initrd
+	#module2 /vmlinuz-lts boot=live config debug=1 noeject nopersistence selinux=0
+	#module2 /initrd-lts
+	#module2 /SNB_IVB_SINIT_20190708_PW.bin
+	module2 /BDW_SINIT_20190708_1.3.2_PW.bin
+	#module2 /SKL_KBL_AML_SINIT_20211019_PRODUCTION_REL_NT_O1_1.10.0.bin
+	#module2 /CFL_SINIT_20221220_PRODUCTION_REL_NT_O1_1.10.1_signed.bin
+	#module2 /CML_S_SINIT_1_13_33_REL_NT_O1.PW_signed.bin
+	#module2 /CMLSTGP_SINIT_v1_14_46_20220819_REL_NT_O1.PW_signed.bin
+	#module2 /RKLS_SINIT_v1_14_46_20220819_REL_NT_O1.PW_signed.bin
+	#module2 /TGL_SINIT_v1_14_46_20220819_REL_NT_O1.PW_signed.bin
+	module2 /ADL_SINIT_v1_18_16_20230427_REL_NT_O1.PW_signed.bin
+
+	#module /list.data
 }
 
 CZXWXcRMTo8EmM8i4d
@@ -18103,15 +18226,18 @@ _live_sequence_in() {
 	# Consider reducing below 12 iteratively.
 	# Alternatively, this may need to increase. Cron jobs may otherwise fail with such error message as 'fork retry resource temporarily unavailable' .
 	# Uncertain whether 'DefaultTasksMax' limits only the number of systemd services started simuntaneously, or also the number of threads total prior to interactive shell.
-	sudo -n mv -n "$globalVirtFS"/etc/systemd/system.conf "$globalVirtFS"/etc/systemd/system.conf.orig
-	echo '[Manager]
-DefaultTasksMax=24' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev/null
+	# CAUTION: Apparently sets 'ulimit' unfavorably against cron .
+	#  Hopefully, preload will be sufficient to prevent excessive disc seeking issues .
+	#sudo -n mv -n "$globalVirtFS"/etc/systemd/system.conf "$globalVirtFS"/etc/systemd/system.conf.orig
+	#echo '[Manager]
+#DefaultTasksMax=24' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev/null
 
 
 	_chroot update-initramfs -u -k all
 
 
 
+	# WARNING: Now also provides essential information about intel-acm .
 	# Solely to provide more information to convert 'vm-live.iso' back to 'vm.img' offline from only a Live BD-ROM disc .
 	mkdir -p "$safeTmp"/root002
 	#sudo -n cp -a "$globalVirtFS"/boot "$safeTmp"/root002/boot-copy
@@ -18293,6 +18419,7 @@ DefaultTasksMax=24' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev
 	#currentFilesList=$(ls -A -1 "$globalVirtFS"/boot/vmlinuz-* | sort -r -V | tail -n+3 | head -n1)
 	
 	cp "${currentFilesList[0]}" "$scriptLocal"/livefs/image/vmlinuz
+	cp "${currentFilesList[1]}" "$scriptLocal"/livefs/image/vmlinuz-lts
 	
 	
 	#currentFilesList=( "$globalVirtFS"/boot/initrd.img-* )
@@ -18302,7 +18429,10 @@ DefaultTasksMax=24' | sudo -n tee "$globalVirtFS"/etc/systemd/system.conf > /dev
 	#currentFilesList=$(ls -A -1 "$globalVirtFS"/boot/initrd.img-* | sort -r -V | tail -n+3 | head -n1)
 	
 	cp "${currentFilesList[0]}" "$scriptLocal"/livefs/image/initrd
+	cp "${currentFilesList[1]}" "$scriptLocal"/livefs/image/initrd-lts
 	
+	cp "$globalVirtFS"/boot/tboot* "$scriptLocal"/livefs/image/
+	cp "$globalVirtFS"/boot/*.bin "$scriptLocal"/livefs/image/
 	
 	_live_grub_here > "$scriptLocal"/livefs/partial/grub.cfg
 	touch "$scriptLocal"/livefs/image/ROOT_TEXT
@@ -24189,12 +24319,12 @@ _wget_githubRelease_join-stdout() {
 		#fi
 		if [[ "$GH_TOKEN" == "" ]]
 		then
-			if _timeout 8 wget -4 -O - "${currentURL_array_reversed[0]}" > /dev/null
+			if _timeout 5 wget -4 -O - "${currentURL_array_reversed[0]}" > /dev/null
 			then
 				current_usable_ipv4="true"
 			fi
 		else
-			if _timeout 8 wget -4 -O - --header="Authorization: Bearer $GH_TOKEN" "${currentURL_array_reversed[0]}" > /dev/null
+			if _timeout 5 wget -4 -O - --header="Authorization: Bearer $GH_TOKEN" "${currentURL_array_reversed[0]}" > /dev/null
 			then
 				current_usable_ipv4="true"
 			fi
@@ -24204,12 +24334,12 @@ _wget_githubRelease_join-stdout() {
 		current_usable_ipv6="false"
 		if [[ "$GH_TOKEN" == "" ]]
 		then
-			if _timeout 8 wget -6 -O - "${currentURL_array_reversed[0]}" > /dev/null
+			if _timeout 5 wget -6 -O - "${currentURL_array_reversed[0]}" > /dev/null
 			then
 				current_usable_ipv6="true"
 			fi
 		else
-			if _timeout 8 wget -6 -O - --header="Authorization: Bearer $GH_TOKEN" "${currentURL_array_reversed[0]}" > /dev/null
+			if _timeout 5 wget -6 -O - --header="Authorization: Bearer $GH_TOKEN" "${currentURL_array_reversed[0]}" > /dev/null
 			then
 				current_usable_ipv6="true"
 			fi
@@ -24243,6 +24373,7 @@ _wget_githubRelease_join-stdout() {
 			then
 				if [[ "$GH_TOKEN" == "" ]]
 				then
+					#--file-allocation=falloc
 					_messagePlain_probe aria2c -x "$currentForceAxel" -o "$currentAxelTmpFileRelative".tmp1 --disable-ipv6=false "${currentURL_array_reversed[$currentIteration]}" >&2
 					aria2c --log=- --log-level=info -x "$currentForceAxel" -o "$currentAxelTmpFileRelative".tmp1 --disable-ipv6=false "${currentURL_array_reversed[$currentIteration]}" | grep --color -i -E "Name resolution|$" >&2 &
 					currentPID_1="$!"
@@ -24263,6 +24394,9 @@ _wget_githubRelease_join-stdout() {
 					currentPID_1="$!"
 				fi
 			fi
+
+			# ATTENTION: Staggered.
+			#sleep 8 > /dev/null 2>&1
 
 			# Download preferring from IPv4 address.
 			#--disable-ipv6
@@ -24292,21 +24426,41 @@ _wget_githubRelease_join-stdout() {
 			fi
 			
 
+			# ATTENTION: NOT staggered.
 			wait "$currentPID_1" >&2
 			#wait "$currentPID_2" >&2
 			wait >&2
 
+			wait "$currentPID_1" >&2
 			sleep 0.2 > /dev/null 2>&1
 			if [[ -e "$currentAxelTmpFile".tmp1 ]]
 			then
 				_messagePlain_probe dd if="$currentAxelTmpFile".tmp1 bs=1M status=progress' >> '"$currentAxelTmpFile" >&2
-				dd if="$currentAxelTmpFile".tmp1 bs=1M status=progress >> "$currentAxelTmpFile"
-				#cat "$currentAxelTmpFile".tmp1 >> "$currentAxelTmpFile"
+				
+				if [[ ! -e "$currentAxelTmpFile" ]]
+				then
+					mv -f "$currentAxelTmpFile".tmp1 "$currentAxelTmpFile"
+				else
+					# ATTENTION: Staggered.
+					#dd if="$currentAxelTmpFile".tmp1 bs=1M status=progress >> "$currentAxelTmpFile" &
+				
+					# ATTENTION: NOT staggered.
+					dd if="$currentAxelTmpFile".tmp1 bs=5M status=progress >> "$currentAxelTmpFile"
+				
+					#cat "$currentAxelTmpFile".tmp1 >> "$currentAxelTmpFile"
+				fi
 			fi
+
+			# ATTENTION: Staggered.
+			#sleep 10 > /dev/null 2>&1
+			##wait "$currentPID_2" >&2
+			#wait >&2
+
+			sleep 0.2 > /dev/null 2>&1
 			if [[ -e "$currentAxelTmpFile".tmp2 ]]
 			then
 				_messagePlain_probe dd if="$currentAxelTmpFile".tmp2 bs=1M status=progress' >> '"$currentAxelTmpFile" >&2
-				dd if="$currentAxelTmpFile".tmp2 bs=1M status=progress >> "$currentAxelTmpFile"
+				dd if="$currentAxelTmpFile".tmp2 bs=5M status=progress >> "$currentAxelTmpFile"
 				#cat "$currentAxelTmpFile".tmp2 >> "$currentAxelTmpFile"
 			fi
 
@@ -29492,14 +29646,18 @@ _kernelConfig_require-tradeoff-perform() {
 	_kernelConfig__bad-n__ CONFIG_SLAB_FREELIST_HARDENED
 	
 	# Uncertain.
-	_kernelConfig__bad-__n CONFIG_X86_SGX
-	_kernelConfig__bad-__n CONFIG_INTEL_TDX_GUEST
-	_kernelConfig__bad-__n CONFIG_X86_SGX_kVM
-	_kernelConfig__bad-__n CONFIG_KVM_AMD_SEV
+	_kernelConfig__bad-__n CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
 	
 	
 	_kernelConfig__bad-__n CONFIG_RANDOMIZE_BASE
 	_kernelConfig__bad-__n CONFIG_RANDOMIZE_MEMORY
+
+
+	# Special.
+	#_kernelConfig_warn-n__ CONFIG_HAVE_INTEL_TXT
+	_kernelConfig_warn-n__ CONFIG_INTEL_TXT
+	#_kernelConfig_warn-n__ CONFIG_IOMMU_DMA
+	#_kernelConfig_warn-n__ CONFIG_INTEL_IOMMU
 }
 
 # May become increasing tolerable and preferable for the vast majority of use cases.
@@ -29530,10 +29688,6 @@ _kernelConfig_require-tradeoff-harden() {
 	# May have been removed from upstream.
 	#_kernelConfig__bad-y__ CONFIG_X86_SMAP
 	
-	# Uncertain. VM guest should be tested.
-	_kernelConfig_warn-y__ AMD_MEM_ENCRYPT
-	_kernelConfig_warn-y__ CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
-	
 	_kernelConfig_warn-n__ CONFIG_X86_INTEL_TSX_MODE_ON
 	_kernelConfig_warn-n__ CONFIG_X86_INTEL_TSX_MODE_AUTO
 	_kernelConfig__bad-y__ CONFIG_X86_INTEL_TSX_MODE_OFF
@@ -29541,15 +29695,55 @@ _kernelConfig_require-tradeoff-harden() {
 	
 	_kernelConfig_warn-y__ CONFIG_SLAB_FREELIST_HARDENED
 	
-	# Uncertain.
-	_kernelConfig_warn-y__ CONFIG_X86_SGX
-	_kernelConfig_warn-y__ CONFIG_INTEL_TDX_GUEST
-	_kernelConfig_warn-y__ CONFIG_X86_SGX_kVM
-	_kernelConfig_warn-y__ CONFIG_KVM_AMD_SEV
-	
 	
 	_kernelConfig__bad-y__ CONFIG_RANDOMIZE_BASE
 	_kernelConfig__bad-y__ CONFIG_RANDOMIZE_MEMORY
+
+
+
+
+
+
+
+	# Special.
+	# VM guest should be tested.
+
+	# https://wiki.gentoo.org/wiki/Trusted_Boot
+	_kernelConfig__bad-y__ CONFIG_HAVE_INTEL_TXT
+	_kernelConfig__bad-y__ CONFIG_INTEL_TXT
+	_kernelConfig__bad-y__ CONFIG_IOMMU_DMA
+	_kernelConfig__bad-y__ CONFIG_INTEL_IOMMU
+
+
+	# https://www.qemu.org/docs/master/system/i386/sgx.html
+	#grep sgx /proc/cpuinfo
+	#dmesg | grep sgx
+	# Apparently normal: ' sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback to the NUMA node 0. '
+
+	# https://www.qemu.org/docs/master/system/i386/sgx.html
+	#qemuArgs+=(-cpu host,+sgx-provisionkey -machine accel=kvm -object memory-backend-epc,id=mem1,size=64M,prealloc=on -M sgx-epc.0.memdev=mem1,sgx-epc.0.node=0 )
+	#qemuArgs+=(-cpu host,-sgx-provisionkey,-sgx-tokenkey)
+
+	_kernelConfig__bad-y__ CONFIG_X86_SGX
+	_kernelConfig__bad-y__ CONFIG_X86_SGX_kVM
+	_kernelConfig__bad-y__ CONFIG_INTEL_TDX_GUEST
+	_kernelConfig__bad-y__ TDX_GUEST_DRIVER
+
+
+	# https://libvirt.org/kbase/launch_security_sev.html
+	#cat /sys/module/kvm_amd/parameters/sev
+	#dmesg | grep -i sev
+
+	# https://www.qemu.org/docs/master/system/i386/amd-memory-encryption.html
+	#qemuArgs+=(-machine accel=kvm,confidential-guest-support=sev0 -object sev-guest,id=sev0,cbitpos=47,reduced-phys-bits=1 )
+	# #,policy=0x5
+
+	# https://libvirt.org/kbase/launch_security_sev.html
+	_kernelConfig__bad-y__ CONFIG_KVM_AMD_SEV
+	_kernelConfig__bad-y__ AMD_MEM_ENCRYPT
+	_kernelConfig__bad-y__ CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
+
+
 }
 
 # ATTENTION: Override with 'ops.sh' or similar.
@@ -30247,6 +30441,7 @@ _kernelConfig_mobile() {
 }
 
 # NOTICE: Recommended! Most 'mobile' and 'panel' use cases will not benefit enough from power efficiency, reduced CPU cycles, or performance.
+# WARNING: Security should be favored by tradeoff, as this may be shipped as the 'default' kernel (eg. for 'ubdist') .
 # ATTENTION: As desired, ignore, or override with 'ops.sh' or similar.
 _kernelConfig_desktop() {
 	_messageNormal 'kernelConfig: desktop'
@@ -30283,6 +30478,14 @@ _kernelConfig_desktop() {
 	
 	
 	_kernelConfig_request_build
+}
+
+# Forces 'kernelConfig_tradeoff_perform == false' .
+_kernelConfig_server() {
+	_messageNormal 'kernelConfig: server'
+
+	export kernelConfig_tradeoff_perform='false'
+	_kernelConfig_desktop "$@"
 }
 
 
@@ -30339,12 +30542,14 @@ _importShortcuts() {
 }
 
 
+# CAUTION: Compatibility with shells other than bash is apparently important .
+# CAUTION: Compatibility with bash shell is important (eg. for '_dropBootdisc' ) .
 _setupUbiquitous_accessories_here-plasma_hook() {
 	cat << CZXWXcRMTo8EmM8i4d
 
 # sourced by /usr/lib/x86_64-linux-gnu/libexec/plasma-sourceenv.sh
 
-#LANG=C
+LANG=C
 export LANG
 
 CZXWXcRMTo8EmM8i4d
@@ -30629,7 +30834,8 @@ _setupUbiquitous_accessories_here-nixenv-bashrc() {
 #  Hidden or invalid characters in "\$PATH" would seem a sensible cause, but how grep would disregard this while bash would not, seems difficult to explain.
 #  Expected cause is interpretation by a shell other than bash .
 #   CAUTION: Compatability with shells other than bash may be important .
-if echo "$PATH" | grep 'nix-profile/bin' > /dev/null 2>&1 || [[ "\$PATH" == *"nix-profile/bin"* ]]
+# CAUTION: Compatibility with bash shell is important (eg. for '_dropBootdisc' ) .
+if echo "\$PATH" | grep 'nix-profile/bin' > /dev/null 2>&1 || [[ "\$PATH" == *"nix-profile/bin"* ]]
 then
 	PATH=\$(echo "\$PATH" | sed 's|:'"$HOME"'/.nix-profile/bin||g;s|'"$HOME"'/.nix-profile/bin:||g')
 	export PATH

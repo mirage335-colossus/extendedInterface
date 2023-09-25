@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='3586476131'
+export ub_setScriptChecksum_contents='587453278'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -5329,12 +5329,12 @@ _wget_githubRelease_join-stdout() {
 		#fi
 		if [[ "$GH_TOKEN" == "" ]]
 		then
-			if _timeout 8 wget -4 -O - "${currentURL_array_reversed[0]}" > /dev/null
+			if _timeout 5 wget -4 -O - "${currentURL_array_reversed[0]}" > /dev/null
 			then
 				current_usable_ipv4="true"
 			fi
 		else
-			if _timeout 8 wget -4 -O - --header="Authorization: Bearer $GH_TOKEN" "${currentURL_array_reversed[0]}" > /dev/null
+			if _timeout 5 wget -4 -O - --header="Authorization: Bearer $GH_TOKEN" "${currentURL_array_reversed[0]}" > /dev/null
 			then
 				current_usable_ipv4="true"
 			fi
@@ -5344,12 +5344,12 @@ _wget_githubRelease_join-stdout() {
 		current_usable_ipv6="false"
 		if [[ "$GH_TOKEN" == "" ]]
 		then
-			if _timeout 8 wget -6 -O - "${currentURL_array_reversed[0]}" > /dev/null
+			if _timeout 5 wget -6 -O - "${currentURL_array_reversed[0]}" > /dev/null
 			then
 				current_usable_ipv6="true"
 			fi
 		else
-			if _timeout 8 wget -6 -O - --header="Authorization: Bearer $GH_TOKEN" "${currentURL_array_reversed[0]}" > /dev/null
+			if _timeout 5 wget -6 -O - --header="Authorization: Bearer $GH_TOKEN" "${currentURL_array_reversed[0]}" > /dev/null
 			then
 				current_usable_ipv6="true"
 			fi
@@ -5383,6 +5383,7 @@ _wget_githubRelease_join-stdout() {
 			then
 				if [[ "$GH_TOKEN" == "" ]]
 				then
+					#--file-allocation=falloc
 					_messagePlain_probe aria2c -x "$currentForceAxel" -o "$currentAxelTmpFileRelative".tmp1 --disable-ipv6=false "${currentURL_array_reversed[$currentIteration]}" >&2
 					aria2c --log=- --log-level=info -x "$currentForceAxel" -o "$currentAxelTmpFileRelative".tmp1 --disable-ipv6=false "${currentURL_array_reversed[$currentIteration]}" | grep --color -i -E "Name resolution|$" >&2 &
 					currentPID_1="$!"
@@ -5403,6 +5404,9 @@ _wget_githubRelease_join-stdout() {
 					currentPID_1="$!"
 				fi
 			fi
+
+			# ATTENTION: Staggered.
+			#sleep 8 > /dev/null 2>&1
 
 			# Download preferring from IPv4 address.
 			#--disable-ipv6
@@ -5432,21 +5436,41 @@ _wget_githubRelease_join-stdout() {
 			fi
 			
 
+			# ATTENTION: NOT staggered.
 			wait "$currentPID_1" >&2
 			#wait "$currentPID_2" >&2
 			wait >&2
 
+			wait "$currentPID_1" >&2
 			sleep 0.2 > /dev/null 2>&1
 			if [[ -e "$currentAxelTmpFile".tmp1 ]]
 			then
 				_messagePlain_probe dd if="$currentAxelTmpFile".tmp1 bs=1M status=progress' >> '"$currentAxelTmpFile" >&2
-				dd if="$currentAxelTmpFile".tmp1 bs=1M status=progress >> "$currentAxelTmpFile"
-				#cat "$currentAxelTmpFile".tmp1 >> "$currentAxelTmpFile"
+				
+				if [[ ! -e "$currentAxelTmpFile" ]]
+				then
+					mv -f "$currentAxelTmpFile".tmp1 "$currentAxelTmpFile"
+				else
+					# ATTENTION: Staggered.
+					#dd if="$currentAxelTmpFile".tmp1 bs=1M status=progress >> "$currentAxelTmpFile" &
+				
+					# ATTENTION: NOT staggered.
+					dd if="$currentAxelTmpFile".tmp1 bs=5M status=progress >> "$currentAxelTmpFile"
+				
+					#cat "$currentAxelTmpFile".tmp1 >> "$currentAxelTmpFile"
+				fi
 			fi
+
+			# ATTENTION: Staggered.
+			#sleep 10 > /dev/null 2>&1
+			##wait "$currentPID_2" >&2
+			#wait >&2
+
+			sleep 0.2 > /dev/null 2>&1
 			if [[ -e "$currentAxelTmpFile".tmp2 ]]
 			then
 				_messagePlain_probe dd if="$currentAxelTmpFile".tmp2 bs=1M status=progress' >> '"$currentAxelTmpFile" >&2
-				dd if="$currentAxelTmpFile".tmp2 bs=1M status=progress >> "$currentAxelTmpFile"
+				dd if="$currentAxelTmpFile".tmp2 bs=5M status=progress >> "$currentAxelTmpFile"
 				#cat "$currentAxelTmpFile".tmp2 >> "$currentAxelTmpFile"
 			fi
 
@@ -5656,12 +5680,14 @@ _importShortcuts() {
 }
 
 
+# CAUTION: Compatibility with shells other than bash is apparently important .
+# CAUTION: Compatibility with bash shell is important (eg. for '_dropBootdisc' ) .
 _setupUbiquitous_accessories_here-plasma_hook() {
 	cat << CZXWXcRMTo8EmM8i4d
 
 # sourced by /usr/lib/x86_64-linux-gnu/libexec/plasma-sourceenv.sh
 
-#LANG=C
+LANG=C
 export LANG
 
 CZXWXcRMTo8EmM8i4d
@@ -5946,7 +5972,8 @@ _setupUbiquitous_accessories_here-nixenv-bashrc() {
 #  Hidden or invalid characters in "\$PATH" would seem a sensible cause, but how grep would disregard this while bash would not, seems difficult to explain.
 #  Expected cause is interpretation by a shell other than bash .
 #   CAUTION: Compatability with shells other than bash may be important .
-if echo "$PATH" | grep 'nix-profile/bin' > /dev/null 2>&1 || [[ "\$PATH" == *"nix-profile/bin"* ]]
+# CAUTION: Compatibility with bash shell is important (eg. for '_dropBootdisc' ) .
+if echo "\$PATH" | grep 'nix-profile/bin' > /dev/null 2>&1 || [[ "\$PATH" == *"nix-profile/bin"* ]]
 then
 	PATH=\$(echo "\$PATH" | sed 's|:'"$HOME"'/.nix-profile/bin||g;s|'"$HOME"'/.nix-profile/bin:||g')
 	export PATH

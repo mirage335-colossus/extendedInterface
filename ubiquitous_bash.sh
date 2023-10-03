@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='39847629'
+export ub_setScriptChecksum_contents='2550622708'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -10119,7 +10119,13 @@ _getMost_debian11_install() {
 	_getMost_backend_aptGetInstall vainfo
 	_getMost_backend_aptGetInstall mesa-va-drivers
 	_getMost_backend_aptGetInstall ffmpeg
+
+
 	_getMost_backend_aptGetInstall gstreamer1.0-tools
+
+	# ATTENTION: From analysis .
+	#_getMost_backend_aptGetInstall gstreamer1.0-plugins-good
+
 
 	_getMost_backend_aptGetInstall vdpau-driver-all
 	_getMost_backend_aptGetInstall va-driver-all
@@ -11557,7 +11563,11 @@ expect ":"
 send -- "q\r"
 expect "Do you accept and agree to be bound by the license terms?"
 send -- "yes\r"
+expect "Press Enter to continue..."
+send -- "\r"
 expect "Press Enter to exit..."
+send -- "\r"
+send -- "\r"
 send -- "\r"
 expect eof' > "$safeTmp"/veracrypt.exp
 	

@@ -209,13 +209,32 @@ Section "Install"
   File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\nircmd\*"
 
 
+  # OpenSSH-Win64-v9.2.2.0.msi
+  ;start /wait
+  SetOutPath "$TEMP\extendedInterface_bundle\openssh"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\openssh\*"
+  IfSilent +2
+  ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\openssh\OpenSSH-Win64-v9.2.2.0.msi"'
+  IfSilent 0 +2
+  ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\openssh\OpenSSH-Win64-v9.2.2.0.msi" /passive /norestart'
+  
+
+
+  ;start /wait
+  #SetOutPath "$TEMP\extendedInterface_bundle\qalculate"
+  #File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\qalculate\*"
+  #IfSilent +2
+  #ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\qalculate\qalculate-4.7.0-x64.msi"'
+  #IfSilent 0 +2
+  #ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\qalculate\qalculate-4.7.0-x64.msi" /passive /norestart'
+
   ;start /wait
   SetOutPath "$TEMP\extendedInterface_bundle\qalculate"
   File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\qalculate\*"
   IfSilent +2
-  ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\qalculate\qalculate-4.7.0-x64.msi"'
+  ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\qalculate\qalculate-4.8.1-x64.msi"'
   IfSilent 0 +2
-  ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\qalculate\qalculate-4.7.0-x64.msi" /passive /norestart'
+  ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\qalculate\qalculate-4.8.1-x64.msi" /passive /norestart'
 
 
   SetOutPath "$TEMP\extendedInterface_bundle\tigervnc"
@@ -252,7 +271,8 @@ Section "Install"
   ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\joystickgremlin\Joystick.Gremlin.R13.3.msi" /passive /norestart'
 
 
-
+  SetOutPath "C:\Program Files (x86)\H2ik\Joystick Gremlin"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\joystickgremlin\Joystick.Gremlin.R13.3.debug\*"
 
 
 

@@ -4758,6 +4758,8 @@ _test() {
 	
 	_tryExec "_test_gitBest"
 	
+	_tryExec "_test_fw"
+	_tryExec "_test_hosts"
 	
 	_tryExec "_testProxySSH"
 	

@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1902594296'
+export ub_setScriptChecksum_contents='1333955618'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -7935,6 +7935,392 @@ _find_route_ip() {
 
 
 
+
+
+
+
+
+_ufw_check_portALLOW_warn() {
+	! ufw status | grep -F ''"$1"'  ' | grep -i 'ALLOW' > /dev/null 2>&1 && _messagePlain_warn 'warn: missing: default: ''ufw allow '"$1"''
+	! ufw show added | grep -xF 'ufw allow '"$1"'' > /dev/null 2>&1 && _messagePlain_warn 'warn: missing: default: ''ufw allow '"$1"''
+	[[ "$?" == '0' ]] && return 1
+}
+_ufw_check_portALLOW_bad() {
+	! ufw status | grep -F ''"$1"'  ' | grep -i 'ALLOW' > /dev/null 2>&1 && _messagePlain_bad 'bad: missing: ''ufw allow '"$1"''
+	! ufw show added | grep -xF 'ufw allow '"$1"'' > /dev/null 2>&1 && _messagePlain_bad 'bad: missing: ''ufw allow '"$1"''
+	[[ "$?" == '0' ]] && return 1
+}
+_ufw_portEnable() {
+	_messagePlain_nominal '_ufw_portEnable: '"$1"
+	_ufw_check_portALLOW_warn "$1"
+	ufw allow "$1"
+	if ! _ufw_check_portALLOW_bad "$1"
+	then
+		_messagePlain_good 'enable (apparently): ufw: '"$1"
+		return 0
+	else
+		_messagePlain_request 'request: ufw allow '"$1"
+		return 1
+	fi
+}
+
+_ufw_check_portDENY_warn() {
+	! ufw status | grep -F ''"$1"'  ' | grep -i 'DENY' > /dev/null 2>&1 && _messagePlain_warn 'warn: missing: default: ''ufw deny '"$1"''
+	! ufw show added | grep -xF 'ufw deny '"$1"'' > /dev/null 2>&1 && _messagePlain_warn 'warn: missing: default: ''ufw deny '"$1"''
+	[[ "$?" == '0' ]] && return 1
+}
+_ufw_check_portDENY_bad() {
+	! ufw status | grep -F ''"$1"'  ' | grep -i 'DENY' > /dev/null 2>&1 && _messagePlain_bad 'bad: missing: ''ufw deny '"$1"''
+	! ufw show added | grep -xF 'ufw deny '"$1"'' > /dev/null 2>&1 && _messagePlain_bad 'bad: missing: ''ufw deny '"$1"''
+	[[ "$?" == '0' ]] && return 1
+}
+_ufw_portDisable() {
+	_messagePlain_nominal '_ufw_portDisable: '"$1"
+	_ufw_check_portDENY_warn "$1"
+	ufw deny "$1"
+	if ! _ufw_check_portDENY_bad "$1"
+	then
+		_messagePlain_good 'disable (apparently): ufw: '"$1"
+		return 0
+	else
+		_messagePlain_request 'request: ufw deny '"$1"
+		return 1
+	fi
+}
+
+_cfgFW_procedure() {
+	if [[ $(id -u) != 0 ]]
+	then
+		echo "This must be run as root!"
+		exit 1
+		exit
+	fi
+	
+	
+	_messagePlain_nominal '_cfgFW: '' ufw'
+	
+	if ! type -p ufw > /dev/null 2>&1
+	then
+		_messagePlain_bad 'fail: missing: ufw'
+		_messagePlain_request 'request: install: ufw'
+		return 1
+	fi
+	
+	echo '-'
+	ufw show added
+	echo '--'
+	ufw status verbose
+	echo '-'
+	
+	# STRONGLY DISCOURAGED - 'ufw --force reset' .
+	
+	# DHCP, DNS, SSH, HTTPS .
+	ufw allow 67
+	ufw allow 68
+	ufw allow 53
+    if [[ "$ub_cfgFW" == "desktop" ]] || [[ "$ub_cfgFW" == "terminal" ]]
+    then
+        true
+    else
+        ufw allow 22
+	    ufw allow 443
+    fi
+
+	if [[ "$ub_cfgFW" == "desktop" ]] || [[ "$ub_cfgFW" == "terminal" ]]
+    then
+        ufw default deny incoming
+    else
+        # Still disabled, but later.
+        #ufw default deny incoming
+        true
+    fi
+    if [[ "$ub_cfgFW" == "terminal" ]]
+    then
+        ufw default deny outgoing
+    else
+        ufw default allow outgoing
+    fi
+
+	echo y | ufw --force enable
+	
+    if [[ "$ub_cfgFW" == "desktop" ]] || [[ "$ub_cfgFW" == "terminal" ]]
+    then
+        _ufw_portDisable 67
+        _ufw_portDisable 68
+        _ufw_portDisable 53
+        _ufw_portDisable 22
+        #_ufw_portEnable 80
+        _ufw_portDisable 443
+        #_ufw_portEnable 9001
+        #_ufw_portEnable 9030
+        
+        # TODO: Allow typical offset ports/ranges.
+        _ufw_portDisable 8443
+        ufw deny 10001:49150/tcp
+        ufw deny 10001:49150/udp
+    else
+        _ufw_portEnable 67
+        _ufw_portEnable 68
+        _ufw_portEnable 53
+        _ufw_portEnable 22
+        #_ufw_portEnable 80
+        _ufw_portEnable 443
+        #_ufw_portEnable 9001
+        #_ufw_portEnable 9030
+        
+        # TODO: Allow typical offset ports/ranges.
+        _ufw_portEnable 8443
+        ufw allow 10001:49150/tcp
+        ufw deny 10001:49150/udp
+    fi
+	
+	
+	# Deny typical insecure service ports.
+	# Tor
+	_ufw_portDisable 9050
+	
+	# Tor Privoxy
+	_ufw_portDisable 8118
+	
+	# i2p
+	_ufw_portDisable 4444
+	_ufw_portDisable 4445
+	
+	# kconnectd
+	_ufw_portDisable 1716
+	
+	# pulseaudio
+	_ufw_portDisable 4713
+	
+	# HTTPD Default Installation
+	_ufw_portDisable 80
+	
+	
+    
+
+	sudo -n apt-get remove -y avahi-daemon
+	sudo -n apt-get remove -y avahi-utils
+	sudo -n apt-get remove -y ipp-usb
+
+	sudo -n apt-get remove -y kdeconnect
+
+
+	# avahi/mdns/etc
+	# CAUTION: Due to use of random high number port, avahi-daemon should be completely removed.
+	# https://github.com/lathiat/avahi/issues/254
+	# apt-get -y remove avahi-daemon
+	pgrep avahi > /dev/null 2>&1 && _messagePlain_bad 'bad: detected: avahi' && _messagePlain_request 'request: remove: avahi'
+	_ufw_portDisable 5353
+	
+	# ntp
+	_ufw_portDisable 123
+	
+	# netbios
+	_ufw_portDisable 137
+	_ufw_portDisable 138
+	_ufw_portDisable 139
+	
+	# Microsoft-DS (Active Directory, Windows Shares, SMB)
+	_ufw_portDisable 445
+	
+	
+	# SMTP
+	_ufw_portDisable 25
+	_ufw_portDisable 465
+	_ufw_portDisable 587
+	_ufw_portDisable 3535
+	
+	# IPP/CUPS
+	_ufw_portDisable 631
+	
+	# webmin
+	_ufw_portDisable 10000
+	
+	
+	
+	# Deny ports typically not used for intentional services.
+	ufw deny 2:1023/tcp
+	ufw deny 2:1023/udp
+	ufw deny 1024:10000/tcp
+	ufw deny 1024:10000/udp
+	ufw deny 49152:65535/tcp
+	ufw deny 49152:65535/udp
+	
+	
+	! ufw status verbose | grep '^Default' | grep -F 'deny (incoming)' > /dev/null 2>&1 && messagePlain_warn 'warn: missing: default: ''ufw default deny incoming'
+	ufw default deny incoming
+	if ! ufw status verbose | grep '^Default' | grep -F 'deny (incoming)' > /dev/null 2>&1
+	then
+		messagePlain_bad 'bad: missing: default: ''ufw default deny incoming'
+	else
+		_messagePlain_good 'deny (apparently): ufw: ''incoming'
+	fi
+	
+	# CAUTION: Virtual Machines of various types - especially Xen, Docker - have been known to bypass IPTables and UFW firewall rules, either by adding new rules, or through networking topologies which bypass such rules.
+	# WARNING: 'If you are running Docker, by default Docker directly manipulates iptables. Any UFW rules that you specify do not apply to Docker containers.'
+	# https://www.linode.com/docs/security/firewalls/configure-firewall-with-ufw/
+	# https://www.techrepublic.com/article/how-to-fix-the-docker-and-ufw-security-flaw/
+	# https://stackoverflow.com/questions/38592003/why-does-using-docker-opts-iptables-false-break-the-dns-discovery-for-docker/38593533
+	# https://serverfault.com/questions/357268/ufw-portforwarding-to-virtualbox-guest
+	# https://mike632t.wordpress.com/2015/04/06/configure-ufw-to-work-with-bridged-network-interfaces-using-taptun/
+	# https://docs.docker.com/network/none/
+	#ufw allow out dns
+	#ufw allow ssh
+	#ufw allow https
+	#ufw default deny outgoing
+	#ufw default deny incoming
+	
+	ufw status verbose
+	
+	return 0
+}
+
+_cfgFW-desktop() {
+    _messageNormal 'init: _cfgFW-desktop'
+
+    export ub_cfgFW="desktop"
+    sudo -n --preserve-env=ub_cfgFW "$scriptAbsoluteLocation" _cfgFW_procedure "$@"
+}
+
+_cfgFW-terminal_prog() {
+    #_messageNormal 'init: _cfgFW-terminal_prog'
+    true
+}
+_cfgFW-terminal() {
+    _messageNormal 'init: _cfgFW-terminal'
+    export ub_cfgFW="terminal"
+    
+    #_start
+    _writeFW_ip-github-port
+    #_writeFW_ip-google-port
+    _writeFW_ip-googleDNS-port
+    _writeFW_ip-cloudfareDNS-port
+
+    sudo -n --preserve-env=ub_cfgFW "$scriptAbsoluteLocation" _cfgFW_procedure "$@"
+
+    _messageNormal '_cfgFW-terminal: _cfgFW-github'
+    sudo -n xargs -r -L 1 "$scriptAbsoluteLocation" _messagePlain_probe_cmd ufw allow out from any to < <(cat /ip-github-port.txt)
+
+    #_messageNormal '_cfgFW-terminal: allow'
+    #_messagePlain_probe 'probe: ufw allow to   Google'
+    #sudo -n xargs -r -L 1 "$scriptAbsoluteLocation" _messagePlain_probe_cmd ufw allow out from any to < <(cat /ip-google-port.txt)
+
+    _messagePlain_probe 'probe: ufw allow to   DNS'
+    sudo -n xargs -r -L 1 "$scriptAbsoluteLocation" _messagePlain_probe_cmd ufw allow out from any to < <(cat /ip-googleDNS-port.txt)
+    sudo -n xargs -r -L 1 "$scriptAbsoluteLocation" _messagePlain_probe_cmd ufw allow out from any to < <(cat /ip-cloudfareDNS-port.txt)
+
+    _messageNormal '_cfgFW-terminal: resolv'
+    _ip-googleDNS | sed -e 's/^/nameserver /g' | sudo -n tee /etc/resolv.conf > /dev/null
+
+    _cfgFW-terminal_prog "$@"
+
+    _messageNormal '_cfgFW-terminal: status'
+    sudo -n ufw status verbose
+    sudo -n ufw reload
+
+    #_stop
+}
+
+
+_writeFW_ip-github-port() {
+    [[ ! $(sudo -n wc -c "$1"/ip-github-port.txt 2>/dev/null | cut -f1 -d\  | tr -dc '0-9') -gt 2 ]] && "$scriptAbsoluteLocation" _ip-github | sed 's/$/ port 22,443 proto tcp/g' | sudo -n tee "$1"/ip-github-port.txt > /dev/null
+}
+_writeFW_ip-google-port() {
+    [[ ! $(sudo -n wc -c "$1"/ip-google-port.txt 2>/dev/null | cut -f1 -d\  | tr -dc '0-9') -gt 2 ]] && "$scriptAbsoluteLocation" _ip-google | sed 's/$/ port 443/g' | sudo -n tee "$1"/ip-google-port.txt > /dev/null
+}
+_writeFW_ip-googleDNS-port() {
+    [[ ! $(sudo -n wc -c "$1"/ip-googleDNS-port.txt 2>/dev/null | cut -f1 -d\  | tr -dc '0-9') -gt 2 ]] && "$scriptAbsoluteLocation" _ip-googleDNS | sed 's/$/ port 53/g' | sudo -n tee "$1"/ip-googleDNS-port.txt > /dev/null
+}
+_writeFW_ip-cloudfareDNS-port() {
+    [[ ! $(sudo -n wc -c "$1"/ip-cloudfareDNS-port.txt 2>/dev/null | cut -f1 -d\  | tr -dc '0-9') -gt 2 ]] && "$scriptAbsoluteLocation" _ip-cloudfareDNS | sed 's/$/ port 53/g' | sudo -n tee "$1"/ip-cloudfareDNS-port.txt > /dev/null
+}
+
+
+
+_setup_fw() {
+    _test_fw
+}
+
+_test_fw() {
+    # Not incurring as a dependency... for now.
+    return 0
+    
+    _if_cygwin && return 0
+
+    _getDep ufw
+    #_getDep gufw
+
+    _getDep xargs
+}
+
+
+
+
+
+# WARNING: May be untested.
+_ip-githubDotCOM() {
+    # ATTRIBUTION: ChatGPT4 2023-10-08 .
+    # Fetch IP addresses from GitHub's meta API
+    if [[ "$GH_TOKEN" != "" ]]
+    then
+        curl -H "Authorization: token ${GH_TOKEN}" -s "https://api.github.com/meta" | jq -r '.git[], .hooks[], .web[], .api[], .actions[]' | tr -dc 'a-zA-Z0-9\:\/\.\n' 
+    else
+        curl -s "https://api.github.com/meta" | jq -r '.git[], .hooks[], .web[], .api[], .actions[]' | tr -dc 'a-zA-Z0-9\:\/\.\n'
+    fi
+}
+_ip-githubassetsDotCOM() {
+    # ATTRIBUTION: ChatGPT4 2023-10-08 .
+    dig github.githubassets.com A +short | tr -dc 'a-zA-Z0-9\:\/\.\n'
+    dig github.githubassets.com AAAA +short | tr -dc 'a-zA-Z0-9\:\/\.\n'
+}
+_ip-github() {
+    _ip-githubDotCOM
+    _ip-githubassetsDotCOM
+}
+
+_ip-google() {
+    dig google.com A +short | tr -dc 'a-zA-Z0-9\:\/\.\n'
+    dig google.com AAAA +short | tr -dc 'a-zA-Z0-9\:\/\.\n'
+}
+
+_ip-googleDNS() {
+    # https://developers.google.com/speed/public-dns/docs/using
+    echo '8.8.8.8'
+    echo '8.8.4.4'
+    echo '2001:4860:4860::8888'
+    echo '2001:4860:4860:0:0:0:0:8888'
+    echo '2001:4860:4860::8844'
+    echo '2001:4860:4860:0:0:0:0:8844'
+}
+
+_ip-cloudfareDNS() {
+    # https://www.cloudflare.com/learning/dns/dns-records/dns-aaaa-record/
+    echo '1.1.1.1'
+    echo '1.0.0.1'
+    echo '2606:4700:4700::1111'
+    echo '2606:4700:4700::1001'
+}
+
+
+
+
+_setup_hosts() {
+    _test_hosts
+}
+
+_test_hosts() {
+    _test_fw
+    
+    # Not incurring as a dependency... for now.
+    return 0
+    
+    _if_cygwin && return 0
+
+    _getDep dig
+}
+
+
+
 #clog
 
 
@@ -10055,6 +10441,9 @@ _getMost_debian11_install() {
 	
 	_getMost_backend_aptGetInstall iperf3
 	
+	_getMost_backend_aptGetInstall ufw
+	_getMost_backend_aptGetInstall gufw
+	
 	#_getMost_backend_aptGetInstall synergy quicksynergy
 	
 	_getMost_backend_aptGetInstall vim
@@ -10305,6 +10694,10 @@ _getMost_debian11_install() {
 	#sudo -n cp "$scriptAbsoluteLocation" "$globalVirtFS"/ubtest.sh
 	#_getMost_backend /ubtest.sh _test
 	
+
+	_getMost_backend_aptGetInstall dnsutils
+	_getMost_backend_aptGetInstall bind9-dnsutils
+
 	
 	_getMost_backend_aptGetInstall live-boot
 	_getMost_backend_aptGetInstall pigz
@@ -10620,6 +11013,8 @@ _getMost_debian11_install() {
 	_getMost_backend_aptGetInstall freecad
 	
 	
+	_getMost_backend_aptGetInstall w3m
+
 
 	_getMost_backend_aptGetInstall xclip
 
@@ -10635,6 +11030,7 @@ _getMost_debian11_install() {
 
 
 	_getMost_backend_aptGetInstall fldigi
+	_getMost_backend_aptGetInstall psk31lx
 	
 	
 	_getMost_backend apt-get remove --autoremove -y plasma-discover
@@ -10999,6 +11395,9 @@ _getMinimal_cloud() {
 	_getMost_backend_aptGetInstall linux-image-amd64
 	
 	_getMost_backend_aptGetInstall pigz
+
+	_getMost_backend_aptGetInstall dnsutils
+	_getMost_backend_aptGetInstall bind9-dnsutils
 	
 	_getMost_backend_aptGetInstall qalc
 	
@@ -11018,6 +11417,20 @@ _getMinimal_cloud() {
 	_getMost_backend_aptGetInstall bison
 	_getMost_backend_aptGetInstall libelf-dev
 	_getMost_backend_aptGetInstall elfutils
+	_getMost_backend_aptGetInstall flex
+	_getMost_backend_aptGetInstall libncurses-dev
+	_getMost_backend_aptGetInstall autoconf
+	_getMost_backend_aptGetInstall libudev-dev
+
+	_getMost_backend_aptGetInstall dwarves
+	_getMost_backend_aptGetInstall pahole
+
+	_getMost_backend_aptGetInstall cmake
+	
+	_getMost_backend_aptGetInstall pkg-config
+	
+	_getMost_backend_aptGetInstall bsdutils
+	_getMost_backend_aptGetInstall findutils
 	
 	_getMost_backend_aptGetInstall patch
 	
@@ -21024,7 +21437,9 @@ _write_msw_WSLENV() {
     _write_msw_discreteGPU
     #setx MESA_D3D12_DEFAULT_ADAPTER_NAME NVIDIA /m
 
-    setx WSLENV LANG:QT_QPA_PLATFORMTHEME:MESA_D3D12_DEFAULT_ADAPTER_NAME /m
+    #setx WSLENV LANG:QT_QPA_PLATFORMTHEME:MESA_D3D12_DEFAULT_ADAPTER_NAME /m
+
+    setx WSLENV LANG:QT_QPA_PLATFORMTHEME:MESA_D3D12_DEFAULT_ADAPTER_NAME:GH_TOKEN /m
 }
 
 
@@ -33355,7 +33770,12 @@ _set_msw_qt5ct() {
     [[ "$QT_QPA_PLATFORMTHEME" != "qt5ct" ]] && export QT_QPA_PLATFORMTHEME=qt5ct
     if [[ "$WSLENV" != "QT_QPA_PLATFORMTHEME" ]] && [[ "$WSLENV" != "QT_QPA_PLATFORMTHEME"* ]] && [[ "$WSLENV" != *"QT_QPA_PLATFORMTHEME" ]] && [[ "$WSLENV" != *"QT_QPA_PLATFORMTHEME"* ]]
     then
-        export WSLENV="$WSLENV:QT_QPA_PLATFORMTHEME"
+        if [[ "$WSLENV" == "" ]]
+        then
+            export WSLENV="QT_QPA_PLATFORMTHEME"
+        else
+            export WSLENV="$WSLENV:QT_QPA_PLATFORMTHEME"
+        fi
     fi
     return 0
 }
@@ -33388,7 +33808,12 @@ _set_msw_lang() {
     [[ "$LANG" != "C" ]] && export LANG=C
     if [[ "$WSLENV" != "LANG" ]] && [[ "$WSLENV" != "LANG"* ]] && [[ "$WSLENV" != *"LANG" ]] && [[ "$WSLENV" != *"LANG"* ]]
     then
-        export WSLENV="$WSLENV:LANG"
+        if [[ "$WSLENV" == "" ]]
+        then
+            export WSLENV="LANG"
+        else
+            export WSLENV="$WSLENV:LANG"
+        fi
     fi
     return 0
 }
@@ -33406,12 +33831,27 @@ _set_discreteGPU-forWSL() {
     glxinfo -B | grep -i intel > /dev/null 2>&1 && export MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA
 }
 
+_set_msw_ghToken() {
+    if [[ "$WSLENV" != "GH_TOKEN" ]] && [[ "$WSLENV" != "GH_TOKEN"* ]] && [[ "$WSLENV" != *"GH_TOKEN" ]] && [[ "$WSLENV" != *"GH_TOKEN"* ]]
+    then
+        if [[ "$WSLENV" == "" ]]
+        then
+            export WSLENV="GH_TOKEN"
+        else
+            export WSLENV="$WSLENV:GH_TOKEN"
+        fi
+    fi
+    return 0
+}
+
 
 _set_msw_wsl() {
     ! _if_cygwin && return 1
 
     _set_msw_lang
     _set_msw_qt5ct
+
+    _set_msw_ghToken
 
     return 0
 }
@@ -41728,6 +42168,8 @@ _test() {
 	
 	_tryExec "_test_gitBest"
 	
+	_tryExec "_test_fw"
+	_tryExec "_test_hosts"
 	
 	_tryExec "_testProxySSH"
 	
@@ -43599,6 +44041,7 @@ _init_deps() {
 	export enUb_os_x11=""
 	export enUb_proxy=""
 	export enUb_proxy_special=""
+	export enUb_fw=""
 	export enUb_clog=""
 	export enUb_x11=""
 	export enUb_blockchain=""
@@ -43759,6 +44202,10 @@ _deps_proxy() {
 _deps_proxy_special() {
 	_deps_proxy
 	export enUb_proxy_special="true"
+}
+
+_deps_fw() {
+	export enUb_fw="true"
 }
 
 _deps_clog() {
@@ -44475,6 +44922,8 @@ _compile_bash_deps() {
 	if [[ "$1" == "ubcore" ]]
 	then
 		_deps_notLean
+
+		_deps_fw
 		
 		_deps_git
 		_deps_bup
@@ -44521,6 +44970,8 @@ _compile_bash_deps() {
 		_deps_os_x11
 		_deps_proxy
 		_deps_proxy_special
+
+		_deps_fw
 		
 		_deps_clog
 		
@@ -44690,6 +45141,8 @@ _compile_bash_deps() {
 		
 		#_deps_proxy
 		#_deps_proxy_special
+
+		_deps_fw
 		
 		# WARNING: Linux *kernel* admin assistance *only*. NOT any other UNIX like features.
 		# WARNING: Beware Linux shortcut specific dependency programs must not be required, or will break other operating systems!
@@ -44783,6 +45236,8 @@ _compile_bash_deps() {
 		
 		#_deps_proxy
 		#_deps_proxy_special
+
+		_deps_fw
 		
 		# WARNING: Linux *kernel* admin assistance *only*. NOT any other UNIX like features.
 		# WARNING: Beware Linux shortcut specific dependency programs must not be required, or will break other operating systems!
@@ -44876,6 +45331,8 @@ _compile_bash_deps() {
 		
 		_deps_proxy
 		_deps_proxy_special
+
+		_deps_fw
 		
 		_deps_clog
 		
@@ -45007,6 +45464,9 @@ _compile_bash_utilities() {
 	
 	[[ "$enUb_proxy" == "true" ]] && includeScriptList+=( "generic/net/proxy/proxyrouter"/here_proxyrouter.sh )
 	[[ "$enUb_proxy" == "true" ]] && includeScriptList+=( "generic/net/proxy/proxyrouter"/proxyrouter.sh )
+	
+	[[ "$enUb_fw" == "true" ]] && includeScriptList+=( "generic/net/fw"/fw.sh )
+	[[ "$enUb_fw" == "true" ]] && includeScriptList+=( "generic/net/fw"/hosts.sh )
 	
 	[[ "$enUb_clog" == "true" ]] && includeScriptList+=( "generic/net/clog"/clog.sh )
 	

@@ -232,7 +232,9 @@ Various short sound clips '_ref/sound_clips/_thirdparty/' .
 
 # Copyright
 
-All content in this folder not owned by other authors is intended to be public domain. Other copyright notices may be provided as templates. See license.txt for details.
+All content in this folder not owned by other authors, and also not under the '_lib/coreoracle' or '_lib/coreoracle-msw' subdirectories, is intended to be public domain. Other copyright notices may be provided as templates. See license.txt for details.
+
+For the license applied to coreoracle code, for details, see both of whichever exists of '_lib/coreoracle/license.txt' and '_lib/coreoracle-msw/license.txt' . Essentially, a GPLv3 license is applied, with strictly limited exceptions available.
 
 
 # Reference

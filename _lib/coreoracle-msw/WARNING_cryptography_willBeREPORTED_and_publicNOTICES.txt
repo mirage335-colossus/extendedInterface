@@ -1,0 +1,88 @@
+
+WARNING
+
+Any CONTRIBUTIONS to a PUBLISHED CRYPTOGRAPHY project WILL be REPORTED to extent required for appropriate notices and will if conclusively reasonably possible be made public. DUE DILIGENCE will prefer to err on the side of ABUNDANT CAUTION towards compliance with encryption export regulations.
+
+
+
+========================================
+to: crypt@bis.doc.gov, enc@nsa.gov
+from: publicmirage335@gmail.com
+subject: EAR 742.15(b) and 734.3(b)(3)
+Project: coreoracle
+Sent: 2022-02-26
+SUBMISSION TYPE: EAR 742.15(b) and 734.3(b)(3)
+SUBMITTED BY: Matthew Robert Hines (aka. "mirage335")
+SUBMITTED FOR: Matthew Robert Hines (aka. "mirage335") (as individual)
+POINT OF CONTACT: Matthew Robert Hines (aka. "mirage335")
+TELEPHONE: 1-301-660-6414
+FAX: Not Available
+MANUFACTURER(S): Matthew Robert Hines (aka. "mirage335") (as individual)
+PRODUCT NAME/MODEL #: coreoracle
+ECCN: 5D002
+INTERNET LOCATION(S): https://github.com/mirage335/coreoracle
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_Constants_
+SUBMISSION TYPE: EAR 742.15(b) and 734.3(b)(3)
+ECCN: 5D002
+
+
+_Additional Statement_
+May not (or may) be expected to implement any cryptography (eg. ciphers, ECB/CBC/XTS modes), may only call, in the same manner as would a user by dragging-and-dropping text edited files onto, or by 'double-clicking', an icon, in a graphical user interface, entirely separate programs (eg. TrueCrypt/VeraCrypt, GPG, OpenSSL binaries). Functionality is reasonably expected reasonably possible for a human to perform without compiling software, by completing steps described by an entirely human readable document of less complexity than a usual novel. Padding of random, date, incremental, or length, may or may not be among these steps. Whether such could reasonably be considered itself non-standard encryption software may not be obvious, such notice(s) as given here may or may not in fact be required, offered only to better guarantee compliance with any possible necessity, and not to suggest any expectation as to whether such notice was actually necessary.
+
+
+
+_Reference_
+https://www.ecfr.gov/current/title-15/subtitle-B/chapter-VII/subchapter-C
+
+https://en.wikipedia.org/wiki/Export_of_cryptography_from_the_United_States
+
+https://www.linuxfoundation.org/tools/understanding-us-export-controls-with-open-source-projects/
+	'copies of these email notices publicly available for viewing'
+
+https://www.linuxfoundation.org/export/
+	'notifications have been delivered to crypt@bis.doc.gov and enc@nsa.gov as of the dates set forth below'
+	'========================================'
+	'SUBMISSION TYPE: EAR 742.15(b) and 734.3(b)(3)'
+	'SUBMITTED BY:' <RepresentativeOfOrganization>
+	'SUBMITTED FOR:' <OrganizationNameLLC>
+	'POINT OF CONTACT:' <RepresentativeOfOrganization>
+	'TELEPHONE:' <phoneNumber>
+	'FAX:' <phoneNumber>
+	'MANUFACTURER(S):' <OrganizationNameLLC>
+	'PRODUCT NAME/MODEL #:' <projectName>
+	'ECCN: 5D002'
+	'INTERNET LOCATION(S):' <https://www.example.com/; https://www.example.com/>
+
+https://www.ecfr.gov/current/title-15/subtitle-B/chapter-VII/subchapter-C/part-742/section-742.15#p-742.15(b)(2)
+	'crypt@bis.doc.gov' 'and to' 'enc@nsa.gov'
+
+https://www.ecfr.gov/current/title-15/subtitle-B/chapter-VII/subchapter-C/part-734/section-734.3
+	'Are published, as described in § 734.7;'
+		https://www.ecfr.gov/current/title-15/subtitle-B/chapter-VII/subchapter-C/part-734/section-734.7
+			'encryption' 'object code' 'source code' 'meets the criteria specified in § 742.15(b)'
+				https://www.ecfr.gov/current/title-15/subtitle-B/chapter-VII/subchapter-C/part-742/section-742.15#p-742.15(b)(2)
+
+
+https://www.govinfo.gov/content/pkg/CFR-2009-title15-vol2/xml/CFR-2009-title15-vol2-subtitleB-chapVII-subchapC.xml
+	'reasonable'
+	'willful'
+	'great weight'
+
+
+

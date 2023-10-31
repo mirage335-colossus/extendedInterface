@@ -1,3 +1,55 @@
+
+_openssl_seed-cygwin() {
+	python3 <<< '
+import string
+import os
+from os import urandom
+chars = string.ascii_letters + string.digits
+print("".join(chars[c % len(chars)] for c in urandom(16)))
+' | tr -dc 'a-zA-Z0-9'
+	python3 <<< 'import secrets
+import string
+alphabet = string.ascii_letters + string.digits
+print("".join(secrets.choice(alphabet) for i in range(16)))' | tr -dc 'a-zA-Z0-9'
+	python3 <<< '
+import string
+import os
+from os import urandom
+chars = string.ascii_letters + string.digits
+print("".join(chars[c % len(chars)] for c in urandom(16)))
+' | tr -dc 'a-zA-Z0-9'
+}
+
+_openssl_seed-linux() {
+	cat /dev/random | xxd -p | tr -d '\n' | head -c 32
+	cat /dev/urandom | xxd -p | tr -d '\n' | head -c 16
+}
+
+_openssl_seed-nix() {
+	cat /dev/random | xxd -p | tr -d '\n' | head -c 16
+	cat /dev/urandom | xxd -p | tr -d '\n' | head -c 32
+}
+
+
+
+_openssl_seed() {
+	# https://stackoverflow.com/questions/3854692/generate-password-in-python
+	# https://docs.python.org/3/library/os.html#os.urandom
+	if _if_cygwin
+	then
+		_openssl_seed-cygwin
+		return
+	elif uname -a 2>/dev/null | grep 'Linux' > /dev/null 2>&1
+	then
+		_openssl_seed-linux
+		return
+	else
+		_openssl_seed-nix
+		return
+	fi
+}
+
+
 _vectors_openssl_encrypt_procedure() {
 	echo 'test' > "$safeTmp"/testPlaintext
 	[[ $(head -c 48 "$safeTmp"/testPlaintext | xxd -p | tr -d '\n') != '746573740a' ]] && echo 'openssl: mismatch: testPlaintext' && _stop 1
@@ -11,11 +63,49 @@ _vectors_openssl_encrypt_procedure() {
 	[[ $(head -c 48 "$safeTmp"/testCiphertext | xxd -p | tr -d '\n') != 'bea2aadfed28b088843c58c95591430a' ]] && echo 'openssl: mismatch: testCiphertext' && _stop 1
 }
 
+_vectors_openssl_seed_procedure() {
+	if ! _openssl_seed > /dev/null 2>&1
+	then
+		echo 'fail: openssl: seed: exit status'
+	fi
+	if [[ $(_openssl_seed | wc -c ) != "48" ]]
+	then
+		echo 'openssl: seed: wc -c'
+	fi
+	if ! _openssl_seed-cygwin > /dev/null 2>&1
+	then
+		echo 'fail: openssl: seed-cygwin: exit status'
+	fi
+	if [[ $(_openssl_seed-cygwin | wc -c ) != "48" ]]
+	then
+		echo 'openssl: seed-cygwin: wc -c'
+	fi
+	if ! _openssl_seed-linux > /dev/null 2>&1
+	then
+		echo 'fail: openssl: seed-linux: exit status'
+	fi
+	if [[ $(_openssl_seed-linux | wc -c ) != "48" ]]
+	then
+		echo 'openssl: seed-linux: wc -c'
+	fi
+	if ! _openssl_seed-nix > /dev/null 2>&1
+	then
+		echo 'fail: openssl: seed-nix: exit status'
+	fi
+	if [[ $(_openssl_seed-nix | wc -c ) != "48" ]]
+	then
+		echo 'openssl: seed-nix: wc -c'
+	fi
+	return 0
+}
+
 
 _vectors_openssl_sequence() {
 	_start
 	
 	_vectors_openssl_encrypt_procedure
+	
+	_vectors_openssl_seed_procedure
 	
 	_stop
 }
@@ -75,16 +165,17 @@ _openssl_fifo_rand_sequence() {
 	
 	if ! _if_cygwin
 	then
-		head -c 48 /dev/urandom | xxd -p | tr -d '\n' | openssl enc -e "$currentCipher" -pass stdin -nosalt -md sha1 -in /dev/zero 2>/dev/null
+		head -c 48 /dev/urandom | xxd -p | tr -d '\n' | openssl enc -e "$currentCipher" -pass stdin -nosalt -pbkdf2 -in /dev/zero 2>/dev/null
 	else
 		# https://stackoverflow.com/questions/3854692/generate-password-in-python
+		# https://docs.python.org/3/library/os.html#os.urandom
 		python3 <<< '
 import string
 import os
 from os import urandom
 chars = string.ascii_letters + string.digits
 print("".join(chars[c % len(chars)] for c in urandom(48)))
-' | tr -dc 'a-zA-Z0-9' | xxd -p | tr -d '\n' | openssl enc -e "$currentCipher" -pass stdin -nosalt -md sha1 -in /dev/zero 2>/dev/null
+' | tr -dc 'a-zA-Z0-9' | xxd -p | tr -d '\n' | openssl enc -e "$currentCipher" -pass stdin -nosalt -pbkdf2 -in /dev/zero 2>/dev/null
 	fi
 	
 	#sleep 0.1

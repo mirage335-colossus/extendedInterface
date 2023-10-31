@@ -83,6 +83,11 @@ _setup_prog() {
 	then
 		_setup_entropy
 	fi
+	
+	if type _setup_commKey > /dev/null 2>&1
+	then
+		_setup_commKey
+	fi
 }
 
 

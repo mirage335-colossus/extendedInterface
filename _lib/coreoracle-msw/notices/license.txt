@@ -1,0 +1,45 @@
+
+
+if false
+then
+# NOTICE: Block comment.
+
+
+#coreoracle
+#Copyright (C) 2022,2023-  mirage335
+#
+#This program is free software; you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation; either version 3 of the License, or
+#(at your option) any later version.
+#
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with this program; if not, write to the Free Software Foundation,
+#Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+#
+#All files in this folder and subfolders, unless explicitly stated otherwise or copyrighted by other authors, are copyrighted by mirage335 as described above.
+#
+#Cryptographic keys, unique identifiers, and associated works of cryptographic keys and/or unique identifiers, under "temple", "pyre", "smoke", "packfile", files and/or directories are exluded from GPLv3 copyright. These are not compiled or concatenated into a single file including other source code, and would not be considered derived works of coreoracle.
+#
+#Cryptographic keys and unique identifiers, not to include any associated works, under "_config" directory, are excluded from GPLv3 copyright. Such cryptographic keys and unique identifiers must not constitute "Installation Information" in so far as lacking this information would not reasonably be expected to change the software's functionality with other cryptographic keys and unique identifiers. To be absolutely clear by example, in the following statement, only the "X", if a cryptographic key or unique identifier, would be excluded from GPLv3 copyright, if under the "_config" directory.
+#export cryptoKey="X"
+#
+#File and/or directory, names, under "_config" directory, are excluded from GPLv3 copyright only if these plainly and unambigiously do not reference code to be compiled or concatenated into a program file. Names referencing code to be compiled or concatenated into a shell script file are explicitly to remain under GPLv3 copyright. To be absolutely clear by example, the "X" under the first statement following would be excluded from GPLv3 copyright, while the second statement, as a derived work, along with all other derived works, would be entirely under GPLv3 copyright.
+#export containerPath="X"
+#includeScriptList+=( "X" )
+#
+#As described in the preceeding three paragraphs, some files and/or directories have been excluded from this license to allow end-users to keep cryptographic authentication and/or encryption keys private. These exclusions are not to be construed to enable distribution of coreoracle or derived works without disclosure and redistribution of any modificiation. To be absolutely clear by example, it is expected that the GPLv3 license will prohibit without limitation 1) distributing coreoracle with modifications which weaken security functionality without disclosing these weakenesses, 2) distributing coreoracle with modifications which may be claimed to strengthen security functionality without disclosing these enhancements, and/or 3) distributing coreoracle under a nondisclosure agreement which restricts redistribution necessary for, among other purposes, independent audit by security code review and peer review.
+#
+#The GPLv3 license is intended to require whole works, including derived works, to be distributed in preferred form for making modifications. Nothing in this license is to be construed to subvert that intent.
+
+false
+fi
+# NOTICE: Block comment.
+
+
+

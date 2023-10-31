@@ -643,7 +643,7 @@ export anchorScriptAbsoluteFolder=$(_getScriptAbsoluteFolder)
 export anchorName=$(basename "$anchorScriptAbsoluteLocation" | sed 's/\.bat$//g')
 
 
-export anchorSourceDir="coreoracle"
+export anchorSourceDir="coreoracle-msw"
 export anchorSource="pairKey"
 export anchorSourcePath="$anchorSourceDir"/"$anchorSource"
 
@@ -1392,7 +1392,7 @@ REM SET "MSWanchorName=%iMSWaN:~0,-4%"
 SET "MSWanchorName=%~n0"
 
 REM Typically set automatically by '_anchor' function.
-SET "MSWanchorSourceDir=coreoracle"
+SET "MSWanchorSourceDir=coreoracle-msw"
 
 SET "MSWanchorSource=pairKey"
 

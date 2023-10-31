@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1681782665'
+export ub_setScriptChecksum_contents='4075376875'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -2838,6 +2838,19 @@ _condition_lines_zero() {
 	
 	[[ "$currentLineCount" == 0 ]] && return 0
 	return 1
+}
+
+
+_safe_declare_uid() {
+	unset _uid
+	_uid() {
+		local currentLengthUID
+		currentLengthUID="$1"
+		[[ "$currentLengthUID" == "" ]] && currentLengthUID=18
+		cat /dev/random 2> /dev/null | base64 2> /dev/null | tr -dc 'a-zA-Z0-9' 2> /dev/null | tr -d 'acdefhilmnopqrsuvACDEFHILMNOPQRSU14580' | head -c "$currentLengthUID" 2> /dev/null
+		return
+	}
+	export -f _uid
 }
 
 #Generates semi-random alphanumeric characters, default length 18.
@@ -10621,6 +10634,30 @@ _getMost_debian11_install() {
 	_getMost_backend_aptGetInstall gpg
 	_getMost_backend_aptGetInstall --reinstall wget
 	
+	_getMost_backend_aptGetInstall apt-utils
+	
+	_getMost_backend_aptGetInstall pigz
+	_getMost_backend_aptGetInstall pixz
+
+
+	_getMost_backend_aptGetInstall bash dash
+
+	_getMost_backend_aptGetInstall aria2 curl gpg
+
+	if ! _getMost_backend dash -c 'type apt-fast' > /dev/null 2>&1
+	then
+		_getMost_backend_aptGetInstall aria2 curl gpg
+		
+		_getMost_backend mkdir -p /etc/apt/keyrings
+		_getMost_backend curl -fsSL 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xA2166B8DE8BDC3367D1901C11EE2FF37CA8DA16B' | _getMost_backend gpg --dearmor -o /etc/apt/keyrings/apt-fast.gpg
+		_getMost_backend apt-get update
+		_getMost_backend_aptGetInstall apt-fast
+
+		echo debconf apt-fast/maxdownloads string 16 | _getMost_backend debconf-set-selections
+		echo debconf apt-fast/dlflag boolean true | _getMost_backend debconf-set-selections
+		echo debconf apt-fast/aptmanager string apt-get | _getMost_backend debconf-set-selections
+	fi
+
 	
 	_messagePlain_probe 'apt-get update'
 	_getMost_backend apt-get update
@@ -10797,6 +10834,8 @@ _getMost_debian11_install() {
 	_getMost_backend_aptGetInstall gcc-arm-none-eabi
 	_getMost_backend_aptGetInstall binutils-arm-none-eabi
 	_getMost_backend_aptGetInstall libusb-1.0
+	
+	_getMost_backend_aptGetInstall setserial
 
 	_getMost_backend_aptGetInstall virtualenv
 	_getMost_backend_aptGetInstall python3-dev
@@ -10936,7 +10975,7 @@ _getMost_debian11_install() {
 
 	
 	_getMost_backend_aptGetInstall live-boot
-	_getMost_backend_aptGetInstall pigz
+	#_getMost_backend_aptGetInstall pigz
 	
 	_getMost_backend_aptGetInstall falkon
 	_getMost_backend_aptGetInstall konqueror
@@ -11154,6 +11193,12 @@ _getMost_debian11_install() {
 	
 	
 	
+	_getMost_backend_aptGetInstall php
+	
+	
+	
+	
+	
 	_getMost_backend_aptGetInstall synaptic
 	
 	_getMost_backend_aptGetInstall cifs-utils
@@ -11280,6 +11325,7 @@ _getMost_debian11_install() {
 
 
 	_getMost_backend_aptGetInstall fldigi
+	_getMost_backend_aptGetInstall flamp
 	_getMost_backend_aptGetInstall psk31lx
 	
 	
@@ -11296,6 +11342,25 @@ _getMost_debian11_install() {
 	_getMost_backend_aptGetInstall trousers
 	_getMost_backend_aptGetInstall tpm-tools
 	_getMost_backend_aptGetInstall trousers-dbg
+	
+	
+	
+	_getMost_backend_aptGetInstall scdaemon
+	
+	_getMost_backend_aptGetInstall tpm2-openssl
+	_getMost_backend_aptGetInstall tpm2-openssl tpm2-tools tpm2-abrmd libtss2-tcti-tabrmd0
+	
+	_getMost_backend_aptGetInstall tpm2-abrmd
+	
+	
+	
+	_getMost_backend_aptGetInstall qrencode
+	
+	_getMost_backend_aptGetInstall qtqr
+	
+	_getMost_backend_aptGetInstall zbar-tools
+	_getMost_backend_aptGetInstall zbarcam-gtk
+	_getMost_backend_aptGetInstall zbarcam-qt
 	
 	
 	
@@ -11485,8 +11550,20 @@ _getMost_ubuntu22-VBoxManage() {
 _set_getMost_backend_debian() {
 	_getMost_backend_aptGetInstall() {
 		# --no-upgrade
-		_messagePlain_probe _getMost_backend env DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install --install-recommends -y "$@"
-		_getMost_backend env DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install --install-recommends -y "$@"
+		# -o Dpkg::Options::="--force-confold"
+		
+		if ! _getMost_backend dash -c 'type apt-fast' > /dev/null 2>&1
+		then
+			_messagePlain_probe _getMost_backend env XZ_OPT="-T0" DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install -q --install-recommends -y "$@"
+			_getMost_backend env XZ_OPT="-T0" DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install -q --install-recommends -y "$@"
+		else
+			#DOWNLOADBEFORE=true
+			_messagePlain_probe _getMost_backend env DOWNLOADBEFORE=true XZ_OPT="-T0" DEBIAN_FRONTEND=noninteractive apt-fast -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install -q --install-recommends -y "$@"
+			_getMost_backend env DOWNLOADBEFORE=true XZ_OPT="-T0" DEBIAN_FRONTEND=noninteractive apt-fast -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install -q --install-recommends -y "$@"
+		fi
+		
+		#_messagePlain_probe _getMost_backend env XZ_OPT="-T0" DEBIAN_FRONTEND=noninteractive apt -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install --install-recommends -y "$@"
+		#_getMost_backend env XZ_OPT="-T0" DEBIAN_FRONTEND=noninteractive apt -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install --install-recommends -y "$@"
 	}
 	
 	#if [[ -e /etc/issue ]] && cat /etc/issue | grep 'Ubuntu' > /dev/null 2>&1
@@ -11903,6 +11980,11 @@ _getMinimal_cloud() {
 	
 	_getMost_backend_aptGetInstall mkisofs
 	_getMost_backend_aptGetInstall genisoimage
+	
+	
+	
+	_getMost_backend_aptGetInstall php
+	
 	
 	
 	# purge-old-kernels
@@ -12596,6 +12678,19 @@ _stopwatch() {
 
 	bc <<< "$measureDateB - $measureDateA"
 }
+
+
+
+_binToHex() {
+	xxd -p | tr -d '\n'
+}
+
+_hexToBin() {
+	xxd -r -p
+}
+
+
+
 
 
 
@@ -17643,10 +17738,23 @@ _createVMimage() {
 		[[ -e "$vmImageFile" ]] && _messagePlain_bad 'exists: '"$vmImageFile" && _messageFAIL && _stop 1
 	
 	
-		_messageNormal 'create: vm.img'
+		_messageNormal 'create: vm.img: file'
 	
-		export vmSize=26572
+		# 25.95GiB
+		#export vmSize=26572
+	
+		# 27.95GiB
+		export vmSize=28620
+		
+		export vmSize_boundary=$(bc <<< "$vmSize - 1")
 		_createRawImage
+	else
+		_messageNormal 'create: vm.img: device'
+
+		
+		export vmSize=$(bc <<< $(sudo -n lsblk -b --output SIZE -n -d "$vmImageFile")' / 1048576')
+		export vmSize=$(bc <<< "$vmSize - 1")
+		export vmSize_boundary=$(bc <<< "$vmSize - 1")
 	fi
 	
 	
@@ -17686,7 +17794,7 @@ _createVMimage() {
 	# ATTENTION: NOTICE: Larger EFI partition may be more compatible. Larger Swap partition may be more useful for hibernation.
 	
 	# BIOS
-	sudo -n parted --script "$vmImageFile" 'mkpart primary ext2 1 2'
+	sudo -n parted --script "$vmImageFile" 'mkpart primary ext2 1MiB 2MiB'
 	sudo -n parted --script "$vmImageFile" 'set 1 bios_grub on'
 	
 	
@@ -17708,7 +17816,9 @@ _createVMimage() {
 	
 	# Boot
 	#sudo -n parted --script "$vmImageFile" 'mkpart primary '"98"'MiB '"610"'MiB'
-	sudo -n parted --script "$vmImageFile" 'mkpart primary '"44"'MiB '"384"'MiB'
+	#sudo -n parted --script "$vmImageFile" 'mkpart primary '"44"'MiB '"384"'MiB'
+	#sudo -n parted --script "$vmImageFile" 'mkpart primary '"44"'MiB '"592"'MiB'
+	sudo -n parted --script "$vmImageFile" 'mkpart primary '"44"'MiB '"610"'MiB'
 	
 	
 	# Root
@@ -17736,13 +17846,16 @@ _createVMimage() {
 	#sudo -n parted --script "$vmImageFile" 'mkpart primary '"384"'MiB '"23582"'MiB'
 
 	# 25.95GiB-1MiB
-	sudo -n parted --script "$vmImageFile" 'mkpart primary '"384"'MiB '"26571"'MiB'
+	#sudo -n parted --script "$vmImageFile" 'mkpart primary '"384"'MiB '"26571"'MiB'
 
 	# Tested successfully.
 	# 26.25GiB-1MiB
 	#sudo -n parted --script "$vmImageFile" 'mkpart primary '"384"'MiB '"26879"'MiB'
 	
 	
+	
+	#sudo -n parted --script "$vmImageFile" 'mkpart primary '"384"'MiB '"$vmSize_boundary"'MiB'
+	sudo -n parted --script "$vmImageFile" 'mkpart primary '"610"'MiB '"$vmSize_boundary"'MiB'
 	
 	sudo -n parted --script "$vmImageFile" 'unit MiB print'
 	
@@ -18031,7 +18144,7 @@ _createVMfstab() {
 	
 	#echo 'UUID='"$ubVirtImagePartition_UUID"' / ext4 errors=remount-ro 0 1' | sudo -n tee "$globalVirtFS"/etc/fstab
 	#echo 'UUID='"$ubVirtImagePartition_UUID"' / btrfs defaults,compress=zstd:1,notreelog 0 1' | sudo -n tee "$globalVirtFS"/etc/fstab
-	echo 'UUID='"$ubVirtImagePartition_UUID"' / btrfs defaults,compress=zstd:1,notreelog,discard 0 1' | sudo -n tee "$globalVirtFS"/etc/fstab
+	echo 'UUID='"$ubVirtImagePartition_UUID"' / btrfs defaults,compress=zstd:1,notreelog,discard=async 0 1' | sudo -n tee "$globalVirtFS"/etc/fstab
 	
 	
 	# initramfs-update, from chroot, may not enable hibernation/resume... may be device specific
@@ -22091,6 +22204,8 @@ _findFunction() {
 
 
 _octave_terse() {
+	_safe_declare_uid
+	
 	if [[ "$1" != "" ]]
 	then
 		_safeEcho_newline "$@" | octave --quiet --silent --no-window-system --no-gui 2>/dev/null | _octave_filter-messages
@@ -22104,16 +22219,20 @@ _octave_terse() {
 _octave() {
 	if [[ "$1" != "" ]]
 	then
+		_safe_declare_uid
 		_octave_terse "$@"
 		return
 	fi
 	
+	_safe_declare_uid
 	octave --quiet --silent --no-window-system --no-gui "$@"
 	return
 }
 
 # ATTENTION: EXAMPLE: echo 'solve(x == y * 2, y)' | _octave_pipe
 _octave_pipe() {
+	_safe_declare_uid
+	
 	_octave_terse "$@"
 	#octave --quiet --silent --no-window-system --no-gui "$@" 2>/dev/null | _octave_filter-messages
 }
@@ -22123,6 +22242,8 @@ _octave_pipe() {
 _octave_script() {
 	local currentFile="$1"
 	shift
+	
+	_safe_declare_uid
 	
 	cat "$currentFile" | _octave_terse "$@"
 	
@@ -22529,6 +22650,8 @@ _test_devgnuoctave-extra() {
 
 
 _qalculate_terse() {
+	_safe_declare_uid
+	
 	# https://stackoverflow.com/questions/17998978/removing-colors-from-output
 	#sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"
 	
@@ -22553,20 +22676,26 @@ _qalculate_terse() {
 
 # Interactive.
 _qalculate() {
+	_safe_declare_uid
+	
 	mkdir -p "$HOME"/.config/qalculate
 	
 	if [[ "$1" != "" ]]
 	then
+		_safe_declare_uid
 		_qalculate_terse "$@"
 		return
 	fi
 	
+	_safe_declare_uid
 	qalc "$@"
 	return
 }
 
 # ATTENTION: EXAMPLE: echo 'solve(x == y * 2, y)' | _qalculate_pipe
 _qalculate_pipe() {
+	_safe_declare_uid
+	
 	_qalculate_terse "$@"
 }
 
@@ -22575,6 +22704,8 @@ _qalculate_pipe() {
 _qalculate_script() {
 	local currentFile="$1"
 	shift
+	
+	_safe_declare_uid
 	
 	cat "$currentFile" | _qalculate_pipe "$@"
 }
@@ -23999,10 +24130,14 @@ _prepare_query() {
 	! [[ -e "$ub_queryserver" ]] && cp "$scriptAbsoluteLocation" "$ub_queryserver"
 	
 	_prepare_query_prog "$@"
+	
+	_safe_declare_uid
 }
 
 _queryServer_sequence() {
 	_start
+	
+	_safe_declare_uid
 	
 	local currentExitStatus
 	
@@ -24023,6 +24158,8 @@ _qs() {
 
 _queryClient_sequence() {
 	_start
+	
+	_safe_declare_uid
 	
 	local currentExitStatus
 	
@@ -24181,6 +24318,8 @@ _scope_interact() {
 	
 	_scopePrompt
 	
+	_safe_declare_uid
+	
 	if [[ "$@" == "" ]]
 	then
 		_scope_terminal_procedure
@@ -24188,6 +24327,8 @@ _scope_interact() {
 		#eclipse
 # 		return
 	fi
+	
+	_safe_declare_uid
 	
 	"$@"
 }
@@ -24339,6 +24480,8 @@ _scope_terminal_procedure() {
 	_tryExec '_scopePrompt'
 	#_tryExec '_visualPrompt'
 	
+	_safe_declare_uid
+	
 	export PATH="$PATH":"$ub_scope"
 	echo
 	/usr/bin/env bash --norc
@@ -24346,6 +24489,8 @@ _scope_terminal_procedure() {
 }
 
 _scope_terminal() {
+	_safe_declare_uid
+	
 	local shiftParam1
 	shiftParam1="$1"
 	shift
@@ -24355,10 +24500,14 @@ _scope_terminal() {
 }
 
 _scope_eclipse_procedure() {
+	_safe_declare_uid
+	
 	_eclipse "$@"
 }
 
 _scope_eclipse() {
+	_safe_declare_uid
+	
 	local shiftParam1
 	shiftParam1="$1"
 	shift
@@ -24368,11 +24517,15 @@ _scope_eclipse() {
 }
 
 _scope_atom_procedure() {
+	_safe_declare_uid
+	
 	"$scriptAbsoluteLocation" _atom_tmp_sequence "$ub_specimen" "$@"  > /dev/null 2>&1
 }
 
 # WARNING: No production use. Not to be relied upon. May be removed.
 _scope_atom() {
+	_safe_declare_uid
+	
 	local shiftParam1
 	shiftParam1="$1"
 	shift
@@ -24382,11 +24535,15 @@ _scope_atom() {
 }
 
 _scope_konsole_procedure() {
+	_safe_declare_uid
+	
 	_messagePlain_probe konsole --workdir "$ub_specimen" "$@"
 	konsole --workdir "$ub_specimen" "$@"
 }
 
 _scope_konsole() {
+	_safe_declare_uid
+	
 	local shiftParam1
 	shiftParam1="$1"
 	shift
@@ -24396,10 +24553,14 @@ _scope_konsole() {
 }
 
 _scope_dolphin_procedure() {
+	_safe_declare_uid
+	
 	dolphin "$ub_specimen" "$@"
 }
 
 _scope_dolphin() {
+	_safe_declare_uid
+	
 	local shiftParam1
 	shiftParam1="$1"
 	shift
@@ -31665,6 +31826,88 @@ CZXWXcRMTo8EmM8i4d
 
 
 
+_setupUbiquitous_accessories_here-coreoracle_bashrc() {
+	
+	if _if_cygwin
+	then
+		cat << CZXWXcRMTo8EmM8i4d
+
+if [[ -e /cygdrive/c/core/infrastructure/coreoracle ]]
+then
+	export shortcutsPath_coreoracle=/cygdrive/c/"core/infrastructure/coreoracle"
+	. /cygdrive/c/core/infrastructure/coreoracle/_shortcuts-cygwin.sh
+elif [[ -e /cygdrive/c/core/infrastructure/extendedInterface/_lib/coreoracle-msw ]]
+then
+	export shortcutsPath_coreoracle=/cygdrive/c/core/infrastructure/extendedInterface/_lib/coreoracle-msw"
+	. /cygdrive/c/core/infrastructure/extendedInterface/_lib/coreoracle-msw/_shortcuts-cygwin.sh
+#elif [[ -e /cygdrive/c/core/infrastructure/extendedInterface/_lib/coreoracle ]]
+#then
+	#export shortcutsPath_coreoracle=/cygdrive/c/core/infrastructure/extendedInterface/_lib/coreoracle"
+	#. /cygdrive/c/core/infrastructure/extendedInterface/_lib/coreoracle/_shortcuts-cygwin.sh
+fi
+
+CZXWXcRMTo8EmM8i4d
+	else
+		cat << CZXWXcRMTo8EmM8i4d
+
+if type sudo > /dev/null 2>&1 && groups | grep -E 'wheel|sudo' > /dev/null 2>&1 && ! uname -a | grep -i cygwin > /dev/null 2>&1
+then
+	# Greater or equal, '_priority_critical_pid_root' .
+	sudo -n renice -n -15 -p \$\$ > /dev/null 2>&1
+	sudo -n ionice -c 2 -n 2 -p \$\$ > /dev/null 2>&1
+fi
+
+
+if [[ -e "$HOME"/core/infrastructure/coreoracle ]]
+then
+	export shortcutsPath_coreoracle="$HOME"/core/infrastructure/coreoracle/
+	. "$HOME"/core/infrastructure/coreoracle/_shortcuts.sh
+fi
+
+# Returns priority to normal.
+# Greater or equal, '_priority_app_pid_root' .
+#ionice -c 2 -n 3 -p \$\$
+#renice -n -5 -p \$\$ > /dev/null 2>&1
+
+# Returns priority to normal.
+# Greater or equal, '_priority_app_pid' .
+ionice -c 2 -n 4 -p \$\$
+renice -n 0 -p \$\$ > /dev/null 2>&1
+
+
+CZXWXcRMTo8EmM8i4d
+	fi
+}
+
+
+
+
+
+
+
+_setupUbiquitous_accessories_here-user_bashrc() {
+	
+	# Calls   "$HOME"/_bashrc   as a place for user defined functions, environment varialbes, etc, which should NOT follow dist/OS updates (eg. extendedInterface reinstallation) and should be copied after dist/OS reinstallation (ie. placed on an SDCard or similar before '_revert-fromLive /dev/sda' .
+	#  WARNING: Nevertheless, bashrc is very bad practice . Instead, functionality should be pushed upstream (eg. to 'ubiquitous bash', etc) .
+	#   The exception may be very specialized infrastructure (ie. conveniently calling specialized Virtual Machines).
+	
+	cat << CZXWXcRMTo8EmM8i4d
+
+if [[ -e "$HOME"/_bashrc ]]
+then
+	. "$HOME"/_bashrc
+fi
+
+CZXWXcRMTo8EmM8i4d
+
+}
+
+
+
+
+
+
+
 
 
 
@@ -31790,8 +32033,15 @@ _setupUbiquitous_accessories_bashrc() {
 	
 	#echo true
 	
+	
+	_setupUbiquitous_accessories_here-coreoracle_bashrc "$@"
+	
+	
 	# WARNING: Python must remain last. Failure to hook python is a failure that must show as an error exit status from the users profile (a red "1" on the first line of first visual prompt command prompt).
 	_setupUbiquitous_accessories_here-python_bashrc "$@"
+	
+	
+	_setupUbiquitous_accessories_here-user_bashrc "$@"
 	
 	#echo true
 }
@@ -31809,6 +32059,21 @@ _setupUbiquitous_accessories_requests() {
 
 
 
+_setupUbiquitous_safe_bashrc() {
+
+cat << CZXWXcRMTo8EmM8i4d
+#Generates semi-random alphanumeric characters, default length 18.
+#_uid() {
+	#local currentLengthUID
+	#currentLengthUID="\$1"
+	#[[ "\$currentLengthUID" == "" ]] && currentLengthUID=18
+	#cat /dev/random 2> /dev/null | base64 2> /dev/null | tr -dc 'a-zA-Z0-9' 2> /dev/null | tr -d 'acdefhilmnopqrsuvACDEFHILMNOPQRSU14580' | head -c "\$currentLengthUID" 2> /dev/null
+	#return
+#}
+_safe_declare_uid
+CZXWXcRMTo8EmM8i4d
+
+}
 
 _setupUbiquitous_here() {
 	! uname -a | grep -i cygwin > /dev/null 2>&1 && cat << CZXWXcRMTo8EmM8i4d
@@ -32126,6 +32391,7 @@ _setupUbiquitous() {
 	
 	_setupUbiquitous_here > "$ubcoreFile"
 	_setupUbiquitous_accessories_bashrc >> "$ubcoreFile"
+	_setupUbiquitous_safe_bashrc >> "$ubcoreFile"
 	! [[ -e "$ubcoreFile" ]] && _messagePlain_bad 'missing: ubcoreFile= '"$ubcoreFile" && _messageFAIL && return 1
 	
 	
@@ -33506,6 +33772,61 @@ _x220_vgaTablet() {
 	xrandr --output LVDS-1 --primary --mode 1366x768
 	
 	_x220_tablet_S180
+}
+
+
+_w540_fan_cfg-write() {
+	echo "options thinkpad_acpi fan_control=1" | sudo -n tee /etc/modprobe.d/thinkfan.conf
+}
+
+_w540_fan_cfg-modprobe() {
+	sudo -n modprobe -rv thinkpad_acpi
+	sudo -n modprobe -v thinkpad_acpi
+}
+
+_w540_fan_cfg() {
+	echo watchdog 120 | sudo -n tee /proc/acpi/ibm/fan
+}
+
+# cron recommended
+#*/1 * * * * sleep 0.1 ; /home/user/.ubcore/ubcore.sh _w540_hardware_cron > /dev/null 2>&1
+_w540_hardware_cron() {
+	! sudo -n dmidecode -s system-family | grep 'ThinkPad W540' && return 0
+	
+	_w540_fan
+	
+	return 0
+}
+
+# cron recommended
+#*/1 * * * * sleep 0.1 ; /home/user/.ubcore/ubiquitous_bash/ubcore.sh _w540_fan > /dev/null 2>&1
+_w540_fan() {
+	_w540_fan_cfg
+	
+	local currentTemp_coretemp0
+	read currentTemp_coretemp0 /sys/devices/platform/coretemp.0/hwmon/hwmon4/temp1_input
+	
+	#[[ "$currentTemp_coretemp0" -lt 48000 ]] && echo level 1 | sudo tee /proc/acpi/ibm/fan && return 0
+	#[[ "$currentTemp_coretemp0" -lt 68000 ]] && echo level 1 | sudo tee /proc/acpi/ibm/fan && return 0
+	
+	[[ "$currentTemp_coretemp0" -lt 68000 ]] && echo level 1 | sudo -n tee /proc/acpi/ibm/fan && return 0
+}
+
+_w540_idle() {
+	_w540_fan_cfg
+	
+	while true
+	do
+		echo powersave | sudo -n tee /sys/devices/system/cpu/cpufreq/*/scaling_governor
+		
+		echo level 1 | sudo tee /proc/acpi/ibm/fan
+		
+		sleep 45
+	done
+}
+
+_w540_normal() {
+	echo schedutil | sudo -n tee /sys/devices/system/cpu/cpufreq/*/scaling_governor
 }
 
 _h1060p_xorg_here() {
@@ -42454,6 +42775,7 @@ _test() {
 	
 	_getDep dd
 	_wantGetDep blockdev
+	_wantGetDep lsblk
 	
 	_getDep rm
 	
@@ -44362,6 +44684,8 @@ _init_deps() {
 	export enUb_dev=""
 	export enUb_dev_heavy=""
 	
+	export enUb_generic=""
+	
 	export enUb_cloud_heavy=""
 	
 	export enUb_mount=""
@@ -44410,6 +44734,7 @@ _init_deps() {
 	
 	export enUb_hardware=""
 	export enUb_enUb_x220t=""
+	export enUb_enUb_w540=""
 	export enUb_enUb_peripherial=""
 	
 	export enUb_user=""
@@ -44428,7 +44753,13 @@ _init_deps() {
 	export enUb_calculators=""
 }
 
+_deps_generic() {
+	export enUb_generic="true"
+}
+
 _deps_dev() {
+	_deps_generic
+	
 	export enUb_dev="true"
 }
 
@@ -44718,6 +45049,12 @@ _deps_x220t() {
 	export enUb_x220t="true"
 }
 
+_deps_w540() {
+	_deps_notLean
+	_deps_hardware
+	export enUb_w540="true"
+}
+
 _deps_peripherial() {
 	_deps_notLean
 	_deps_hardware
@@ -44745,13 +45082,19 @@ _deps_linux() {
 }
 
 _deps_python() {
+	_deps_generic
+	
 	export enUb_python="true"
 }
 _deps_haskell() {
+	_deps_generic
+	
 	export enUb_haskell="true"
 }
 
 _deps_calculators() {
+	_deps_generic
+	
 	export enUb_calculators="true"
 }
 
@@ -45292,6 +45635,12 @@ _compile_bash_deps() {
 		_deps_getVeracrypt
 		_deps_linux
 		
+		_deps_hardware
+		_deps_x220t
+		_deps_w540
+		
+		_deps_generic
+		
 		_deps_python
 		_deps_haskell
 		
@@ -45346,6 +45695,8 @@ _compile_bash_deps() {
 	if [[ "$1" == "processor" ]]
 	then
 		_deps_dev
+		
+		_deps_generic
 		
 		_deps_python
 		_deps_haskell
@@ -45442,6 +45793,8 @@ _compile_bash_deps() {
 		_deps_fakehome
 		_deps_abstractfs
 		
+		_deps_generic
+		
 		_deps_python
 		_deps_haskell
 		
@@ -45475,6 +45828,7 @@ _compile_bash_deps() {
 		
 		#_deps_hardware
 		#_deps_x220t
+		#_deps_w540
 		#_deps_peripherial
 		
 		#_deps_user
@@ -45537,6 +45891,8 @@ _compile_bash_deps() {
 		_deps_fakehome
 		_deps_abstractfs
 		
+		_deps_generic
+		
 		_deps_python
 		_deps_haskell
 		
@@ -45570,6 +45926,7 @@ _compile_bash_deps() {
 		
 		#_deps_hardware
 		#_deps_x220t
+		#_deps_w540
 		#_deps_peripherial
 		
 		#_deps_user
@@ -45632,6 +45989,8 @@ _compile_bash_deps() {
 		_deps_fakehome
 		_deps_abstractfs
 		
+		_deps_generic
+		
 		_deps_python
 		_deps_haskell
 		
@@ -45665,6 +46024,7 @@ _compile_bash_deps() {
 		
 		_deps_hardware
 		_deps_x220t
+		_deps_w540
 		_deps_peripherial
 		
 		_deps_user
@@ -45844,6 +46204,8 @@ _compile_bash_utilities() {
 	
 	[[ "$enUb_dev_heavy" == "true" ]] && includeScriptList+=( "instrumentation"/bashdb/bashdb.sh )
 	( [[ "$enUb_notLean" == "true" ]] || [[ "$enUb_stopwatch" == "true" ]] ) && includeScriptList+=( "instrumentation"/profiling/stopwatch.sh )
+	
+	[[ "$enUb_generic" == "true" ]] && includeScriptList+=( "generic"/generic.sh )
 }
 
 # Specifically intended to support Eclipse as necessary for building existing software .
@@ -46130,6 +46492,7 @@ _compile_bash_user() {
 
 _compile_bash_hardware() {
 	[[ "$enUb_hardware" == "true" ]] && [[ "$enUb_x220t" == "true" ]] && includeScriptList+=( "hardware/x220t"/x220_display.sh )
+	[[ "$enUb_hardware" == "true" ]] && [[ "$enUb_w540" == "true" ]] && includeScriptList+=( "hardware/w540"/w540_fan.sh )
 	
 	[[ "$enUb_hardware" == "true" ]] && [[ "$enUb_peripherial" == "true" ]] && includeScriptList+=( "hardware/peripherial/h1060p"/h1060p.sh )
 }
@@ -46950,6 +47313,8 @@ _wrap() {
 	[[ "$LANG" != "C" ]] && export LANG=C
 	. "$HOME"/.ubcore/.ubcorerc
 	
+	_safe_declare_uid
+	
 	if uname -a | grep -i 'microsoft' > /dev/null 2>&1 && uname -a | grep -i 'WSL2' > /dev/null 2>&1
 	then
 		local currentArg
@@ -46978,10 +47343,14 @@ _wrap() {
 
 #Wrapper function to launch arbitrary commands within the ubiquitous_bash environment, including its PATH with scriptBin.
 _bin() {
+	_safe_declare_uid
+	
 	"$@"
 }
 #Mostly intended to launch bash prompt for MSW/Cygwin users.
 _bash() {
+	_safe_declare_uid
+	
 	local currentIsCygwin
 	currentIsCygwin='false'
 	[[ -e '/cygdrive' ]] && uname -a | grep -i cygwin > /dev/null 2>&1 && _if_cygwin && currentIsCygwin='true'
@@ -46993,10 +47362,13 @@ _bash() {
 	_visualPrompt
 	[[ "$ub_scope_name" != "" ]] && _scopePrompt
 	
+	_safe_declare_uid
+	
 	
 	[[ "$1" == '-i' ]] && shift
 	
 	
+	_safe_declare_uid
 	
 	if [[ "$currentIsCygwin" == 'true' ]] && grep ubcore "$HOME"/.bashrc > /dev/null 2>&1 && [[ "$scriptAbsoluteLocation" == *"lean.sh" ]]
 	then
@@ -47026,6 +47398,8 @@ _bash() {
 
 #Mostly if not entirely intended for end user convenience.
 _python() {
+	_safe_declare_uid
+	
 	if [[ -e "$safeTmp"/lean.py ]]
 	then
 		"$safeTmp"/lean.py '_python()'
@@ -47046,23 +47420,33 @@ _python() {
 
 #Launch internal functions as commands, and other commands, as root.
 _sudo() {
+	_safe_declare_uid
+	
 	sudo -n "$scriptAbsoluteLocation" _bin "$@"
 }
 
 _true() {
+	_safe_declare_uid
+	
 	#"$scriptAbsoluteLocation" _false && return 1
 	#  ! "$scriptAbsoluteLocation" _bin true && return 1
 	#"$scriptAbsoluteLocation" _bin false && return 1
 	true
 }
 _false() {
+	_safe_declare_uid
+	
 	false
 }
 _echo() {
+	_safe_declare_uid
+	
 	echo "$@"
 }
 
 _diag() {
+	_safe_declare_uid
+	
 	echo "$sessionid"
 }
 

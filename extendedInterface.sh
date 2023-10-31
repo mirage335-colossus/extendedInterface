@@ -1328,6 +1328,19 @@ _condition_lines_zero() {
 	return 1
 }
 
+
+_safe_declare_uid() {
+	unset _uid
+	_uid() {
+		local currentLengthUID
+		currentLengthUID="$1"
+		[[ "$currentLengthUID" == "" ]] && currentLengthUID=18
+		cat /dev/random 2> /dev/null | base64 2> /dev/null | tr -dc 'a-zA-Z0-9' 2> /dev/null | tr -d 'acdefhilmnopqrsuvACDEFHILMNOPQRSU14580' | head -c "$currentLengthUID" 2> /dev/null
+		return
+	}
+	export -f _uid
+}
+
 #Generates semi-random alphanumeric characters, default length 18.
 _uid() {
 	local curentLengthUID
@@ -4756,6 +4769,7 @@ _test() {
 	
 	_getDep dd
 	_wantGetDep blockdev
+	_wantGetDep lsblk
 	
 	_getDep rm
 	
@@ -5567,6 +5581,7 @@ _setupUbiquitous() {
 	
 	_setupUbiquitous_here > "$ubcoreFile"
 	_setupUbiquitous_accessories_bashrc >> "$ubcoreFile"
+	_setupUbiquitous_safe_bashrc >> "$ubcoreFile"
 	! [[ -e "$ubcoreFile" ]] && _messagePlain_bad 'missing: ubcoreFile= '"$ubcoreFile" && _messageFAIL && return 1
 	
 	
@@ -6265,6 +6280,8 @@ _wrap() {
 	[[ "$LANG" != "C" ]] && export LANG=C
 	. "$HOME"/.ubcore/.ubcorerc
 	
+	_safe_declare_uid
+	
 	if uname -a | grep -i 'microsoft' > /dev/null 2>&1 && uname -a | grep -i 'WSL2' > /dev/null 2>&1
 	then
 		local currentArg
@@ -6293,10 +6310,14 @@ _wrap() {
 
 #Wrapper function to launch arbitrary commands within the ubiquitous_bash environment, including its PATH with scriptBin.
 _bin() {
+	_safe_declare_uid
+	
 	"$@"
 }
 #Mostly intended to launch bash prompt for MSW/Cygwin users.
 _bash() {
+	_safe_declare_uid
+	
 	local currentIsCygwin
 	currentIsCygwin='false'
 	[[ -e '/cygdrive' ]] && uname -a | grep -i cygwin > /dev/null 2>&1 && _if_cygwin && currentIsCygwin='true'
@@ -6308,10 +6329,13 @@ _bash() {
 	_visualPrompt
 	[[ "$ub_scope_name" != "" ]] && _scopePrompt
 	
+	_safe_declare_uid
+	
 	
 	[[ "$1" == '-i' ]] && shift
 	
 	
+	_safe_declare_uid
 	
 	if [[ "$currentIsCygwin" == 'true' ]] && grep ubcore "$HOME"/.bashrc > /dev/null 2>&1 && [[ "$scriptAbsoluteLocation" == *"lean.sh" ]]
 	then
@@ -6341,6 +6365,8 @@ _bash() {
 
 #Mostly if not entirely intended for end user convenience.
 _python() {
+	_safe_declare_uid
+	
 	if [[ -e "$safeTmp"/lean.py ]]
 	then
 		"$safeTmp"/lean.py '_python()'
@@ -6361,23 +6387,33 @@ _python() {
 
 #Launch internal functions as commands, and other commands, as root.
 _sudo() {
+	_safe_declare_uid
+	
 	sudo -n "$scriptAbsoluteLocation" _bin "$@"
 }
 
 _true() {
+	_safe_declare_uid
+	
 	#"$scriptAbsoluteLocation" _false && return 1
 	#  ! "$scriptAbsoluteLocation" _bin true && return 1
 	#"$scriptAbsoluteLocation" _bin false && return 1
 	true
 }
 _false() {
+	_safe_declare_uid
+	
 	false
 }
 _echo() {
+	_safe_declare_uid
+	
 	echo "$@"
 }
 
 _diag() {
+	_safe_declare_uid
+	
 	echo "$sessionid"
 }
 

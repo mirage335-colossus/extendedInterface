@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='2863421842'
+export ub_setScriptChecksum_contents='3823950622'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -5267,7 +5267,16 @@ _gh_downloadURL() {
 	current_file=$(echo "$current_url" | sed -n 's|https://github.com/[^/]*/[^/]*/releases/download/[^/]*/\(.*\)|\1|p')
 	
 	# Use variables to construct the gh release download command
-	gh release download "$current_tagName" -R "$current_repo" -p "$current_file" "$@"
+	local currentIteration
+	currentIteration=0
+	while ! [[ -e "$current_file" ]] && [[ "$currentIteration" -lt 3 ]]
+	do
+		gh release download "$current_tagName" -R "$current_repo" -p "$current_file" "$@"
+		! [[ -e "$current_file" ]] && sleep 7
+		let currentIteration=currentIteration+1
+	done
+	[[ -e "$current_file" ]]
+	return "$?"
 }
 
 
@@ -5306,8 +5315,21 @@ _wget_githubRelease-URL() {
 
 _wget_githubRelease() {
 	local currentURL=$(_wget_githubRelease-URL "$@")
-	_messagePlain_probe curl -L -o "$3" "$currentURL" >&2
-	curl -L -o "$3" "$currentURL"
+	if [[ "$GH_TOKEN" == "" ]]
+	then
+		_messagePlain_probe curl -L -o "$3" "$currentURL" >&2
+		curl -L -o "$3" "$currentURL"
+	else
+		if type -p gh > /dev/null 2>&1 && [[ "$GH_TOKEN" != "" ]] && [[ "$FORCE_WGET" != "true" ]]
+		then
+			_messagePlain_probe _gh_downloadURL "$currentURL" -O "$3" >&2
+			_gh_downloadURL "$currentURL" -O "$3"
+		else
+			# Broken. Must use 'gh' instead.
+			_messagePlain_probe curl -H "Authorization: Bearer "'$GH_TOKEN' -L -o "$3" "$currentURL" >&2
+			curl -H "Authorization: Bearer $GH_TOKEN" -L -o "$3" "$currentURL"
+		fi
+	fi
 	[[ ! -e "$3" ]] && _messagePlain_bad 'missing: '"$1"' '"$2"' '"$3" && return 1
 	return 0
 }
@@ -5320,8 +5342,15 @@ _wget_githubRelease-stdout() {
 		_gh_downloadURL "$currentURL" -O -
 		return
 	else
-		_messagePlain_probe curl -L -o - "$currentURL" >&2
-		curl -L -o - "$currentURL"
+		if [[ "$GH_TOKEN" == "" ]]
+		then
+			_messagePlain_probe curl -L -o - "$currentURL" >&2
+			curl -L -o - "$currentURL"
+		else
+			# Broken. Must use 'gh' instead.
+			_messagePlain_probe curl -H "Authorization: Bearer "'$GH_TOKEN' -L -o - "$currentURL" >&2
+			curl -H "Authorization: Bearer $GH_TOKEN" -L -o - "$currentURL"
+		fi
 		return
 	fi
 }

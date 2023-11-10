@@ -1776,7 +1776,16 @@ _gh_downloadURL() {
 	current_file=$(echo "$current_url" | sed -n 's|https://github.com/[^/]*/[^/]*/releases/download/[^/]*/\(.*\)|\1|p')
 	
 	# Use variables to construct the gh release download command
-	gh release download "$current_tagName" -R "$current_repo" -p "$current_file" "$@"
+	local currentIteration
+	currentIteration=0
+	while ! [[ -e "$current_file" ]] && [[ "$currentIteration" -lt 3 ]]
+	do
+		gh release download "$current_tagName" -R "$current_repo" -p "$current_file" "$@"
+		! [[ -e "$current_file" ]] && sleep 7
+		let currentIteration=currentIteration+1
+	done
+	[[ -e "$current_file" ]]
+	return "$?"
 }
 
 
@@ -1815,8 +1824,21 @@ _wget_githubRelease-URL() {
 
 _wget_githubRelease() {
 	local currentURL=$(_wget_githubRelease-URL "$@")
-	_messagePlain_probe curl -L -o "$3" "$currentURL" >&2
-	curl -L -o "$3" "$currentURL"
+	if [[ "$GH_TOKEN" == "" ]]
+	then
+		_messagePlain_probe curl -L -o "$3" "$currentURL" >&2
+		curl -L -o "$3" "$currentURL"
+	else
+		if type -p gh > /dev/null 2>&1 && [[ "$GH_TOKEN" != "" ]] && [[ "$FORCE_WGET" != "true" ]]
+		then
+			_messagePlain_probe _gh_downloadURL "$currentURL" -O "$3" >&2
+			_gh_downloadURL "$currentURL" -O "$3"
+		else
+			# Broken. Must use 'gh' instead.
+			_messagePlain_probe curl -H "Authorization: Bearer "'$GH_TOKEN' -L -o "$3" "$currentURL" >&2
+			curl -H "Authorization: Bearer $GH_TOKEN" -L -o "$3" "$currentURL"
+		fi
+	fi
 	[[ ! -e "$3" ]] && _messagePlain_bad 'missing: '"$1"' '"$2"' '"$3" && return 1
 	return 0
 }
@@ -1829,8 +1851,15 @@ _wget_githubRelease-stdout() {
 		_gh_downloadURL "$currentURL" -O -
 		return
 	else
-		_messagePlain_probe curl -L -o - "$currentURL" >&2
-		curl -L -o - "$currentURL"
+		if [[ "$GH_TOKEN" == "" ]]
+		then
+			_messagePlain_probe curl -L -o - "$currentURL" >&2
+			curl -L -o - "$currentURL"
+		else
+			# Broken. Must use 'gh' instead.
+			_messagePlain_probe curl -H "Authorization: Bearer "'$GH_TOKEN' -L -o - "$currentURL" >&2
+			curl -H "Authorization: Bearer $GH_TOKEN" -L -o - "$currentURL"
+		fi
 		return
 	fi
 }

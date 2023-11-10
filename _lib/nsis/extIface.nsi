@@ -218,6 +218,15 @@ Section "Install"
   IfSilent 0 +2
   ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\openssh\OpenSSH-Win64-v9.2.2.0.msi" /passive /norestart'
   
+  # gh_2.38.0_windows_amd64.msi
+  ;start /wait
+  SetOutPath "$TEMP\extendedInterface_bundle\gh"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\gh\*"
+  IfSilent +2
+  ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\gh\gh_2.38.0_windows_amd64.msi"'
+  IfSilent 0 +2
+  ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\gh\gh_2.38.0_windows_amd64.msi" /passive /norestart'
+  
 
 
   ;start /wait

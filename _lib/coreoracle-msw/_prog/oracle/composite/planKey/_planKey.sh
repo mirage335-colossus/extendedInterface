@@ -8,6 +8,7 @@
 
 _plan() {
 	mkdir -p "$HOME"/.plan
+	chmod 700 "$HOME"/.plan
 	gpg --homedir "$HOME"/.plan "$@"
 }
 

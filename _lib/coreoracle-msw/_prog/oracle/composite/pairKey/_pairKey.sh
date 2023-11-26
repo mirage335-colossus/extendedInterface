@@ -125,6 +125,7 @@ _pair-grab() {
 	head -c 20 "$HOME"/.pair > "$HOME"/.pair-keyAuth
 	
 	tail -c 10 "$HOME"/.pair | openssl enc -e -aes-256-cbc -pass stdin -nosalt -pbkdf2 -in /dev/zero 2>/dev/null | tr -dc '0-9a-zA-Z' | head -c 20
+	echo
 }
 
 _pair-purge() {

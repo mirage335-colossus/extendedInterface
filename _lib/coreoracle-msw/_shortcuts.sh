@@ -24,6 +24,9 @@ band() {
 }
 
 
+_pair-purge() {
+	"$shortcutsPath_coreoracle"/pairKey ${FUNCNAME[0]} "$@"
+}
 _pair-grab() {
 	"$shortcutsPath_coreoracle"/pairKey ${FUNCNAME[0]} "$@"
 }

@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1345014075'
+export ub_setScriptChecksum_contents='4135776844'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -14600,10 +14600,25 @@ _setup_install-restore() {
 _setup_install_procedure() {
 	_messageNormal 'init: _setup_install'
 	_messagePlain_probe "$@"
-
-
+	
+	
 	_messagePlain_nominal 'begin: _setup_install'
-
+	
+	
+	
+	# Some such commands may need to run at least twice. Doing so multiple different ways substantially reduces risk of future breakage.
+	# https://pureinfotech.com/uninstall-widgets-powershell-windows-11/
+	# https://nerdschalk.com/how-to-hide-disable-or-uninstall-widgets-on-windows-11-and-disable-windowsw-shortcut/
+	
+	cmd /c winget uninstall "Windows web experience pack"
+	
+	winget uninstall "Windows web experience pack"
+	
+	# WARNING: CAUTION: PowerShell may cause failure, due to increasingly limited availablility for 'security' reasons.
+	powershell -Command "Get-AppxPackage WebExperience | Remove-AppxPackage"
+	
+	
+	
 	if [[ -e /cygdrive/c/core/infrastructure/ubcp-home-backup-"$1" ]]
 	then
 		#_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-"$1"/. "$HOME"/.

@@ -1,0 +1,1 @@
+May be ineffective. Recommend using Group Policy, possibly in combination with this RegEdit . 

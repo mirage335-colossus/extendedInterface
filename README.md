@@ -321,6 +321,7 @@ https://babeltechreviews.com/hardware-accelerated-gpu-scheduling-performance/
 
 
 
-
+https://www.elevenforum.com/t/enable-or-disable-windows-copilot-in-windows-11.17045/#post-351158
+	'vivetool /enable /id:44776738 /priority:test /store:both'
 
 

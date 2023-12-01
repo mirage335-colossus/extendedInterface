@@ -176,12 +176,21 @@ Section "Install"
   ;ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\ShowSecondsInSystemClock\Show Seconds In System Clock.reg"
 
   
-  ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableHardwareAssistedGPUScheduling\Hardware Accelerated GPU Scheduling - Disable.reg"
-
-
-
+  ; May be needed for DLSS , which may now be more relevant for simulators.
+  ;ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableHardwareAssistedGPUScheduling\Hardware Accelerated GPU Scheduling - Disable.reg"
+  
   
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\zSettings\updates-getLatest\Turn_ON_Get_latest_updates_as_soon_as_they_are_available.reg"
+  
+  ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\HardwareEnforcedStackProtection\Enable_Kernel_Mode_Hardware_Enforced_Stack_Protection.reg"
+  
+  ;Configuring this by default seems possibly unhelpful.
+  ;RegEdit seems ineffective for this.
+  ;ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\LocalSecurityAuthorityProtection\Turn_ON_Local_Security_Authority_protection_with_UEFI_Lock.reg"
+  
+  
+  ;RegEdit seems ineffective for this.
+  ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableNewsAndInterests\Disable-AllowNewsAndInterests.reg"
 
 
 

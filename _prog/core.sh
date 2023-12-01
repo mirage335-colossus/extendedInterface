@@ -69,10 +69,25 @@ _setup_install-restore() {
 _setup_install_procedure() {
 	_messageNormal 'init: _setup_install'
 	_messagePlain_probe "$@"
-
-
+	
+	
 	_messagePlain_nominal 'begin: _setup_install'
-
+	
+	
+	
+	# Some such commands may need to run at least twice. Doing so multiple different ways substantially reduces risk of future breakage.
+	# https://pureinfotech.com/uninstall-widgets-powershell-windows-11/
+	# https://nerdschalk.com/how-to-hide-disable-or-uninstall-widgets-on-windows-11-and-disable-windowsw-shortcut/
+	
+	cmd /c winget uninstall "Windows web experience pack"
+	
+	winget uninstall "Windows web experience pack"
+	
+	# WARNING: CAUTION: PowerShell may cause failure, due to increasingly limited availablility for 'security' reasons.
+	powershell -Command "Get-AppxPackage WebExperience | Remove-AppxPackage"
+	
+	
+	
 	if [[ -e /cygdrive/c/core/infrastructure/ubcp-home-backup-"$1" ]]
 	then
 		#_setup_install-restore /cygdrive/c/core/infrastructure/ubcp-home-backup-"$1"/. "$HOME"/.

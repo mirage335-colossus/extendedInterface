@@ -325,3 +325,17 @@ https://www.elevenforum.com/t/enable-or-disable-windows-copilot-in-windows-11.17
 	'vivetool /enable /id:44776738 /priority:test /store:both'
 
 
+
+
+https://github.com/microsoft/winget-cli/discussions/1536
+	'--accept-package-agreements' '--accept-source-agreements'
+
+
+
+
+
+
+
+
+
+

@@ -3,6 +3,8 @@ Any third party works included, or other subdirectories, may have a different co
 
 In particular, the included 'ubcp' installation has many programs under a 'GNU GPLv2' or similar 'copyleft' license. Cygwin itself has a 'GNU GPLv3' license. Prominent notices of these licenses remain unchanged.
 
+This installer may or may not call scripts which automatically call other package managers (ie. 'winget), which may install other software under other license terms. Using this software, as with copy/pasting commands from any installation script, implies understanding of this behavior and acceptance of relevant license terms.
+
 
 
 
@@ -15,6 +17,10 @@ To the extent possible under law, mirage335 has waived all copyright and related
 Also see CC0_license.txt for details.
 
 
+
+--------------------------------------------------
+
+https://github.com/microsoft/winget-cli/discussions/1536
 
 --------------------------------------------------
 

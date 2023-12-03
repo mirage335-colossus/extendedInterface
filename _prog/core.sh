@@ -79,9 +79,11 @@ _setup_install_procedure() {
 	# https://pureinfotech.com/uninstall-widgets-powershell-windows-11/
 	# https://nerdschalk.com/how-to-hide-disable-or-uninstall-widgets-on-windows-11-and-disable-windowsw-shortcut/
 	
-	cmd /c winget uninstall "Windows web experience pack"
-	
-	winget uninstall "Windows web experience pack"
+	# WARNING: CAUTION: WinGet may halt installer.
+	# https://github.com/microsoft/winget-cli/discussions/1536
+	#--accept-package-agreements --accept-source-agreements
+	#cmd /c winget uninstall "Windows web experience pack"
+	#winget uninstall "Windows web experience pack"
 	
 	# WARNING: CAUTION: PowerShell may cause failure, due to increasingly limited availablility for 'security' reasons.
 	powershell -Command "Get-AppxPackage WebExperience | Remove-AppxPackage"

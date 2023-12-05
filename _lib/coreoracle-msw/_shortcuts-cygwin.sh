@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. "$shortcutsPath_coreoracle"/shortcuts.sh
+. "$shortcutsPath_coreoracle"/_shortcuts.sh
 
 
 

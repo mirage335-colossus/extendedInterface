@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='128274872'
+export ub_setScriptChecksum_contents='762589905'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -8062,7 +8062,35 @@ _cfgFW_procedure() {
     fi
 
 	echo y | ufw --force enable
+
+
+	# NOTICE: DANGER: STATELESS FILTERED is the ONLY SAFE way to interact with NETWORK SERVICES. If this is available, then these services may be used, but the dist/OS firewall should DENY ALL traffic, and all networking interfaces should be STRICTLY disabled.
+	# Think of these as the networking equivalent of a TPM . Instead of doing your networking directly on a malware infectable OS with malware infectable apps and services, you should instead exchange encoded serial messages with an FPGA by USB3 GPIO that then decodes and exchanges those messages over a variety of QRSSS sub-9kHz, narrowband radio, ultrawideband radio, optical, etc, as well conventional TCP/IP and UDP Ethernet, WiFi, etc, peer discovery and transfer services.
+	# WARNING: Ports 39900-39920 RESERVED for STATELESS FILTERED laboratory network experimentation with pipes , both TCP and UDP.
+	# WARNING: Ports 39900-39920 RESERVED for STATELESS FILTERED laboratory network experimentation with pipes , both TCP and UDP.
+	# WARNING: Ports 39800-39899 RESERVED for STATELESS FILTERED decentralized replacements for HTTP/HTTPS , peer discovery, etc, both TCP and UDP.
+	# WARNING: Ports 39980-39999 RESERVED for STATELESS FILTERED gizmos , both TCP and UDP.
+	ufw deny 39000:39999/tcp
+	ufw deny 39000:39999/udp
 	
+	# Ports 45000-45999 RESERVED for ALTERNATIVE AUTOMATIC PORTS for STATELESS FILTERED gizmos , both TCP and UDP.
+	ufw deny 45000:45999/tcp
+	ufw deny 45000:45999/udp
+	
+	# Ports 46000-46999 RESERVED for ALTERNATIVE AUTOMATIC PORTS for STATELESS FILTERED gizmos , both TCP and UDP.
+	ufw deny 46000:46999/tcp
+	ufw deny 46000:46999/udp
+	
+	# DANGER: Strongly discouraged. Network services are inherently dangerous. For ephemeral laboratory experimentation or expendable gaming computers ONLY.
+	#  DANGER: Preferably do NOT use these at all, ever.
+	# WARNING: Ports 38900-38920 RESERVED for laboratory network experimentation with pipes , both TCP and UDP.
+	# WARNING: Ports 38900-38920 RESERVED for laboratory network experimentation with pipes , both TCP and UDP.
+	# WARNING: Ports 38800-38899 RESERVED for decentralized replacements for HTTP/HTTPS , peer discovery, etc, both TCP and UDP.
+	# WARNING: Ports 38980-38999 RESERVED for gizmos , both TCP and UDP.
+	ufw allow 38000:38999/tcp
+	ufw allow 38000:38999/udp
+
+
     if [[ "$ub_cfgFW" == "desktop" ]] || [[ "$ub_cfgFW" == "terminal" ]]
     then
         _ufw_portDisable 67
@@ -8141,6 +8169,23 @@ _cfgFW_procedure() {
 	pgrep avahi > /dev/null 2>&1 && _messagePlain_bad 'bad: detected: avahi' && _messagePlain_request 'request: remove: avahi'
 	_ufw_portDisable 5353
 	
+	# legacy servers
+	_ufw_portDisable 20
+	_ufw_portDisable 21
+	_ufw_portDisable 23
+	_ufw_portDisable 69
+	_ufw_portDisable 115
+	#_ufw_portDisable 445
+	_ufw_portDisable 989
+	_ufw_portDisable 980
+	
+	# unusual servers
+	_ufw_portDisable 107
+	_ufw_portDisable 118
+	_ufw_portDisable 992
+	_ufw_portDisable 4444
+	
+	
 	# ntp
 	_ufw_portDisable 123
 	
@@ -8151,12 +8196,16 @@ _cfgFW_procedure() {
 	
 	# Microsoft-DS (Active Directory, Windows Shares, SMB)
 	_ufw_portDisable 445
+	_ufw_portDisable 901
 	
 	
 	# SMTP
 	_ufw_portDisable 25
+	_ufw_portDisable 109
+	_ufw_portDisable 110
 	_ufw_portDisable 465
 	_ufw_portDisable 587
+	_ufw_portDisable 995
 	_ufw_portDisable 3535
 	
 	# IPP/CUPS

@@ -1,0 +1,5 @@
+Convention	SWFFB2	T16000M
+Base O_M U	6	6
+Base O_M R	7	9
+Base O_M D	8	8
+Base O_M L	5	7

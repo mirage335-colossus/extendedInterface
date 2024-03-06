@@ -4,7 +4,7 @@
         <device device-guid="{6F1D2B61-D5A0-11CF-BFC7-444553540000}" label="" name="keyboard" type="keyboard">
             <mode name="Default"/>
         </device>
-        <device device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" label="" name="TWCS Throttle" type="joystick">
+        <device device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" label="" name="TWCS Throttle" type="joystick">
             <mode name="Default">
                 <axis description="" id="1"/>
                 <axis description="" id="2"/>
@@ -31,7 +31,7 @@
                 <hat description="" id="1"/>
             </mode>
         </device>
-        <device device-guid="{7CE82F20-0DE0-11ED-801A-444553540000}" label="" name="SideWinder Force Feedback 2 Joystick" type="joystick">
+        <device device-guid="{A4608390-E525-11E9-802D-444553540000}" label="" name="SideWinder Force Feedback 2 Joystick" type="joystick">
             <mode name="Default">
                 <axis description="" id="1"/>
                 <axis description="" id="2"/>

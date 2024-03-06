@@ -103,7 +103,7 @@
             <mode inherit="00-Infrastructure" name="05-I-U"/>
             <mode inherit="00-Infrastructure" name="06-I-D"/>
         </device>
-        <device device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" label="" name="TWCS Throttle" type="joystick">
+        <device device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" label="" name="TWCS Throttle" type="joystick">
             <mode name="00-Infrastructure">
                 <axis description="" id="1">
                     <container type="basic">
@@ -248,7 +248,7 @@
                         <action-set>
                             <switch-mode name="05-I-U">
                                 <activation-condition rule="all">
-                                    <condition comparison="pressed" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                             <description description="I_U">
@@ -260,7 +260,7 @@
                         <action-set>
                             <switch-mode name="06-I-D">
                                 <activation-condition rule="all">
-                                    <condition comparison="pressed" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                             <description description="I_D">
@@ -272,8 +272,8 @@
                         <action-set>
                             <switch-mode name="04-I_M">
                                 <activation-condition rule="all">
-                                    <condition comparison="released" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
-                                    <condition comparison="released" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
+                                    <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
+                                    <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                             <description description="I_M">
@@ -286,8 +286,8 @@
                             <switch-mode name="01-O_M">
                                 <activation-condition rule="all">
                                     <condition comparison="released" condition-type="action" input="action"/>
-                                    <condition comparison="released" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
-                                    <condition comparison="released" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
+                                    <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
+                                    <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                             <description description="O_M">
@@ -300,7 +300,7 @@
                             <switch-mode name="03-O-D">
                                 <activation-condition rule="all">
                                     <condition comparison="released" condition-type="action" input="action"/>
-                                    <condition comparison="pressed" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="5" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>
@@ -310,7 +310,7 @@
                             <switch-mode name="02-O-U">
                                 <activation-condition rule="all">
                                     <condition comparison="released" condition-type="action" input="action"/>
-                                    <condition comparison="pressed" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="4" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>
@@ -321,7 +321,7 @@
                         <action-set>
                             <switch-mode name="02-O-U">
                                 <activation-condition rule="all">
-                                    <condition comparison="released" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
+                                    <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>
@@ -330,7 +330,7 @@
                         <action-set>
                             <switch-mode name="05-I-U">
                                 <activation-condition rule="all">
-                                    <condition comparison="pressed" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>
@@ -340,7 +340,7 @@
                             <switch-mode name="01-O_M">
                                 <activation-condition rule="all">
                                     <condition comparison="released" condition-type="action" input="action"/>
-                                    <condition comparison="released" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
+                                    <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>
@@ -350,7 +350,7 @@
                             <switch-mode name="04-I_M">
                                 <activation-condition rule="all">
                                     <condition comparison="released" condition-type="action" input="action"/>
-                                    <condition comparison="pressed" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>
@@ -361,7 +361,7 @@
                         <action-set>
                             <switch-mode name="03-O-D">
                                 <activation-condition rule="all">
-                                    <condition comparison="released" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
+                                    <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>
@@ -370,7 +370,7 @@
                         <action-set>
                             <switch-mode name="06-I-D">
                                 <activation-condition rule="all">
-                                    <condition comparison="pressed" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>
@@ -380,7 +380,7 @@
                             <switch-mode name="01-O_M">
                                 <activation-condition rule="all">
                                     <condition comparison="released" condition-type="action" input="action"/>
-                                    <condition comparison="released" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
+                                    <condition comparison="released" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>
@@ -390,7 +390,7 @@
                             <switch-mode name="04-I_M">
                                 <activation-condition rule="all">
                                     <condition comparison="released" condition-type="action" input="action"/>
-                                    <condition comparison="pressed" condition-type="joystick" device-guid="{7CE76BD0-0DE0-11ED-800F-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
+                                    <condition comparison="pressed" condition-type="joystick" device-guid="{9FDEE5A0-E57C-11E7-8009-444553540000}" device-name="TWCS Throttle" id="3" input="button"/>
                                 </activation-condition>
                             </switch-mode>
                         </action-set>
@@ -416,8 +416,8 @@
                 <axis description="AutoTargets - hostile+-, MISUSE - Radar Elevation Control" id="6">
                     <container type="basic">
                         <action-set>
-                            <description description="Radar Elevation Control – Up"/>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <description description="RESERVED - Radar Elevation Control – Up"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="0"/>
                             <map-to-keyboard>
                                 <key extended="True" scan-code="54"/>
                                 <key extended="False" scan-code="39"/>
@@ -427,8 +427,8 @@
                     </container>
                     <container type="basic">
                         <action-set>
-                            <description description="Radar Elevation Control – Down"/>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <description description="RESERVED - Radar Elevation Control – Down"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="0"/>
                             <map-to-keyboard>
                                 <key extended="True" scan-code="54"/>
                                 <key extended="False" scan-code="52"/>
@@ -587,12 +587,11 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="23"/>
-                                    <key extended="False" press="False" scan-code="23"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
-                            <description description="Radar Operate - Toggle"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; radar  toggle &lt;/prosody&gt; &lt;/speak&gt; "/>
+                            <description description="RESERVED - Radar Operate - Toggle"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!-- radar  toggle--&gt; &lt;/prosody&gt; &lt;/speak&gt; "/>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="1.0" upper-limit="0.75"/>
                     </container>
@@ -601,12 +600,11 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="False" press="True" scan-code="23"/>
-                                    <key extended="False" press="False" scan-code="23"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
-                            <description description="Radar Standby - Toggle"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; radar  toggle &lt;/prosody&gt; &lt;/speak&gt; "/>
+                            <description description="RESERVED - Radar Standby - Toggle"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!--radar  toggle--&gt; &lt;/prosody&gt; &lt;/speak&gt; "/>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="-1.0" upper-limit="-0.75"/>
                     </container>
@@ -635,8 +633,8 @@
                                     <key extended="True" press="True" scan-code="56"/>
                                     <key extended="True" press="False" scan-code="56"/>
                                     <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="10"/>
-                                    <key extended="False" press="False" scan-code="10"/>
+                                    <key extended="False" press="True" scan-code="6"/>
+                                    <key extended="False" press="False" scan-code="6"/>
                                     <key extended="False" press="False" scan-code="56"/>
                                 </actions>
                             </macro>
@@ -778,15 +776,12 @@
                                     <key extended="False" press="False" scan-code="3"/>
                                 </actions>
                             </macro>
-                            <description description="seek designator - resume"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;seek designator&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <description description="RESERVED - seek designator - resume"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!--seek designator--&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <action-set>
-                            <description description="Radar - Return to Search - NDTWS"/>
-                            <map-to-keyboard>
-                                <key extended="False" scan-code="14"/>
-                            </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;radar search&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <description description="RESERVED - Radar - Return to Search - NDTWS"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!-- radar search --&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <virtual-button east="1"/>
                     </container>
@@ -799,16 +794,16 @@
                                     <key extended="False" press="False" scan-code="5"/>
                                 </actions>
                             </macro>
-                            <description description="seek bore"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;seek, bore&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <description description="RESERVED - seek bore"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!--seek, bore--&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <action-set>
-                            <description description="RWS-TWS Mode Select"/>
+                            <description description="RESERVED - RWS-TWS Mode Select"/>
                             <map-to-keyboard>
                                 <key extended="True" scan-code="56"/>
                                 <key extended="False" scan-code="23"/>
                             </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;radar track&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!--radar track--&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <virtual-button north="1"/>
                     </container>
@@ -821,16 +816,16 @@
                                     <key extended="False" press="False" scan-code="4"/>
                                 </actions>
                             </macro>
-                            <description description="seek vertical"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;seek vertical&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <description description="RESERVED - seek vertical"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!--seek vertical--&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <action-set>
-                            <description description="Pulse Repeat Frequency Select"/>
+                            <description description="RESERVED - Pulse Repeat Frequency Select"/>
                             <map-to-keyboard>
                                 <key extended="True" scan-code="54"/>
                                 <key extended="False" scan-code="23"/>
                             </map-to-keyboard>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;radar pulse&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!--radar pulse--&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
                         </action-set>
                         <virtual-button south="1"/>
                     </container>
@@ -842,7 +837,7 @@
                 <axis description="" id="3"/>
                 <axis description="" id="4"/>
                 <axis description="" id="5"/>
-                <axis description="Scan Zone Left/Right" id="6">
+                <axis description="RESERVED - Scan Zone Left/Right" id="6">
                     <container type="basic">
                         <action-set>
                             <macro>
@@ -855,7 +850,7 @@
                                 </actions>
                             </macro>
                             <description description="Left"/>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="0"/>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="-1.0" upper-limit="-0.75"/>
                     </container>
@@ -871,7 +866,7 @@
                                 </actions>
                             </macro>
                             <description description="Right"/>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="0"/>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="1.0" upper-limit="0.75"/>
                     </container>
@@ -1050,29 +1045,33 @@
                         </action-set>
                     </container>
                 </button>
-                <button description="NOT FUNCTIONAL - Lockouts, Accessories - DARK - EMCON, Lights Off, Taxi Light Off, Formation Lights Off, Radar Off, Radar Altimeter Off" id="13">
-                    <container activate-on="release" delay="0.5" type="tempo">
+                <button description="Lockouts, Accessories - DARK, MISUSE - Ripple Quantity Select" id="13">
+                    <container type="basic">
                         <action-set>
-                            <description description="DANGEROUS"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; error &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <map-to-keyboard>
+                                <key extended="False" scan-code="29"/>
+                                <key extended="False" scan-code="57"/>
+                            </map-to-keyboard>
                         </action-set>
+                    </container>
+                    <container type="basic">
                         <action-set>
-                            <macro>
-                                <properties/>
-                                <actions>
-                                    <pause duration="0.01"/>
-                                </actions>
-                            </macro>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; DARK - IGNORED &lt;/prosody&gt; &lt;/speak&gt;"/>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="100"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
                         </action-set>
                     </container>
                 </button>
-                <button description="Lockouts, Accessories - Tool" id="14">
-                    <container activate-on="release" delay="0.2" type="tempo">
+                <button description="Lockouts, Accessories - Tool, MISUSE - Ripple Interval Increase" id="14">
+                    <container activate-on="release" delay="0.5" type="tempo">
                         <action-set>
-                            <description description="DANGEROUS"/>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; error &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <description description="MISUSE - Ripple Interval Increase"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <macro>
+                                <properties/>
+                                <actions>
+                                    <key extended="False" press="True" scan-code="47"/>
+                                    <key extended="False" press="False" scan-code="47"/>
+                                </actions>
+                            </macro>
                         </action-set>
                         <action-set>
                             <map-to-keyboard>
@@ -1091,20 +1090,17 @@
                 <axis description="" id="3"/>
                 <axis description="" id="4"/>
                 <axis description="" id="5"/>
-                <axis description="AutoTargets - target+/-, MISUSE - RADAR Range Control, MISUSE - RADAR Predicted Target Range and Scan Width" id="6">
+                <axis description="RESERVED - AutoTargets - target+/-, MISUSE - RADAR Range Control, MISUSE - RADAR Predicted Target Range and Scan Width" id="6">
                     <container type="basic">
                         <action-set>
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="True" press="True" scan-code="29"/>
-                                    <key extended="False" press="True" scan-code="13"/>
-                                    <key extended="False" press="False" scan-code="13"/>
-                                    <key extended="True" press="False" scan-code="29"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
-                            <description description="Predicted Target Range Increase"/>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <description description="RESERVED - Predicted Target Range Increase"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="0"/>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="0.75" upper-limit="1.0"/>
                     </container>
@@ -1113,14 +1109,11 @@
                             <macro>
                                 <properties/>
                                 <actions>
-                                    <key extended="True" press="True" scan-code="29"/>
-                                    <key extended="False" press="True" scan-code="12"/>
-                                    <key extended="False" press="False" scan-code="12"/>
-                                    <key extended="True" press="False" scan-code="29"/>
+                                    <pause duration="0.01"/>
                                 </actions>
                             </macro>
                             <description description="Predicted Target Range Decrease"/>
-                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
+                            <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="0"/>
                         </action-set>
                         <virtual-button direction="anywhere" lower-limit="-1.0" upper-limit="-0.75"/>
                     </container>
@@ -1263,17 +1256,22 @@
                                 <properties/>
                                 <actions>
                                     <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="10"/>
-                                    <key extended="False" press="False" scan-code="10"/>
+                                    <key extended="False" press="True" scan-code="6"/>
+                                    <key extended="False" press="False" scan-code="6"/>
                                     <key extended="False" press="False" scan-code="56"/>
+                                    <pause duration="0.03"/>
                                     <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="2"/>
-                                    <key extended="False" press="False" scan-code="2"/>
+                                    <key extended="False" press="True" scan-code="5"/>
+                                    <key extended="False" press="False" scan-code="5"/>
                                     <key extended="False" press="False" scan-code="56"/>
+                                    <pause duration="0.03"/>
                                     <key extended="False" press="True" scan-code="56"/>
-                                    <key extended="False" press="True" scan-code="3"/>
-                                    <key extended="False" press="False" scan-code="3"/>
+                                    <key extended="False" press="True" scan-code="4"/>
+                                    <key extended="False" press="False" scan-code="4"/>
                                     <key extended="False" press="False" scan-code="56"/>
+                                    <pause duration="0.03"/>
+                                    <key extended="False" press="True" scan-code="30"/>
+                                    <key extended="False" press="False" scan-code="30"/>
                                 </actions>
                             </macro>
                             <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;altitude attitude hold&lt;/prosody&gt; &lt;/speak&gt;"/>
@@ -1593,7 +1591,7 @@
                         <action-set>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/harmonics.wav" volume="5">
                                 <activation-condition rule="all">
-                                    <condition comparison="inside" condition-type="joystick" device-guid="{7CE82F20-0DE0-11ED-801A-444553540000}" device-name="SideWinder Force Feedback 2 Joystick" id="2" input="axis" range-high="0.01" range-low="-0.01"/>
+                                    <condition comparison="inside" condition-type="joystick" device-guid="{A4608390-E525-11E9-802D-444553540000}" device-name="SideWinder Force Feedback 2 Joystick" id="2" input="axis" range-high="0.01" range-low="-0.01"/>
                                 </activation-condition>
                             </play-sound>
                         </action-set>
@@ -2208,7 +2206,7 @@
                 </hat>
             </mode>
         </device>
-        <device device-guid="{7CE82F20-0DE0-11ED-801A-444553540000}" label="" name="SideWinder Force Feedback 2 Joystick" type="joystick">
+        <device device-guid="{A4608390-E525-11E9-802D-444553540000}" label="" name="SideWinder Force Feedback 2 Joystick" type="joystick">
             <mode name="00-Infrastructure">
                 <axis description="" id="1">
                     <container type="basic">
@@ -2227,7 +2225,7 @@
                         <action-set>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/harmonics.wav" volume="5">
                                 <activation-condition rule="all">
-                                    <condition comparison="inside" condition-type="joystick" device-guid="{7CE82F20-0DE0-11ED-801A-444553540000}" device-name="SideWinder Force Feedback 2 Joystick" id="2" input="axis" range-high="0.01" range-low="-0.01"/>
+                                    <condition comparison="inside" condition-type="joystick" device-guid="{A4608390-E525-11E9-802D-444553540000}" device-name="SideWinder Force Feedback 2 Joystick" id="2" input="axis" range-high="0.01" range-low="-0.01"/>
                                 </activation-condition>
                             </play-sound>
                         </action-set>
@@ -2527,7 +2525,7 @@
                         <action-set>
                             <play-sound file="C:/core/infrastructure/extendedInterface/_ref/sound_clips/_thirdparty/samplefocus/wood-rim_G_minor.wav" volume="3"/>
                         </action-set>
-                        <virtual-button east="1" north="1" south="1" west="1"/>
+                        <virtual-button north="1" west="1"/>
                     </container>
                     <container type="basic">
                         <action-set>
@@ -2538,8 +2536,8 @@
                                     <key extended="False" press="False" scan-code="5"/>
                                 </actions>
                             </macro>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; seek, bore &lt;/prosody&gt; &lt;/speak&gt;"/>
-                            <description description="seek bore"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt;&lt;!-- seek, bore --&gt;&lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <description description="RESERVED - seek bore"/>
                         </action-set>
                         <virtual-button south="1"/>
                     </container>
@@ -2566,8 +2564,8 @@
                                     <key extended="False" press="False" scan-code="4"/>
                                 </actions>
                             </macro>
-                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; seek vertical &lt;/prosody&gt; &lt;/speak&gt;"/>
-                            <description description="seek vertical"/>
+                            <text-to-speech text="&lt;?xml version=&quot;1.0&quot;?&gt;&lt;speak version=&quot;1.0&quot; xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.w3.org/2001/10/synthesis http://www.w3.org/TR/speech-synthesis/synthesis.xsd&quot; xml:lang=&quot;en-US&quot;&gt; &lt;prosody volume=&quot;medium&quot; rate=&quot;fast&quot;&gt; &lt;!--seek vertical--&gt; &lt;/prosody&gt; &lt;/speak&gt;"/>
+                            <description description="RESERVED - seek vertical"/>
                         </action-set>
                         <virtual-button east="1"/>
                     </container>

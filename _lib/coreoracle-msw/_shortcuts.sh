@@ -30,6 +30,9 @@ _pair-purge() {
 _pair-grab() {
 	"$shortcutsPath_coreoracle"/pairKey ${FUNCNAME[0]} "$@"
 }
+_pair-seed() {
+	"$shortcutsPath_coreoracle"/pairKey ${FUNCNAME[0]} "$@"
+}
 
 _pair_copy() {
 	"$shortcutsPath_coreoracle"/pairKey ${FUNCNAME[0]} "$@"

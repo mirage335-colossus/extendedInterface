@@ -193,8 +193,10 @@ Section "Install"
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableNewsAndInterests\Disable-AllowNewsAndInterests.reg"
 
 
-
+  ; ATTENTION: Startups may be copied again.
   CopyFiles "C:\core\infrastructure\extendedInterface\support\000-OS\MSW\blockWinP\blockWinP.exe" "$SMSTARTUP"
+
+
 
   ExpandEnvStrings $5 %COMSPEC%
   ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\support\000-OS\MSW\FreeCAD_NewDocument\install.bat"'
@@ -324,6 +326,11 @@ Section "Install"
 
   ExpandEnvStrings $5 %COMSPEC%
   ExecWait '"$5" /C "C:\core\infrastructure\ubiquitous_bash\_setupUbiquitous_nonet.bat"'
+
+
+; ATTENTION: Startups may be copied again.  
+  CopyFiles "C:\DropTerm.lnk" "$SMSTARTUP"
+
 
   ExpandEnvStrings $5 %COMSPEC%
   ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\_bin.bat" _test_rotten'

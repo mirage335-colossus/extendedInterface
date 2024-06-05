@@ -192,6 +192,9 @@ Section "Install"
   ;RegEdit seems ineffective for this.
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableNewsAndInterests\Disable-AllowNewsAndInterests.reg"
 
+  
+  ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableExplorerAutoComplete\disableExplorerAutoComplete.reg"
+
 
   ; ATTENTION: Startups may be copied again.
   CopyFiles "C:\core\infrastructure\extendedInterface\support\000-OS\MSW\blockWinP\blockWinP.exe" "$SMSTARTUP"

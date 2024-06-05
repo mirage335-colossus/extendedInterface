@@ -1,0 +1,5 @@
+Trivial code - essentially a list of facts - obtainable from a variety of sources such as the references documented here - usually without explicit license. Fiar use or public domain assumed.
+
+_ Reference _
+https://www.elevenforum.com/t/enable-or-disable-inline-autocomplete-in-file-explorer-address-bar-in-windows-11.15050/
+https://www.thewindowsclub.com/enable-disable-autocomplete-inline-autocomplete-windows-explorer-internet-explorer

@@ -332,7 +332,8 @@ Section "Install"
 
 
 ; ATTENTION: Startups may be copied again.  
-  CopyFiles "C:\DropTerm.lnk" "$SMSTARTUP"
+  ;CopyFiles "C:\DropTerm.lnk" "$SMSTARTUP"
+  CopyFiles "C:\_DropTerm-startup.lnk" "$SMSTARTUP"
 
 
   ExpandEnvStrings $5 %COMSPEC%

@@ -198,6 +198,7 @@ Section "Install"
 
   ; ATTENTION: Startups may be copied again.
   CopyFiles "C:\core\infrastructure\extendedInterface\support\000-OS\MSW\blockWinP\blockWinP.exe" "$SMSTARTUP"
+  CopyFiles "C:\core\infrastructure\extendedInterface\support\000-OS\MSW\remapCopilotButton\remapCopilotButton.exe" "$SMSTARTUP"
 
 
 

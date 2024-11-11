@@ -96,7 +96,8 @@ _build_extendedInterface-fetch() {
 
 
     cd "$currentAccessoriesDir"/parts
-    _gitBest clone --recursive git@github.com:mirage335-colossus/"$objectName".git
+    #_gitBest clone --depth 1 --recursive git@github.com:mirage335-colossus/"$objectName".git
+    _gitBest clone git@github.com:mirage335-colossus/"$objectName".git
 
     mkdir -p "$currentAccessoriesDir"/parts/"$objectName"
     cd "$currentAccessoriesDir"/parts/"$objectName"
@@ -109,9 +110,21 @@ _build_extendedInterface-fetch() {
     #git config gc.pruneExpire now
     #git config gc.reflogExpire now
     #git config gc.reflogExpireUnreachable now
+
     git reset --hard
-    git submodule update
-    git submodule update --force --recursive
+    
+
+    #git submodule update --depth 1
+    #git submodule update --depth 1 --init --recursive
+    #git submodule update --depth 1 --force --recursive
+
+    git checkout HEAD
+    _gitBest pull
+    _gitBest submodule update --depth 1
+    _gitBest submodule update --init --depth 1 --recursive
+    _gitBest submodule update --depth 1 --force --recursive
+
+
     #git gc --aggressive
 
     #git show-ref -s HEAD > $(git rev-parse --git-dir)/shallow

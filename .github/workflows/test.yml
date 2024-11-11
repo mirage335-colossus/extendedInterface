@@ -228,6 +228,7 @@ jobs:
         timeout-minutes: 240
         run: |
           #Set-Item -Path Env:devfast -Value ("true")
+          cd C:\core\infrastructure\ubiquitous_bash\
           ./_test | tee /_test.log
           $SEL = cat /_test.log | Select-String -Pattern 'FAIL' -CaseSensitive -SimpleMatch
           if ($SEL -ne $null)

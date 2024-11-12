@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1052497718'
+export ub_setScriptChecksum_contents='2698585439'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -22848,7 +22848,13 @@ _test_ollama() {
 	fi
 	
 	
-	! type ollama > /dev/null 2>&1 && _messageFAIL && _stop 1
+	if ! _if_cygwin
+	then
+		! type ollama > /dev/null 2>&1 && _messageFAIL && _stop 1
+	else
+		! type ollama > /dev/null 2>&1 && echo 'warn: acepted: cygwin: missing: ollama'
+		# Accepted. Do NOT return with error status (ie. do NOT 'return 1') .
+	fi
 	
 	return 0
 }
@@ -44342,27 +44348,27 @@ _test() {
 	_tryExec "_test_docker_mkimage"
 	
 	_tryExec "_testVirtBootdisc"
-	echo test1
+	
 	_tryExec "_test_live"
-	echo test2
+	
 	_tryExec "_testExtra"
-	echo test3
+	
 	_tryExec "_testGit"
-	echo test4
+	
 	_tryExec "_test_bup"
-	echo test5
+	
 	_tryExec "_testX11"
-	echo test6
+	
 	_tryExec "_test_virtLocal_X11"
-	echo test7
+	
 	_tryExec "_test_search"
-	echo test8
+	
 	_tryExec "_test_packetDriveDevice"
 	_tryExec "_test_gparted"
-	echo test9
+
 
 	_tryExec "_test_wsl2_internal"
-	echo test10
+
 	
 	# WARNING: Disabled by default. Newer FLOSS (ie. 'barrier'), seems to have displaced the older 'synergy' software.
 	# ATTENTION: Override with 'ops' or similar.
@@ -44372,48 +44378,48 @@ _test() {
 	
 	
 	_tryExec "_test_ollama"
-	echo test11
+	
 	
 	
 	_tryExec "_test_devqalculate"
 	_tryExec "_test_devgnuoctave"
-	echo test12
+	
 	
 	
 	_tryExec "_test_devatom"
 	_tryExec "_test_devemacs"
 	_tryExec "_test_deveclipse"
-	echo test13
+	
 	
 	_tryExec "_test_h1060p"
-	echo test14
+	
 	
 	_tryExec "_test_ethereum"
 	_tryExec "_test_ethereum_parity"
-	echo test15
+	
 	
 	
 	_tryExec "_test_mktorrent"
-	echo test16
+	
 	
 	_tryExec "_test_cloud"
-	echo test17
+	
 	_tryExec "_test_rclone"
 	_tryExec "_test_croc"
-	echo test18
+	
 	_tryExec "_test_terraform"
-	echo test19
+	
 	
 	_tryExec "_test_vagrant_build"
-	echo test20
+	
 	
 	
 	_tryExec "_test_rclone_limited"
-	echo test21
+	
 	
 	
 	_tryExec "_test_kernelConfig"
-	echo test22
+	
 	
 	_tryExec "_test_clog"
 	

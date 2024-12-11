@@ -155,6 +155,11 @@ Section "Install"
 
 
 
+  Rename "C:\core\infrastructure\iconArt" "C:\core\infrastructure\iconArt-backup-$0"
+  SetOutPath "C:\core\infrastructure\iconArt"
+  File /r "..\..\..\extendedInterface-accessories\parts\iconArt\*"
+
+
 
 
 
@@ -450,6 +455,16 @@ section "uninstall"
   RMDir /r /REBOOTOK "C:\core\infrastructure\ubiquitous_bash"
   ;RMDir /r "C:\core\infrastructure\_bash.bat"
   RMDir /r /REBOOTOK "C:\core\infrastructure\_bash.bat"
+
+
+
+  # Rename AND/OR Remove  adjacent installed repositories.
+  Rename "C:\core\infrastructure\iconArt" "C:\core\infrastructure\iconArt-uninstalled-$0"
+  ;RMDir /r "C:\core\infrastructure\ubiquitous_bash"
+  RMDir /r /REBOOTOK "C:\core\infrastructure\iconArt"
+  ;...
+
+
  
 	# Always delete uninstaller as the last action
 	delete "C:\core\infrastructure\extIface-uninst.exe"

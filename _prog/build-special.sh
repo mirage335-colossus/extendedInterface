@@ -164,6 +164,10 @@ _build_extendedInterface-fetch() {
     cd "$functionEntryPWD"
 
 
+    cd "$currentAccessoriesDir"/parts/
+    _gitBest clone --depth 1 --recursive git@github.com:mirage335-special/iconArt.git
+    cd "$functionEntryPWD"
+
 
     cd "$currentAccessoriesDir"/parts/
     _gitBest clone --depth 1 --recursive git@github.com:mirage335-colossus/extendedInterface_bundle.git

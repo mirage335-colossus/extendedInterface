@@ -6374,9 +6374,9 @@ _gitMad_neighbors_procedure() {
 	local functionEntryPWD
 	functionEntryPWD="$PWD"
 
-	[[ ! -e "$scriptAbsoluteFolder"/../iconArt ]] && _messageFAIL
+	[[ ! -e '/cygdrive/c/core/infrastructure/iconArt' ]] && _messageFAIL
 
-	cd "$scriptAbsoluteFolder"/../iconArt
+	cd '/cygdrive/c/core/infrastructure/iconArt'
 	_gitMad
 	
 	cd "$functionEntryPWD"

@@ -6370,6 +6370,21 @@ _experiment() {
 	echo test
 }
 
+_gitMad_neighbors_procedure() {
+	local functionEntryPWD
+	functionEntryPWD="$PWD"
+
+	[[ ! -e "$scriptAbsoluteFolder"/../iconArt ]] && _messageFAIL
+
+	cd "$scriptAbsoluteFolder"/../iconArt
+	_gitMad
+	
+	cd "$functionEntryPWD"
+}
+_gitMad_neighbors() {
+	"$scriptAbsoluteLocation _gitMad_neighbors "$@""
+}
+
 
 _setup_install-permissions() {
 	local functionEntryPWD
@@ -6558,6 +6573,9 @@ _setup_install_procedure() {
 
 	_messagePlain_probe_cmd _self_gitMad
 	#_setup_install-permissions "$@"
+
+	_messagePlain_probe _gitMad_neighbors
+	
 
 	_messagePlain_nominal 'end: _setup_install'
 	return 0

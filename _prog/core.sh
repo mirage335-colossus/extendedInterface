@@ -209,7 +209,7 @@ _setup_install_procedure() {
 	_messagePlain_probe_cmd _self_gitMad
 	#_setup_install-permissions "$@"
 
-	_messagePlain_probe _gitMad_neighbors
+	_messagePlain_probe_cmd _gitMad_neighbors
 	
 
 	_messagePlain_nominal 'end: _setup_install'

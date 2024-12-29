@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1095917461'
+export ub_setScriptChecksum_contents='3610733316'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -8095,6 +8095,11 @@ _cfgFW_procedure() {
 	    ufw allow 443
     fi
 
+	# ATTRIBUTION-AI ChatGPT o1 2024-12-25
+	ufw allow proto tcp from 172.17.0.0/16 to any port 8080
+	ufw allow proto tcp from 172.17.0.0/16 to any port 11434
+
+
 	if [[ "$ub_cfgFW" == "desktop" ]] || [[ "$ub_cfgFW" == "terminal" ]]
     then
         ufw default deny incoming
@@ -8167,9 +8172,12 @@ _cfgFW_procedure() {
         #_ufw_portEnable 9001
         #_ufw_portEnable 9030
         
+
         # TODO: Allow typical offset ports/ranges.
         _ufw_portDisable 8443
         ufw deny 10001:49150/tcp
+        #ufw deny 10001:11433/tcp # ###
+        #ufw deny 11435:49150/tcp # ###
         ufw deny 10001:49150/udp
     else
 	ufw allow 22/tcp
@@ -8285,6 +8293,8 @@ _cfgFW_procedure() {
 	ufw deny 2:1023/tcp
 	ufw deny 2:1023/udp
 	ufw deny 1024:10000/tcp
+	#ufw deny 1024:8079/tcp # ###
+	#ufw deny 8081:10000/tcp # ###
 	ufw deny 1024:10000/udp
 	ufw deny 49152:65535/tcp
 	ufw deny 49152:65535/udp
@@ -9201,16 +9211,19 @@ _fetchDep_debianBookworm_special() {
 		
 		sudo -n env DEBIAN_FRONTEND=noninteractive apt-get -y update
 		#sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y dkms virtualbox-6.1
-		sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y dkms virtualbox-7.0
+		#sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y dkms virtualbox-7.0
+		sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y dkms virtualbox-7.1
 		
 		# https://www.virtualbox.org/ticket/20949
 		if ! type -p virtualbox > /dev/null 2>&1 && ! type -p VirtualBox > /dev/null 2>&1
 		then
 			#curl -L "https://download.virtualbox.org/virtualbox/6.1.34/virtualbox-6.1_6.1.34-150636.1~Debian~bookworm_amd64.deb" -o "$safeTmp"/"virtualbox-6.1_6.1.34-150636.1~Debian~bookworm_amd64.deb"
-			curl -L "https://download.virtualbox.org/virtualbox/7.0.10/virtualbox-7.0_7.0.10-158379~Debian~bookworm_amd64.deb" -o "$safeTmp"/"virtualbox-7.0_7.0.10-158379~Debian~bookworm_amd64.deb"
+			#curl -L "https://download.virtualbox.org/virtualbox/7.0.10/virtualbox-7.0_7.0.10-158379~Debian~bookworm_amd64.deb" -o "$safeTmp"/"virtualbox-7.0_7.0.10-158379~Debian~bookworm_amd64.deb"
+			curl -L "https://download.virtualbox.org/virtualbox/7.1.4/virtualbox-7.1_7.1.4-165100~Debian~bookworm_amd64.deb" -o "$safeTmp"/"virtualbox-7.1_7.1.4-165100~Debian~bookworm_amd64.deb"
 			sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y dkms
 			#yes | sudo -n dpkg -i "$safeTmp"/"virtualbox-6.1_6.1.34-150636.1~Debian~bookworm_amd64.deb"
-			yes | sudo -n dpkg -i "$safeTmp"/"virtualbox-7.0_7.0.10-158379~Debian~bookworm_amd64.deb"
+			#yes | sudo -n dpkg -i "$safeTmp"/"virtualbox-7.0_7.0.10-158379~Debian~bookworm_amd64.deb"
+			yes | sudo -n dpkg -i "$safeTmp"/"virtualbox-7.1_7.1.4-165100~Debian~bookworm_amd64.deb"
 			sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y -f
 		fi
 		
@@ -10816,9 +10829,11 @@ _getMost_debian12_install() {
 	_getMost_backend_aptGetInstall usbip
 
 	
-	_getMost_backend apt-get -d install -y virtualbox-7.0
+	#_getMost_backend apt-get -d install -y virtualbox-7.0
+	_getMost_backend apt-get -d install -y virtualbox-7.1
 
-	_getMost_backend_aptGetInstall virtualbox-7.0
+	#_getMost_backend_aptGetInstall virtualbox-7.0
+	_getMost_backend_aptGetInstall virtualbox-7.1
 }
 
 _getMost_debian11_install() {
@@ -11141,11 +11156,16 @@ _getMost_debian11_install() {
 	
 	# ATTENTION: ATTENTION: WARNING: CAUTION: DANGER: High maintenance. Expect to break and manually update frequently!
 	#_getMost_backend wget -qO- 'https://download.virtualbox.org/virtualbox/6.1.34/VBoxGuestAdditions_6.1.34.iso' | _getMost_backend tee /VBoxGuestAdditions.iso > /dev/null
-	_getMost_backend wget -qO- 'https://download.virtualbox.org/virtualbox/7.0.10/VBoxGuestAdditions_7.0.10.iso' | _getMost_backend tee /VBoxGuestAdditions.iso > /dev/null
+	#_getMost_backend wget -qO- 'https://download.virtualbox.org/virtualbox/7.0.10/VBoxGuestAdditions_7.0.10.iso' | _getMost_backend tee /VBoxGuestAdditions.iso > /dev/null
+	_getMost_backend wget -qO- 'https://download.virtualbox.org/virtualbox/7.1.4/VBoxGuestAdditions_7.1.4.iso' | _getMost_backend tee /VBoxGuestAdditions.iso > /dev/null
 	_getMost_backend 7z x /VBoxGuestAdditions.iso -o/VBoxGuestAdditions -aoa -y
 	_getMost_backend rm -f /VBoxGuestAdditions.iso
 	_getMost_backend chmod u+x /VBoxGuestAdditions/VBoxLinuxAdditions.run
 	
+	# https://forums.virtualbox.org/viewtopic.php?t=112770
+	echo 'GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT kvm.enable_virt_at_load=0"' | _getMost_backend tee ""/etc/default/grub.d/99_vbox_kvm_compatibility.cfg
+
+
 	
 	# From '/var/log/vboxadd-*' , 'shared folder support module' 'modprobe vboxguest failed'
 	# Due to 'rcvboxadd setup' and/or 'rcvboxadd quicksetup all' apparently ceasing to build subsequent modules (ie. 'vboxsf') after any error (ie. due to 'modprobe' failing unless VirtualBox virtual hardware is present).
@@ -11789,9 +11809,11 @@ _getMost_ubuntu22-VBoxManage() {
 	
 	#_getMost_ubuntu22_install "$@"
 	#_getMost_backend apt-get -d install -y virtualbox-6.1
-	_getMost_backend apt-get -d install -y virtualbox-7.0
+	#_getMost_backend apt-get -d install -y virtualbox-7.0
+	_getMost_backend apt-get -d install -y virtualbox-7.1
 	
-	_getMost_backend_aptGetInstall virtualbox-7.0
+	#_getMost_backend_aptGetInstall virtualbox-7.0
+	_getMost_backend_aptGetInstall virtualbox-7.1
 	
 	_getMost_backend apt-get remove --autoremove -y plasma-discover
 	
@@ -27036,7 +27058,7 @@ _wget_githubRelease_join-stdout() {
 
 	local currentIteration
 	currentIteration=0
-	for currentIteration in $(seq -f "%02g" 0 32)
+	for currentIteration in $(seq -f "%02g" 0 50)
 	do
 		currentURL=$(_wget_githubRelease-URL "$1" "$2" "$3"".part""$currentIteration")
 		[[ "$currentURL" == "" ]] && break
@@ -36717,6 +36739,128 @@ _test_h1060p() {
 	
 	return 0
 }
+
+
+# ATTRIBUTION-AI: ChatGPT o1 2024-12-24 .
+_live_hash-getRootBlkDevice()  {
+    _if_cygwin && _stop
+
+    local current_root_part
+    local current_root_disk
+    local current_root_type
+    local current_fallback_part
+    local current_fallback_disk
+
+
+    
+    # 1) Identify the root mount's source (which might be /dev/sdXn, overlay, etc.)
+    current_root_part=$(findmnt -no SOURCE / 2>/dev/null || true)
+
+    # 2) Try to look up the underlying physical disk for that partition/device.
+    current_root_disk=$(lsblk -no PKNAME "$current_root_part" 2>/dev/null || true)
+
+    # 3) If lsblk gave us an empty string, there are two main possibilities:
+    #    a) $current_root_part is an entire disk (e.g. /dev/sda).
+    #    b) The root is an overlay/union FS (e.g., in a Debian Live system).
+    if [ -z "$current_root_disk" ]; then
+        # 3a) Check if $current_root_part is a whole disk (TYPE='disk'):
+        current_root_type=$(lsblk -no TYPE "$current_root_part" 2>/dev/null || true)
+        if [ "$current_root_type" = "disk" ]; then
+            # $current_root_part is already the whole disk
+            current_root_disk=$(basename "$current_root_part")
+        fi
+    fi
+
+    # 4) If still empty, we suspect an overlay environment. Let's do a fallback to
+    #    /lib/live/mount/medium, which Debian Live typically uses as the real device mountpoint.
+    if [ -z "$current_root_disk" ] && [ -d "/lib/live/mount/medium" ]; then
+        # 4a) Find the block device underlying /lib/live/mount/medium
+        current_fallback_part=$(findmnt -n -o SOURCE /lib/live/mount/medium 2>/dev/null || true)
+
+        if [ -n "$current_fallback_part" ]; then
+            # 4b) Look up parent disk for current_fallback_part
+            current_fallback_disk=$(lsblk -no PKNAME "$current_fallback_part" 2>/dev/null || true)
+
+            # 4c) If current_fallback_disk is still empty, maybe current_fallback_part itself is a whole disk
+            if [ -z "$current_fallback_disk" ]; then
+            fallback_type=$(lsblk -no TYPE "$current_fallback_part" 2>/dev/null || true)
+                if [ "$fallback_type" = "disk" ]; then
+                current_fallback_disk=$(basename "$current_fallback_part")
+                fi
+            fi
+
+            # 4d) If current_fallback_disk is not empty now, that's our current_root_disk
+            if [ -n "$current_fallback_disk" ]; then
+            current_root_disk="$current_fallback_disk"
+            fi
+        fi
+    fi
+
+    # 5) If still empty, we cannot determine the device.
+    if [ -z "$current_root_disk" ]; then
+        echo "ERROR: Could not determine the underlying root disk device." >&2
+        exit 1
+    fi
+
+    echo "/dev/$current_root_disk"
+}
+
+# DANGER: CAUTION: ATTENTION: Initial measurement should be done BEFORE connecting computer, USB flash drive, etc, to potentially untrusted networks, peripherials, etc.
+#
+# For 'live' dist/OS , which is NOT supposed to change the disk contents, this may in theory, frustrate simple 'BadUSB'->dist/OS_filesystem_alteration->'BadUSB' spreading, and hopefully at least drastically reduce the efficiency of attempts at 'smart' firmware/microcontroller/etc reprogramming that sufficiently alters the binary code sequences of booted software on-the-fly in unpredictable environments to spread 'BadUSB' without direct dist/OS_filesystem_alteration .
+# Availability is a serious underpinning of Integrity security. Persistent booting with 'SecureBoot', 'IntelTXT', etc, has the downside that if integrity is lost, then this is persistent. Read-only USB flash drives are not only expensive and bulky, but not commercially available (as of 2024) with both FIPS (ie. software) and EAL (ie. hardware) certification. True read-only Optical Disc Drives, are becoming quite rare, are limited in capacity, and are also bulky.
+# This is a compromise that is hoped to bring the higher standard of non-persistent yet measured OS security to any available USB flash drive and Linux bootable laptop.
+_live_hash() {
+    _start
+
+    _if_cygwin && _stop
+    
+    local current_root_disk
+    current_root_disk=$(_live_hash-getRootBlkDevice)
+    _messagePlain_probe_var current_root_disk
+
+    # Attempt to ensure legacy openssl is available.
+    # Should do nothing if either openssl legacy is already enabled or if sudo is not available.
+	_here_opensslConfig_legacy | sudo -n tee /etc/ssl/openssl_legacy.cnf > /dev/null 2>&1
+
+    if ! sudo -n grep 'openssl_legacy' /etc/ssl/openssl.cnf > /dev/null 2>&1
+    then
+        sudo -n cp -f /etc/ssl/openssl.cnf /etc/ssl/openssl.cnf.orig
+        echo '
+
+
+.include = /etc/ssl/openssl_legacy.cnf
+
+' | sudo -n cat /etc/ssl/openssl.cnf.orig - | sudo -n tee /etc/ssl/openssl.cnf > /dev/null 2>&1
+    fi
+
+
+    _messagePlain_request 'request: Photograph, print, and label computer and USB flash drive with the below.'
+
+    # Speed limit is provided to run as a background process, though this is usually not useful.
+    local current_speed
+    current_speed="$2"
+    [[ "$current_speed" == "" ]] && current_speed="10G"
+    sudo -n dd if="$current_root_disk" bs=1M status=progress | pv -q -L "$current_speed" | \
+tee >( wc -c /dev/stdin | cut -f1 -d\ | tr -dc '0-9' > "$safeTmp"/.tmp-currentFileBytes ) | \
+tee >( openssl dgst -whirlpool -binary | xxd -p -c 256 > "$safeTmp"/.tmp-whirlpool ) | \
+tee >( openssl dgst -sha3-512 -binary | xxd -p -c 256 > "$safeTmp"/.tmp-sha3 ) > /dev/null
+
+    echo 'dd if='"$current_root_disk"' bs=1048576 count=$(bc <<< '"'"$(cat "$safeTmp"/.tmp-currentFileBytes)' / 1048576'"'"' ) status=progress | openssl dgst -whirlpool -binary | xxd -p -c 256'
+    
+    cat "$safeTmp"/.tmp-whirlpool
+    
+    
+    echo 'dd if='"$current_root_disk"' bs=1048576 count=$(bc <<< '"'"$(cat "$safeTmp"/.tmp-currentFileBytes)' / 1048576'"'"' ) status=progress | openssl dgst -sha3-512 -binary | xxd -p -c 256'
+    
+    cat "$safeTmp"/.tmp-sha3
+
+    _messagePlain_request 'request: Photograph, print, and label computer and USB flash drive with the above.'
+
+
+    _stop
+}
+
 
 #####Basic Variable Management
 
@@ -48037,6 +48181,11 @@ _deps_hardware() {
 	export enUb_hardware="true"
 }
 
+_deps_measurement() {
+	_deps_hardware
+	export enUb_measurement="true"
+}
+
 _deps_x220t() {
 	_deps_notLean
 	_deps_hardware
@@ -48636,6 +48785,7 @@ _compile_bash_deps() {
 		_deps_linux
 		
 		_deps_hardware
+		_deps_measurement
 		_deps_x220t
 		_deps_w540
 		
@@ -48841,6 +48991,7 @@ _compile_bash_deps() {
 		#_deps_synergy
 		
 		#_deps_hardware
+		#_deps_measurement
 		#_deps_x220t
 		#_deps_w540
 		#_deps_peripherial
@@ -48943,6 +49094,7 @@ _compile_bash_deps() {
 		#_deps_synergy
 		
 		#_deps_hardware
+		#_deps_measurement
 		#_deps_x220t
 		#_deps_w540
 		#_deps_peripherial
@@ -49045,6 +49197,7 @@ _compile_bash_deps() {
 		_deps_synergy
 		
 		_deps_hardware
+		_deps_measurement
 		_deps_x220t
 		_deps_w540
 		_deps_peripherial
@@ -49533,6 +49686,8 @@ _compile_bash_hardware() {
 	[[ "$enUb_hardware" == "true" ]] && [[ "$enUb_w540" == "true" ]] && includeScriptList+=( "hardware/w540"/w540_fan.sh )
 	
 	[[ "$enUb_hardware" == "true" ]] && [[ "$enUb_peripherial" == "true" ]] && includeScriptList+=( "hardware/peripherial/h1060p"/h1060p.sh )
+
+	( [[ "$enUb_hardware" == "true" ]] || [[ "$enUb_measurement" == "true" ]] ) && includeScriptList+=( "hardware/measurement"/live_hash.sh )
 }
 
 _compile_bash_vars_basic() {

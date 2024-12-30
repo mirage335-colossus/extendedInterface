@@ -17,7 +17,7 @@ _gitMad_neighbors_procedure() {
 	cd "$functionEntryPWD"
 }
 _gitMad_neighbors() {
-	"$scriptAbsoluteLocation _gitMad_neighbors "$@""
+	"$scriptAbsoluteLocation" _gitMad_neighbors_procedure "$@"
 }
 
 

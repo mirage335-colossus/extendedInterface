@@ -198,7 +198,7 @@ _build_extendedInterface-build() {
     unix2dos "$scriptAbsoluteFolder"/license-installer.txt
 
     cd "$scriptLib"/nsis
-    makensis "$scriptLib"/nsis/extIface.nsi
+    makensis -V4 "$scriptLib"/nsis/extIface.nsi
 
 
 

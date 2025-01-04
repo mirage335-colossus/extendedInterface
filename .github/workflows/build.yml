@@ -27,9 +27,10 @@ on:
         #default: true
       runnerName:
         required: false
-        default: ubuntu-latest-m
+        default: ubuntu-22.04
         type: choice
         options:
+        - ubuntu-22.04
         - ubuntu-latest
         - ubuntu-latest-m
   # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
@@ -64,7 +65,7 @@ jobs:
             #delete_release: true #(optional) default: true 
   build_nix:
     #needs: [build_guard]
-    runs-on: ${{ github.event.inputs.runnerName == '' && 'ubuntu-latest' || github.event.inputs.runnerName }}
+    runs-on: ${{ github.event.inputs.runnerName == '' && 'ubuntu-22.04' || github.event.inputs.runnerName }}
     steps:
       - uses: actions/checkout@v3
         with:

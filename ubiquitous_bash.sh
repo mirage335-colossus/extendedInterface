@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='2537019314'
+export ub_setScriptChecksum_contents='3294249523'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -7998,6 +7998,603 @@ _find_route_ip() {
 
 
 
+# NOTICE: CAUTION: For network services, instead of depending on the reliability of this forwarding, supplement a terminal-serial with this, using a dedicated host available through SSH to connect to both serial ports. If an unrecoverable failure occurs, and the network port is not reachable through the serial port, reboot the computer using the terminal-serial .
+
+# NOTICE: Recommend 'ssh -C' (ie. compression) for a lower-latency more 'snappy' experience.
+# NOTICE: Some USB serial converters are apparently based on microcontrollers, compatible with at least 4m baud.
+
+
+#./compile.sh ; ./ubiquitous_bash.sh _serial_server-service /dev/serial/by-id/... ; ./ubiquitous_bash.sh _serial_client-service /dev/serial/by-id/...
+
+
+#stty -F /dev/serial/by-id/...1 raw -echo -ixon -ixoff -crtscts 115200
+
+#stty -F /dev/serial/by-id/...2 raw -echo -ixon -ixoff -crtscts 115200
+
+#cat /dev/urandom | head -c 1000000 > fill
+
+#cat /dev/serial/by-id/...1 | head -c 1000000 | cksum
+
+#cat ./fill > /dev/serial/by-id/...2
+
+#cksum ./fill
+
+
+
+
+#b115200
+#b230400
+#b460800
+#b4000000
+
+
+# TODO: ATTENTION: WARNING: CAUTION: If any issues are encountered forwarding other network services (eg. HTTP, HTTPS, VPN, etc), the FIRST thing to do is disable the redundant TERMIOS_OPT setting by socat instead of exclusively by stty . Apparently, socat terminal options may be somewhat more fragile and less documented.
+
+_set_serial_serverClient() {
+    # rawer   avoid, known to fail
+    # hupcl=0?   stty documentation suggests +hupcl disables hup, equivalent to hup-
+    # istrip=1,iuclc=1   stty documentation suggests these are unhelpful
+    # raw   -ignbrk -brkint -ignpar -parmrk -inpck -istrip -inlcr -igncr -icrnl -ixon -ixoff -icanon -opost -isig -iuclc -ixany -imaxbel -xcase
+    # sane   cread -ignbrk brkint -inlcr -igncr icrnl icanon iexten echo echoe echok -echonl -noflsh -ixoff -iutf8 -iuclc -ixany imaxbel -xcase -olcuc -ocrnl opost -ofill onlcr -onocr -onlret nl0 cr0 tab0 bs0  vt0  ff0  isig -tostop -ofdel -echoprt echoctl echoke -extproc -flusho
+    export forwardPort_serial_default_BAUD=4000000
+    #export forwardPort_serial_default_TERMIOS_OPT=cs8,ixon=0,ixoff=0,crtscts=1,clocal=0,parenb=1,cstopb=0
+    #export forwardPort_serial_default_TERMIOS_OPT=raw,echo=0,ixon=0,ixoff=0,crtscts=1,cs8,parenb=1,cstopb=0,clocal=0,hupcl=0
+    export forwardPort_serial_default_TERMIOS_OPT=raw,echo=0,ixon=0,ixoff=0,crtscts=1,cs8,parenb=1,cstopb=0,clocal=0,hupcl=1
+    #export forwardPort_serial_default_TERMIOS_OPT=rawer,echo=0,ixon=0,ixoff=0,crtscts=1,cs8,parenb=1,cstopb=0,clocal=0,hupcl=1
+}
+
+_serial_serverClient_stty() {
+    #parenb -cstopb clocal 
+    #_messagePlain_probe_cmd stty -F "$1" raw -echo -ixon -ixoff crtscts cs8 parenb -cstopb -clocal "$2"
+    #_messagePlain_probe_cmd stty -F "$1" raw -echo -ixon -ixoff crtscts cs8 parenb cstopb -clocal hup "$2"
+    _messagePlain_probe_cmd stty -F "$1" raw -echo -ixon -ixoff crtscts cs8 parenb -cstopb -clocal hup "$2"
+}
+
+
+# ATTRIBUTION-AI ChatGPT o1 2025-01-06 ... partially
+
+# _serial_server /dev/serial/by-id/... 22 115200
+_serial_server_sequence() {
+    _set_serial_serverClient
+    
+    #_start
+    
+    ##
+    # This script uses socat to forward any data from a USB serial device to
+    # a local TCP port (e.g., 80 for HTTP).
+    #
+    # Usage:
+    #   ./serial_to_http.sh /dev/ttyUSB0 115200 80
+    #
+    # Then on the remote side (the device connected to /dev/ttyUSB0), send raw
+    # HTTP requests to retrieve the web page from the local server.
+    ##
+
+    local SERIAL_DEV
+    local WEB_PORT
+    local BAUD_RATE
+
+    SERIAL_DEV="${1:-/dev/ttyUSB0}"
+    WEB_PORT="${2:-22}"
+    BAUD_RATE="${3:-$forwardPort_serial_default_BAUD}"
+    
+    # Mostly attempts to ensure physical dis/re-connection of USB serial adapters does not inappropriately re-use 'zombie' device files.
+    if ! [[ -e "$SERIAL_DEV" ]]
+    then
+        while ! [[ -e "$SERIAL_DEV" ]]
+        do
+            sleep 1
+        done
+        sleep 45
+    fi
+    
+    echo 'stty'
+    #parenb -cstopb clocal 
+    #_messagePlain_probe_cmd stty -F "${SERIAL_DEV}" raw -echo -ixon -ixoff crtscts cs8 parenb -cstopb -clocal "${BAUD_RATE}"
+    _serial_serverClient_stty "${SERIAL_DEV}" "${BAUD_RATE}"
+    sleep 0.1
+
+    echo "Starting socat to forward ${SERIAL_DEV} <--> localhost:${WEB_PORT}"
+    echo "Baud rate: ${BAUD_RATE}"
+
+    # -d -d     : enable debug messages twice (for more verbosity)
+    # -v        : verbose traffic logging
+    # OPEN:...  : open the serial device, set it raw, no echo, at the chosen baud
+    # TCP:...   : connect to localhost:WEB_PORT
+    #
+    # If you want to watch hex dumps of data, you can also add '-x'.
+    #_messagePlain_probe_cmd socat -d -d -v OPEN:"${SERIAL_DEV}",rawer,echo=0,b"${BAUD_RATE}",cs8,ixon=0,ixoff=0,crtscts=1,clocal=0,parenb,cstopb=0 TCP:127.0.0.1:"${WEB_PORT}"
+    #_messagePlain_probe_cmd socat -d -d OPEN:"${SERIAL_DEV}",rawer,echo=0,b"${BAUD_RATE}","$forwardPort_serial_default_TERMIOS_OPT" TCP:127.0.0.1:"${WEB_PORT}"
+    _messagePlain_probe_cmd socat -d -d OPEN:"${SERIAL_DEV}",b"${BAUD_RATE}","$forwardPort_serial_default_TERMIOS_OPT" TCP:127.0.0.1:"${WEB_PORT}"
+    #_messagePlain_probe_cmd socat -d -d OPEN:"${SERIAL_DEV}" TCP:127.0.0.1:"${WEB_PORT}"
+    
+    #_stop
+}
+_serial_server_program() {
+    "$scriptAbsoluteLocation" _serial_server_sequence "$@"
+}
+_serial_server_loop() {
+    while true
+    do
+        "$scriptAbsoluteLocation" _serial_server_sequence "$@"
+        sleep 0.1
+    done
+}
+_serial_server() {
+    "$scriptAbsoluteLocation" _serial_server_loop "$@"
+}
+
+# _serial_server /dev/serial/by-id/... 10022 115200
+_serial_client_sequence() {
+    _set_serial_serverClient
+    
+    #_start
+
+    # --------------------------------------------------------------------
+    # serial_proxy_remote.sh
+    #
+    # Usage:
+    #   ./serial_proxy_remote.sh [SERIAL_DEV] [BAUD_RATE] [REMOTE_LISTEN_PORT]
+    #
+    # Default values:
+    #   SERIAL_DEV="/dev/ttyACM0"
+    #   BAUD_RATE="115200"
+    #   REMOTE_LISTEN_PORT="10022"
+    #
+    # This listens on TCP port 8080 and forwards the data to/from the serial device.
+    # --------------------------------------------------------------------
+
+    local SERIAL_DEV
+    local REMOTE_LISTEN_PORT
+    local BAUD_RATE
+
+    SERIAL_DEV="${1:-/dev/ttyUSB0}"
+    REMOTE_LISTEN_PORT="${2:-10022}"
+    BAUD_RATE="${3:-$forwardPort_serial_default_BAUD}"
+    
+    # Mostly attempts to ensure physical dis/re-connection of USB serial adapters does not inappropriately re-use 'zombie' device files.
+    if ! [[ -e "$SERIAL_DEV" ]]
+    then
+        while ! [[ -e "$SERIAL_DEV" ]]
+        do
+            sleep 1
+        done
+        sleep 45
+    fi
+    
+    echo 'stty'
+    #parenb -cstopb clocal 
+    #_messagePlain_probe_cmd stty -F "${SERIAL_DEV}" raw -echo -ixon -ixoff crtscts cs8 parenb -cstopb -clocal "${BAUD_RATE}"
+    _serial_serverClient_stty "${SERIAL_DEV}" "${BAUD_RATE}"
+    sleep 0.1
+
+    echo "Remote side: listening on 0.0.0.0:${REMOTE_LISTEN_PORT}, forwarding to ${SERIAL_DEV} (baud ${BAUD_RATE})"
+    echo "Press Ctrl-C to stop."
+
+    #_messagePlain_probe_cmd socat -d -d -v TCP-LISTEN:"${REMOTE_LISTEN_PORT}",bind=127.0.0.1,fork,reuseaddr OPEN:"${SERIAL_DEV}",rawer,echo=0,b"${BAUD_RATE}",cs8,ixon=0,ixoff=0,crtscts=1,clocal=0,parenb=1,cstopb=0
+    #_messagePlain_probe_cmd socat -d -d TCP-LISTEN:"${REMOTE_LISTEN_PORT}",bind=127.0.0.1,fork,reuseaddr OPEN:"${SERIAL_DEV}",rawer,echo=0,b"${BAUD_RATE}","$forwardPort_serial_default_TERMIOS_OPT"
+    _messagePlain_probe_cmd socat -d -d TCP-LISTEN:"${REMOTE_LISTEN_PORT}",bind=127.0.0.1,fork,reuseaddr OPEN:"${SERIAL_DEV}",b"${BAUD_RATE}","$forwardPort_serial_default_TERMIOS_OPT"
+    #_messagePlain_probe_cmd socat -d -d TCP-LISTEN:"${REMOTE_LISTEN_PORT}",bind=127.0.0.1,fork,reuseaddr OPEN:"${SERIAL_DEV}"
+
+    #_stop
+}
+_serial_client_program() {
+    "$scriptAbsoluteLocation" _serial_client_sequence "$@"
+}
+_serial_client() {
+    "$scriptAbsoluteLocation" _serial_client_sequence "$@"
+}
+
+
+
+
+# NOTICE: CAUTION: For network services, instead of depending on the reliability of this forwarding, supplement a terminal-serial with this, using a dedicated host available through SSH to connect to both serial ports. If an unrecoverable failure occurs, and the network port is not reachable through the serial port, reboot the computer using the terminal-serial .
+
+#export getMost_backend="chroot"
+# _serial_server-service /dev/serial/by-id/... 22 4000000
+_serial_server-service_sequence() {
+    _set_serial_serverClient
+    
+    _start
+    
+    # ATTENTION: Default backend is "direct" . Override to "chroot" or "ssh" as desired .
+    # WARNING: Backends other than "direct" may be untested.
+    #export getMost_backend="chroot"
+
+    _messageNormal 'init: _serial_server-service'
+    
+    local SERIAL_DEV
+    local WEB_PORT
+    local BAUD_RATE
+    
+    [[ "$1" == "" ]] && _messagePlain_bad 'missing: SERIAL_DEV' && _messageFAIL && _stop 1
+
+    SERIAL_DEV="${1:-/dev/ttyUSB0}"
+    WEB_PORT="${2:-22}"
+    BAUD_RATE="${3:-$forwardPort_serial_default_BAUD}"
+    
+    ## ATTRIBUTION-AI ChatGPT o1 2025-01-06 .
+    
+    ## Replace '/' with '-'
+    #local modified_path="${SERIAL_DEV//\//-}"
+
+    ## Escape '-' characters by replacing them with '\x2d'
+    #local escaped_path="${modified_path//-/\x2d}"
+
+    ## Prepend 'dev-' and append '.device'
+    #local systemd_device_unit="dev-${escaped_path}.device"
+    
+    ## Use sed to replace '/' with '-' and escape '-' with '\x2d'
+    ##local systemd_device_unit=$(echo "$SERIAL_DEV" | sed -e 's/\//-/g' -e 's/-/\\x2d/g')
+
+    ## Prepend 'dev-' and append '.device'
+    ##systemd_device_unit="dev-${systemd_device_unit}.device"
+    
+    _messagePlain_probe_var systemd_device_unit
+
+    _messagePlain_nominal '_serial_server-service: _getMost_backend'
+    
+    _set_getMost_backend
+    _set_getMost_backend_debian
+    _test_getMost_backend
+
+    _messagePlain_probe_var getMost_backend
+    
+    _messagePlain_nominal '_serial_server-service: copy: binary'
+    cat "$scriptAbsoluteLocation" | _getMost_backend tee /usr/local/bin/serial_forwardPort.sh > /dev/null
+    _getMost_backend chmod 755 /usr/local/bin/serial_forwardPort.sh
+
+    _messagePlain_nominal '_serial_server-service: write: server-serial.service'
+    
+    #/lib/systemd/system/ssh.service
+    cat << CZXWXcRMTo8EmM8i4d | _getMost_backend tee /etc/systemd/system/server-serial.service
+[Unit]
+Description=Server Socat Port Forwarder through Serial Port
+#After=systemd-user-sessions.service getty-pre.target
+#After=rc-local.service
+#After=network-online.target
+#After=network.target auditd.service
+After=network.target
+StartLimitIntervalSec=0
+#Requires="$systemd_device_unit"
+#After="$systemd_device_unit"
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/serial_forwardPort.sh _serial_server "$SERIAL_DEV" "$WEB_PORT" "$BAUD_RATE"
+#ExecStart=/usr/local/bin/serial_forwardPort.sh _serial_server_program "$SERIAL_DEV" "$WEB_PORT" "$BAUD_RATE"
+#ExecStart=socat -d -d OPEN:"${SERIAL_DEV}",b"${BAUD_RATE}","$forwardPort_serial_default_TERMIOS_OPT" TCP:127.0.0.1:"${WEB_PORT}"
+Restart=always
+RestartSec=1
+User=root
+
+[Install]
+WantedBy=multi-user.target
+CZXWXcRMTo8EmM8i4d
+
+    _messagePlain_probe_cmd _getMost_backend systemctl daemon-reload
+    sleep 1
+
+    _messagePlain_nominal '_serial_server-service: enable: /etc/systemd/system/multi-user.target.wants/server-serial.service'
+    #_getMost_backend tee /etc/systemd/system/server-serial.service
+    _getMost_backend chmod 644 /etc/systemd/system/server-serial.service
+    _messagePlain_probe_cmd _getMost_backend systemctl stop server-serial.service
+
+    _messagePlain_probe_cmd _getMost_backend systemctl daemon-reload
+    sleep 1
+
+    _messagePlain_probe_cmd _getMost_backend systemctl enable server-serial.service
+    _messagePlain_probe_cmd _getMost_backend ln -sf /etc/systemd/system/server-serial.service /etc/systemd/system/multi-user.target.wants/server-serial.service
+
+    _messagePlain_probe_cmd _getMost_backend systemctl daemon-reload
+    sleep 1
+    _messagePlain_probe_cmd _getMost_backend systemctl start server-serial.service
+
+    _messagePlain_probe_cmd _getMost_backend systemctl status server-serial.service | cat
+
+
+    _messagePlain_nominal '_serial_server-service: cron'
+    # Do NOT rely on systemd to ensure the service is started. Add cron job to guarantee such critical services are started.
+    if ! _getMost_backend /bin/bash -l -c 'crontab -l' | grep 'server-serial' > /dev/null
+    then
+        ( _getMost_backend /bin/bash -l -c 'crontab -l' ; echo '*/1 * * * * systemctl start server-serial.service' ) | _getMost_backend /bin/bash -l -c 'crontab -'
+    fi
+    ! _getMost_backend /bin/bash -l -c 'crontab -l' | grep 'server-serial' > /dev/null && _messagePlain_bad 'fail: crontab' && _messageFAIL && _stop 1
+
+    _stop
+}
+_serial_server-service() {
+    "$scriptAbsoluteLocation" _serial_server-service_sequence "$@"
+}
+
+
+
+
+
+
+
+#export getMost_backend="chroot"
+# _serial_server-service /dev/serial/by-id/... 22 4000000
+_serial_client-service_sequence() {
+    _set_serial_serverClient
+    
+    _start
+    
+    # ATTENTION: Default backend is "direct" . Override to "chroot" or "ssh" as desired .
+    # WARNING: Backends other than "direct" may be untested.
+    #export getMost_backend="chroot"
+
+    _messageNormal 'init: _serial_client-service'
+    
+    local SERIAL_DEV
+    local REMOTE_LISTEN_PORT
+    local BAUD_RATE
+    
+    [[ "$1" == "" ]] && _messagePlain_bad 'missing: SERIAL_DEV' && _messageFAIL && _stop 1
+
+    SERIAL_DEV="${1:-/dev/ttyUSB0}"
+    REMOTE_LISTEN_PORT="${2:-10022}"
+    BAUD_RATE="${3:-$forwardPort_serial_default_BAUD}"
+    
+    ## ATTRIBUTION-AI ChatGPT o1 2025-01-06 .
+    
+    ## Replace '/' with '-'
+    #local modified_path="${SERIAL_DEV//\//-}"
+
+    ## Escape '-' characters by replacing them with '\x2d'
+    #local escaped_path="${modified_path//-/\x2d}"
+
+    ## Prepend 'dev-' and append '.device'
+    #local systemd_device_unit="dev-${escaped_path}.device"
+    
+    ## Use sed to replace '/' with '-' and escape '-' with '\x2d'
+    ##local systemd_device_unit=$(echo "$SERIAL_DEV" | sed -e 's/\//-/g' -e 's/-/\\x2d/g')
+
+    ## Prepend 'dev-' and append '.device'
+    ##systemd_device_unit="dev-${systemd_device_unit}.device"
+    
+    _messagePlain_probe_var systemd_device_unit
+
+    _messagePlain_nominal '_serial_client-service: _getMost_backend'
+    
+	_set_getMost_backend
+	_set_getMost_backend_debian
+	_test_getMost_backend
+
+    _messagePlain_probe_var getMost_backend
+    
+    _messagePlain_nominal '_serial_client-service: copy: binary'
+    cat "$scriptAbsoluteLocation" | _getMost_backend tee /usr/local/bin/serial_forwardPort.sh > /dev/null
+    _getMost_backend chmod 755 /usr/local/bin/serial_forwardPort.sh
+
+    _messagePlain_nominal '_serial_client-service: write: client-serial.service'
+    
+    #/lib/systemd/system/ssh.service
+    cat << CZXWXcRMTo8EmM8i4d | _getMost_backend tee /etc/systemd/system/client-serial.service
+[Unit]
+Description=Server Socat Port Forwarder through Serial Port
+#After=systemd-user-sessions.service getty-pre.target
+#After=rc-local.service
+#After=network-online.target
+#After=network.target auditd.service
+After=network.target
+StartLimitIntervalSec=0
+#Requires="$systemd_device_unit"
+#After="$systemd_device_unit"
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/serial_forwardPort.sh _serial_client "$SERIAL_DEV" "$REMOTE_LISTEN_PORT" "$BAUD_RATE"
+#ExecStart=/usr/local/bin/serial_forwardPort.sh _serial_client_program "$SERIAL_DEV" "$REMOTE_LISTEN_PORT" "$BAUD_RATE"
+#ExecStart=socat -d -d TCP-LISTEN:"${REMOTE_LISTEN_PORT}",bind=127.0.0.1,fork,reuseaddr OPEN:"${SERIAL_DEV}",b"${BAUD_RATE}","$forwardPort_serial_default_TERMIOS_OPT"
+Restart=always
+RestartSec=1
+User=root
+
+[Install]
+WantedBy=multi-user.target
+CZXWXcRMTo8EmM8i4d
+
+    _messagePlain_probe_cmd _getMost_backend systemctl daemon-reload
+    sleep 1
+
+    _messagePlain_nominal '_serial_client-service: enable: /etc/systemd/system/multi-user.target.wants/client-serial.service'
+    #_getMost_backend tee /etc/systemd/system/client-serial.service
+    _getMost_backend chmod 644 /etc/systemd/system/client-serial.service
+    _messagePlain_probe_cmd _getMost_backend systemctl stop client-serial.service
+
+    _messagePlain_probe_cmd _getMost_backend systemctl daemon-reload
+    sleep 1
+
+    _messagePlain_probe_cmd _getMost_backend systemctl enable client-serial.service
+    _messagePlain_probe_cmd _getMost_backend ln -sf /etc/systemd/system/client-serial.service /etc/systemd/system/multi-user.target.wants/client-serial.service
+
+    _messagePlain_probe_cmd _getMost_backend systemctl daemon-reload
+    sleep 1
+    _messagePlain_probe_cmd _getMost_backend systemctl start client-serial.service
+
+    _messagePlain_probe_cmd _getMost_backend systemctl status client-serial.service | cat
+
+
+    _messagePlain_nominal '_serial_client-service: cron'
+    # Do NOT rely on systemd to ensure the service is started. Add cron job to guarantee such critical services are started.
+    if ! _getMost_backend /bin/bash -l -c 'crontab -l' | grep 'client-serial' > /dev/null
+    then
+        ( _getMost_backend /bin/bash -l -c 'crontab -l' ; echo '*/1 * * * * systemctl start client-serial.service' ) | _getMost_backend /bin/bash -l -c 'crontab -'
+    fi
+    ! _getMost_backend /bin/bash -l -c 'crontab -l' | grep 'client-serial' > /dev/null && _messagePlain_bad 'fail: crontab' && _messageFAIL && _stop 1
+
+    _stop
+}
+_serial_client-service() {
+    "$scriptAbsoluteLocation" _serial_client-service_sequence "$@"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Creates autologin terminal at specified serial port device, preferably serial/by-id or similar.
+# ATTENTION: STRONGLY RECOMMENDED to use serial/by-id instead of ttyUSB0 , etc . The entire point of these functions is to offer that functionality, rather than using the exiting serial-getty@ttyUSB0 services with that inherent unreliability.
+
+
+# WARNING: Do NOT login as same user as display manager (ie. 'sddm') login! Must continue to exist after all 'user' processes are terminated!
+# https://wiki.gentoo.org/wiki/Automatic_login_to_virtual_console
+# https://forums.debian.net/viewtopic.php?t=140452
+# https://forums.debian.net/viewtopic.php?f=16&t=123694
+# https://man7.org/linux/man-pages/man8/agetty.8.html
+# https://unix.stackexchange.com/questions/459942/using-systemctl-edit-via-bash-script
+#ExecStart=-/sbin/agetty -o '-p -- \\u' --noclear %I $TERM
+#ExecStart=-/sbin/agetty --autologin user --noclear %I 38400 linux
+#export getMost_backend="chroot" ; _autologin_serial "serial/by-id/..."
+#export getMost_backend="" ; _autologin_serial "serial/by-id/..."
+_autologin_serial_sequence() {
+    _start
+    
+    # ATTENTION: Default backend is "direct" . Override to "chroot" or "ssh" as desired .
+    # WARNING: Backends other than "direct" may be untested.
+    #export getMost_backend="chroot"
+
+    _messageNormal 'init: _autologin_serial'
+
+    local currentTerminal
+    currentTerminal="$1"
+    [[ "$currentTerminal" == "" ]] && _messagePlain_bad 'missing: currentTerminal' && _messageFAIL && _stop 1
+
+    _messagePlain_nominal '_autologin_serial: _getMost_backend'
+    
+	_set_getMost_backend
+	_set_getMost_backend_debian
+	_test_getMost_backend
+
+    _messagePlain_probe_var getMost_backend
+
+    _messagePlain_nominal '_autologin_serial: write: terminal-serial.service'
+    cat << CZXWXcRMTo8EmM8i4d | _getMost_backend tee /etc/systemd/system/terminal-serial.service
+[Unit]
+# /lib/systemd/system/serial-getty@.service
+# /etc/systemd/system/getty.target.wants/getty@tty1.service
+Description=Serial Port Terminal
+#BindsTo=dev-%i.device
+#After=dev-%i.device systemd-user-sessions.service plymouth-quit-wait.service getty-pre.target
+After=systemd-user-sessions.service getty-pre.target
+After=rc-local.service
+
+# If additional gettys are spawned during boot then we should make
+# sure that this is synchronized before getty.target, even though
+# getty.target didn't actually pull it in.
+Before=getty.target
+IgnoreOnIsolate=yes
+
+# IgnoreOnIsolate causes issues with sulogin, if someone isolates
+# rescue.target or starts rescue.service from multi-user.target or
+# graphical.target.
+Conflicts=rescue.service
+Before=rescue.service
+
+[Service]
+# The '-o' option value tells agetty to replace 'login' arguments with an
+# option to preserve environment (-p), followed by '--' for safety, and then
+# the entered username.
+#ExecStart=-/sbin/agetty -o '-p -- \\u' --keep-baud 115200,57600,38400,9600 - "$currentTerminal"
+#Type=idle
+Type=simple
+ExecStart=
+#ExecStart=-/sbin/agetty --autologin root --keep-baud 230400,115200,57600,38400,9600 --noclear %I "$currentTerminal"
+ExecStart=-/sbin/agetty --autologin root --local-line -p -h "$currentTerminal" 230400 xterm-256color
+Restart=always
+#UtmpIdentifier=%I
+#UtmpIdentifier="$currentTerminal"
+#StandardInput=tty
+#StandardOutput=tty
+#TTYPath=/dev/%I
+#TTYPath=/dev/"$currentTerminal"
+#TTYReset=yes
+#TTYVHangup=yes
+#IgnoreSIGPIPE=no
+#SendSIGHUP=yes
+
+[Install]
+WantedBy=getty.target
+CZXWXcRMTo8EmM8i4d
+
+    _messagePlain_probe_cmd _getMost_backend systemctl daemon-reload
+    sleep 1
+
+    _messagePlain_nominal '_autologin_serial: enable: /etc/systemd/system/getty.target.wants/terminal-serial.service'
+    #_getMost_backend tee /etc/systemd/system/terminal-serial.service
+    _getMost_backend chmod 644 /etc/systemd/system/terminal-serial.service
+    _messagePlain_probe_cmd _getMost_backend systemctl stop terminal-serial.service
+
+    _messagePlain_probe_cmd _getMost_backend systemctl daemon-reload
+    sleep 1
+
+    _messagePlain_probe_cmd _getMost_backend systemctl enable terminal-serial.service
+    _messagePlain_probe_cmd _getMost_backend ln -sf /etc/systemd/system/terminal-serial.service /etc/systemd/system/getty.target.wants/terminal-serial.service
+
+    _messagePlain_probe_cmd _getMost_backend systemctl daemon-reload
+    sleep 1
+    _messagePlain_probe_cmd _getMost_backend systemctl start terminal-serial.service
+
+    _messagePlain_probe_cmd _getMost_backend systemctl status terminal-serial.service | cat
+
+
+    _messagePlain_nominal '_autologin_serial: cron'
+    # Do NOT rely on systemd to ensure the service is started. Add cron job to guarantee such critical services are started.
+    if ! _getMost_backend /bin/bash -l -c 'crontab -l' | grep 'terminal-serial' > /dev/null
+    then
+        ( _getMost_backend /bin/bash -l -c 'crontab -l' ; echo '*/1 * * * * systemctl start terminal-serial.service' ) | _getMost_backend /bin/bash -l -c 'crontab -'
+    fi
+    ! _getMost_backend /bin/bash -l -c 'crontab -l' | grep 'terminal-serial' > /dev/null && _messagePlain_bad 'fail: crontab' && _messageFAIL && _stop 1
+
+    _stop
+}
+_autologin_serial() {
+    "$scriptAbsoluteLocation" _autologin_serial_sequence "$@"
+}
+_terminal_serial() {
+    _autologin_serial "$@"
+}
+# NOTICE: PREFERRED.
+_serial_terminal() {
+    _autologin_serial "$@"
+}
+
+
+#_serial_screen /dev/serial/by-id/...
+_serial_screen() {
+    [[ "$1" == "" ]] && _messagePlain_bad 'bad: missing: serial device' && _messageFAIL
+    
+    # Arguably not best practice, but this is only used for such things as a single laptop diagnosing a single server... seems like a reasonable convenience.
+    pkill ^screen$ > /dev/null 2>&1 && sleep 1
+    sudo -n pkill ^screen$ > /dev/null 2>&1 && sleep 1
+    
+    local currentTERM
+    currentTERM="$TERM"
+    [[ "$currentTERM" == "" ]] && currentTERM="xterm-256color"
+    screen "$1" 230400 -T "$TERM"
+}
+
+
+
 
 _dns() {
     _messagePlain_nominal '_dns: ip'
@@ -11039,6 +11636,11 @@ _getMost_debian11_install() {
 	
 
 	_getMost_backend_aptGetInstall xvfb
+
+	# terminal-serial: agetty, screen, resize
+	_getMost_backend_aptGetInstall util-linux
+	_getMost_backend_aptGetInstall screen
+	_getMost_backend_aptGetInstall xterm
 	
 	#_getMost_backend_aptGetInstall original-awk
 	_getMost_backend_aptGetInstall gawk
@@ -34954,7 +35556,6 @@ export profileScriptFolder="$ubcoreUBdir"
 [[ "\$scriptAbsoluteLocation" == "" ]] && . "\$profileScriptLocation" --profile _importShortcuts
 [[ "\$ub_setScriptChecksum_disable" == 'true' ]] && export ub_setScriptChecksum_disable="" && unset ub_setScriptChecksum_disable
 
-
 # Returns priority to normal.
 # Greater or equal, '_priority_app_pid_root' .
 #ionice -c 2 -n 3 -p \$\$
@@ -35023,6 +35624,14 @@ then
 fi
 
 CZXWXcRMTo8EmM8i4d
+}
+
+
+
+_setupUbiquitous_resize() {
+	echo "# Hardware serial terminals connected through screen require explicit resize to change number of columns/lines. Usually doing this once will at least increase the usable 'screen real estate' from the very small defaults."
+	echo "# Ignored by Cygwin/MSW, etc."
+	echo "type -p resize > /dev/null 2>&1 && resize > /dev/null 2>&1"
 }
 
 _configureLocal() {
@@ -35222,7 +35831,7 @@ _setupUbiquitous() {
 		_setupUbiquitous_bashProfile_here >> "$HOME"/.bash_profile
 	fi
 	
-	
+	_setupUbiquitous_resize >> "$ubcoreFile"
 	
 	
 	_messageNormal "install: setupUbiquitous_accessories"
@@ -48005,6 +48614,7 @@ _deps_search() {
 _deps_cloud() {
 	_deps_repo
 	_deps_proxy
+	_deps_serial
 	_deps_stopwatch
 	
 	_deps_fakehome
@@ -48070,6 +48680,12 @@ _deps_proxy() {
 _deps_proxy_special() {
 	_deps_proxy
 	export enUb_proxy_special="true"
+}
+
+_deps_serial() {
+	_deps_notLean
+	
+	export enUb_serial="true"
 }
 
 _deps_fw() {
@@ -48232,6 +48848,7 @@ _deps_command() {
 	_deps_os_x11
 	_deps_proxy
 	_deps_proxy_special
+	_deps_serial
 	
 	export enUb_command="true"
 }
@@ -48808,6 +49425,10 @@ _compile_bash_deps() {
 		
 		#_deps_virt_translation
 		
+		# Serial depends on '_getMost_backend', which explicitly requires only 'notLean' .
+		#_deps_notLean
+		#_deps_serial
+		
 		_deps_stopwatch
 		
 		_deps_queue
@@ -48819,6 +49440,8 @@ _compile_bash_deps() {
 	if [[ "$1" == "ubcore" ]]
 	then
 		_deps_notLean
+		
+		_deps_serial
 
 		_deps_fw
 		
@@ -48878,6 +49501,8 @@ _compile_bash_deps() {
 		_deps_proxy
 		_deps_proxy_special
 
+		_deps_serial
+
 		_deps_fw
 		
 		_deps_clog
@@ -48929,6 +49554,8 @@ _compile_bash_deps() {
 		_deps_queue
 		_deps_metaengine
 		
+		_deps_serial
+		
 		_deps_stopwatch
 		
 		return 0
@@ -48951,6 +49578,8 @@ _compile_bash_deps() {
 		_deps_metaengine
 		
 		_deps_abstractfs
+		
+		_deps_serial
 		
 		_deps_stopwatch
 		
@@ -48976,6 +49605,8 @@ _compile_bash_deps() {
 		
 		_deps_fakehome
 		_deps_abstractfs
+		
+		_deps_serial
 		
 		_deps_stopwatch
 		
@@ -49065,6 +49696,7 @@ _compile_bash_deps() {
 		
 		#_deps_proxy
 		#_deps_proxy_special
+		_deps_serial
 
 		_deps_fw
 		
@@ -49168,6 +49800,7 @@ _compile_bash_deps() {
 		
 		#_deps_proxy
 		#_deps_proxy_special
+		_deps_serial
 
 		_deps_fw
 		
@@ -49271,6 +49904,7 @@ _compile_bash_deps() {
 		
 		_deps_proxy
 		_deps_proxy_special
+		_deps_serial
 
 		_deps_fw
 		
@@ -49404,6 +50038,10 @@ _compile_bash_utilities() {
 	
 	[[ "$enUb_proxy" == "true" ]] && includeScriptList+=( "generic/net/proxy/proxyrouter"/here_proxyrouter.sh )
 	[[ "$enUb_proxy" == "true" ]] && includeScriptList+=( "generic/net/proxy/proxyrouter"/proxyrouter.sh )
+
+	[[ "$enUb_serial" == "true" ]] && includeScriptList+=( "generic/serial"/forwardPort.sh )
+	[[ "$enUb_serial" == "true" ]] && includeScriptList+=( "generic/serial"/forwardPort-service.sh )
+	[[ "$enUb_serial" == "true" ]] && includeScriptList+=( "generic/serial"/terminal.sh )
 	
 	[[ "$enUb_fw" == "true" ]] && includeScriptList+=( "generic/net/fw"/fw.sh )
 	[[ "$enUb_fw" == "true" ]] && includeScriptList+=( "generic/net/fw"/hosts.sh )

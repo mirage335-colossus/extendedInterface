@@ -6499,6 +6499,7 @@ _setup_install_procedure() {
 	mkdir -p /cygdrive/c/core/infrastructure
 	mkdir -p /cygdrive/c/core/installations
 	mkdir -p /cygdrive/c/core/investigation
+	mkdir -p /cygdrive/c/core/info
 
 	# MSW really has issues with long paths. Virtual Machines need shared directories.
 	# Keeping everything in a short path location is helpful for MSW host and VM guests.

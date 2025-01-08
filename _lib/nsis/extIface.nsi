@@ -160,6 +160,11 @@ Section "Install"
   File /r "..\..\..\extendedInterface-accessories\parts\iconArt\*"
 
 
+  Rename "C:\core\info\issues" "C:\core\info\issues-backup-$0"
+  SetOutPath "C:\core\info\issues"
+  File /r "..\..\..\ubDistBuild-accessories\parts\issues\*"
+
+
 
 
 

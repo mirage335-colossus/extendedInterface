@@ -6443,6 +6443,7 @@ _setup_install-restore() {
 
 	#--exclude ".ssh"
 	#--exclude ".gitconfig"
+	#--exclude "_bashrc"
 	_messagePlain_probe_cmd rsync -ax --delete --exclude ".bash_profile" --exclude ".bashrc" --exclude ".config" --exclude ".inputrc" --exclude ".lesshst" --exclude ".octave_hist" --exclude ".octaverc" --exclude ".profile" --exclude ".ubcore" --exclude ".ubcorerc_pythonrc.py" --exclude ".ubcorerc-gnuoctave.m" --exclude ".viminfo" --exclude ".wget-hsts" --exclude "bin" "$currentSource" "$currentDestination"
 	#_setup_install-permissions "$@"
 }

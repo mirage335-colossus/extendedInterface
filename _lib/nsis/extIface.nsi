@@ -162,7 +162,7 @@ Section "Install"
 
   Rename "C:\core\info\issues" "C:\core\info\issues-backup-$0"
   SetOutPath "C:\core\info\issues"
-  File /r "..\..\..\ubDistBuild-accessories\parts\issues\*"
+  File /r "..\..\..\extendedInterface-accessories\parts\issues\*"
 
 
 

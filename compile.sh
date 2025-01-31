@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='4218062627'
+export ub_setScriptChecksum_contents='3760616250'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -1446,6 +1446,11 @@ _report_setup_ubcp() {
 	currentCygdriveC_equivalent="$1"
 	[[ "$currentCygdriveC_equivalent" == "" ]] && currentCygdriveC_equivalent=$(cygpath -S | sed 's/\/Windows\/System32//g')
 	[[ "$1" == "/" ]] && currentCygdriveC_equivalent=$(echo "$PWD" | sed 's/\(\/cygdrive\/[a-zA-Z]*\).*/\1/')
+
+
+	mkdir -p "$currentCygdriveC_equivalent"/core/infrastructure/
+	#cd "$currentCygdriveC_equivalent"/core/infrastructure/
+
 
 	find /bin/ /usr/bin/ /sbin/ /usr/sbin/ | tee "$currentCygdriveC_equivalent"/core/infrastructure/ubcp-binReport > /dev/null
 
@@ -3643,6 +3648,17 @@ _messagePlain_probe_noindent() {
 	_color_end
 	echo
 	return 0
+}
+# WARNING: Less track record with very unusual text. May or may not output correctly in some (unknown, unexpected) situations.
+# DANGER: MUST use this function instead of _messagePlain_probe when text is from external origins!
+_messagePlain_probe_safe() {
+	_color_begin_probe
+	#_color_begin_probe_noindent
+	#echo -n "$@"
+	_safeEcho "$@"
+	_color_end
+	echo
+	return
 }
 
 #Blue. Diagnostic instrumentation.
@@ -5996,6 +6012,12 @@ _deps_dev_heavy_atom() {
 	export enUb_dev_heavy_atom="true"
 }
 
+_deps_dev_buildOps() {
+	_deps_generic
+	
+	export enUb_dev_buildOps="true"
+}
+
 _deps_cloud_heavy() {
 	_deps_notLean
 	export enUb_cloud_heavy="true"
@@ -6300,6 +6322,12 @@ _deps_w540() {
 	_deps_notLean
 	_deps_hardware
 	export enUb_w540="true"
+}
+
+_deps_gpd() {
+	_deps_notLean
+	_deps_hardware
+	export enUb_gpd="true"
 }
 
 _deps_peripherial() {
@@ -6843,6 +6871,8 @@ _compile_bash_deps() {
 	
 	if [[ "$1" == "lean" ]]
 	then
+		_deps_dev_buildOps
+		
 		#_deps_git
 		
 		#_deps_virt_translation
@@ -6861,6 +6891,8 @@ _compile_bash_deps() {
 	# Specifically intended to be imported into user profile.
 	if [[ "$1" == "ubcore" ]]
 	then
+		_deps_dev_buildOps
+		
 		_deps_notLean
 		
 		_deps_serial
@@ -6898,6 +6930,7 @@ _compile_bash_deps() {
 		_deps_measurement
 		_deps_x220t
 		_deps_w540
+		_deps_gpd
 		
 		_deps_generic
 		
@@ -6919,6 +6952,8 @@ _compile_bash_deps() {
 	
 	if [[ "$1" == "cautossh" ]]
 	then
+		_deps_dev_buildOps
+		
 		_deps_os_x11
 		_deps_proxy
 		_deps_proxy_special
@@ -6960,6 +6995,7 @@ _compile_bash_deps() {
 	if [[ "$1" == "processor" ]]
 	then
 		_deps_dev
+		_deps_dev_buildOps
 		
 		_deps_generic
 		
@@ -6986,6 +7022,7 @@ _compile_bash_deps() {
 	if [[ "$1" == "abstract" ]] || [[ "$1" == "abstractfs" ]]
 	then
 		_deps_dev
+		_deps_dev_buildOps
 		
 		_deps_python
 		_deps_haskell
@@ -7012,6 +7049,7 @@ _compile_bash_deps() {
 	if [[ "$1" == "fakehome" ]]
 	then
 		_deps_dev
+		_deps_dev_buildOps
 		
 		_deps_python
 		_deps_haskell
@@ -7040,6 +7078,7 @@ _compile_bash_deps() {
 		_deps_dev_heavy
 		#_deps_dev_heavy_atom
 		_deps_dev
+		_deps_dev_buildOps
 		
 		#_deps_cloud_heavy
 		
@@ -7112,6 +7151,7 @@ _compile_bash_deps() {
 		#_deps_measurement
 		#_deps_x220t
 		#_deps_w540
+		#_deps_gpd
 		#_deps_peripherial
 		
 		#_deps_user
@@ -7144,6 +7184,7 @@ _compile_bash_deps() {
 		_deps_dev_heavy
 		#_deps_dev_heavy_atom
 		_deps_dev
+		_deps_dev_buildOps
 		
 		#_deps_cloud_heavy
 		
@@ -7216,6 +7257,7 @@ _compile_bash_deps() {
 		#_deps_measurement
 		#_deps_x220t
 		#_deps_w540
+		#_deps_gpd
 		#_deps_peripherial
 		
 		#_deps_user
@@ -7248,6 +7290,7 @@ _compile_bash_deps() {
 		_deps_dev_heavy
 		#_deps_dev_heavy_atom
 		_deps_dev
+		_deps_dev_buildOps
 		
 		_deps_cloud_heavy
 		
@@ -7320,6 +7363,7 @@ _compile_bash_deps() {
 		_deps_measurement
 		_deps_x220t
 		_deps_w540
+		_deps_gpd
 		_deps_peripherial
 		
 		_deps_user
@@ -7812,6 +7856,8 @@ _compile_bash_hardware() {
 	[[ "$enUb_hardware" == "true" ]] && [[ "$enUb_w540" == "true" ]] && includeScriptList+=( "hardware/w540"/w540_fan.sh )
 	
 	[[ "$enUb_hardware" == "true" ]] && [[ "$enUb_peripherial" == "true" ]] && includeScriptList+=( "hardware/peripherial/h1060p"/h1060p.sh )
+	
+	[[ "$enUb_hardware" == "true" ]] && [[ "$enUb_gpd" == "true" ]] && includeScriptList+=( "hardware/gpdWinMini2024_8840U"/gpdWinMini2024_8840U_fan.sh )
 
 	( [[ "$enUb_hardware" == "true" ]] || [[ "$enUb_measurement" == "true" ]] ) && includeScriptList+=( "hardware/measurement"/live_hash.sh )
 }
@@ -7950,6 +7996,7 @@ _compile_bash_selfHost() {
 _compile_bash_overrides() {
 	export includeScriptList
 	
+	[[ "$enUb_dev_buildOps" == "true" ]] && includeScriptList+=( "build/zSpecial"/build-ops.sh )
 	
 	includeScriptList+=( "structure"/overrides.sh )
 }

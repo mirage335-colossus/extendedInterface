@@ -36,7 +36,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='1627475783'
+export ub_setScriptChecksum_contents='989857507'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -4810,16 +4810,25 @@ _getDep() {
 }
 
 _stopwatch() {
+	local currentExitStatus_bin
+	local currentExitStatus_self
+	
 	local measureDateA
 	local measureDateB
 	
 	measureDateA=$(date +%s%N | cut -b1-13)
 
 	"$@"
+	currentExitStatus_bin="$?"
 
 	measureDateB=$(date +%s%N | cut -b1-13)
 
 	bc <<< "$measureDateB - $measureDateA"
+	currentExitStatus_self="$?"
+
+	[[ "$currentExitStatus_bin" != "0" ]] && return "$currentExitStatus_bin"
+	[[ "$currentExitStatus_self" != "0" ]] && return "$currentExitStatus_self"
+	return 0
 }
 
 
@@ -13597,7 +13606,9 @@ _variableLocalTest_sequence() {
 	unset doubleLocalDefinitionA
 	[[ "$doubleLocalDefinitionA" != "" ]] && _messageFAIL && _stop 1
 	
-	
+
+	variableLocalTest_evalTest() { local currentVariableNum=1 ; eval local currentVariable_${currentVariableNum}_currentData=PASS ; ( eval "[[ \$currentVariable_${currentVariableNum}_currentData == PASS ]]" && eval "[[ \$currentVariable_${currentVariableNum}_currentData != '' ]]" && eval "echo \$currentVariable_${currentVariableNum}_currentData" ) ;} ; variableLocalTest_evalTest > /dev/null ; [[ $(variableLocalTest_evalTest) != "PASS" ]] && _messageFAIL && _stop 1
+
 	_stop
 }
 
@@ -14612,6 +14623,16 @@ _test() {
 			echo -e '\E[0;36m Timing: _test_timeoutRead \E[0m'
 			! _test_timeoutRead && echo '_test_timeoutRead broken' && _stop 1
 		fi
+
+		echo -e '\E[0;36m Timing: true/false \E[0m'
+		! _timeout 10 true && echo '! _timeout 10 true  broken' && _stop 1
+		_timeout 10 false && echo '_timeout 10 false  broken' && _stop 1
+		if type _stopwatch > /dev/null 2>&1
+		then
+    		! _stopwatch _timeout 10 true > /dev/null 2>&1 && echo '! _stopwatch _timeout 10 true  broken' && _stop 1
+    		_stopwatch _timeout 10 false > /dev/null 2>&1 && echo '_stopwatch _timeout 10 false  broken' && _stop 1
+		fi
+		
 		
 		echo -e '\E[0;36m Timing: _timetest \E[0m'
 		! _timetest && echo '_timetest broken' && _stop 1
@@ -15381,7 +15402,7 @@ _getRelease-ubcp() {
         #-H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
         #curl -L -o "$currentAccessoriesDir"/integrations/ubcp/"$1"  $(curl -s "https://api.github.com/repos/mirage335/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"internal\") | .assets[] | select(.name == \"""$1""\") | .browser_download_url" | sort -n -r | head -n1)
         #curl -L -o "$currentAccessoriesDir"/integrations/ubcp/"$1"  $(curl -s "https://api.github.com/repos/mirage335-colossus/ubiquitous_bash/releases" | jq -r ".[] | select(.name == \"internal\") | .assets[] | select(.name == \"""$1""\") | .browser_download_url" | sort -n -r | head -n1)
-        _wget_githubRelease "mirage335-colossus/ubiquitous_bash" "internal" "$1"
+        _wget_githubRelease "mirage335-colossus/ubiquitous_bash" "internal" "$1" -O "$currentAccessoriesDir"/integrations/ubcp/"$1"
     fi
 }
 

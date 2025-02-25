@@ -464,6 +464,68 @@ _sep() {
 	echo '________________________________________'
 }
 
+
+# Ingredients. Debian pacakges mirror, docker images, pre-built dist/OS images, etc.
+_set_ingredients() {
+    export ub_INGREDIENTS=""
+
+    local currentDriveLetter
+
+    if ! _if_cygwin
+    then
+        [[ -e /mnt/ingredients/ingredients ]] && mountpoint /mnt/ingredients && export ub_INGREDIENTS=/mnt/ingredients/ingredients && return 0
+
+        # STRONGLY PREFERRED.
+        [[ -e /mnt/ingredients ]] && mountpoint /mnt/ingredients && export ub_INGREDIENTS=/mnt/ingredients && return 0
+
+        # STRONGLY DISCOURAGED.
+        # Do NOT create "$HOME"/core/ingredients unless for some very unexpected reason it is necessary for a non-root user to use ingredients.
+        [[ -e "$HOME"/core/ingredients ]] && export ub_INGREDIENTS="$HOME"/core/ingredients && return 0
+
+        # WSL(2) specific.
+        #_if_wsl
+        #uname -a | grep -i 'microsoft' > /dev/null 2>&1 || uname -a | grep -i 'WSL2' > /dev/null 2>&1
+        if type _if_wsl > /dev/null 2>&1 && _if_wsl
+        then
+            [[ -e /mnt/host/z/mnt/ingredients ]] && export ub_INGREDIENTS=/mnt/host/z/mnt/ingredients && return 0
+            [[ -e /mnt/z/mnt/ingredients ]] && export ub_INGREDIENTS=/mnt/z/mnt/ingredients && return 0
+            [[ -e /mnt/c/core/ingredients ]] && export ub_INGREDIENTS=/mnt/c/core/ingredients && return 0
+            [[ -e /mnt/host/c/core/ingredients ]] && export ub_INGREDIENTS=/mnt/host/c/core/ingredients && return 0
+            #
+            for currentDriveLetter in d e f g h i j k l m n o p q r s t u v w D E F G H I J K L M N O P Q R S T U V W
+            do
+                [[ -e /mnt/"$currentDriveLetter"/ingredients ]] && export ub_INGREDIENTS=/mnt/"$currentDriveLetter"/ingredients && return 0
+            done
+            if [[ -e /mnt/host ]]
+            then
+                for currentDriveLetter in d e f g h i j k l m n o p q r s t u v w D E F G H I J K L M N O P Q R S T U V W
+                do
+                    [[ -e /mnt/host/"$currentDriveLetter"/ingredients ]] && export ub_INGREDIENTS=/mnt/host/"$currentDriveLetter"/ingredients && return 0
+                done
+            fi
+        fi
+    fi
+
+    if _if_cygwin
+    then
+        [[ -e /cygdrive/z/mnt/ingredients ]] && export ub_INGREDIENTS=/cygdrive/z/mnt/ingredients && return 0
+        [[ -e /cygdrive/c/core/ingredients ]] && export ub_INGREDIENTS=/cygdrive/c/core/ingredients && return 0
+        #
+        for currentDriveLetter in d e f g h i j k l m n o p q r s t u v w D E F G H I J K L M N O P Q R S T U V W
+        do
+            [[ -e /cygdrive/"$currentDriveLetter"/ingredients ]] && export ub_INGREDIENTS=/cygdrive/"$currentDriveLetter"/ingredients && return 0
+        done
+    fi
+
+
+
+
+    [[ "$ub_INGREDIENTS" == "" ]] && return 1
+    return 0
+}
+
+
+
 #####Utilities
 
 _test_getAbsoluteLocation_sequence() {
@@ -2986,8 +3048,10 @@ _wget_githubRelease_join() {
 
 
 
-
 _wget_githubRelease_join-stdout() {
+	"$scriptAbsoluteLocation" _wget_githubRelease_join_sequence-stdout "$@"
+}
+_wget_githubRelease_join_sequence-stdout() {
 	( _messagePlain_nominal '\/\/\/\/\/ \/\/\/\/\/ init: _wget_githubRelease_join-stdout' >&2 ) > /dev/null
 	( _messagePlain_probe_safe _wget_githubRelease_join-stdout "$@" >&2 ) > /dev/null
 
@@ -3154,19 +3218,23 @@ _wget_githubRelease_join-stdout() {
 	done
 
 	export currentSkipPart="$currentPart"
+	[[ "$currentStream_max" -gt "$currentSkipPart" ]] && currentStream_max=$(( "$currentSkipPart" + 1 ))
 
 	"$scriptAbsoluteLocation" _wget_githubRelease_join_sequence-parallel "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" &
 
 
 	# Prebuffer .
 	( _messagePlain_nominal '\/\/\/\/\/ \/\/\/\/  preBUFFER: WAIT  ...  currentPart='"$currentPart" >&2 ) > /dev/null
-	#( _messagePlain_probe 'prebuffer: currentPart= '"$currentPart" >&2 ) > /dev/null
-	if [[ "$currentPart" -ge "2" ]] && [[ "$currentStream_max" -ge "2" ]]
+	if [[ "$currentPart" -ge "01" ]] && [[ "$currentStream_max" -ge "2" ]]
 	then
-		currentStream="2"
-		while ( ! [[ -e "$scriptAbsoluteFolder"/$(_axelTmp).PASS ]] && ! [[ -e "$scriptAbsoluteFolder"/$(_axelTmp).FAIL ]] )
+		#currentStream="2"
+		for currentStream in $(seq "$currentStream_min" "$currentStream_max" | sort -r)
 		do
-			sleep 3
+			( _messagePlain_probe 'prebuffer: currentStream= '"$currentStream" >&2 ) > /dev/null
+			while ( ! [[ -e "$scriptAbsoluteFolder"/$(_axelTmp).PASS ]] && ! [[ -e "$scriptAbsoluteFolder"/$(_axelTmp).FAIL ]] )
+			do
+				sleep 3
+			done
 		done
 	fi
 	currentStream="$currentStream_min"
@@ -3244,6 +3312,7 @@ _wget_githubRelease_join_sequence-parallel() {
 	local currentStream_min=1
 	local currentStream_max=3
 	[[ "$FORCE_PARALLEL" != "" ]] && currentStream_max="$FORCE_PARALLEL"
+	[[ "$currentStream_max" -gt "$currentSkipPart" ]] && currentStream_max=$(( "$currentSkipPart" + 1 ))
 	
 	currentStream="$currentStream_min"
 	for currentPart in $(seq -f "%02g" 0 "$currentSkipPart" | sort -r)

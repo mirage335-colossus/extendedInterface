@@ -6939,8 +6939,11 @@ _setupUbiquitous() {
 	fi
 	
 	mkdir -p "$ubHome"/bin/
+	rm -f "$ubHome"/bin/ubiquitous_bash.sh
 	ln -sf "$ubcoreUBfile" "$ubHome"/bin/ubiquitous_bash.sh
+	rm -f "$ubHome"/bin/_winehere
 	ln -sf "$ubcoreUBfile" "$ubHome"/bin/_winehere
+	rm -f "$ubHome"/bin/_winecfghere
 	ln -sf "$ubcoreUBfile" "$ubHome"/bin/_winecfghere
 	
 	echo '#!/bin/bash
@@ -7125,6 +7128,7 @@ _refresh_anchors_user_single_procedure() {
 	# Limited to specifically named anchor symlinks, defined in "_associate_anchors_request", typically overloaded with 'core.sh' or similar.
 	# Usually requested 'manually' through "_setup" or "_anchor", even if called through a multi-installation request.
 	# Incorrectly calling a moved, uninstalled, or otherwise incorrect previous version, of linked software, is anticipated to be a more commonly impose greater risk.
+	rm -f "$HOME"/bin/"$1""$ub_anchor_suffix"
 	#ln -s "$scriptAbsoluteFolder"/"$1""$ub_anchor_suffix" "$HOME"/bin/ > /dev/null 2>&1
 	ln -sf "$scriptAbsoluteFolder"/"$1""$ub_anchor_suffix" "$HOME"/bin/
 	
@@ -7787,6 +7791,33 @@ then
 		. "$scriptLocal"/ssh/opsauto
 	fi
 fi
+
+
+# ATTENTION: May be redundantly redefined (ie. overloaded) if appropriate (eg. for use outside a 'ubiquitous_bash' environment).
+_backend_override() {
+	! type -f _backend > /dev/null 2>&1 && _backend() { "$@" ; unset -f _backend ; }
+	_backend "$@"
+}
+## ...
+## EXAMPLE
+#! _openChRoot && _messageFAIL
+## ...
+#_backend() { _ubdistChRoot "$@" ; }
+#_backend_override echo test
+#unset -f _backend
+## ...
+#! _closeChRoot && _messageFAIL
+## ...
+## EXAMPLE
+#_ubdistChRoot_backend_begin
+#_backend_override echo test
+#_ubdistChRoot_backend_end
+## ...
+## EXAMPLE
+#_experiment() { _backend_override echo test ; }
+#_ubdistChRoot_backend _experiment
+
+
 
 #wsl '~/.ubcore/ubiquitous_bash/ubiquitous_bash.sh' '_wrap' kwrite './gpl-3.0.txt'
 #wsl '~/.ubcore/ubiquitous_bash/ubiquitous_bash.sh' '_wrap' ldesk

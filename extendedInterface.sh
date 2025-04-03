@@ -7599,6 +7599,8 @@ _setup_install_procedure() {
 	mkdir -p /cygdrive/c/q/p/cr
 	mkdir -p /cygdrive/c/q/p/og
 	mkdir -p /cygdrive/c/q/p/z_mirage335-gizmos
+	mkdir -p /cygdrive/c/q/p/zCore
+	mkdir -p /cygdrive/c/q/p/zFactory
 	mkdir -p /cygdrive/c/q/p/zSpecial
 
 

@@ -346,6 +346,7 @@ Section "Install"
   ;CopyFiles "C:\DropTerm.lnk" "$SMSTARTUP"
   ;CopyFiles "C:\_DropTerm-startup.lnk" "$SMSTARTUP"
   CopyFiles "C:\_DropTerm-startup.bat.lnk" "$SMSTARTUP"
+  CopyFiles "C:\docker_wsl_config.bat" "$SMSTARTUP"
 
 
   ExpandEnvStrings $5 %COMSPEC%

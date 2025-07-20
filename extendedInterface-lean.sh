@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+if [[ "$ubDEBUG" == "true" ]] ; then set +x ; set +E ; set +o functrace ; set +o errtrace ; export -n SHELLOPTS 2>/dev/null || true ; trap '' RETURN ; trap - RETURN ; fi
+
 [[ "$PATH" != *"/usr/local/bin"* ]] && [[ -e "/usr/local/bin" ]] && export PATH=/usr/local/bin:"$PATH"
 [[ "$PATH" != *"/usr/bin"* ]] && [[ -e "/usr/bin" ]] && export PATH=/usr/bin:"$PATH"
 [[ "$PATH" != *"/bin:"* ]] && [[ -e "/bin" ]] && export PATH=/bin:"$PATH"
@@ -33,10 +35,11 @@ _ub_cksum_special_derivativeScripts_contents() {
 }
 ##### CHECKSUM BOUNDARY - 30 lines
 
+[[ "$ubDEBUG" == "true" ]] && export ub_setScriptChecksum_disable='true'
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
-export ub_setScriptChecksum_header='2591634041'
-export ub_setScriptChecksum_contents='3870263644'
+export ub_setScriptChecksum_header='3620520443'
+export ub_setScriptChecksum_contents='1589564444'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -650,7 +653,7 @@ _____special_live_dent_restore() {
 
 # WARNING: Multiple reasons to instead consider direct detection by other commands -  ' uname -a | grep -i cygwin > /dev/null 2>&1 ' , ' [[ -e '/cygdrive' ]] ' , etc .
 _if_cygwin() {
-	if uname -a | grep -i cygwin > /dev/null 2>&1
+	if uname -a 2>/dev/null | grep -i cygwin > /dev/null 2>&1
 	then
 		return 0
 	fi
@@ -677,13 +680,14 @@ fi
 # ATTENTION: Workaround - Cygwin Portable - append MSW PATH if reasonable.
 # NOTICE: Also see '_test-shell-cygwin' .
 # MSWEXTPATH lengths up to 33, 38, are known reasonable values.
+# As of 2025-05-20 , a development system, VSCode PowerShell terminal, has been known to impose 45 such lines on MSWEXTPATH , other PowerShell terminal imposed 41 such lines. Limit of 44 lines at the time was exceeded.
 if [[ "$MSWEXTPATH" != "" ]] && ( [[ "$PATH" == *"/cygdrive"* ]] || [[ "$PATH" == "/cygdrive"* ]] ) && [[ "$convertedMSWEXTPATH" == "" ]] && _if_cygwin
 then
-	if [[ $(echo "$MSWEXTPATH" | grep -o ';\|:' | wc -l | tr -dc '0-9') -le 44 ]] && [[ $(echo "$PATH" | grep -o ':' | wc -l | tr -dc '0-9') -le 44 ]]
-	then
-		export convertedMSWEXTPATH=$(cygpath -p "$MSWEXTPATH")
-		export PATH=/usr/bin:"$convertedMSWEXTPATH":"$PATH"
-	fi
+        if [[ $(echo "$MSWEXTPATH" | grep -o ';' | wc -l | tr -dc '0-9') -le 99 ]] && [[ $(echo "$PATH" | grep -o ':' | wc -l | tr -dc '0-9') -le 99 ]]
+        then
+                export convertedMSWEXTPATH=$(cygpath -p "$MSWEXTPATH")
+                export PATH=/usr/bin:"$convertedMSWEXTPATH":"$PATH"
+        fi
 fi
 
 
@@ -747,8 +751,212 @@ then
 fi
 
 
+
 if _if_cygwin
 then
+	# ATTRIBUTION-AI: ChatGPT 4.5-preview  2025-04-11  with knowledge ubiquitous_bash, etc
+	# Prioritizes native git binaries if available. Mostly a disadvantage over the Cygwin/MSW git binaries, but adds more usable git-lfs , and works surprisingly well, apparently still defaulting to: Cygwin HOME '.gitconfig' , Cygwin '/usr/bin/ssh' , correctly understanding the overrides of '_gitBest' , etc.
+	#  Alternatives:
+	#   git-lfs compiled for Cygwin/MSW - requires installing 'go' compiler for Cygwin/MSW
+	#   git fetch commands - manual effort
+	#   wrapper script to detect git lfs error and retry with subsequent separate fetch - technically possible
+	#   avoid git-lfs - usually sufficient
+	_override_msw_git() {
+		local git_path="/cygdrive/c/Program Files/Git/cmd"
+		
+		# Optionally iterate through additional drive letters:
+		# for drive in c ; do
+		# for drive in c d e f g h i j k l m n o p q r s t u v w D E F G H I J K L M N O P Q R S T U V W ; do
+		#   local git_path="/cygdrive/${drive}/Program Files/Git/cmd"
+		#   if [ -d "${git_path}" ]; then
+		#     break
+		#   fi
+		# done
+		
+		[ -d "$git_path" ] || return 0  # Return quietly if the git_path is not a directory
+
+		# ATTENTION: To use with 'ops.sh' or similar if necessary, appropriate, and safe.
+		export PATH_pre_override_git="$PATH"
+		
+		local path_entry entry IFS=':'
+		local new_path=""
+		
+		for entry in $PATH ; do
+			# Skip adding if this entry matches git_path exactly
+			[ "$entry" = "$git_path" ] && continue
+			
+			# Append current entry to the new_path
+			if [ -z "$new_path" ]; then
+				new_path="$entry"
+			else
+				new_path="${new_path}:${entry}"
+			fi
+		done
+
+		# Finally, explicitly prepend the git path
+		export PATH="${git_path}:${new_path}"
+
+		#( _messagePlain_probe_var PATH >&2 ) > /dev/null
+		#( _messagePlain_probe_var PATH_pre_override_git >&2 ) > /dev/null
+
+		# CAUTION: DANGER: MSW native git binaries can perceive 'parent directories' outside the 'root' directory provided by Cygwin, equivalent to calling git binaries through remote (eg. SSH, etc) commands to a filesystem encapsulating a ChRoot !
+		#  This function limits that behavior, especially for 'ubiquitous_bash' projects with MSW installers shipping standalone 'ubcp' environments.
+		_override_msw_git_CEILING() {
+			# On the unusual occasion "$scriptLocal" is defined as something other than "$scriptAbsoluteFolder"/_local, the 'ubcp' directory is not expected to have been included as a standard subdirectory under any other definition of "$scriptLocal" . Since this information is only used to add redundant configuration (ie. directories are not created, etc), no issues should be possible.
+			#current_script_ubcp_msw=$(cygpath -w "$scriptLocal")
+			current_script_ubcp_msw=$(cygpath -w "$scriptAbsoluteFolder"/_local)
+			current_script_ubcp_msw_escaped="${current_script_ubcp_msw//\\/\\\\}"
+			current_script_ubcp_msw_slash="${current_script_ubcp_msw//\\/\/}"
+
+			# ONLY for the MSW git binaries override case (if "$git_path" is not valid, this function will already return before this)
+			export GIT_CEILING_DIRECTORIES="/home/root/.ubcore/ubiquitous_bash;/home/root/.ubcore;/home/root;/cygdrive;/cygdrive/d/a/ubiquitous_bash/ubiquitous_bash;/cygdrive/c/a/ubiquitous_bash/ubiquitous_bash;C:\core\infrastructure\ubcp\cygwin;C:\q\p\zCore\infrastructure\ubiquitous_bash\_local\ubcp\cygwin;C:\core\infrastructure\extendedInterface\_local\ubcp;C:\core\infrastructure\ubDistBuild\_local\ubcp"
+			
+			[[ "$scriptAbsoluteFolder" != "" ]] && export GIT_CEILING_DIRECTORIES="$GIT_CEILING_DIRECTORIES"';'"$current_script_ubcp_msw"
+		}
+		#export -f _override_msw_git_CEILING
+		_override_msw_git_CEILING
+	}
+	# CAUTION: Early in the script for a reason! Changing the PATH drastically later has been known to cause WSL 'bash' to override Cygwin 'bash' with very obviously unpredictable results.
+	#  ATTENTION: There would be a '_test' function in 'ubiquitous_bash' for this, but the state of 'wsl' which may not be installed with 'ubdist', etc, is not necessarily predictable enough for a simple PASS/FAIL .
+	#if [[ "$1" != "_setupUbiquitous" ]] && [[ "$ub_under_setupUbiquitous" != "true" ]]
+	#then
+		_override_msw_git
+		#_override_msw_git_CEILING
+	#fi
+
+	# ATTRIBUTION-AI: ChatGPT 4.5-preview  2025-04-11  with knowledge ubiquitous_bash, etc  (partially)
+	# ATTRIBUTION-AI: ChatGPT 4o  2025-04-12  web search  (partially)
+	# ATTRIBUTION-AI: ChatGPT o3-mini-high  2025-04-12
+	_write_configure_git_safe_directory_if_admin_owned_sequence() {
+		local functionEntryPWD="$PWD"
+
+		# DUBIOUS
+		local functionEntry_GIT_DIR="$GIT_DIR"
+		local functionEntry_GIT_WORK_TREE="$GIT_WORK_TREE"
+		local functionEntry_GIT_INDEX_FILE="$GIT_INDEX_FILE"
+		local functionEntry_GIT_OBJECT_DIRECTORY="$GIT_OBJECT_DIRECTORY"
+		#local functionEntry_GIT_ALTERNATE_OBJECT_DIRECTORIES="$GIT_ALTERNATE_OBJECT_DIRECTORIES"
+		local functionEntry_GIT_CONFIG="$GIT_CONFIG"
+		local functionEntry_GIT_CONFIG_GLOBAL="$GIT_CONFIG_GLOBAL"
+		local functionEntry_GIT_CONFIG_SYSTEM="$GIT_CONFIG_SYSTEM"
+		local functionEntry_GIT_CONFIG_NOSYSTEM="$GIT_CONFIG_NOSYSTEM"
+		#local functionEntry_GIT_AUTHOR_NAME="$GIT_AUTHOR_NAME"
+		#local functionEntry_GIT_AUTHOR_EMAIL="$GIT_AUTHOR_EMAIL"
+		#local functionEntry_GIT_AUTHOR_DATE="$GIT_AUTHOR_DATE"
+		#local functionEntry_GIT_COMMITTER_NAME="$GIT_COMMITTER_NAME"
+		#local functionEntry_GIT_COMMITTER_EMAIL="$GIT_COMMITTER_EMAIL"
+		#local functionEntry_GIT_COMMITTER_DATE="$GIT_COMMITTER_DATE"
+		#local functionEntry_GIT_EDITOR="$GIT_EDITOR"
+		#local functionEntry_GIT_PAGER="$GIT_PAGER"
+		local functionEntry_GIT_NAMESPACE="$GIT_NAMESPACE"
+		local functionEntry_GIT_CEILING_DIRECTORIES="$GIT_CEILING_DIRECTORIES"
+		local functionEntry_GIT_DISCOVERY_ACROSS_FILESYSTEM="$GIT_DISCOVERY_ACROSS_FILESYSTEM"
+		#local functionEntry_GIT_SSL_NO_VERIFY="$GIT_SSL_NO_VERIFY"
+		#local functionEntry_GIT_SSH="$GIT_SSH"
+		#local functionEntry_GIT_SSH_COMMAND="$GIT_SSH_COMMAND"
+
+		git config --global --add safe.directory "$1"
+		#if [[ $(type -p git) != '/usr/bin/git' ]]
+		#then
+			##git config --global --add safe.directory "$2"
+			git config --global --add safe.directory "$3"
+			git config --global --add safe.directory "$4"
+		#fi
+
+		cd "$functionEntryPWD"
+
+		# DUBIOUS
+		GIT_DIR="$functionEntry_GIT_DIR"
+		GIT_WORK_TREE="$functionEntry_GIT_WORK_TREE"
+		GIT_INDEX_FILE="$functionEntry_GIT_INDEX_FILE"
+		GIT_OBJECT_DIRECTORY="$functionEntry_GIT_OBJECT_DIRECTORY"
+		#GIT_ALTERNATE_OBJECT_DIRECTORIES="$functionEntry_GIT_ALTERNATE_OBJECT_DIRECTORIES"
+		GIT_CONFIG="$functionEntry_GIT_CONFIG"
+		GIT_CONFIG_GLOBAL="$functionEntry_GIT_CONFIG_GLOBAL"
+		GIT_CONFIG_SYSTEM="$functionEntry_GIT_CONFIG_SYSTEM"
+		GIT_CONFIG_NOSYSTEM="$functionEntry_GIT_CONFIG_NOSYSTEM"
+		#GIT_AUTHOR_NAME="$functionEntry_GIT_AUTHOR_NAME"
+		#GIT_AUTHOR_EMAIL="$functionEntry_GIT_AUTHOR_EMAIL"
+		#GIT_AUTHOR_DATE="$functionEntry_GIT_AUTHOR_DATE"
+		#GIT_COMMITTER_NAME="$functionEntry_GIT_COMMITTER_NAME"
+		#GIT_COMMITTER_EMAIL="$functionEntry_GIT_COMMITTER_EMAIL"
+		#GIT_COMMITTER_DATE="$functionEntry_GIT_COMMITTER_DATE"
+		#GIT_EDITOR="$functionEntry_GIT_EDITOR"
+		#GIT_PAGER="$functionEntry_GIT_PAGER"
+		GIT_NAMESPACE="$functionEntry_GIT_NAMESPACE"
+		GIT_CEILING_DIRECTORIES="$functionEntry_GIT_CEILING_DIRECTORIES"
+		GIT_DISCOVERY_ACROSS_FILESYSTEM="$functionEntry_GIT_DISCOVERY_ACROSS_FILESYSTEM"
+		#GIT_SSL_NO_VERIFY="$functionEntry_GIT_SSL_NO_VERIFY"
+		#GIT_SSH="$functionEntry_GIT_SSH"
+		#GIT_SSH_COMMAND="$functionEntry_GIT_SSH_COMMAND"
+
+		return 0
+	}
+
+	# ATTRIBUTION-AI: ChatGPT 4.5-preview  2025-04-11  with knowledge ubiquitous_bash, etc  (partially)
+	# CAUTION: NOT sufficient to call this function only during installation (as Administrator, which is what normally causes this issue). If the user subsequently installs native 'git for Windows', additional '.gitconfig' entries are needed, with the different MSWindows native style path format.
+	# Historically this was apparently at least mostly not necessary until prioritizing native git binaries (if available) instead of relying on Cygwin/MSW git binaries.
+	_write_configure_git_safe_directory_if_admin_owned() {
+		local current_path="$1"
+		local win_path win_path_escaped win_path_slash cygwin_path
+		win_path="$(cygpath -w "$current_path")"
+		#cygwin_path="$(cygpath -u "$current_path")"  # explicit Cygwin POSIX path
+		win_path_escaped="${win_path//\\/\\\\}"
+		win_path_slash="${win_path//\\/\/}"
+
+		# Single call to verify Administrators ownership explicitly (fast Windows API call)
+		local owner_line
+		owner_line="$(icacls "$win_path" 2>/dev/null)"
+		if [[ "$owner_line" != *"BUILTIN\\Administrators"* ]]; then
+			# Not Administrators-owned, no further action needed, immediate return
+			return 0
+		fi
+		# Read "$HOME"/.gitconfig just once (efficient builtin file reading)
+		local gitconfig_content
+		if [[ -e "$HOME"/.gitconfig ]]; then
+			gitconfig_content="$(< "$HOME"/.gitconfig)"
+
+			## Check 1: Exact Windows path (C:\...)
+			#if [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $win_path"* ]]; then
+				#return 0
+			#fi
+
+			## Check 2: Double-backslash-escaped Windows path (C:\\...)
+			#win_path_escaped="${win_path//\\/\\\\}"
+			#if [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $win_path_escaped"* ]]; then
+				#return 0
+			#fi
+
+			## Check 3: Normal-slash Windows path (C:/...)
+			#win_path_slash="${win_path//\\/\/}"
+			#if [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $win_path_slash"* ]]; then
+				#return 0
+			#fi
+
+			## Check 4: Original Cygwin POSIX path (/cygdrive/c/...)
+			#if [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $cygwin_path"* ]]; then
+				#return 0
+			#fi
+
+			#( [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $win_path"* ]] || [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $win_path_escaped"* ]] || [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $win_path_slash"* ]] ) && ( [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $cygwin_path"* ]] ) && return 0
+
+			# Slightly more performance efficient. No expected scenario in which a MSW path has been added but a UNIX path has not.
+			( [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $win_path"* ]] || [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $win_path_escaped"* ]] || [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $win_path_slash"* ]] ) && return 0
+			cygwin_path="$(cygpath -u "$current_path")"  # explicit Cygwin POSIX path
+			( [[ "$gitconfig_content" == *"[safe]"* && "$gitconfig_content" == *"directory = $cygwin_path"* ]] ) && return 0
+		fi
+
+		# Explicit message clearly communicating safe-configuration action for transparency
+		#echo "Administrators ownership detected; configuring git safe.directory entry."
+
+		# perform safe git configuration exactly once after all efficient checks
+		# CAUTION: Tested to create functionally identical log entries through both '/usr/bin/git' and native git binaries. Ensure that remains the case if making any changes.
+		#"$scriptAbsoluteLocation" _write_configure_git_safe_directory_if_admin_owned_sequence "$cygwin_path" "$win_path_escaped" "$win_path_slash" "$win_path"
+		( _write_configure_git_safe_directory_if_admin_owned_sequence "$cygwin_path" "$win_path_escaped" "$win_path_slash" "$win_path" )
+	}
+	# Must be later, after set global variable "$scriptAbsoluteFolder" .
+	#_write_configure_git_safe_directory_if_admin_owned "$scriptAbsoluteFolder"
+	
 	# NOTICE: Recent versions of Cygwin seem to have replaced or omitted '/usr/bin/gpg.exe', possibly in favor of a symlink to '/usr/bin/gpg2.exe' .
 	# CAUTION: This override is specifically to ensure availability of 'gpg' binary through a function, but that could have the effect of presenting an incorrect gpg2 CLI interface to software expecting a gpg1 CLI interface.
 	 # In practice, Debian Linux seem to impose gpg v2 as the CLI interface for gpg - 'gpg --version' responds v2 .
@@ -821,6 +1029,18 @@ then
 	#}
 	#alias l='_wsl'
 	alias u='_wsl'
+	
+	# MSWindows native 'PowerSession' apparently does not support 'asciinema cat'.
+	#alias asciinema='PowerSession'
+
+	# Optional. Other than recording, and some issues with 'asciinema cat', pip installed 'asciinema' seems usable .
+	# Use _asciinema_record to record .
+	alias asciinema='wsl -d ubdist asciinema'
+
+	#alias codex='wsl -d ubdist codex'
+	alias codex='wsl -d ubdist "~/.ubcore/ubiquitous_bash/ubcore.sh" _codexBin-usr_bin_node'
+
+	alias codexNative=$(type -P codex 2>/dev/null)
 fi
 	
 _sudo_cygwin-if_parameter-skip2() {
@@ -1001,13 +1221,26 @@ _userMSW() {
 	"${processedArgs[@]}"
 }
 
-
-_powershell() {
-    local currentPowershellBinary
+_discover_powershell() {
+	local currentPowershellBinary
     currentPowershellBinary=$(find /cygdrive/c/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
     [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /cygdrive/d/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
     [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /cygdrive/e/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
     [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /cygdrive/f/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+	
+    [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /mnt/c/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+    [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /mnt/d/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+    [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /mnt/e/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+    [[ "$currentPowershellBinary" == "" ]] && currentPowershellBinary=$(find /mnt/f/Windows/System32/WindowsPowerShell/ -name powershell.exe 2>/dev/null | head -n 1)
+
+	_safeEcho "$currentPowershellBinary"
+	[[ "$currentPowershellBinary" != "" ]] && return 0
+	return 1
+}
+
+_powershell() {
+    local currentPowershellBinary
+    currentPowershellBinary=$(_discover_powershell)
 
 	#_userMSW "$currentPowershellBinary" "$@"
     "$currentPowershellBinary" "$@"
@@ -1294,6 +1527,31 @@ then
 		kate -n "$@"
 	}
 
+	code() {
+		local current_workdir
+		#current_workdir=$(_getAbsoluteFolder "$1")
+		current_workdir=$(_searchBaseDir "$@")
+		current_workdir=$(cygpath -w "$current_workdir")
+
+
+		local currentArg
+		local currentResult
+		processedArgs=()
+		for currentArg in "$@"
+		do
+			if [[ -e "$currentArg" ]] || [[ "$currentArg" == "/cygdrive/"* ]] || [[ "$currentArg" == "/home/"* ]] || [[ "$currentArg" == "/root/"* ]]
+			then
+				currentResult=$(cygpath -w "$currentArg")
+			else
+				currentResult="$currentArg"
+			fi
+			
+			processedArgs+=("$currentResult")
+		done
+
+		"$(type -P code)" --new-window "${processedArgs[@]}" --new-window "$current_workdir"
+	}
+
 	_aria2c_cygwin_overide() {
 		if _safeEcho_newline "$@" | grep '\--async-dns' > /dev/null
 		then
@@ -1360,6 +1618,7 @@ _setup_ubiquitousBash_cygwin_procedure_root() {
 }
 
 _setup_ubiquitousBash_cygwin_procedure() {
+	#/cygdrive/c/q/p/zCore/infrastructure/ubiquitous_bash/ubiquitous_bash.sh _setupUbiquitous
 	[[ "$scriptAbsoluteFolder" != '/cygdrive'* ]] && _stop 1
 	
 	_messagePlain_nominal 'init: _setup_ubiquitousBash_cygwin'
@@ -1473,6 +1732,14 @@ _setup_ubiquitousBash_cygwin_procedure() {
 	# ATTENTION: NOTICE: Any installer for developers which relies on unpacking directories to '/core/infrastructure' must also add this to '/' .
 	# Having '_bash.bat' at '/' normally allows developers to get a bash prompt from both 'CMD' and 'PowerShell' terminal windows by '/_bash' command.
 	cp "$scriptAbsoluteFolder"/_bash.bat "$currentCygdriveC_equivalent"/
+
+
+	# ATTENTION: Bad idea. UNIX style line endings have been tested compatible with: cmd/MSWindows, Cygwin/MSW (bash), ubdist/WSL2. Presumably also compatible with UNIX/Linux .
+	#unix2dos "$currentCygdriveC_equivalent"/core/infrastructure/ubiquitous_bash/*.bat
+	#unix2dos "$currentCygdriveC_equivalent"/_bash.bat
+
+	#unix2dos "$cygwinMSWmenuDir"/ubiquitous_bash/_bash.bat
+	#unix2dos "$cygwinMSWdesktopDir"/_bash.bat
 	
 	
 	_messagePlain_good 'done: _setup_ubiquitousBash_cygwin: lean'
@@ -1497,6 +1764,7 @@ _report_setup_ubcp() {
 
 
 	find /bin/ /usr/bin/ /sbin/ /usr/sbin/ | tee "$currentCygdriveC_equivalent"/core/infrastructure/ubcp-binReport > /dev/null
+	find /home/root/ | tee "$currentCygdriveC_equivalent"/core/infrastructure/ubcp-homeReport > /dev/null
 
 
 	apt-cyg show | cut -f1 -d\ | tail -n +2 | tee "$currentCygdriveC_equivalent"/core/infrastructure/ubcp-packageReport > /dev/null
@@ -1791,7 +2059,7 @@ _mitigate-ubcp_rewrite_sequence() {
 	# https://serverfault.com/questions/193319/a-better-unix-find-with-parallel-processing
 	# https://stackoverflow.com/questions/11003418/calling-shell-functions-with-xargs
 	export -f "_mitigate-ubcp_rewrite_parallel"
-	find "$2" -type l -print0 | xargs -0 -x -s 4096 -L 6 -P $(nproc) bash -c '_mitigate-ubcp_rewrite_parallel "$@"' _
+	find "$2" -type l -print0 | xargs -0 -x -s 3072 -L 6 -P $(nproc) bash -c '_mitigate-ubcp_rewrite_parallel "$@"' _
 	#find "$2" -type l -print0 | xargs -0 -n 1 -P 4 -I {} bash -c '_mitigate-ubcp_rewrite_parallel "$@"' _ {}
 	#find "$2" -type l -print0 | xargs -0 -n 1 -P 4 -I {} bash -c '_mitigate-ubcp_rewrite_procedure "$@"' _ {}
 	
@@ -1983,6 +2251,18 @@ _package-cygwin() {
 _if_wsl() {
     uname -a | grep -i 'microsoft' > /dev/null 2>&1 || uname -a | grep -i 'WSL2' > /dev/null 2>&1
 }
+
+if [[ "$WSL_DISTRO_NAME" != "" ]] && _if_wsl
+then
+    
+    # WARNING: CAUTION: Adding some native MSWindows programs from MSWindows path (eg. python) may cause conflicts with native WSL/Linux equivalent programs, etc.
+    
+    # NOTICE: Native ubdist/OS, WSL/Linux, etc, equivalent, is 'xdg-open', etc .
+    #! type explorer > /dev/null 2>&1 && [[ -e /mnt/c/Windows/System32/explorer.exe ]] && explorer() { /mnt/c/Windows/System32/explorer.exe "$@"; }
+    ! type explorer > /dev/null 2>&1 && [[ -e /mnt/c/Windows/explorer.exe ]] && explorer() { /mnt/c/Windows/explorer.exe "$@"; }
+    #! type explorer > /dev/null 2>&1 && [[ -e /mnt/d/Windows/System32/explorer.exe ]] && explorer() { /mnt/d/Windows/System32/explorer.exe "$@"; }
+    ! type explorer > /dev/null 2>&1 && [[ -e /mnt/d/Windows/explorer.exe ]] && explorer() { /mnt/d/Windows/explorer.exe "$@"; }
+fi
 
 
 
@@ -2377,20 +2657,21 @@ _cygwin_translation_rootFileParameter() {
 
 #Critical prerequsites.
 _getAbsolute_criticalDep() {
-	#  ! type realpath > /dev/null 2>&1 && return 1
-	! type readlink > /dev/null 2>&1 && return 1
-	! type dirname > /dev/null 2>&1 && return 1
-	! type basename > /dev/null 2>&1 && return 1
+	#  ! type realpath > /dev/null 2>&1 && exit 1
+	! type readlink > /dev/null 2>&1 && exit 1
+	! type dirname > /dev/null 2>&1 && exit 1
+	! type basename > /dev/null 2>&1 && exit 1
 	
 	#Known to succeed under BusyBox (OpenWRT), NetBSD, and common Linux variants. No known failure modes. Extra precaution.
-	! readlink -f . > /dev/null 2>&1 && return 1
+	! readlink -f . > /dev/null 2>&1 && exit 1
 	
-	! echo 'qwerty123.git' | grep '\.git$' > /dev/null 2>&1 && return 1
-	echo 'qwerty1234git' | grep '\.git$' > /dev/null 2>&1 && return 1
+	! echo 'qwerty123.git' | grep '\.git$' > /dev/null 2>&1 && exit 1
+	echo 'qwerty1234git' | grep '\.git$' > /dev/null 2>&1 && exit 1
 	
 	return 0
 }
-! _getAbsolute_criticalDep && exit 1
+#! _getAbsolute_criticalDep && exit 1
+_getAbsolute_criticalDep
 
 #Retrieves absolute path of current script, while maintaining symlinks, even when "./" would translate with "readlink -f" into something disregarding symlinked components in $PWD.
 #However, will dereference symlinks IF the script location itself is a symlink. This is to allow symlinking to scripts to function normally.
@@ -2843,6 +3124,48 @@ _command_safeBackup() {
 
 
 
+# Suggested for files used as Inter-Process Communication (IPC) or similar indicators (eg. temporary download files recently in progress).
+# Works around files that may not be deleted by 'rm -f' when expected (ie. due to Cygwin/MSW file locking).
+# ATTRIBUTION-AI: OpRt_.deepseek/deepseek-r1-distill-llama-70b  2025-03-27  (partial)
+_destroy_lock() {
+    [[ "$1" == "" ]] && return 0
+
+    # Fraction of   2GB part file  divided by  1MB/s optical-disc write speed   .
+    local currentLockWait="1250"
+
+    local current_anyFilesExists
+    local currentFile
+    
+    
+    local currentIteration=0
+    for ((currentIteration=0; currentIteration<"$currentLockWait"; currentIteration++))
+    do
+        rm -f "$@" > /dev/null 2>&1
+
+        current_anyFilesExists="false"
+        for currentFile in "$@"
+        do
+            [[ -e "$currentFile" ]] && current_anyFilesExists="true"
+        done
+
+        if [[ "$current_anyFilesExists" == "false" ]]
+        then
+            return 0
+            break
+        fi
+
+        # DANGER: Does NOT use _safeEcho . Do NOT use with external input!
+        ( echo "STACK_FAIL STACK_FAIL STACK_FAIL: software: wait: rm: exists: file: ""$@" >&2 ) > /dev/null
+        sleep 1
+    done
+
+    [[ "$currentIteration" != "0" ]] && sleep 7
+    return 1
+}
+
+
+
+
 # Equivalent to 'mv -n' with an error exit status if file cannot be overwritten.
 # https://unix.stackexchange.com/questions/248544/mv-move-file-only-if-destination-does-not-exist
 _moveconfirm() {
@@ -2958,6 +3281,14 @@ _terminateMetaHostAll() {
 }
 
 _terminateAll() {
+	"$scriptAbsoluteLocation" _terminateAll_sequence "$@"
+}
+_terminateAll_sequence() {
+	_start
+	_terminateAll_procedure "$@"
+	_stop "$?"
+}
+_terminateAll_procedure() {
 	_terminateMetaHostAll
 	
 	local processListFile
@@ -2976,9 +3307,9 @@ _terminateAll() {
 	while read -r currentPID
 	do
 		pkill -P "$currentPID"
-		sudo -n pkill -P "$currentPID"
+		! _if_cygwin && sudo -n pkill -P "$currentPID"
 		kill "$currentPID"
-		sudo -n kill "$currentPID"
+		! _if_cygwin && sudo -n kill "$currentPID"
 	done < "$processListFile"
 	
 	if [[ "$ub_kill" == "true" ]]
@@ -2987,9 +3318,9 @@ _terminateAll() {
 		while read -r currentPID
 		do
 			pkill -KILL -P "$currentPID"
-			sudo -n pkill -KILL -P "$currentPID"
+			! _if_cygwin && sudo -n pkill -KILL -P "$currentPID"
 			kill -KILL "$currentPID"
-			sudo -n kill -KILL "$currentPID"
+			! _if_cygwin && sudo -n kill -KILL "$currentPID"
 		done < "$processListFile"
 	fi
 	
@@ -3146,11 +3477,15 @@ _permissions_ubiquitous_repo() {
 	return 0
 }
 
-_test_permissions_ubiquitous-cygwin() {
+_test_permissions_ubiquitous-exception() {
+	_if_cygwin && echo 'warn: accepted: cygwin: permissions' && return 0
+
+	# Possible shared filesystem mount without correct permissions from the host .
+	[[ -e /.dockerenv ]] && echo 'warn: accepted: docker: permissions' && return 0
+
+
 	! _if_cygwin && _stop 1
 	#  ! _if_cygwin && _stop "$1"
-	
-	_if_cygwin && echo 'warn: accepted: cygwin: permissions' && return 0
 }
 
 #Checks whether currently set "$scriptBin" and similar locations are actually safe.
@@ -3158,10 +3493,10 @@ _test_permissions_ubiquitous-cygwin() {
 _test_permissions_ubiquitous() {
 	[[ ! -e "$scriptAbsoluteFolder" ]] && _stop 1
 	
-	! _permissions_directory_checkForPath "$scriptAbsoluteFolder" && _test_permissions_ubiquitous-cygwin 1
+	! _permissions_directory_checkForPath "$scriptAbsoluteFolder" && _test_permissions_ubiquitous-exception 1
 	
-	[[ -e "$scriptBin" ]] && ! _permissions_directory_checkForPath "$scriptBin" && _test_permissions_ubiquitous-cygwin 1
-	[[ -e "$scriptBundle" ]] && ! _permissions_directory_checkForPath "$scriptBundle" && _test_permissions_ubiquitous-cygwin 1
+	[[ -e "$scriptBin" ]] && ! _permissions_directory_checkForPath "$scriptBin" && _test_permissions_ubiquitous-exception 1
+	[[ -e "$scriptBundle" ]] && ! _permissions_directory_checkForPath "$scriptBundle" && _test_permissions_ubiquitous-exception 1
 	
 	return 0
 }
@@ -4958,6 +5293,12 @@ _hexToBin() {
 
 
 
+
+_test_python() {
+	_getDep python
+}
+
+
 _resetFakeHomeEnv_extra() {
 	true
 }
@@ -4980,6 +5321,1512 @@ _resetFakeHomeEnv() {
 	_resetFakeHomeEnv_nokeep
 } 
 
+
+
+# Suggested defaults. If your python code (not python itself, nor venv, etc, but filenames for files your python application uses, such as datasets, models, etc) insists on absolute paths, and you must use it under both UNIX/Linux and Cygwin/MSW, then it is probably only needed temporarily to generate static assets (ie. occasional experimental fine-tuning of the latest available AI models). In which case you can put into production under solely UNIX/Linux if necessary, and develop with Docker (ie. factory) instead.
+# tldr; UNIX/Linux for python in production, Cygwin/MSW (ie. MSW native python) for python in development, as usual, and then you won't need abstractfs .
+#
+#_set_abstractfs_alwaysUNIXneverNative
+#_set_abstractfs_disable
+
+
+
+# ATTENTION: EXAMPLE. Override or implement alternative with 'core.sh', 'ops.sh', or similar.
+# ATTENTION: Also create "$scriptLib"/python/lean.py .
+_msw_python() {
+    #export dependencies_msw_python=( "pyreadline3" )
+    #export packages_msw_python=( "huggingface_hub[cli]" )
+
+    #implies sequence
+    _prepare_msw_python
+
+
+    # ATTENTION: Dropping to an interactive shell in the midst of a bash function which provides standard output to another bash function
+    #
+    # ie. don't expect guaranteed sanity doing something like this in either bash or python
+    # echo $( echo result ; bash -i ) | tee > ./logfile.txt
+    #
+    # ALWAYS call interactively unless 'stdout' will be consumed. Functions, scripts, commands, get an interactive terminal to talk to, except very simple functions.
+    #
+    # ie. _fineTune_model  <->  Interactive Shell
+    # ie. _vector_model  <->  Interactive Shell
+    # ie. _inferenceModel | grep 'stuff' > description.txt  <->  Interactive Shell
+    # ie. result=$(_inferenceModel | grep 'correct')  <->  Non-Interactive
+    #
+    # Unfortunately, bash function calls from python do not enjoy the '$() > /dev/null 2>&1' syntactic convenience.
+    # Python calls to '_bin()' , '_bash()' , etc, must explicitly declare or implicitly default sanely whether interactive or non-interactive captured output.
+    
+    # lean.py ... is a template script from 'ubiquitous_bash' for lightweight manual changes
+    #"$scriptLocal"/python_msw/lean.py   #automatically replaced with autogenerated lean.py
+    #"$scriptLib"/python_msw/lean.py    #ATTTENTION: create persistent custom lean.py here
+
+
+    # WARNING: May be untested.
+    #python "$scriptLib_msw"'\python\lean.py' '_bin(["sleep", "90",], True, r"'"$scriptCall_bin_msw"'")'
+
+    #python "$scriptAbsoluteFolder_msw"'\lean.py' '_bash(["-i"], True, r"'"$scriptCall_bash_msw"'")'
+
+    python "$scriptAbsoluteFolder_msw"'\lean.py' '_bin(["_demo_msw_python",], True, r"'"$scriptCall_bin_msw"'", interactive=True)'
+
+    #python -i "$scriptAbsoluteFolder_msw"'\lean.py' '_python()'
+
+    #_bash
+}
+_msw_python_bash() {
+    #export dependencies_msw_python=( "pyreadline3" )
+    #export packages_msw_python=( "huggingface_hub[cli]" )
+
+    #implies sequence
+    _prepare_msw_python
+
+    _bash
+}
+_msw_python_bin() {
+    #export dependencies_msw_python=( "pyreadline3" )
+    #export packages_msw_python=( "huggingface_hub[cli]" )
+
+    #implies sequence
+    _prepare_msw_python
+
+    _bin "$@"
+}
+
+
+# ATTENTION: Call from '_test_prog' with 'core.sh' or similar.
+# _setup calls _test calls _test_prog
+_test_msw_python() {
+    #export dependencies_msw_python=( "pyreadline3" )
+    #export packages_msw_python=( "huggingface_hub[cli]" )
+
+    _prepare_msw_python
+}
+
+
+
+
+
+
+
+
+
+
+# EXAMPLE. Override or implement alternative with 'core.sh', 'ops.sh', or similar.
+_prepare_msw_python() {
+    _prepare_msw_python_3
+}
+_prepare_msw_python_3() {
+    _prepare_msw_python_3_10
+}
+# EXAMPLE. Override or implement alternative (discouraged) with 'core.sh', 'ops.sh', or similar, if necessary.
+_prepare_msw_python_3_10() {
+    _set_msw_python_3_10
+
+    # ATTENTION: implies sequence
+    local currentUID="$sessionid"
+
+    # ATTENTION: Do NOT enable. Prevents 'trap' cleanup of abandoned lock file.
+    #local currentUID=$(_uid 18)
+
+    local currentUID_length=${#currentUID}
+    local currentUID_length_plus1=$(( currentUID_length + 1 ))
+
+    local currentPATH="$PATH"
+
+    _write_python_hook_local() {
+        _messagePlain_nominal 'prepare: python hook' > /dev/null >&2
+    
+        local ubcore_accessoriesFile_python
+        local ubcoreDir_accessories_python
+        local ubcore_accessoriesFile_python_ubhome
+
+        ubcore_accessoriesFile_python=$(cygpath -w "$scriptLib"/python_msw/lean.py)
+        ubcoreDir_accessories_python=$(cygpath -w "$scriptLib"/python_msw)
+        ubcore_accessoriesFile_python_ubhome=$(cygpath -w "$scriptLib"/python_msw/lean.py)
+        if [[ ! -e "$ubcore_accessoriesFile_python" ]] || [[ ! -e "$ubcoreDir_accessories_python" ]] || [[ ! -e "$ubcore_accessoriesFile_python_ubhome" ]]
+        then
+            ( _messagePlain_warn 'warn: missing: scriptLib/python_msw/...' >&2 ) > /dev/null
+            
+            ubcore_accessoriesFile_python=$(cygpath -w "$scriptLocal"/python_msw/lean.py)
+            ubcoreDir_accessories_python=$(cygpath -w "$scriptLocal"/python_msw)
+            ubcore_accessoriesFile_python_ubhome=$(cygpath -w "$scriptLocal"/python_msw/lean.py)
+            if [[ ! -e "$ubcore_accessoriesFile_python" ]] || [[ ! -e "$ubcoreDir_accessories_python" ]] || [[ ! -e "$ubcore_accessoriesFile_python_ubhome" ]]
+            then
+                ( _messagePlain_warn 'warn: missing: scriptLocal/python_msw/...' >&2 ) > /dev/null
+            fi
+        fi
+
+        local ubcore_ubcorerc_pythonrc="lean"
+        
+        _setupUbiquitous_accessories_here-python_hook > "$scriptLocal"/python_msw/pythonrc."$currentUID"
+        if [[ ! -e "$scriptLocal"/python_msw/pythonrc ]] || ! diff --unified=3 "$scriptLocal"/python_msw/pythonrc."$currentUID" "$scriptLocal"/python_msw/pythonrc > /dev/null
+        then
+            mv -f "$scriptLocal"/python_msw/pythonrc."$currentUID" "$scriptLocal"/python_msw/pythonrc
+        else
+            rm -f "$scriptLocal"/python_msw/pythonrc."$currentUID"
+        fi
+        
+        export _PYTHONSTARTUP=$(cygpath -w "$scriptLocal"/python_msw/pythonrc)
+        export PYTHONSTARTUP="$_PYTHONSTARTUP"
+    }
+    unset _PYTHONSTARTUP
+    
+
+    local current_done__prepare_msw_python_procedure="false"
+
+
+    _lock_prepare_python_msw() {
+        _messagePlain_nominal 'prepare: wait: lock: _lock_prepare_python_msw' > /dev/null >&2
+        local dateA
+        local dateB
+        local dateDelta
+        while [[ $(cat "$scriptLocal"/python_msw.lock 2> /dev/null | head -c "$currentUID_length") != "$currentUID" ]]
+        do
+            if [[ ! -e "$scriptLocal"/python_msw.lock ]]
+            then
+                echo "$currentUID"$(date +%s | tr -dc '0-9') > "$scriptLocal"/python_msw.lock."$currentUID"
+                mv -f "$scriptLocal"/python_msw.lock."$currentUID" "$scriptLocal"/python_msw.lock
+            fi
+
+            sleep 7
+            [[ $(cat "$scriptLocal"/python_msw.lock 2> /dev/null | head -c "$currentUID_length") == "$currentUID" ]] && return 0
+
+            _messagePlain_probe "wait: lock" > /dev/null >&2
+
+            while [[ -e "$scriptLocal"/python_msw.lock ]] && [[ $(cat "$scriptLocal"/python_msw.lock 2> /dev/null | head -c "$currentUID_length") != "$currentUID" ]]
+            do
+                dateA=$(cat "$scriptLocal"/python_msw.lock 2> /dev/null | tail -c +"$currentUID_length_plus1" | tr -dc '0-9')
+                dateB=$(date +%s | tr -dc '0-9')
+                _messagePlain_probe "$dateB - $dateA"
+                dateDelta=$(bc <<< "$dateB - $dateA" 2> /dev/null)
+
+                sleep 7
+
+                # Normal prepare time is <<2minutes, if that.
+                [[ "$dateDelta" -gt "2700" ]] && rm -f "$scriptLocal"/python_msw.lock
+            done
+        done
+    }
+    _lock_prepare_python_msw
+    #...
+    #rm -f "$scriptLocal"/python_msw.lock
+
+    # WARNING: Do not add '-msw_python_3_10' or similar suffix to dumbpath_file . Use separate derivative projects for separate venv as normally needed for different python versions.
+    local dumbpath_file="$scriptLocal"/"$dumbpath_prefix"dumbpath.var
+    local dumbpath_contents=""
+    dumbpath_contents=$(cat "$dumbpath_file" 2> /dev/null)
+    if [[ "$dumbpath_contents" != "$dumbpath_file" ]]
+    then
+        # ATTENTION: WARNING: Anaconda is usually unnecessary, STRONGLY DISCOURAGED, and NOT automatically installed (eg. with 'ubdist/OS').
+        # Automatic installation of Anaconda is not expected useful for any purpose - only workstations for personal evaluation of open-source projects which happen to use Anaconda for a non=production purpose are expected to use Anaconda, if at all.
+        # Manual installation of Anaconda:
+        # https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html
+        # https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
+
+
+
+        
+
+        # erase any venv, etc, which may use absolute paths
+        _messagePlain_nominal 'prepare: python_msw' > /dev/null >&2
+
+        export safeToDeleteGit="true"
+        _safeRMR "$scriptLocal"/python_msw
+        mkdir -p "$scriptLocal"/python_msw
+
+
+        #[[ "$current_done__prepare_msw_python_procedure" == "false" ]] && 
+        _prepare_msw_python_procedure
+        current_done__prepare_msw_python_procedure="true"
+
+
+        
+        # write python hook ; mv -f
+
+        #[[ "$_PYTHONSTARTUP" == "" ]] && 
+        _write_python_hook_local
+
+
+#if false
+#then
+        # rebuild venv...
+        _messagePlain_nominal 'prepare: venv' > /dev/null >&2
+        
+        mkdir -p "$scriptLocal"/python_msw/venv
+        ! cd "$scriptLocal"/python_msw/venv && _stop 1
+        python3 -m venv default_venv > /dev/null >&2
+
+        
+        cp -a default_venv/Scripts/activate default_venv/Scripts/activate_msw
+        dos2unix default_venv/Scripts/activate_msw
+        chmod u+x default_venv/Scripts/activate_msw
+
+        #source default_venv/Scripts/activate > /dev/null >&2
+        _messagePlain_probe source default_venv/Scripts/activate_msw > /dev/null >&2
+        source default_venv/Scripts/activate_msw > /dev/null >&2
+        PATH="$currentPATH"
+
+        _messagePlain_nominal 'prepare: venv: set' > /dev/null >&2
+        _set_msw_python_procedure
+
+        _messagePlain_probe _install_dependencies_msw_python_procedure-specific "" "" > /dev/null >&2
+        _install_dependencies_msw_python_procedure-specific "" ""
+        
+        _messagePlain_probe python -c "import sys; print(sys.path)" > /dev/null >&2
+        python -c "import sys; print(sys.path)" > /dev/null >&2
+
+        #deactivate > /dev/null >&2
+#fi
+
+
+
+        # morsels...
+        _messagePlain_nominal 'prepare: morsels: pip' > /dev/null >&2
+
+        _morsels_msw_pip_python_3_10
+
+
+
+
+
+
+
+
+
+
+
+        # write > "$dumbpath_file" ; mv -f
+
+        # ATTENTION: Disable (ie. comment out) to force always rebuild, packages install, etc.
+        echo "$dumbpath_file" > "$dumbpath_file"."$currentUID"
+        mv -f "$dumbpath_file"."$currentUID" "$dumbpath_file"
+
+
+
+    fi
+
+    [[ "$current_done__prepare_msw_python_procedure" == "false" ]] && _prepare_msw_python_procedure
+    current_done__prepare_msw_python_procedure="true"
+
+    [[ "$_PYTHONSTARTUP" == "" ]] && _write_python_hook_local
+
+#if false
+#then
+    _messagePlain_nominal 'prepare: venv: activate' > /dev/null >&2
+    ! cd "$scriptLocal"/python_msw/venv && _stop 1
+    #sourcedefault_venv/Scripts/activate > /dev/null >&2
+    _messagePlain_probe source  default_venv/Scripts/activate_msw > /dev/null >&2
+    source default_venv/Scripts/activate_msw > /dev/null >&2
+    PATH="$currentPATH"
+
+    _messagePlain_nominal 'prepare: venv: set' > /dev/null >&2
+    _set_msw_python_procedure
+    
+    _messagePlain_probe python -c "import sys; print(sys.path)" > /dev/null >&2
+    python -c "import sys; print(sys.path)" > /dev/null >&2
+#fi
+
+    _messagePlain_probe _install_dependencies_msw_python_procedure-specific "" "" > /dev/null >&2
+    _install_dependencies_msw_python_procedure-specific "" ""
+
+
+
+
+
+    #set ACCELERATE="%VENV_DIR%\Scripts\accelerate.exe"
+
+
+    rm -f "$scriptLocal"/python_msw.lock
+    _messagePlain_nominal 'done: prepare: '${FUNCNAME[0]} > /dev/null >&2
+}
+
+
+
+
+
+
+
+# EXAMPLE. Override (preferred) or implement alternative (discouraged) with 'core.sh', 'ops.sh', or similar.
+_morsels_msw_pip_python_3_10() {
+    #export packages_msw_python=( "huggingface_hub[cli]" )
+    local currentPackages_indicator_list=( "huggingface_hub[cli]" "${packages_msw_python[@]}" )
+    local currentPackages_list=( "huggingface_hub[cli]" )
+    local currentPackage
+
+    #export nonet_available="true"
+    ( ! wget -qO- 'https://github.com' > /dev/null || ! wget -qO- 'https://pypi.org/simple/' | head > /dev/null ) && export nonet_available="true"
+    local currentIteration_nonet="0"
+    while [[ "$nonet_available" == "true" ]] && [[ "$CI" != "" ]] && [[ "$currentIteration_nonet" -lt 90 ]]
+    do
+        ( wget -qO- 'https://github.com' > /dev/null && wget -qO- 'https://pypi.org/simple/' | head > /dev/null ) && export nonet_available="" && unset nonet_available
+        let currentIteration_nonet++
+    done
+
+    local currentWork="false"
+    for currentPackage in "${currentPackages_indicator_list[@]}"
+    do
+        ! pip show "$currentPackage" > /dev/null 2>&1 && currentWork="true"
+        #! python -m pip show "$currentPackage" > /dev/null 2>&1 && currentWork="true"
+    done
+    [[ "$currentWork" == "false" ]] && return 0
+
+    [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]] && python -m pip install --upgrade pip > /dev/null >&2
+
+    for currentPackage in "${currentPackages_list[@]}"
+    do
+        #,win32,win_arm64
+        [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]] && pip download "$currentPackage" --platform win_amd64 --only-binary=:all: --dest "$(cygpath -w "$scriptAbsoluteFolder"/_bundle/morsels/pip)" > /dev/null >&2
+        
+        pip install --no-index --find-links="$(cygpath -w "$scriptAbsoluteFolder"/_bundle/morsels/pip)" "$currentPackage" > /dev/null >&2
+
+        # Strongly discouraged! Avoid surprise breakage by never relying on upstream repositories.
+        #[[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]] && pip install "$currentPackage" > /dev/null >&2
+    done
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_discover-msw_python() {
+    _discover_procedure-msw_python "$@"
+    if [[ "$lib_dir_msw_python_wheels" != "" ]]
+    then
+        export lib_dir_msw_python_wheels_msw=$(cygpath -w "$lib_dir_msw_python_wheels")
+        if [[ "$_PATH_pythonDir" != "" ]]
+        then
+            export lib_dir_msw_python_wheels_relevant="$lib_dir_msw_python_wheels_msw"
+        else
+            export lib_dir_msw_python_wheels_relevant="$lib_dir_msw_python_wheels"
+        fi
+        return 0
+    fi
+    export lib_dir_msw_python_wheels_msw=""
+    unset lib_dir_msw_python_wheels_msw
+    export lib_dir_msw_python_wheels_relevant=""
+    unset lib_dir_msw_python_wheels_relevant
+    return 1
+}
+_discover_procedure-msw_python() {
+    export lib_dir_msw_python_wheels
+    
+    export lib_dir_msw_python_wheels="$scriptAbsoluteFolder"/.python_wheels/msw
+    if [[ -e "$lib_dir_msw_python_wheels" ]]
+    then
+        . "$lib_dir_msw_python_wheels"/_msw_python_wheels.sh
+        return 0
+    fi
+    export lib_dir_msw_python_wheels="$scriptLocal"/.python_wheels/msw
+    if [[ -e "$lib_dir_msw_python_wheels" ]]
+    then
+        . "$lib_dir_msw_python_wheels"/_msw_python_wheels.sh
+        return 0
+    fi
+    export lib_dir_msw_python_wheels="$scriptLib"/.python_wheels/msw
+    if [[ -e "$lib_dir_msw_python_wheels" ]]
+    then
+        . "$lib_dir_msw_python_wheels"/_msw_python_wheels.sh
+        return 0
+    fi
+
+    
+    export lib_dir_msw_python_wheels="$scriptLib"/ubiquitous_bash/_lib/.python_wheels/msw
+    if [[ -e "$lib_dir_msw_python_wheels" ]]
+    then
+        . "$lib_dir_msw_python_wheels"/_msw_python_wheels.sh
+        return 0
+    fi
+    export lib_dir_msw_python_wheels="$scriptLib"/ubDistBuild/_lib/ubiquitous_bash/_lib/.python_wheels/msw
+    if [[ -e "$lib_dir_msw_python_wheels" ]]
+    then
+        . "$lib_dir_msw_python_wheels"/_msw_python_wheels.sh
+        return 0
+    fi
+
+    export lib_dir_msw_python_wheels=""
+    unset lib_dir_msw_python_wheels
+}
+_install_dependencies_msw_python_procedure-specific() {
+    _messagePlain_nominal 'install: dependencies' > /dev/null >&2
+
+    _discover-msw_python
+
+    # Not all of these packages are necessary for dist/OS other than native MSWindows.
+    #export dependencies_msw_python=( "pyreadline3" )
+    local currentPackages_list=( "pyreadline3" "colorama" "${dependencies_msw_python[@]}" )
+    local currentPackage
+
+    #export nonet_available="true"
+    ( ! wget -qO- 'https://github.com' > /dev/null || ! wget -qO- 'https://pypi.org/simple/' | head > /dev/null ) && export nonet_available="true"
+    local currentIteration_nonet="0"
+    while [[ "$nonet_available" == "true" ]] && [[ "$CI" != "" ]] && [[ "$currentIteration_nonet" -lt 90 ]]
+    do
+        ( wget -qO- 'https://github.com' > /dev/null && wget -qO- 'https://pypi.org/simple/' | head > /dev/null ) && export nonet_available="" && unset nonet_available
+        let currentIteration_nonet++
+    done
+    
+
+    if [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]]
+    then
+        _pip_upgrade() {
+            local currentUpgrade="false"
+            for currentPackage in "${currentPackages_list[@]}"
+            do
+                ! "$1"pip show "$currentPackage" > /dev/null 2>&1 && currentUpgrade="true"
+                #! "$2"python -m pip show "$currentPackage" > /dev/null 2>&1 && currentUpgrade="true"
+            done
+            [[ "$currentUpgrade" == "false" ]] && return 0
+            "$2"python -m pip install --upgrade pip > /dev/null >&2
+        }
+        _pip_upgrade "$1" "$2"
+    fi
+
+
+    if [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]]
+    then
+
+        if [[ "$lib_dir_msw_python_wheels" != "" ]]
+        then
+            # ATTRIBUTION-AI: ChatGPT o3  2025-04-19  (partially)
+            _pip_download() {
+                "$1"pip show "$3" > /dev/null 2>&1 && return 0
+                #"$2"python -m pip show "$3" > /dev/null 2>&1 && return 0
+
+                #--python-version 3.1
+                "$1"pip download "$3" --platform win_amd64 --only-binary=:all: --dest "$lib_dir_msw_python_wheels_relevant" > /dev/null >&2
+                #"$1"pip download "$3" --platform win32 --only-binary=:all: --dest "$lib_dir_msw_python_wheels_relevant" > /dev/null >&2
+                "$1"pip download "$3" --platform win_arm64 --only-binary=:all: --dest "$lib_dir_msw_python_wheels_relevant" > /dev/null >&2
+                
+                #"$2"python -m pip download "$3" --platform win_amd64 --only-binary=:all: --dest "$lib_dir_msw_python_wheels_relevant" > /dev/null >&2
+                #"$2"python -m pip download "$3" --platform win32 --only-binary=:all: --dest "$lib_dir_msw_python_wheels_relevant" > /dev/null >&2
+                #"$2"python -m pip download "$3" --platform win_arm64 --only-binary=:all: --dest "$lib_dir_msw_python_wheels_relevant" > /dev/null >&2
+            }
+
+            for currentPackage in "${currentPackages_list[@]}"
+            do
+                _pip_download "$1" "$2" "$currentPackage"
+            done
+        fi
+    fi
+
+
+    if [[ "$lib_dir_msw_python_wheels_relevant" != "" ]]
+    then
+        _pip_install_nonet() {
+            "$1"pip show "$3" > /dev/null 2>&1 && return 0
+            #"$2"python -m pip show "$3" > /dev/null 2>&1 && return 0
+
+            "$1"pip install --no-index --find-links="$lib_dir_msw_python_wheels_relevant" "$3" > /dev/null >&2
+            #"$2"python -m pip install --no-index --find-links="$lib_dir_msw_python_wheels_relevant" "$3" > /dev/null >&2
+        }
+        for currentPackage in "${currentPackages_list[@]}"
+        do
+            _pip_install_nonet "$1" "$2" "$currentPackage"
+        done
+    fi
+    
+    if [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]]
+    then
+        _pip_install() {
+            "$1"pip show "$3" > /dev/null 2>&1 && return 0
+            #"$2"python -m pip show "$3" > /dev/null 2>&1 && return 0
+
+            "$1"pip install "$3" > /dev/null >&2
+            #"$2"python -m pip install "$3" > /dev/null >&2
+        }
+        for currentPackage in "${currentPackages_list[@]}"
+        do
+            _pip_install "$1" "$2" "$currentPackage"
+        done
+    fi
+
+    return 0
+}
+_install_dependencies_msw_python_sequence-specific() {
+    _messageNormal '     install: dependencies: '"$1" > /dev/null >&2
+    _start
+
+    "$1"
+    if [[ ! -e "$_PATH_pythonDir" ]]
+    then
+        ( _messagePlain_warn 'warn: skip: missing: python: '"$1" >&2 ) > /dev/null
+        _stop 1
+    fi
+    
+    _install_dependencies_msw_python_procedure-specific
+
+    _stop
+}
+_install_dependencies_msw_python() {
+    "$scriptAbsoluteLocation" _install_dependencies_msw_python_sequence-specific _set_msw_python_3_10
+}
+
+
+
+
+_prepare_msw_python_procedure() {
+    local currentUID=$(_uid)
+
+    if [[ ! -e "$_PATH_pythonDir"/python3 ]] && [[ $(find "$_PATH_pythonDir" -maxdepth 1 -iname 'python3' -type f -print -quit 2>/dev/null | tr -dc 'a-zA-Z0-9') == "" ]]
+    then
+        echo '#!/usr/bin/env bash
+        python "$@"' > "$_PATH_pythonDir"/python3."$currentUID"
+        chmod u+x "$_PATH_pythonDir"/python3."$currentUID"
+        mv -f "$_PATH_pythonDir"/python3."$currentUID" "$_PATH_pythonDir"/python3
+        chmod u+x "$_PATH_pythonDir"/python3
+    fi
+    
+
+    mkdir -p "$scriptLocal"
+
+    mkdir -p "$scriptLocal"/python_msw
+
+    # In practice, 'pip' morsels may be all that is needed (ie. using 'pip' morsels for venv installation).
+    mkdir -p "$scriptAbsoluteFolder"/_bundle/morsels
+    mkdir -p "$scriptAbsoluteFolder"/_bundle/morsels/pip
+
+    mkdir -p "$scriptAbsoluteFolder"/_bundle/morsels/venv
+    mkdir -p "$scriptAbsoluteFolder"/_bundle/morsels/accelerate
+
+    # STRONGLY DISCOURAGED!
+    mkdir -p "$scriptAbsoluteFolder"/_bundle/morsels/conda
+
+    if [[ ! -e "$scriptLocal"/python_msw/lean.py ]] || ! diff --unified=3 "$scriptAbsoluteFolder"/lean.py "$scriptLocal"/python_msw/lean.py > /dev/null
+    then
+        cp -f "$scriptAbsoluteFolder"/lean.py "$scriptLocal"/python_msw/lean.py."$currentUID" > /dev/null 2>&1
+        mv -f "$scriptLocal"/python_msw/lean.py."$currentUID" "$scriptLocal"/python_msw/lean.py
+        if [[ ! -e "$scriptLocal"/python_msw/lean.py ]]
+        then
+            cp -f "$scriptLib"/ubiquitous_bash/lean.py "$scriptLocal"/python_msw/lean.py."$currentUID"
+            mv -f "$scriptLocal"/python_msw/lean.py."$currentUID" "$scriptLocal"/python_msw/lean.py
+        fi
+    fi
+    [[ ! -e "$scriptLocal"/python_msw/lean.py ]] && ( _messagePlain_warn 'warn: missing: scriptLocal/python_msw/lean.py' >&2 ) > /dev/null
+
+
+    _install_dependencies_msw_python_procedure-specific "" ""
+
+    return 0
+}
+
+
+
+
+# UNIX/Linux of course has no need for such overrides, having normal Python installations in directories in PATH and no distinction between native/MSW and Cygwin/MSW binaries .
+_override_msw_path_python_procedure() {
+		local path_entry entry IFS=':'
+		local new_path=""
+		for entry in $PATH ; do
+			# Skip adding if this entry matches current_binaries_path exactly
+			[ "$entry" = "$current_binaries_path" ] && continue
+			
+			# Append current entry to the new_path
+			if [ -z "$new_path" ]; then
+				new_path="$entry"
+			else
+				new_path="${new_path}:${entry}"
+			fi
+		done
+
+		# Finally, explicitly prepend the git path
+		export PATH="${current_binaries_path}:${new_path}"
+
+        [[ "$1" == "" ]] && export _PATH_pythonDir="$current_binaries_path"
+
+        [[ "$1" != "" ]] && ( _messagePlain_probe_var PATH >&2 ) > /dev/null
+
+        return 0
+}
+_detect_msw_path_python() {
+        current_binaries_path="$1"
+
+        ! [[ -d "$current_binaries_path" ]] && ( _messagePlain_warn 'warn: missing: python: '"$1" >&2 ) && return 1
+
+        ( _messagePlain_good 'success: found: python: '"$1" >&2 ) > /dev/null
+}
+_detect_msw_path_python-localappdata() {
+        current_binaries_path=$(cygpath -u "$LOCALAPPDATA")
+        current_binaries_path="$current_binaries_path"/"$1"
+
+        ! [[ -d "$current_binaries_path" ]] && ( _messagePlain_warn 'warn: missing: python: '"$1" >&2 ) && return 1
+
+        ( _messagePlain_good 'success: found: python: '"$1" >&2 ) > /dev/null
+}
+_override_msw_path_python_3_10() {
+    _messagePlain_nominal 'override: '${FUNCNAME[0]}
+
+    local current_binaries_path=""
+
+    # WARNING: Python 'embed' package may not be tested. Use the installer instead.
+
+    _detect_msw_path_python "$scriptLib"/msw/python-3.10.11-embed-amd64
+    [[ "$?" == "0" ]] && [[ -d "$current_binaries_path" ]] && _override_msw_path_python_procedure && return 0
+
+    _detect_msw_path_python "$scriptLocal"/msw/python-3.10.11-embed-amd64
+    [[ "$?" == "0" ]] && [[ -d "$current_binaries_path" ]] && _override_msw_path_python_procedure && return 0
+
+    _detect_msw_path_python-localappdata "Programs/Python/python-3.10.11-embed-amd64"
+    [[ "$?" == "0" ]] && [[ -d "$current_binaries_path" ]] && _override_msw_path_python_procedure && return 0
+
+    _detect_msw_path_python-localappdata "Programs/Python/Python310"
+    [[ "$?" == "0" ]] && [[ -d "$current_binaries_path" ]] && _override_msw_path_python_procedure && return 0
+
+
+    ( _messagePlain_bad 'FAIL: missing: python: '${FUNCNAME[0]} >&2 ) > /dev/null
+    ( _messagePlain_request 'request: install: https://www.python.org/ftp/python/3.10.11/python-3.10.11-amd64.exe' >&2 ) > /dev/null
+    #( _messagePlain_request 'request: install: https://www.python.org/ftp/python/3.10.11/python-3.10.11-embed-amd64.zip' >&2 ) > /dev/null
+    #( _messagePlain_request 'request: extract: '"$scriptLib"/msw/ >&2 ) > /dev/null
+    #( _messagePlain_request 'request: extract: '"$scriptLocal"/msw/ >&2 ) > /dev/null
+    #( _messagePlain_request 'request: extract: '"$LOCALAPPDATA"'Programs/Python' >&2 ) > /dev/null
+    _messageFAIL >&2
+}
+
+# CAUTION: Called by _setupUbiquitous_accessories_here-python_hook .
+_set_msw_python_procedure() {
+    # WARNING: Invalid variables for 'python...embed' .
+    export _pythonLib=$(find "$_PATH_pythonDir" -iname 'Lib' -type d -print -quit)
+    export _pythonSitePackages=$(find "$_PATH_pythonDir" -iname 'site-packages' -type d -print -quit)
+    export _pythonPip_file=$(find "$_PATH_pythonDir" -iname 'pip3.exe' -type f -print -quit)
+    export _pythonPip=$([[ "$_pythonPip_file" != "" ]] && _getAbsoluteFolder "$_pythonPip_file")
+    export _pythonPipInstaller_file=$(find "$_PATH_pythonDir" -iname 'get-pip.py' -type f -print -quit)
+
+    # DUBIOUS
+    export _transformersCache="$scriptLocal"/transformers-cache
+
+
+    #export _python=$(find "$_PATH_pythonDir" -iname 'python.exe' -type f -print -quit)
+
+    #export _accelerate=$(find "$_PATH_pythonDir" -iname 'accelerate.exe' -type f -print -quit)
+
+
+    [[ ! -e "$_pythonLib" ]] && ( _messagePlain_bad 'bad: missing: $_pythonLib' >&2 ) > /dev/null && _messageFAIL >&2
+    [[ ! -e "$_pythonSitePackages" ]] && ( _messagePlain_bad 'bad: missing: $_pythonSitePackages' >&2 ) > /dev/null && _messageFAIL >&2
+    [[ ! -e "$_pythonPip_file" ]] && ( _messagePlain_bad 'bad: missing: $_pythonPip_file' >&2 ) > /dev/null && _messageFAIL >&2
+    [[ ! -e "$_pythonPip" ]] && ( _messagePlain_bad 'bad: missing: $_pythonPip' >&2 ) > /dev/null && _messageFAIL >&2
+    #[[ ! -e "$_pythonPipInstaller_file" ]] && ( _messagePlain_bad 'bad: missing: $_pythonPipInstaller_file' >&2 ) > /dev/null && _messageFAIL >&2
+
+    local current_binaries_path
+    current_binaries_path="$_PATH_pythonDir"
+    _override_msw_path_python_procedure "_PATH_pythonDir"
+
+    current_binaries_path="$_pythonPip"
+    _override_msw_path_python_procedure "pip"
+
+    local VIRTUAL_ENV_unix
+    [[ "$VIRTUAL_ENV" != "" ]] && VIRTUAL_ENV_unix=$(cygpath -u "$VIRTUAL_ENV")
+    VIRTUAL_ENV_unix="$VIRTUAL_ENV_unix"/Scripts
+    if [[ -e "$VIRTUAL_ENV_unix" ]]
+    then
+        export _pythonLib=$(find "$VIRTUAL_ENV_unix"/.. -iname 'Lib' -type d -print -quit)
+        export _pythonSitePackages=$(find "$VIRTUAL_ENV_unix"/.. -iname 'site-packages' -type d -print -quit)
+        export _pythonPip_file=$(find "$VIRTUAL_ENV_unix" -iname 'pip3.exe' -type f -print -quit)
+        export _pythonPip=$([[ "$_pythonPip_file" != "" ]] && _getAbsoluteFolder "$_pythonPip_file")
+        export _pythonPipInstaller_file=$(find "$VIRTUAL_ENV_unix" -iname 'get-pip.py' -type f -print -quit)
+
+
+        #export _python=$(find "$_PATH_pythonDir" -iname 'python.exe' -type f -print -quit)
+
+        #export _accelerate=$(find "$_PATH_pythonDir" -iname 'accelerate.exe' -type f -print -quit)
+
+
+        [[ ! -e "$_pythonLib" ]] && ( _messagePlain_bad 'bad: missing: $_pythonLib' >&2 ) > /dev/null && _messageFAIL >&2
+        [[ ! -e "$_pythonSitePackages" ]] && ( _messagePlain_bad 'bad: missing: $_pythonSitePackages' >&2 ) > /dev/null && _messageFAIL >&2
+        [[ ! -e "$_pythonPip_file" ]] && ( _messagePlain_bad 'bad: missing: $_pythonPip_file' >&2 ) > /dev/null && _messageFAIL >&2
+        [[ ! -e "$_pythonPip" ]] && ( _messagePlain_bad 'bad: missing: $_pythonPip' >&2 ) > /dev/null && _messageFAIL >&2
+        #[[ ! -e "$_pythonPipInstaller_file" ]] && ( _messagePlain_bad 'bad: missing: $_pythonPipInstaller_file' >&2 ) > /dev/null && _messageFAIL >&2
+
+
+        current_binaries_path="$VIRTUAL_ENV_unix"
+        _override_msw_path_python_procedure "VIRTUAL_ENV"
+
+        current_binaries_path="$_pythonPip"
+        _override_msw_path_python_procedure "VIRTUAL_ENV_pip"
+    fi
+
+    unset PYTHONHOME
+    export PYTHONSTARTUP="$_PYTHONSTARTUP"
+    
+    return 0
+}
+
+_set_msw_python() {
+    _set_msw_python_3_10 "$@"
+}
+_set_msw_python_3_10() {
+    _override_msw_path_python_3_10 "$@"
+
+    _set_msw_python_procedure "$@"
+}
+
+
+
+_demo_msw_python() {
+    _messagePlain_nominal 'demo: '${FUNCNAME[0]} > /dev/null >&2
+    sleep 0.6
+    "$@"
+    _bash
+}
+
+
+# STRONGLY DISCOURAGED
+
+
+
+
+
+# Suggested defaults. If your python code (not python itself, nor venv, etc, but filenames for files your python application uses, such as datasets, models, etc) insists on absolute paths, and you must use it under both UNIX/Linux and Cygwin/MSW, then it is probably only needed temporarily to generate static assets (ie. occasional experimental fine-tuning of the latest available AI models). In which case you can put into production under solely UNIX/Linux if necessary, and develop with Docker (ie. factory) instead.
+# tldr; UNIX/Linux for python in production, Cygwin/MSW (ie. MSW native python) for python in development, as usual, and then you won't need abstractfs .
+#
+#_set_abstractfs_alwaysUNIXneverNative
+#_set_abstractfs_disable
+
+
+
+# ATTENTION: EXAMPLE. Override or implement alternative with 'core.sh', 'ops.sh', or similar.
+# ATTENTION: Also create "$scriptLib"/python/lean.py .
+_nix_python() {
+    #export dependencies_nix_python=( "readline" )
+    #export packages_nix_python=( "huggingface_hub[cli]" )
+
+    #implies sequence
+    _prepare_nix_python
+
+
+    # ATTENTION: Dropping to an interactive shell in the midst of a bash function which provides standard output to another bash function
+    #
+    # ie. don't expect guaranteed sanity doing something like this in either bash or python
+    # echo $( echo result ; bash -i ) | tee > ./logfile.txt
+    #
+    # ALWAYS call interactively unless 'stdout' will be consumed. Functions, scripts, commands, get an interactive terminal to talk to, except very simple functions.
+    #
+    # ie. _fineTune_model  <->  Interactive Shell
+    # ie. _vector_model  <->  Interactive Shell
+    # ie. _inferenceModel | grep 'stuff' > description.txt  <->  Interactive Shell
+    # ie. result=$(_inferenceModel | grep 'correct')  <->  Non-Interactive
+    #
+    # Unfortunately, bash function calls from python do not enjoy the '$() > /dev/null 2>&1' syntactic convenience.
+    # Python calls to '_bin()' , '_bash()' , etc, must explicitly declare or implicitly default sanely whether interactive or non-interactive captured output.
+    
+    # lean.py ... is a template script from 'ubiquitous_bash' for lightweight manual changes
+    #"$scriptLocal"/python_nix/lean.py   #automatically replaced with autogenerated lean.py
+    #"$scriptLib"/python_nix/lean.py    #ATTTENTION: create persistent custom lean.py here
+
+
+    # WARNING: May be untested.
+    
+    # "$scriptCall_bin" # _bin.bat (replace "$scriptAbsoluteLocation")
+    # "$scriptCall_bin" # _bash.bat (replace "$scriptAbsoluteLocation")
+
+    #python "$scriptLib"'/python/lean.py' '_bin(["sleep", "90",], True, r"'"$scriptAbsoluteLocation"'")'
+
+    #python "$scriptAbsoluteFolder"'/lean.py' '_bash(["-i"], True, r"'"$scriptAbsoluteLocation"'")'
+
+    python "$scriptAbsoluteFolder"'/lean.py' '_bin(["_demo_nix_python",], True, r"'"$scriptAbsoluteLocation"'", interactive=True)'
+
+    #python -i "$scriptAbsoluteFolder"'/lean.py' '_python()'
+
+    #_bash
+}
+_nix_python_bash() {
+    #export dependencies_nix_python=( "readline" )
+    #export packages_nix_python=( "huggingface_hub[cli]" )
+
+    #implies sequence
+    _prepare_nix_python
+
+    _bash
+}
+_nix_python_bin() {
+    #export dependencies_nix_python=( "readline" )
+    #export packages_nix_python=( "huggingface_hub[cli]" )
+
+    #implies sequence
+    _prepare_nix_python
+
+    _bin "$@"
+}
+
+
+# ATTENTION: Call from '_test_prog' with 'core.sh' or similar.
+# _setup calls _test calls _test_prog
+_test_nix_python() {
+    #export dependencies_nix_python=( "readline" )
+    #export packages_nix_python=( "huggingface_hub[cli]" )
+
+    _prepare_nix_python
+}
+
+
+
+
+
+
+
+
+
+
+# EXAMPLE. Override or implement alternative with 'core.sh', 'ops.sh', or similar.
+_prepare_nix_python() {
+    _prepare_nix_python_3
+}
+# EXAMPLE. Override or implement alternative (discouraged) with 'core.sh', 'ops.sh', or similar, if necessary.
+_prepare_nix_python_3() {
+    _set_nix_python_3
+
+    # ATTENTION: implies sequence
+    local currentUID="$sessionid"
+
+    # ATTENTION: Do NOT enable. Prevents 'trap' cleanup of abandoned lock file.
+    #local currentUID=$(_uid 18)
+
+    local currentUID_length=${#currentUID}
+    local currentUID_length_plus1=$(( currentUID_length + 1 ))
+
+    local currentPATH="$PATH"
+
+    _write_python_hook_local() {
+        _messagePlain_nominal 'prepare: python hook' > /dev/null >&2
+    
+        local ubcore_accessoriesFile_python
+        local ubcoreDir_accessories_python
+        local ubcore_accessoriesFile_python_ubhome
+
+        ubcore_accessoriesFile_python="$scriptLib"/python_nix/lean.py
+        ubcoreDir_accessories_python="$scriptLib"/python_nix
+        ubcore_accessoriesFile_python_ubhome="$scriptLib"/python_nix/lean.py
+        if [[ ! -e "$ubcore_accessoriesFile_python" ]] || [[ ! -e "$ubcoreDir_accessories_python" ]] || [[ ! -e "$ubcore_accessoriesFile_python_ubhome" ]]
+        then
+            ( _messagePlain_warn 'warn: missing: scriptLib/python_nix/...' >&2 ) > /dev/null
+            
+            ubcore_accessoriesFile_python="$scriptLocal"/python_nix/lean.py
+            ubcoreDir_accessories_python="$scriptLocal"/python_nix
+            ubcore_accessoriesFile_python_ubhome="$scriptLocal"/python_nix/lean.py
+            if [[ ! -e "$ubcore_accessoriesFile_python" ]] || [[ ! -e "$ubcoreDir_accessories_python" ]] || [[ ! -e "$ubcore_accessoriesFile_python_ubhome" ]]
+            then
+                ( _messagePlain_warn 'warn: missing: scriptLocal/python_nix/...' >&2 ) > /dev/null
+            fi
+        fi
+
+        local ubcore_ubcorerc_pythonrc="lean"
+        
+        _setupUbiquitous_accessories_here-python_hook > "$scriptLocal"/python_nix/pythonrc."$currentUID"
+        if [[ ! -e "$scriptLocal"/python_nix/pythonrc ]] || ! diff --unified=3 "$scriptLocal"/python_nix/pythonrc."$currentUID" "$scriptLocal"/python_nix/pythonrc > /dev/null
+        then
+            mv -f "$scriptLocal"/python_nix/pythonrc."$currentUID" "$scriptLocal"/python_nix/pythonrc
+        else
+            rm -f "$scriptLocal"/python_nix/pythonrc."$currentUID"
+        fi
+        
+        export _PYTHONSTARTUP="$scriptLocal"/python_nix/pythonrc
+        export PYTHONSTARTUP="$_PYTHONSTARTUP"
+    }
+    unset _PYTHONSTARTUP
+    
+
+    local current_done__prepare_nix_python_procedure="false"
+
+
+    _lock_prepare_python_nix() {
+        _messagePlain_nominal 'prepare: wait: lock: _lock_prepare_python_nix' > /dev/null >&2
+        local dateA
+        local dateB
+        local dateDelta
+        while [[ $(cat "$scriptLocal"/python_nix.lock 2> /dev/null | head -c "$currentUID_length") != "$currentUID" ]]
+        do
+            if [[ ! -e "$scriptLocal"/python_nix.lock ]]
+            then
+                echo "$currentUID"$(date +%s | tr -dc '0-9') > "$scriptLocal"/python_nix.lock."$currentUID"
+                mv -f "$scriptLocal"/python_nix.lock."$currentUID" "$scriptLocal"/python_nix.lock
+            fi
+
+            sleep 7
+            [[ $(cat "$scriptLocal"/python_nix.lock 2> /dev/null | head -c "$currentUID_length") == "$currentUID" ]] && return 0
+
+            _messagePlain_probe "wait: lock" > /dev/null >&2
+
+            while [[ -e "$scriptLocal"/python_nix.lock ]] && [[ $(cat "$scriptLocal"/python_nix.lock 2> /dev/null | head -c "$currentUID_length") != "$currentUID" ]]
+            do
+                dateA=$(cat "$scriptLocal"/python_nix.lock 2> /dev/null | tail -c +"$currentUID_length_plus1" | tr -dc '0-9')
+                dateB=$(date +%s | tr -dc '0-9')
+                _messagePlain_probe "$dateB - $dateA"
+                dateDelta=$(bc <<< "$dateB - $dateA" 2> /dev/null)
+
+                sleep 7
+
+                # Normal prepare time is <<2minutes, if that.
+                [[ "$dateDelta" -gt "2700" ]] && rm -f "$scriptLocal"/python_nix.lock
+            done
+        done
+    }
+    _lock_prepare_python_nix
+    #...
+    #rm -f "$scriptLocal"/python_nix.lock
+
+    # WARNING: Do not add '-msw_python_3_10' or similar suffix to dumbpath_file . Use separate derivative projects for separate venv as normally needed for different python versions.
+    local dumbpath_file="$scriptLocal"/"$dumbpath_prefix"dumbpath.var
+    local dumbpath_contents=""
+    dumbpath_contents=$(cat "$dumbpath_file" 2> /dev/null)
+    if [[ "$dumbpath_contents" != "$dumbpath_file" ]]
+    then
+        # ATTENTION: WARNING: Anaconda is usually unnecessary, STRONGLY DISCOURAGED, and NOT automatically installed (eg. with 'ubdist/OS').
+        # Automatic installation of Anaconda is not expected useful for any purpose - only workstations for personal evaluation of open-source projects which happen to use Anaconda for a non=production purpose are expected to use Anaconda, if at all.
+        # Manual installation of Anaconda:
+        # https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html
+        # https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html
+
+
+
+        
+
+        # erase any venv, etc, which may use absolute paths
+        _messagePlain_nominal 'prepare: python_nix' > /dev/null >&2
+
+        export safeToDeleteGit="true"
+        _safeRMR "$scriptLocal"/python_nix
+        mkdir -p "$scriptLocal"/python_nix
+
+
+        #[[ "$current_done__prepare_nix_python_procedure" == "false" ]] && 
+        _prepare_nix_python_procedure
+        current_done__prepare_nix_python_procedure="true"
+
+
+        
+        # write python hook ; mv -f
+
+        #[[ "$_PYTHONSTARTUP" == "" ]] && 
+        _write_python_hook_local
+
+
+#if false
+#then
+        # rebuild venv...
+        _messagePlain_nominal 'prepare: venv' > /dev/null >&2
+        
+        mkdir -p "$scriptLocal"/python_nix/venv
+        ! cd "$scriptLocal"/python_nix/venv && _stop 1
+        python3 -m venv default_venv > /dev/null >&2
+
+        
+        cp -a default_venv/bin/activate default_venv/bin/activate_nix
+        #dos2unix default_venv/bin/activate_nix
+        chmod u+x default_venv/bin/activate_nix
+
+        #source default_venv/bin/activate > /dev/null >&2
+        _messagePlain_probe source default_venv/bin/activate_nix > /dev/null >&2
+        source default_venv/bin/activate_nix > /dev/null >&2
+        #PATH="$currentPATH"
+
+        _messagePlain_nominal 'prepare: venv: set' > /dev/null >&2
+        _set_nix_python_procedure
+
+        _messagePlain_probe _install_dependencies_nix_python_procedure-specific "" "" > /dev/null >&2
+        _install_dependencies_nix_python_procedure-specific "" ""
+        
+        _messagePlain_probe python -c "import sys; print(sys.path)" > /dev/null >&2
+        python -c "import sys; print(sys.path)" > /dev/null >&2
+
+        #deactivate > /dev/null >&2
+#fi
+
+
+
+        # morsels...
+        _messagePlain_nominal 'prepare: morsels: pip' > /dev/null >&2
+
+        _morsels_nix_pip_python_3
+
+
+
+
+
+
+
+
+
+
+
+        # write > "$dumbpath_file" ; mv -f
+
+        # ATTENTION: Disable (ie. comment out) to force always rebuild, packages install, etc.
+        echo "$dumbpath_file" > "$dumbpath_file"."$currentUID"
+        mv -f "$dumbpath_file"."$currentUID" "$dumbpath_file"
+
+
+
+    fi
+
+    [[ "$current_done__prepare_nix_python_procedure" == "false" ]] && _prepare_nix_python_procedure
+    current_done__prepare_nix_python_procedure="true"
+
+    [[ "$_PYTHONSTARTUP" == "" ]] && _write_python_hook_local
+
+#if false
+#then
+    _messagePlain_nominal 'prepare: venv: activate' > /dev/null >&2
+    ! cd "$scriptLocal"/python_nix/venv && _stop 1
+    #source default_venv/bin/activate > /dev/null >&2
+    _messagePlain_probe source default_venv/bin/activate_nix > /dev/null >&2
+    source default_venv/bin/activate_nix > /dev/null >&2
+    #PATH="$currentPATH"
+
+    _messagePlain_nominal 'prepare: venv: set' > /dev/null >&2
+    _set_nix_python_procedure
+    
+    _messagePlain_probe python -c "import sys; print(sys.path)" > /dev/null >&2
+    python -c "import sys; print(sys.path)" > /dev/null >&2
+#fi
+
+    _messagePlain_probe _install_dependencies_nix_python_procedure-specific "" "" > /dev/null >&2
+    _install_dependencies_nix_python_procedure-specific "" ""
+
+
+
+
+
+    #set ACCELERATE="%VENV_DIR%\Scripts\accelerate.exe"
+
+
+    rm -f "$scriptLocal"/python_nix.lock
+    _messagePlain_nominal 'done: prepare: '${FUNCNAME[0]} > /dev/null >&2
+}
+
+
+
+
+
+
+
+# EXAMPLE. Override (preferred) or implement alternative (discouraged) with 'core.sh', 'ops.sh', or similar.
+_morsels_nix_pip_python_3() {
+    #export packages_nix_python=( "huggingface_hub[cli]" )
+    local currentPackages_indicator_list=( "huggingface_hub[cli]" "${packages_nix_python[@]}" )
+    local currentPackages_list=( "huggingface_hub[cli]" )
+    local currentPackage
+
+    #export nonet_available="true"
+    ( ! wget -qO- 'https://github.com' > /dev/null || ! wget -qO- 'https://pypi.org/simple/' | head > /dev/null ) && export nonet_available="true"
+    local currentIteration_nonet="0"
+    while [[ "$nonet_available" == "true" ]] && [[ "$CI" != "" ]] && [[ "$currentIteration_nonet" -lt 90 ]]
+    do
+        ( wget -qO- 'https://github.com' > /dev/null && wget -qO- 'https://pypi.org/simple/' | head > /dev/null ) && export nonet_available="" && unset nonet_available
+        let currentIteration_nonet++
+    done
+
+    local currentWork="false"
+    for currentPackage in "${currentPackages_indicator_list[@]}"
+    do
+        ! pip show "$currentPackage" > /dev/null 2>&1 && currentWork="true"
+        #! python -m pip show "$currentPackage" > /dev/null 2>&1 && currentWork="true"
+    done
+    [[ "$currentWork" == "false" ]] && return 0
+
+    #[[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]] && python -m pip install --upgrade pip > /dev/null >&2
+    [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]] && python -m pip install --upgrade pip > /dev/null 2>&1
+    [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]] && sudo -n python -m pip install --upgrade pip > /dev/null 2>&1
+
+    for currentPackage in "${currentPackages_list[@]}"
+    do
+        [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]] && pip download "$currentPackage" --platform linux_x86_64 --only-binary=:all: --dest "$scriptAbsoluteFolder"/_bundle/morsels/pip > /dev/null >&2
+        [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]] && pip download "$currentPackage" --platform manylinux2014_x86_64 --only-binary=:all: --dest "$scriptAbsoluteFolder"/_bundle/morsels/pip > /dev/null >&2
+        [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]] && pip download "$currentPackage" --platform manylinux1 --only-binary=:all: --dest "$scriptAbsoluteFolder"/_bundle/morsels/pip > /dev/null >&2
+        [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]] && pip download "$currentPackage" --platform any --only-binary=:all: --dest "$scriptAbsoluteFolder"/_bundle/morsels/pip > /dev/null >&2
+        
+        #pip install --no-index --find-links="$scriptAbsoluteFolder"/_bundle/morsels/pip "$currentPackage" > /dev/null >&2
+        pip install --no-index --find-links="$scriptAbsoluteFolder"/_bundle/morsels/pip "$currentPackage" > /dev/null 2>&1
+        sudo -n pip install --no-index --find-links="$scriptAbsoluteFolder"/_bundle/morsels/pip "$currentPackage" > /dev/null 2>&1
+
+        # Strongly discouraged! Avoid surprise breakage by never relying on upstream repositories.
+        #[[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]] && pip install "$currentPackage" > /dev/null >&2
+    done
+
+    #sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y libreadline-dev > /dev/null 2>&1
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Workaround for pip using the newest saved non-binary wheel package (usually a .tar...) regardless of compatibility.
+_special_nix_pip_install_nonet_sequence() {
+    _start
+        
+    #"$1"pip install --no-index --find-links="$lib_dir_nix_python_wheels" "$3" > /dev/null >&2
+    #"$1"pip install --no-index --no-build-isolation --find-links="$lib_dir_nix_python_wheels" "$3" > /dev/null >&2
+
+    cp "$lib_dir_nix_python_wheels"/*.whl "$safeTmp"/
+
+    local currentFile
+    local currentFile_basename
+    #for currentFile in "$lib_dir_nix_python_wheels"/"$3"*
+    for currentFile in $(ls -1 "$lib_dir_nix_python_wheels"/"$3"* | sort -V -r)
+    do
+        currentFile_basename=$(basename "$currentFile")
+        cp -f "$currentFile" "$safeTmp"/"$currentFile_basename"
+        
+        "$1"pip install --no-index --find-links="$safeTmp" "$3" > /dev/null >&2
+        "$1"pip install --no-index --no-build-isolation --find-links="$safeTmp" "$3" > /dev/null >&2
+
+        rm -f "$safeTmp"/"$currentFile_basename"
+    done
+
+    _stop
+}
+
+
+
+_discover-nix_python() {
+    _discover_procedure-nix_python "$@"
+}
+_discover_procedure-nix_python() {
+    export lib_dir_nix_python_wheels
+    
+    export lib_dir_nix_python_wheels="$scriptAbsoluteFolder"/.python_wheels/nix
+    if [[ -e "$lib_dir_nix_python_wheels" ]]
+    then
+        . "$lib_dir_nix_python_wheels"/_nix_python_wheels.sh
+        return 0
+    fi
+    export lib_dir_nix_python_wheels="$scriptLocal"/.python_wheels/nix
+    if [[ -e "$lib_dir_nix_python_wheels" ]]
+    then
+        . "$lib_dir_nix_python_wheels"/_nix_python_wheels.sh
+        return 0
+    fi
+    export lib_dir_nix_python_wheels="$scriptLib"/.python_wheels/nix
+    if [[ -e "$lib_dir_nix_python_wheels" ]]
+    then
+        . "$lib_dir_nix_python_wheels"/_nix_python_wheels.sh
+        return 0
+    fi
+
+    
+    export lib_dir_nix_python_wheels="$scriptLib"/ubiquitous_bash/_lib/.python_wheels/nix
+    if [[ -e "$lib_dir_nix_python_wheels" ]]
+    then
+        . "$lib_dir_nix_python_wheels"/_nix_python_wheels.sh
+        return 0
+    fi
+    export lib_dir_nix_python_wheels="$scriptLib"/ubDistBuild/_lib/ubiquitous_bash/_lib/.python_wheels/nix
+    if [[ -e "$lib_dir_nix_python_wheels" ]]
+    then
+        . "$lib_dir_nix_python_wheels"/_nix_python_wheels.sh
+        return 0
+    fi
+
+    export lib_dir_nix_python_wheels=""
+    unset lib_dir_nix_python_wheels
+}
+_install_dependencies_nix_python_procedure-specific() {
+    _messagePlain_nominal 'install: dependencies' > /dev/null >&2
+
+    _discover-nix_python
+
+    # Not all of these packages if any are necessary (ie. may be dummy packages just to test the system).
+    #export dependencies_nix_python=( "readline" )
+    local currentPackages_list=("setuptools" "readline" "colorama" "${dependencies_nix_python[@]}" )
+    local currentPackage
+    
+    #export nonet_available="true"
+    ( ! wget -qO- 'https://github.com' > /dev/null || ! wget -qO- 'https://pypi.org/simple/' | head > /dev/null ) && export nonet_available="true"
+    local currentIteration_nonet="0"
+    while [[ "$nonet_available" == "true" ]] && [[ "$CI" != "" ]] && [[ "$currentIteration_nonet" -lt 90 ]]
+    do
+        ( wget -qO- 'https://github.com' > /dev/null && wget -qO- 'https://pypi.org/simple/' | head > /dev/null ) && export nonet_available="" && unset nonet_available
+        let currentIteration_nonet++
+    done
+
+
+    if [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]]
+    then
+        _pip_upgrade() {
+            local currentUpgrade="false"
+            for currentPackage in "${currentPackages_list[@]}"
+            do
+                ! "$1"pip show "$currentPackage" > /dev/null 2>&1 && currentUpgrade="true"
+                #! "$2"python -m pip show "$currentPackage" > /dev/null 2>&1 && currentUpgrade="true"
+            done
+            [[ "$currentUpgrade" == "false" ]] && return 0
+            "$2"python -m pip install --upgrade pip > /dev/null >&2
+        }
+        _pip_upgrade "$1" "$2"
+    fi
+
+
+    if [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]]
+    then
+
+        if [[ "$lib_dir_nix_python_wheels" != "" ]]
+        then
+            # ATTRIBUTION-AI: ChatGPT o3  2025-04-19  (partially)
+            _pip_download() {
+                "$1"pip show "$3" > /dev/null 2>&1 && return 0
+                #"$2"python -m pip show "$3" > /dev/null 2>&1 && return 0
+
+                #--no-deps
+                #--python-version 3.1
+                "$1"pip download "$3" --platform linux_x86_64 --no-deps --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                "$1"pip download "$3" --platform manylinux2014_x86_64 --no-deps --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                "$1"pip download "$3" --platform manylinux1 --no-deps --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                "$1"pip download "$3" --platform any --no-deps --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                
+                #"$2"python -m pip download "$3" --platform linux_x86_64 --no-deps --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                #"$2"python -m pip download "$3" --platform manylinux2014_x86_64 --no-deps --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                #"$2"python -m pip download "$3" --platform manylinux1 --no-deps --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                #"$2"python -m pip download "$3" --platform any --no-deps --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+
+                
+                "$1"pip download "$3" --platform linux_x86_64 --only-binary=:all: --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                "$1"pip download "$3" --platform manylinux2014_x86_64 --only-binary=:all: --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                "$1"pip download "$3" --platform manylinux1 --only-binary=:all: --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                "$1"pip download "$3" --platform any --only-binary=:all: --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                
+                #"$2"python -m pip download "$3" --platform linux_x86_64 --only-binary=:all: --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                #"$2"python -m pip download "$3" --platform manylinux2014_x86_64 --only-binary=:all: --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                #"$2"python -m pip download "$3" --platform manylinux1 --only-binary=:all: --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+                #"$2"python -m pip download "$3" --platform any --only-binary=:all: --dest "$lib_dir_nix_python_wheels" > /dev/null >&2
+            }
+
+            for currentPackage in "${currentPackages_list[@]}"
+            do
+                _pip_download "$1" "$2" "$currentPackage"
+            done
+        fi
+    fi
+
+
+    if [[ "$lib_dir_nix_python_wheels" != "" ]]
+    then
+        _pip_install_nonet() {
+            "$1"pip show "$3" > /dev/null 2>&1 && return 0
+            #"$2"python -m pip show "$3" > /dev/null 2>&1 && return 0
+
+            #"$1"pip install --no-index --find-links="$lib_dir_nix_python_wheels" "$3" > /dev/null >&2
+            #"$1"pip install --no-index --no-build-isolation --find-links="$lib_dir_nix_python_wheels" "$3" > /dev/null >&2
+            "$scriptAbsoluteLocation" _special_nix_pip_install_nonet_sequence "$@"
+            #"$2"python -m pip install --no-index --find-links="$lib_dir_nix_python_wheels" "$3" > /dev/null >&2
+        }
+        for currentPackage in "${currentPackages_list[@]}"
+        do
+            _pip_install_nonet "$1" "$2" "$currentPackage"
+        done
+    fi
+    
+    if [[ "$nonet" != "true" ]] && [[ "$nonet_available" != "true" ]]
+    then
+        _pip_install() {
+            "$1"pip show "$3" > /dev/null 2>&1 && return 0
+            #"$2"python -m pip show "$3" > /dev/null 2>&1 && return 0
+
+            "$1"pip install "$3" > /dev/null >&2
+            #"$2"python -m pip install "$3" > /dev/null >&2
+        }
+        for currentPackage in "${currentPackages_list[@]}"
+        do
+            _pip_install "$1" "$2" "$currentPackage"
+        done
+    fi
+
+    sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends -y libreadline-dev > /dev/null 2>&1
+
+    for currentPackage in "${currentPackages_list[@]}"
+    do
+        pip show "$currentPackage" > /dev/null 2>&1 && return 0
+    done
+    return 1
+}
+_install_dependencies_nix_python_sequence-specific() {
+    _messageNormal '     install: dependencies: '"$1" > /dev/null >&2
+    _start
+
+    "$1"
+    
+    _install_dependencies_nix_python_procedure-specific
+
+    _stop
+}
+_install_dependencies_nix_python() {
+    "$scriptAbsoluteLocation" _install_dependencies_nix_python_sequence-specific _set_nix_python_3
+}
+
+
+
+
+_prepare_nix_python_procedure() {
+    local currentUID=$(_uid)
+
+
+    mkdir -p "$scriptLocal"
+
+    mkdir -p "$scriptLocal"/python_nix
+
+    # In practice, 'pip' morsels may be all that is needed (ie. using 'pip' morsels for venv installation).
+    mkdir -p "$scriptAbsoluteFolder"/_bundle/morsels
+    mkdir -p "$scriptAbsoluteFolder"/_bundle/morsels/pip
+
+    mkdir -p "$scriptAbsoluteFolder"/_bundle/morsels/venv
+    mkdir -p "$scriptAbsoluteFolder"/_bundle/morsels/accelerate
+
+    # STRONGLY DISCOURAGED!
+    mkdir -p "$scriptAbsoluteFolder"/_bundle/morsels/conda
+
+    if [[ ! -e "$scriptLocal"/python_nix/lean.py ]] || ! diff --unified=3 "$scriptAbsoluteFolder"/lean.py "$scriptLocal"/python_nix/lean.py > /dev/null
+    then
+        cp -f "$scriptAbsoluteFolder"/lean.py "$scriptLocal"/python_nix/lean.py."$currentUID" > /dev/null 2>&1
+        mv -f "$scriptLocal"/python_nix/lean.py."$currentUID" "$scriptLocal"/python_nix/lean.py
+        if [[ ! -e "$scriptLocal"/python_nix/lean.py ]]
+        then
+            cp -f "$scriptLib"/ubiquitous_bash/lean.py "$scriptLocal"/python_nix/lean.py."$currentUID"
+            mv -f "$scriptLocal"/python_nix/lean.py."$currentUID" "$scriptLocal"/python_nix/lean.py
+        fi
+    fi
+    [[ ! -e "$scriptLocal"/python_nix/lean.py ]] && ( _messagePlain_warn 'warn: missing: scriptLocal/python_nix/lean.py' >&2 ) > /dev/null
+
+
+    _install_dependencies_nix_python_procedure-specific "" "" > /dev/null 2>&1
+
+    return 0
+}
+
+
+
+
+
+# CAUTION: May be called by _setupUbiquitous_accessories_here-python_hook .
+_set_nix_python_procedure() {
+
+    #export PATH="$VIRTUAL_ENV/"bin":$PATH"
+
+
+    # DUBIOUS
+    #export _transformersCache="$scriptLocal"/transformers-cache
+
+    # DUBIOUS
+    #export _accelerate=$(find "$???" -iname 'accelerate.exe' -type f -print -quit)
+
+    #unset PYTHONHOME
+    #export PYTHONSTARTUP="$_PYTHONSTARTUP"
+    
+    return 0
+}
+
+_set_nix_python() {
+    _set_nix_python_3 "$@"
+}
+_set_nix_python_3() {
+    python() {
+        #python3.11 "$@"
+        python3 "$@"
+    }
+    pip() {
+        #pip3.11 "$@"
+        pip3 "$@"
+    }
+
+    _set_nix_python_procedure "$@"
+}
+
+
+
+_demo_nix_python() {
+    _messagePlain_nominal 'demo: '${FUNCNAME[0]} > /dev/null >&2
+    sleep 0.6
+    "$@"
+    _bash
+}
+
+
+
+# ATTENTION: EXAMPLE. Override or implement alternative with 'core.sh', 'ops.sh', or similar.
+# ATTENTION: Also create "$scriptLib"/python/lean.py .
+_special_packages() {
+    #export dependencies_nix_python=( "readline" )
+    #export packages_nix_python=( "huggingface_hub[cli]" )
+
+    #export dependencies_msw_python=( "pyreadline3" )
+    #export packages_msw_python=( "huggingface_hub[cli]" )
+        
+    #export dependencies_cyg_python=( "readline" )
+    #export packages_cyg_python=( "huggingface_hub[cli]" )
+
+    true
+}
+_special_python() {
+    _special_packages
+
+    if _if_cygwin
+    then
+        _msw_python "$@"
+        return
+    fi
+
+    local dumbpath_file="$scriptLocal"/"$dumbpath_prefix"dumbpath.var
+    local dumbpath_contents=""
+    dumbpath_contents=$(cat "$dumbpath_file" 2> /dev/null)
+    if [[ "$dumbpath_contents" == "$dumbpath_file" ]]
+    then
+        #implies sequence
+        #source "$scriptLocal"/python_nix/venv/default_venv/bin/activate
+        source "$scriptLocal"/python_nix/venv/default_venv/bin/activate_nix
+        #type -p huggingface-cli > /dev/null >&2
+        #huggingface-cli "$@"
+        true
+        return
+    fi
+
+    _nix_python "$@"
+    return
+}
+# ATTENTION: Call from '_test_prog' with 'core.sh' or similar.
+# _setup calls _test calls _test_prog
+_test_special_python() {
+    _special_packages
+
+    if _if_cygwin
+    then
+        _test_msw_python "$@"
+        return
+    fi
+
+    _test_nix_python "$@"
+    return
+}
+
+
 #####Shortcuts
 
 # https://unix.stackexchange.com/questions/434409/make-a-bash-ps1-that-counts-streak-of-correct-commands
@@ -4993,10 +6840,12 @@ _visualPrompt_promptCommand() {
 	if [[ "$PS1_lineNumber" == '1' ]]
 	then
 		# https://unix.stackexchange.com/questions/266921/is-it-possible-to-use-ansi-color-escape-codes-in-bash-here-documents
-		PS1_lineNumberText=$(echo -e -n '\E[1;36m'1)
 		#PS1_lineNumberText=$(echo -e -n '\E[1;36m'1)
-		#PS1_lineNumberText=$(echo -e -n '\[\033[01;36m\]'1)
-		#PS1_lineNumberText=$(echo -e -n '\033[01;36m'1)
+		##PS1_lineNumberText=$(echo -e -n '\E[1;36m'1)
+		##PS1_lineNumberText=$(echo -e -n '\[\033[01;36m\]'1)
+		##PS1_lineNumberText=$(echo -e -n '\033[01;36m'1)
+
+		PS1_lineNumberText=$(echo -e -n '\E[1;36;109m'1)
 	fi
 }
 
@@ -5005,10 +6854,32 @@ _visualPrompt() {
 	currentHostname="$HOSTNAME"
 	
 	[[ -e /etc/hostname ]] && export currentHostname=$(cat /etc/hostname)
+
+	local currentHostname_concatenate
+
+	[[ "$RUNPOD_POD_ID" != "" ]] && currentHostname_concatenate='runpod--'
+
+	if [[ -e /info_factoryName.txt ]]
+	then
+		currentHostname_concatenate=$(cat /info_factoryName.txt)
+		currentHostname_concatenate="$currentHostname_concatenate"'--'
+	fi
+
+	[[ "$RUNPOD_POD_ID" != "" ]] && currentHostname_concatenate="$currentHostname_concatenate""$RUNPOD_POD_ID"'--'
+
+	[[ "$RUNPOD_PUBLIC_IP" != "" ]] && currentHostname_concatenate="$currentHostname_concatenate""$RUNPOD_PUBLIC_IP"'--'
+	#if [[ "$RUNPOD_PUBLIC_IP" != "" ]]
+	#then
+		#export currentHostname_concatenate="$currentHostname_concatenate"$(wget -qO- https://icanhazip.com/ | tr -dc '0-9a-fA-F:.')'--'
+	#fi
+	
+	export currentHostname="$currentHostname_concatenate""$currentHostname"
+	
 	
 	
 	export currentChroot=
 	[[ "$chrootName" != "" ]] && export currentChroot="$chrootName"
+	#[[ "$VIRTUAL_ENV_PROMPT" != "" ]] && export currentChroot=python_"$VIRTUAL_ENV_PROMPT"
 	
 	
 	#+%H:%M:%S\ %Y-%m-%d\ Q%q
@@ -5038,28 +6909,125 @@ _visualPrompt() {
 	#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u\[\033[01;32m\]@\h\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$PS1_lineNumberText\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
 	
 	
+	export prompt_specialInfo=""
+
+	# ATTRIBUTION-AI: ChatGPT o3 (high)  2025-05-06
+	#We want to see 'RTX 2000 Ada 16GB' and 'RTX 4090 16GB' , not just 'RTX 2000 16GB' . Please revise.
+	#
+	# RTX 2000 Ada 16GB
+	# RTX 2000 16GB
+	#
+	_filter_nvidia_smi_gpuInfo() {
+		# write the capacities any way you like:
+		#             ↓ commas, spaces or a mixture ↓
+		local sizes='2,3,4,6,8,10,11,12,16,20,24,32,40,48,56,64,80,94,96,128,141,180,192,256,320,384,512,640,768,896,1024,1280,1536,1792,2048'
+
+		awk -F', *' -v sizes="$sizes" '
+			BEGIN {
+				# accept both commas and blanks as separators
+				n = split(sizes, S, /[ ,]+/)
+			}
+			{
+				# ----- tidy up the model name -----
+				name = $1
+				gsub(/NVIDIA |GeForce |Laptop GPU|[[:space:]]+Generation/, "", name)
+				gsub(/  +/, " ", name)
+				sub(/^ +| +$/, "", name)
+
+				# ----- MiB -> decimal GB -----
+				mib   = $2 + 0
+				bytes = mib * 1048576
+				decGB = bytes / 1e9     # decimal gigabytes
+
+				# pick the nearest marketing size
+				best = S[1]
+				diff = (decGB > S[1] ? decGB - S[1] : S[1] - decGB)
+
+				for (i = 2; i <= n; i++) {
+					d = (decGB > S[i] ? decGB - S[i] : S[i] - decGB)
+					if (d < diff) { diff = d; best = S[i] }
+				}
+
+				printf "%s %dGB\n", name, best
+			}'
+	}
+
+
+	if type nvidia-smi > /dev/null 2>&1
+	then
+		export prompt_specialInfo=$(
+			nvidia-smi --query-gpu=name,memory.total --format=csv,noheader,nounits | _filter_nvidia_smi_gpuInfo
+		)
+	fi
+
+	if _if_wsl && [[ -e "/mnt/c/Windows/System32/cmd.exe" ]] && /mnt/c/Windows/System32/cmd.exe /C where nvidia-smi > /dev/null 2>&1
+	then
+		export prompt_specialInfo=$(
+			( cd /mnt/c ; /mnt/c/Windows/System32/cmd.exe /C nvidia-smi --query-gpu=name,memory.total --format=csv,noheader,nounits 2>/dev/null | _filter_nvidia_smi_gpuInfo )
+		)
+	fi
+
 	if [[ "$SHELL" == *"/nix/store/"*"/bin/bash"* ]]
 	then
-		export prompt_nixShell="nixShell"
-	else
-		export prompt_nixShell=""
+		export prompt_specialInfo="nixShell"
 	fi
 	
 	#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u\[\033[01;32m\]@\h\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
 	
 	
 	
+	#if _if_cygwin
+	#then
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	#elif ( uname -a | grep -i 'microsoft' > /dev/null 2>&1 || uname -a | grep -i 'WSL2' > /dev/null 2>&1 )
+	#then
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"-wsl2'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	#else
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '	
+	#fi
+	
+
+
+	# NOTICE: ATTENTION: Bright colors. More compatible with older terminals (in theory).
+	#
+	# https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+	# Slightly darker yellow will be more printable on white background (ie. Pandoc rendering from HTML from asciinema cat ).
+	#01;33m
+	#38;5;214m
+	#
+	#\[\033[01;33m\]
+	#'\[\e[01;33m\e[38;5;214m\]'
+	#'\[\033[01;33m\033[38;5;214m\]'
+	#if _if_cygwin
+	#then
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;214m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	#elif ( uname -a | grep -i 'microsoft' > /dev/null 2>&1 || uname -a | grep -i 'WSL2' > /dev/null 2>&1 )
+	#then
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;214m\]\u\[\033[01;32m\]@'"$currentHostname"-wsl2'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	#else
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;214m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '	
+	#fi
+
+	# ATTRIBUTION-AI: ChatGPT o4-mini-high  2025-06-29 .
+	#echo -e "\033[01;40m\033[01;36m\033[01;34m|\033[01;31m0:(exampleChroot)\033[01;33m\033[38;5;214muser\033[01;32m@exampleHost\033[01;36m\033[01;34m)\033[01;36m\033[01;34m-cloudNet(\033[01;35mvenv\033[01;34m)\033[01;36m|\033[00mINFO\n\033[01;40m\033[01;36m\033[01;34m\033[37m/home/user\033[00m\n\033[01;36m\033[01;34m|1\033[01;34m \033[36m> \033[00m"
+
+
+
+	# NOTICE: ATTENTION: Color saturation reduced. Similar benefits, delineating separate information strings and command prompts between commands.
+	# Less distracting.
+	
 	if _if_cygwin
 	then
-		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|\[\033[01;31m\]\[\033[38;5;138m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;179m\]\u\[\033[01;32m\033[38;5;108m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\033[38;5;96m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]\[\033[37m\033[38;5;253m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]\[\033[38;5;109m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\033[38;5;103m\]) \[\033[36m\]\[\033[38;5;109m\]'""'>\[\033[00m\] '
 	elif ( uname -a | grep -i 'microsoft' > /dev/null 2>&1 || uname -a | grep -i 'WSL2' > /dev/null 2>&1 )
 	then
-		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"-wsl2'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|\[\033[01;31m\]\[\033[38;5;138m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;179m\]\u\[\033[01;32m\033[38;5;108m\]@'"$currentHostname"-wsl2'\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\033[38;5;96m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]\[\033[37m\033[38;5;253m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]\[\033[38;5;109m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\033[38;5;103m\]) \[\033[36m\]\[\033[38;5;109m\]'""'>\[\033[00m\] '
 	else
-		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '	
+		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|\[\033[01;31m\]\[\033[38;5;138m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;179m\]\u\[\033[01;32m\033[38;5;108m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\033[38;5;96m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|\[\033[37m\033[38;5;253m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]\[\033[38;5;109m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\033[38;5;103m\]) \[\033[36m\]\[\033[38;5;109m\]'""'>\[\033[00m\] '	
 	fi
+
 	
-	#export PS1="$prompt_nixShell""$PS1"
+	#export PS1="$prompt_specialInfo""$PS1"
 }
 
 
@@ -5222,6 +7190,9 @@ _self_gitMad() {
 }
 # https://stackoverflow.com/questions/1580596/how-do-i-make-git-ignore-file-mode-chmod-changes
 _gitMad() {
+	local currentDirectory=$(_getAbsoluteLocation "$PWD")
+	_write_configure_git_safe_directory_if_admin_owned "$currentDirectory"
+
 	git config core.fileMode false
 	git submodule foreach git config core.fileMode false
 	git submodule foreach git submodule foreach git config core.fileMode false
@@ -5252,19 +7223,28 @@ _gitBest_detect_github_procedure() {
 		fi
 		
 		local currentSSHoutput
-		if ( [[ -e "$HOME"/.ssh/id_rsa ]] || [[ -e "$HOME"/.ssh/config ]] || ( [[ ! -e "$HOME"/.ssh/id_ed25519_sk ]] && [[ ! -e "$HOME"/.ssh/ecdsa-sk ]] ) ) && currentSSHoutput=$(ssh -o StrictHostKeyChecking=no -o Compression=yes -o ConnectionAttempts=3 -o ServerAliveInterval=6 -o ServerAliveCountMax=9 -o ConnectTimeout="$netTimeout" -o PubkeyAuthentication=yes -o PasswordAuthentication=no git@github.com 2>&1 ; true) && _safeEcho_newline "$currentSSHoutput" | grep 'successfully authenticated'
+		# CAUTION: Disabling this presumes "$HOME"/.ssh/config for GitHub (possibly through 'CoreAutoSSH') is now not necessary to support by default.
+		#  ATTENTION: Good assumption. GH_TOKEN/INPUT_GITHUB_TOKEN is now used by _gitBest within 'compendium' functions, etc, usually much safer and more convenient.
+		#   Strongly Discouraged: Override with ops.sh if necessary.
+		# || [[ -e "$HOME"/.ssh/config ]]
+		if ( [[ -e "$HOME"/.ssh/id_rsa ]] || ( [[ ! -e "$HOME"/.ssh/id_ed25519_sk ]] && [[ ! -e "$HOME"/.ssh/ecdsa-sk ]] ) ) && currentSSHoutput=$(ssh -o StrictHostKeyChecking=no -o Compression=yes -o ConnectionAttempts=3 -o ServerAliveInterval=6 -o ServerAliveCountMax=9 -o ConnectTimeout="$netTimeout" -o PubkeyAuthentication=yes -o PasswordAuthentication=no git@github.com 2>&1 ; true) && _safeEcho_newline "$currentSSHoutput" | grep 'successfully authenticated'
 		then
 			export current_gitBest_source_GitHub="github_ssh"
 			return
 		fi
 		_safeEcho_newline "$currentSSHoutput"
 		
-		#if _checkPort github.com 443
-		if wget -qO- https://github.com > /dev/null
-		then
-			export current_gitBest_source_GitHub="github_https"
-			return
-		fi
+		# Exceptionally rare cases of 'github.com' accessed from within GitHub Actions runner (most surprisingly) not responding have apparently happened.
+		local currentIteration
+		for currentIteration in $(seq 1 2)
+		do
+			#if _checkPort github.com 443
+			if wget -qO- https://github.com > /dev/null
+			then
+				export current_gitBest_source_GitHub="github_https"
+				return
+			fi
+		done
 		
 		
 		[[ "$current_gitBest_source_GitHub" == "" ]] && export current_gitBest_source_GitHub="FAIL"
@@ -5420,10 +7400,54 @@ _gitBest_sequence() {
 	
 	_messagePlain_nominal 'init: git'
 	
+	local currentExitStatus
 	git "$@"
+	currentExitStatus="$?"
+
+
+	export HOME="$realHome"
+	if _if_cygwin
+	then
+		if [ "$1" = "clone" ]
+		then
+			_messagePlain_nominal 'init: git safe directory'
+
+			# ATTRIBUTION-AI: ChatGPT 4.5-preview  2025-04-12  (partially)
+			local currentDirectory
+			local currentURL
+			local currentArg=""
+			local currentArg_previous=""
+			for currentArg in "$@"
+			do
+				# Ignore parameters:
+				#  begins with "-" dash
+				#  preceeded by parameter taking an argument, but no argument or "="
+				if [[ "$currentArg" != -* ]] && [[ "$currentArg" != "clone" ]] && [[ "$currentArg_previous" != "--template" ]] && [[ "$currentArg_previous" != "-o" ]] && [[ "$currentArg_previous" != "-b" ]] && [[ "$currentArg_previous" != "-u" ]] && [[ "$currentArg_previous" != "--reference" ]] && [[ "$currentArg_previous" != "--separate-git-dir" ]] && [[ "$currentArg_previous" != "--depth" ]] && [[ "$currentArg_previous" != "--jobs" ]] && [[ "$currentArg_previous" != "--filter" ]]
+				then
+					currentURL="$currentArg"
+					echo "$currentURL"
+					#break
+
+					[[ -e "$currentArg" ]] && currentDirectory="$currentArg"
+				fi
+				currentArg_previous="$currentArg"
+			done
+		fi
+		
+		[[ "$currentDirectory" == "" ]] && [[ "$currentURL" != "" ]] && currentDirectory=$(basename --suffix=".git" "$currentURL")
+		
+		if [[ -e "$currentDirectory" ]]
+		then
+			_messagePlain_probe 'exists: '"$currentDirectory"
+			if type _write_configure_git_safe_directory_if_admin_owned > /dev/null 2>&1
+			then
+				currentDirectory=$(_getAbsoluteLocation "$currentDirectory")
+				_write_configure_git_safe_directory_if_admin_owned "$currentDirectory"
+			fi
+		fi
+	fi
 	
-	
-	_stop "$?"
+	_stop "$currentExitStatus"
 }
 
 _gitBest() {
@@ -5567,7 +7591,7 @@ _test_gitBest() {
 #! _wget_githubRelease "owner/repo" "" "file.ext"
 
 
-#_wget_githubRelease_join "soaringDistributions/Llama-augment_bundle" "" "llama-3.1-8b-instruct-abliterated.Q4_K_M.gguf"
+#_wget_githubRelease_join "soaringDistributions/Llama-3-augment_bundle" "" "llama-3.1-8b-instruct-abliterated.Q4_K_M.gguf"
 
 
 
@@ -5757,6 +7781,7 @@ _curl_githubAPI_releases_page() {
 	local current_curl_args
 	current_curl_args=()
 	[[ "$GH_TOKEN" != "" ]] && current_curl_args+=( -H "Authorization: Bearer $GH_TOKEN" )
+	#current_curl_args+=( -H "Accept: application/octet-stream" )
 	current_curl_args+=( -S )
 	current_curl_args+=( -s )
 
@@ -5800,6 +7825,162 @@ _curl_githubAPI_releases_page() {
 
 	[[ "$currentPage" == "" ]] && return 1
 	return 0
+}
+# WARNING: No production use. May be untested.
+#  Rapidly skips part files which are not upstream, using only a single page from the GitHub API, saving time and API calls.
+# Not guaranteed reliable. Structure of this non-essential function is provider-specific, code is written ad-hoc.
+# Duplicates much code from other functions:
+#  '_wget_githubRelease_procedure-address-curl'
+#  '_wget_githubRelease_procedure-address_fromTag-curl'
+#  '_wget_githubRelease-address-backend-curl'
+#env maxCurrentPart=63 ./ubiquitous_bash.sh _curl_githubAPI_releases_join-skip soaringDistributions/ubDistBuild spring package_image.tar.flx
+#env maxCurrentPart=63 ./ubiquitous_bash.sh _curl_githubAPI_releases_join-skip soaringDistributions/ubDistBuild latest package_image.tar.flx
+_curl_githubAPI_releases_join-skip() {
+	# Similar retry logic for all similar functions: _wget_githubRelease-URL-curl, _wget_githubRelease-URL-gh .
+	( _messagePlain_nominal "$currentStream"'\/\/\/\/ init: _curl_githubAPI_releases_join-skip' >&2 ) > /dev/null
+	( _messagePlain_probe_safe _curl_githubAPI_releases_join-skip "$@" >&2 ) > /dev/null
+
+    # ATTENTION: WARNING: Unusually, api_address_type , is a monolithic variable NEVER exported . Keep local, and do NOT use for any other purpose.
+    [[ "$GH_TOKEN" != "" ]] && local api_address_type="api_url"
+	[[ "$GH_TOKEN" == "" ]] && local api_address_type="url"
+
+	local currentPartDownload
+	currentPartDownload=""
+
+	local currentExitStatus=1
+
+	local currentIteration=0
+
+	#[[ "$currentPartDownload" == "" ]] || 
+	while ( [[ "$currentExitStatus" != "0" ]] ) && [[ "$currentIteration" -lt "$githubRelease_retriesMax" ]]
+	do
+		currentPartDownload=""
+
+		if [[ "$currentIteration" != "0" ]]
+		then
+			( _messagePlain_warn 'warn: BAD: RETRY: _curl_githubAPI_releases_join-skip: _curl_githubAPI_releases_join_procedure-skip: currentIteration != 0' >&2 ) > /dev/null
+			sleep "$githubRelease_retriesWait"
+		fi
+
+		( _messagePlain_probe _curl_githubAPI_releases_join_procedure-skip >&2 ) > /dev/null
+		currentPartDownload=$(_curl_githubAPI_releases_join_procedure-skip "$@")
+		currentExitStatus="$?"
+
+		let currentIteration=currentIteration+1
+	done
+	
+	_safeEcho_newline "$currentPartDownload"
+
+	[[ "$currentIteration" -ge "$githubRelease_retriesMax" ]] && ( _messagePlain_bad 'bad: FAIL: _curl_githubAPI_releases_join-skip: maxRetries' >&2 ) > /dev/null && return 1
+
+	return 0
+}
+#env maxCurrentPart=63 ./ubiquitous_bash.sh _curl_githubAPI_releases_join_procedure-skip soaringDistributions/ubDistBuild spring package_image.tar.flx
+#env maxCurrentPart=63 ./ubiquitous_bash.sh _curl_githubAPI_releases_join_procedure-skip soaringDistributions/ubDistBuild latest package_image.tar.flx
+_curl_githubAPI_releases_join_procedure-skip() {
+	local currentAbsoluteRepo="$1"
+	local currentReleaseLabel="$2"
+	local currentFile="$3"
+
+	[[ "$currentAbsoluteRepo" == "" ]] && return 1
+	[[ "$currentReleaseLabel" == "" ]] && currentReleaseLabel="latest"
+	[[ "$currentFile" == "" ]] && return 1
+
+
+	local currentExitStatus_tmp=0
+	local currentExitStatus=0
+
+
+	local currentPart
+	local currentAddress
+
+
+	if [[ "$currentReleaseLabel" == "latest" ]]
+	then
+		local currentData
+		local currentData_page
+		
+		#(set -o pipefail ; _curl_githubAPI_releases_page "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile")
+		#return
+
+		currentData_page=$(set -o pipefail ; _curl_githubAPI_releases_page "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		currentExitStatus="$?"
+
+		currentData="$currentData_page"
+
+		[[ "$currentExitStatus" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: currentExitStatus' >&2 ) > /dev/null && return "$currentExitStatus"
+		
+		[[ "$currentData" == "" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: empty: currentData' >&2 ) > /dev/null && return 1
+
+		#( set -o pipefail ; _safeEcho_newline "$currentData" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile" | head -n 1 )
+		#currentExitStatus_tmp="$?"
+
+		# ###
+		for currentPart in $(seq -f "%02g" 0 "$maxCurrentPart" | sort -r)
+		do
+			currentAddress=$(set -o pipefail ; _safeEcho_newline "$currentData" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile".part"$currentPart" | head -n 1)
+			currentExitStatus_tmp="$?"
+
+			[[ "$currentExitStatus_tmp" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: pipefail: _jq_github_browser_download_address: currentExitStatus_tmp' >&2 ) > /dev/null && return "$currentExitStatus_tmp"
+
+			[[ "$currentAddress" != "" ]] && echo "$currentPart" && return 0
+		done
+
+		
+		# ### ATTENTION: No part files found is not 'skip' but FAIL .
+		[[ "$currentAddress" == "" ]] && ( _messagePlain_bad 'bad: FAIL: _curl_githubAPI_releases_join-skip: empty: _safeEcho_newline | _jq_github_browser_download_address' >&2 ) > /dev/null && return 1
+		
+		return 0
+	else
+		local currentData
+		currentData=""
+		
+		local currentData_page
+		currentData_page="doNotMatch"
+		
+		local currentIteration
+		currentIteration=1
+		
+		# ATTRIBUTION-AI: Many-Chat 2025-03-23
+		# Alternative detection of empty array, as suggested by AI LLM .
+		#[[ $(jq 'length' <<< "$currentData_page") -gt 0 ]]
+		while ( [[ "$currentData_page" != "" ]] && [[ $(_safeEcho_newline "$currentData_page" | tr -dc 'a-zA-Z\[\]' | sed '/^$/d') != $(echo 'WwoKXQo=' | base64 -d | tr -dc 'a-zA-Z\[\]') ]] ) && ( [[ "$currentIteration" -le "1" ]] || ( [[ "$GH_TOKEN" != "" ]] && [[ "$currentIteration" -le "3" ]] ) )
+		do
+			currentData_page=$(set -o pipefail ; _curl_githubAPI_releases_page "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" "$currentIteration")
+			currentExitStatus_tmp="$?"
+			[[ "$currentIteration" == "1" ]] && currentExitStatus="$currentExitStatus_tmp"
+			currentData="$currentData"'
+'"$currentData_page"
+
+            ( _messagePlain_probe "_wget_githubRelease_procedure-address-curl: ""$currentIteration" >&2 ) > /dev/null
+            #( _safeEcho_newline "$currentData" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile" | head -n 1 >&2 ) > /dev/null
+            [[ "$currentIteration" -ge 4 ]] && ( _safeEcho_newline "$currentData_page" >&2 ) > /dev/null
+
+			let currentIteration=currentIteration+1
+		done
+
+		#( set -o pipefail ; _safeEcho_newline "$currentData" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile" | head -n 1 )
+		#currentExitStatus_tmp="$?"
+
+		# ###
+		for currentPart in $(seq -f "%02g" 0 "$maxCurrentPart" | sort -r)
+		do
+			currentAddress=$( set -o pipefail ; _safeEcho_newline "$currentData" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile".part"$currentPart" | head -n 1 )
+			currentExitStatus_tmp="$?"
+
+			[[ "$currentExitStatus" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: _curl_githubAPI_releases_page: currentExitStatus' >&2 ) > /dev/null && return "$currentExitStatus"
+			[[ "$currentExitStatus_tmp" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: pipefail: _jq_github_browser_download_address: currentExitStatus_tmp' >&2 ) > /dev/null && return "$currentExitStatus_tmp"
+			[[ "$currentData" == "" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: empty: currentData' >&2 ) > /dev/null && return 1
+
+			[[ "$currentAddress" != "" ]] && echo "$currentPart" && return 0
+		done
+
+		
+		# ### ATTENTION: No part files found is not 'skip' but FAIL .
+		[[ "$currentAddress" == "" ]] && ( _messagePlain_bad 'bad: FAIL: _curl_githubAPI_releases_join-skip: empty: _safeEcho_newline | _jq_github_browser_download_address' >&2 ) > /dev/null && return 1
+		
+        return 0
+	fi
 }
 _wget_githubRelease_procedure-address-curl() {
 	local currentAbsoluteRepo="$1"
@@ -5856,7 +8037,7 @@ _wget_githubRelease_procedure-address-curl() {
 		#[[ $(jq 'length' <<< "$currentData_page") -gt 0 ]]
 		while ( [[ "$currentData_page" != "" ]] && [[ $(_safeEcho_newline "$currentData_page" | tr -dc 'a-zA-Z\[\]' | sed '/^$/d') != $(echo 'WwoKXQo=' | base64 -d | tr -dc 'a-zA-Z\[\]') ]] ) && ( [[ "$currentIteration" -le "1" ]] || ( [[ "$GH_TOKEN" != "" ]] && [[ "$currentIteration" -le "3" ]] ) )
 		do
-			currentData_page=$(_curl_githubAPI_releases_page "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" "$currentIteration")
+			currentData_page=$(set -o pipefail ; _curl_githubAPI_releases_page "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" "$currentIteration")
 			currentExitStatus_tmp="$?"
 			[[ "$currentIteration" == "1" ]] && currentExitStatus="$currentExitStatus_tmp"
 			currentData="$currentData"'
@@ -6240,7 +8421,8 @@ _gh_download() {
 
 	[[ "$currentOutParameter" == "-O" ]] && [[ "$currentOutFile" == "" ]] && _messagePlain_bad 'bad: fail: unexpected: unspecified: currentOutFile' && return 1
 
-	[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 	# CAUTION: Assumed 'false' by 'rotten' !
 	# (ie. 'rotten' does NOT support Cygwin/MSW)
@@ -6314,6 +8496,7 @@ _gh_downloadURL() {
 	[[ "$currentOutParameter" == "-O" ]] && [[ "$currentOutFile" == "" ]] && _messagePlain_bad 'bad: fail: unexpected: unspecified: currentOutFile' && return 1
 
 	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile"
+	##[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 	local currentExitStatus=1
 	#currentExitStatus=1
@@ -6331,6 +8514,7 @@ _gh_downloadURL() {
 
 		# CAUTION: Do NOT translate file parameter (ie. for Cygwin/MSW) for an underlying backend function (ie. '_gh_download') - that will be done by underlying backend function if at all. Similarly, also do NOT state '--clobber' or similar parameters to backend function.
 		#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile"
+		##[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 		( _messagePlain_probe_safe _gh_download "$currentAbsoluteRepo" "$currentTagName" "$currentFile" -O "$currentOutFile" "$@" >&2 ) > /dev/null
 		_gh_download "$currentAbsoluteRepo" "$currentTagName" "$currentFile" -O "$currentOutFile" "$@"
 		currentExitStatus="$?"
@@ -6372,16 +8556,22 @@ _wget_githubRelease-stdout() {
 	then
 		currentExitStatus=$(cat "$currentAxelTmpFile".FAIL)
 		( [[ "$currentExitStatus" == "" ]] || [[ "$currentExitStatus" = "0" ]] || [[ "$currentExitStatus" = "0"* ]] ) && currentExitStatus=1
-		rm -f "$currentAxelTmpFile".PASS > /dev/null 2>&1
-		rm -f "$currentAxelTmpFile".FAIL > /dev/null 2>&1
-		rm -f "$currentAxelTmpFile" > /dev/null 2>&1
+		#rm -f "$currentAxelTmpFile".PASS > /dev/null 2>&1
+		_destroy_lock "$currentAxelTmpFile".PASS
+		#rm -f "$currentAxelTmpFile".FAIL > /dev/null 2>&1
+		_destroy_lock "$currentAxelTmpFile".FAIL
+		#rm -f "$currentAxelTmpFile" > /dev/null 2>&1
+		_destroy_lock "$currentAxelTmpFile"
 		return "$currentExitStatus"
 		#return 1
 	fi
 	[[ "$FORCE_DIRECT" != "true" ]] && cat "$currentAxelTmpFile"
-	rm -f "$currentAxelTmpFile" > /dev/null 2>&1
-	rm -f "$currentAxelTmpFile".PASS > /dev/null 2>&1
-	rm -f "$currentAxelTmpFile".FAIL > /dev/null 2>&1
+	#rm -f "$currentAxelTmpFile" > /dev/null 2>&1
+	_destroy_lock "$currentAxelTmpFile"
+	#rm -f "$currentAxelTmpFile".PASS > /dev/null 2>&1
+	_destroy_lock "$currentAxelTmpFile".PASS
+	#rm -f "$currentAxelTmpFile".FAIL > /dev/null 2>&1
+	_destroy_lock "$currentAxelTmpFile".FAIL
 	return 0
 }
 _wget_githubRelease_procedure-stdout() {
@@ -6478,18 +8668,20 @@ _wget_githubRelease_procedure() {
 	#[[ "$currentOutParameter" == "-O" ]] && [[ "$currentOutFile" == "" ]] && currentOutFile="$currentFile"
 	[[ "$currentOutParameter" == "-O" ]] && [[ "$currentOutFile" == "" ]] && ( _messagePlain_bad 'bad: fail: unexpected: unspecified: currentOutFile' >&2 ) > /dev/null && return 1
 
-	[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
     local currentExitStatus=1
 
     # Discouraged .
     if [[ "$FORCE_WGET" == "true" ]]
     then
+		local currentURL_typeSelected=""
         _warn_githubRelease_FORCE_WGET
         #local currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 		local currentURL
-		[[ "$GH_TOKEN" != "" ]] && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
-		[[ "$GH_TOKEN" == "" ]] && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" != "" ]] && currentURL_typeSelected="api_url" && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" == "" ]] && currentURL_typeSelected="url" && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 
         #"$GH_TOKEN"
         #"$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" "$currentOutFile"
@@ -6501,11 +8693,12 @@ _wget_githubRelease_procedure() {
 	# Discouraged . Benefits of multi-part-per-file downloading are less essential given that files are split into <2GB chunks.
 	if [[ "$FORCE_AXEL" != "" ]] # && [[ "$MANDATORY_HASH" == "true" ]]
     then
+		local currentURL_typeSelected=""
         ( _messagePlain_warn 'warn: WARNING: FORCE_AXEL not empty' >&2 ; echo 'FORCE_AXEL may have similar effects to FORCE_WGET and should not be necessary.' >&2  ) > /dev/null
         #local currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 		local currentURL
-		[[ "$GH_TOKEN" != "" ]] && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
-		[[ "$GH_TOKEN" == "" ]] && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" != "" ]] && currentURL_typeSelected="api_url" && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" == "" ]] && currentURL_typeSelected="url" && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 
 		[[ "$FORCE_DIRECT" == "true" ]] && ( _messagePlain_bad 'bad: fail: FORCE_AXEL==true is NOT compatible with FORCE_DIRECT==true' >&2 ) > /dev/null && return 1
 
@@ -6532,11 +8725,12 @@ _wget_githubRelease_procedure() {
 
     if ! _if_gh
     then
+		local currentURL_typeSelected=""
         ( _messagePlain_warn 'warn: WARNING: FALLBACK: wget/curl' >&2 ) > /dev/null
         #local currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 		local currentURL
-		[[ "$GH_TOKEN" != "" ]] && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
-		[[ "$GH_TOKEN" == "" ]] && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" != "" ]] && currentURL_typeSelected="api_url" && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" == "" ]] && currentURL_typeSelected="url" && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 
         #"$GH_TOKEN"
         #"$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" "$currentOutFile"
@@ -6553,11 +8747,13 @@ _wget_githubRelease_procedure-curl() {
     ( _messagePlain_probe_safe "currentOutFile= ""$currentOutFile" >&2 ) > /dev/null
 
 	# ATTENTION: Better if the loop does this only once. Resume may be possible.
-	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	##[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
     local current_curl_args
 	current_curl_args=()
 	[[ "$GH_TOKEN" != "" ]] && current_curl_args+=( -H "Authorization: Bearer $GH_TOKEN" )
+	current_curl_args+=( -H "Accept: application/octet-stream" )
 	current_curl_args+=( -S )
 	current_curl_args+=( -s )
 	#current_curl_args+=( --clobber )
@@ -6611,7 +8807,8 @@ _wget_githubRelease_loop-curl() {
 	( _messagePlain_nominal "$currentStream"'\/\/\/\/\/ \/\/\/\/ init: _wget_githubRelease_loop-curl' >&2 ) > /dev/null
 	( _messagePlain_probe_safe _wget_githubRelease_loop-curl "$@" >&2 ) > /dev/null
 
-	[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 	local currentExitStatus=1
 
@@ -6653,7 +8850,8 @@ _wget_githubRelease_procedure-axel() {
     ( _messagePlain_probe_safe "FORCE_AXEL= ""$FORCE_AXEL" >&2 ) > /dev/null
 
 	# ATTENTION: Better if the loop does this only once. Resume may be possible.
-	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	##[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 	#aria2c --timeout=180 --max-tries=25 --retry-wait=15 "$@"
     ##_messagePlain_probe _aria2c_bin_githubRelease -x "$currentForceAxel" --async-dns=false -o "$currentAxelTmpFileRelative".tmp1 --disable-ipv6=false "${currentURL_array_reversed[$currentIteration]}" >&2
@@ -6663,6 +8861,8 @@ _wget_githubRelease_procedure-axel() {
     local current_axel_args
 	current_axel_args=()
 	##[[ "$GH_TOKEN" != "" ]] && current_axel_args+=( -H "Authorization: Bearer $GH_TOKEN" )
+	[[ "$GH_TOKEN" != "" ]] && current_axel_args+=( --header="Authorization: token $GH_TOKEN" )
+	current_axel_args+=( --header="Accept: application/octet-stream" )
 	#current_axel_args+=( --quiet=true )
 	#current_axel_args+=( --timeout=180 --max-tries=25 --retry-wait=15 )
     current_axel_args+=( --stderr=true --summary-interval=0 --console-log-level=error --async-dns=false )
@@ -6671,19 +8871,27 @@ _wget_githubRelease_procedure-axel() {
 	local currentExitStatus_ipv4=1
 	local currentExitStatus_ipv6=1
 
-	( _messagePlain_probe '_wget_githubRelease_procedure-axel: IPv6' >&2 ) > /dev/null
-    ( _messagePlain_probe_safe aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" >&2 ) > /dev/null
-	#aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL"
-	# WARNING: May be untested.
-	( set -o pipefail ; aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" 2> >(tail -n 40 >&2) )
-	currentExitStatus_ipv6="$?"
+	#( _messagePlain_probe '_wget_githubRelease_procedure-axel: IPv6' >&2 ) > /dev/null
+	( _messagePlain_probe '_wget_githubRelease_procedure-axel: IPv6 (false)' >&2 ) > /dev/null
+    #( _messagePlain_probe_safe aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" >&2 ) > /dev/null
+	##aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL"
+	## WARNING: May be untested.
+	##( set -o pipefail ; aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" 2> >(tail -n 40 >&2) )
+	#( set -o pipefail ; aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" > "$currentOutFile".log 2>&1 )
+	#currentExitStatus_ipv6="$?"
+	#( tail -n 40 "$currentOutFile".log >&2 )
+	#rm -f "$currentOutFile".log > /dev/null 2>&1
+	false
     if [[ "$currentExitStatus_ipv6" != "0" ]]
     then
         ( _messagePlain_probe '_wget_githubRelease_procedure-axel: IPv4' >&2 ) > /dev/null
         ( _messagePlain_probe_safe aria2c --disable-ipv6=true "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" >&2 ) > /dev/null
         #aria2c --disable-ipv6=true "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL"
-        ( set -o pipefail ; aria2c --disable-ipv6=true "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" 2> >(tail -n 40 >&2) )
+        #( set -o pipefail ; aria2c --disable-ipv6=true "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" 2> >(tail -n 40 >&2) )
+		( set -o pipefail ; aria2c --disable-ipv6=true "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" > "$currentOutFile".log 2>&1 )
         currentExitStatus_ipv4="$?"
+		( tail -n 40 "$currentOutFile".log >&2 )
+		rm -f "$currentOutFile".log > /dev/null 2>&1
     fi
 
 	if [[ "$currentExitStatus_ipv6" != "0" ]] && [[ "$currentExitStatus_ipv4" != "0" ]]
@@ -6697,6 +8905,24 @@ _wget_githubRelease_procedure-axel() {
 
     [[ ! -e "$currentOutFile" ]] && [[ "$currentOutFile" != "-" ]] && _bad_fail_githubRelease_missing && return 1
 
+	# WARNING: Partial download is FAIL, but aria2c may set exit status '0' (ie. true). Return FALSE in this case.
+	#if ls -1 "$scriptAbsoluteFolder"/$(_axelTmp).aria2* > /dev/null 2>&1
+	#if ls -1 "$currentAxelTmpFile".aria2* > /dev/null 2>&1
+	#if ls -1 "$scriptAbsoluteFolder"/.m_axelTmp_"$currentStream"_"$currentAxelTmpFileUID".aria2* > /dev/null 2>&1
+	if ls -1 "$currentOutFile".aria2* > /dev/null 2>&1
+	then
+		return 1
+	fi
+
+	# Disabled (commented out). Contradictory state of PASS with part files remaining should terminate script with FAIL , _stop , exit , etc .
+	# ie.
+	##  _messagePlain_bad 'bad: FAIL: currentAxelTmpFile*: EXISTS !'
+	##  _messageError 'FAIL'
+	##_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).part*
+	#_destroy_lock "$scriptAbsoluteFolder"/.m_axelTmp_"$currentStream"_"$currentAxelTmpFileUID".part*
+	##_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).aria2*
+	#_destroy_lock "$scriptAbsoluteFolder"/.m_axelTmp_"$currentStream"_"$currentAxelTmpFileUID".aria2*
+
     return 0
 }
 _wget_githubRelease_loop-axel() {
@@ -6704,7 +8930,8 @@ _wget_githubRelease_loop-axel() {
 	( _messagePlain_nominal "$currentStream"'\/\/\/\/\/ \/\/\/\/ init: _wget_githubRelease_loop-axel' >&2 ) > /dev/null
 	( _messagePlain_probe_safe _wget_githubRelease_loop-axel "$@" >&2 ) > /dev/null
 
-	[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 	local currentExitStatus=1
 
@@ -6770,7 +8997,8 @@ _wget_githubRelease_join() {
 		shift
 	fi
 
-	[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 
 	# ATTENTION
@@ -6831,8 +9059,19 @@ _wget_githubRelease_join_sequence-stdout() {
 	local currentStream_wait
 	local currentBusyStatus
 
-	# CAUTION: Any greater than 50 is not expected to serve any purpose, may exhaust expected API rate limits, may greatly delay download, and may disrupt subsequent API requests. Any less than 50 may fall below the ~100GB capacity that is both expected necessary for some complete toolchains and at the limit of ~100GB archival quality optical disc .
-	local maxCurrentPart=50
+	# CAUTION: Any greater than 50 is not expected to serve any purpose, may exhaust expected API rate limits, may greatly delay download, and may disrupt subsequent API requests. Any less than 50 may fall below the ~100GB capacity that is both expected necessary for some complete toolchains and at the limit of ~100GB archival quality optical disc (ie. M-Disc) .
+	#local maxCurrentPart=50
+
+	# ATTENTION: Graceful degradation to a maximum part count of 49 can be achieved by reducing API calls using the _curl_githubAPI_releases_join-skip function. That single API call can get 100 results, leaving 49 unused API calls remaining to get API_URL addresses to download 49 parts. Files larger than ~200GB are likely rare, specialized.
+	#local maxCurrentPart=98
+
+	# ATTENTION: In practice, 128GB storage media - reputable brand BD-XL near-archival quality optical disc, SSDs, etc - is the maximum file size that is convenient.
+	# '1997537280' bytes truncate/tail
+	# https://en.wikipedia.org/wiki/Blu-ray
+	#  '128,001,769,472' ... 'Bytes'
+	# https://fy.chalmers.se/~appro/linux/DVD+RW/Blu-ray/
+	#  'only inner spare area of 256MB'
+	local maxCurrentPart=63
 
 
     local currentExitStatus=1
@@ -6877,6 +9116,8 @@ _wget_githubRelease_join_sequence-stdout() {
         #local currentAxelTmpFileRelative=.m_axelTmp_"$currentStream"_$(_uid 14)
 	    #local currentAxelTmpFile="$scriptAbsoluteFolder"/"$currentAxelTmpFileRelative"
 
+		maxCurrentPart=$(_curl_githubAPI_releases_join-skip "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+
         currentPart=""
         for currentPart in $(seq -f "%02g" 0 "$maxCurrentPart" | sort -r)
         do
@@ -6884,11 +9125,18 @@ _wget_githubRelease_join_sequence-stdout() {
             then
 				# ATTENTION: Could expect to use the 'API_URL' function in both cases, since we are not using the resulting URL except to 'skip'/'download' .
 				#currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
-				[[ "$GH_TOKEN" != "" ]] && currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
-				[[ "$GH_TOKEN" == "" ]] && currentSkip=$(_wget_githubRelease-skip-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
-                #[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
-                #[[ "$?" != "0" ]] && currentSkip="skip"
-                [[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+				if [[ "$GH_TOKEN" != "" ]]
+				then
+					currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
+					#[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
+					#[[ "$?" != "0" ]] && currentSkip="skip"
+					[[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+				else
+					currentSkip=$(_wget_githubRelease-skip-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
+					#[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
+					#[[ "$?" != "0" ]] && currentSkip="skip"
+					[[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+				fi
             fi
             
             [[ "$currentSkip" == "skip" ]] && continue
@@ -6916,6 +9164,7 @@ _wget_githubRelease_join_sequence-stdout() {
 	# ### ATTENTION: _if_buffer (IMPLICIT)
 
 	# NOTICE: Parallel downloads may, if necessary, be adapted to first cache a list of addresses (ie. URLs) to download. API rate limits could then have as much time as possible to recover before subsequent commands (eg. analysis of builds). Such a cache must be filled with addresses BEFORE the download loop.
+	#  However, at best, this can only be used with non-ephemeral 'browser_download_url' addresses .
 
 
 	export currentAxelTmpFileUID="$(_uid 14)"
@@ -6938,6 +9187,7 @@ _wget_githubRelease_join_sequence-stdout() {
 	_set_wget_githubRelease-detect "$@"
 	currentSkip="skip"
 
+	maxCurrentPart=$(_curl_githubAPI_releases_join-skip "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 
 	currentPart=""
 	for currentPart in $(seq -f "%02g" 0 "$maxCurrentPart" | sort -r)
@@ -6948,15 +9198,22 @@ _wget_githubRelease_join_sequence-stdout() {
 			# ATTENTION: Could expect to use the 'API_URL' function in both cases, since we are not using the resulting URL except to 'skip'/'download' .
 			#currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
 			##currentSkip=$([[ "$currentPart" -gt "17" ]] && echo 'skip' ; true)
-			[[ "$GH_TOKEN" != "" ]] && currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
-			[[ "$GH_TOKEN" == "" ]] && currentSkip=$(_wget_githubRelease-skip-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
-			
-			#[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
-			#[[ "$?" != "0" ]] && currentSkip="skip"
-			[[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+			if [[ "$GH_TOKEN" != "" ]]
+			then
+				currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
+				#[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
+				#[[ "$?" != "0" ]] && currentSkip="skip"
+				[[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+			else
+				currentSkip=$(_wget_githubRelease-skip-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
+				#[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
+				#[[ "$?" != "0" ]] && currentSkip="skip"
+				[[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+			fi
 		fi
 		
 		[[ "$currentSkip" == "skip" ]] && continue
+
 
 		#[[ "$currentExitStatus" == "0" ]] || 
 		if [[ "$currentSkip" != "skip" ]]
@@ -6997,10 +9254,23 @@ _wget_githubRelease_join_sequence-stdout() {
 	#( _messagePlain_probe_var currentStream >&2 ) > /dev/null
 
 		# Stream must have written PASS/FAIL file .
-		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  outputLOOP: WAIT: PASS/FAIL ... currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
+		local currentDiagnosticIteration_outputLOOP_wait=0
+		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  outputLOOP: WAIT:  P_A_S_S/F_A_I_L  ... currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
 		while ! [[ -e "$scriptAbsoluteFolder"/$(_axelTmp).busy ]] || ( ! [[ -e "$scriptAbsoluteFolder"/$(_axelTmp).PASS ]] && ! [[ -e "$scriptAbsoluteFolder"/$(_axelTmp).FAIL ]] )
 		do
 			sleep 1
+
+			let currentDiagnosticIteration_outputLOOP_wait=currentDiagnosticIteration_outputLOOP_wait+1
+			if [[ "$currentDiagnosticIteration_outputLOOP_wait" -gt 15 ]]
+			then
+				currentDiagnosticIteration_outputLOOP_wait=0
+				( _messagePlain_probe "diagnostic_outputLOOP_wait: pid: ""$!" >&2 ) > /dev/null
+				# ATTRIBUTION-AI: ChatGPT 4.5-preview 2025-03-29
+				#( echo "diagnostic_outputLOOP_wait: checking filenames exactly as seen by script: |$scriptAbsoluteFolder/$(_axelTmp).busy| and |$scriptAbsoluteFolder/$(_axelTmp).PASS|" >&2 ) > /dev/null
+				#( ls -l "$scriptAbsoluteFolder"/$(_axelTmp).* >&2 )
+				#stat "$scriptAbsoluteFolder"/$(_axelTmp).busy >&2 || ( echo 'diagnostic_outputLOOP_wait: '"stat busy - file truly doesn't exist at this name!" >&2 )
+				#stat "$scriptAbsoluteFolder"/$(_axelTmp).PASS >&2 || ( echo 'diagnostic_outputLOOP_wait: '"stat PASS - file truly doesn't exist at this name!" >&2 )
+			fi
 		done
 		
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  outputLOOP: OUTPUT  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
@@ -7013,8 +9283,13 @@ _wget_githubRelease_join_sequence-stdout() {
 		[[ -e "$scriptAbsoluteFolder"/$(_axelTmp).FAIL ]] && [[ "$currentSkip" != "skip" ]] && ( _messageError 'FAIL' >&2 ) > /dev/null && return 1
 
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  outputLOOP: DELETE  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp) > /dev/null 2>&1
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp).busy > /dev/null 2>&1
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp) > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp)
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp).busy > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).busy
+
+		#_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).*
+		#_destroy_lock "$scriptAbsoluteFolder"/.m_axelTmp_"$currentStream"_"$currentAxelTmpFileUID".*
 
 		let currentStream=currentStream+1
 		[[ "$currentStream" -gt "$currentStream_max" ]] && currentStream="$currentStream_min"
@@ -7084,8 +9359,10 @@ _wget_githubRelease_join_sequence-parallel() {
 		[[ -e "$scriptAbsoluteFolder"/$(_axelTmp).FAIL ]] && [[ "$currentSkip" != "skip" ]] && ( _messageError 'FAIL' >&2 ) > /dev/null && return 1
 
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  downloadLOOP: DELETE  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp).PASS > /dev/null 2>&1
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp).FAIL > /dev/null 2>&1
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp).PASS > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).PASS
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp).FAIL > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).FAIL
 
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  downloadLOOP: DELAY: stagger, Inter-Process Communication, _stop  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
 		# Staggered Delay.
@@ -7098,6 +9375,14 @@ _wget_githubRelease_join_sequence-parallel() {
 		
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  downloadLOOP: DOWNLOAD  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
 		export currentAxelTmpFile="$scriptAbsoluteFolder"/$(_axelTmp)
+		if ls -1 "$currentAxelTmpFile"* > /dev/null 2>&1
+		then
+			( _messagePlain_bad 'bad: FAIL: currentAxelTmpFile*: EXISTS !' >&2 ) > /dev/null
+			echo "1" > "$currentAxelTmpFile".FAIL
+			_messageError 'FAIL' >&2
+			exit 1
+			return 1
+		fi
 		"$scriptAbsoluteLocation" _wget_githubRelease_procedure-join "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part$(printf "%02g" "$currentPart") &
 		echo "$!" > "$scriptAbsoluteFolder"/$(_axelTmp).pid
 
@@ -7124,8 +9409,10 @@ _wget_githubRelease_join_sequence-parallel() {
 		done
 
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  download: DELETE ...  currentStream='"$currentStream" >&2 ) > /dev/null
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp).PASS > /dev/null 2>&1
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp).FAIL > /dev/null 2>&1
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp).PASS > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).PASS
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp).FAIL > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).FAIL
 	done
 
 	( _messagePlain_nominal '\/\/\/\/\/ \/\/\/\/  download: WAIT PID  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
@@ -7192,7 +9479,9 @@ _wget_githubRelease_procedure-join() {
         sleep 1
     done
 
-    [[ "$currentAxelTmpFile" != "" ]] && rm -f "$currentAxelTmpFile".*
+	# WARNING: Already inevitable (due to _stop , etc).
+    #[[ "$currentAxelTmpFile" != "" ]] && rm -f "$currentAxelTmpFile".*
+	[[ "$currentAxelTmpFile" != "" ]] && _destroy_lock "$currentAxelTmpFile".*
 
     #unset currentAxelTmpFile
 
@@ -7252,6 +9541,318 @@ build-1001-1" ]] || ( _messagePlain_bad 'fail: bad: _wget_githubRelease_procedur
 
 
 
+
+
+
+
+# WARNING: May be untested.
+_setup_claude_code() {
+    _mustGetSudo
+
+    _get_npm
+
+    #npm install -g @anthropic-ai/claude-code
+    sudo -n npm install -g @anthropic-ai/claude-code
+}
+
+
+
+
+
+
+
+
+
+# NOTICE: Installing 'codex' may be useful for cloud, container, etc, usage (eg. within a RunPod instance, within a Docker container, etc).)
+# Also recommend 'Cline' VSCode extension .
+
+
+_setup_codex_sequence-npm() {
+    _start
+    local functionEntryPWD
+    functionEntryPWD="$PWD"
+
+    cd "$safeTmp"
+    
+
+    # DUBIOUS .
+    #sudo -n npm install -g @openai/codex@b73426c1c40187ca13c74c03912a681072c2884f
+
+    # ATTRIBUTION-AI: devstral-small  2025-06-11
+    #sudo -n npm install https://github.com/openai/codex/archive/b73426c1c40187ca13c74c03912a681072c2884f.tar.gz
+
+
+
+    sudo -n npm install https://github.com/openai/codex/archive/8493285.tar.gz
+    sudo -n npm install https://github.com/openai/codex/archive/b051edb7d3e04200b369af37ca45e210614cf281.tar.gz
+
+
+    cd "$functionEntryPWD"
+    _stop
+}
+
+_setup_codex-npm() {
+    _mustGetSudo
+
+    _get_npm
+
+
+
+    # WARNING: Mainline version. DISCOURAGED, except to get dependencies needed by a frozen, and possibly more useful, version. Issues disabling sandbox .
+    #  https://github.com/openai/codex/pull/996
+    #  https://github.com/openai/codex/pull/1125
+    #  https://github.com/openai/codex/issues/1254
+    #  https://github.com/openai/codex/pull/374
+    #@openai/codex
+    #@openai/codex@latest
+    sudo -n npm install -g @openai/codex
+}
+
+# WARNING: May be untested.
+# DUBIOUS .
+_setup_codex_sequence-upstream() {
+    _start
+    local functionEntryPWD
+    functionEntryPWD="$PWD"
+
+    #cd "$safeTmp"
+    mkdir -p "$HOME"/core/installations/codex_bin
+    cd "$HOME"/core/installations/codex_bin
+
+    # ATTRIBUTION-AI: ChatGPT o3  2025-06-11  (partially)
+
+    for v in $(env | awk -F= '/^NVM_/ {print $1}'); do
+        unset "$v"
+    done
+
+    export PATH="$(printf '%s' "$PATH" | tr ':' '\n' | grep -vE '/\.nvm/' | paste -sd ':' -)"
+    #export PATH="/usr/bin:${PATH}"
+
+    export SHELL="/bin/bash"
+    
+    sudo -n /usr/bin/corepack enable                 # turn on pnpm via corepack (Node >=16.10)
+    /usr/bin/corepack prepare pnpm@latest --activate
+
+    export safeToDeleteGit="true"
+    git clone https://github.com/openai/codex.git
+    cd codex
+
+    # fetch PR 996 and check it out locally
+    git fetch origin pull/996/head:disable-sandbox
+    git switch disable-sandbox      # or: git checkout -b disable-sandbox FETCH_HEAD
+
+    yes | /usr/lib/node_modules/corepack/shims/pnpm setup
+
+    export PNPM_HOME="$HOME""/.local/share/pnpm"
+    case ":$PATH:" in
+        *":$PNPM_HOME:"*) ;;
+        *) export PATH="$PNPM_HOME:$PATH" ;;
+    esac
+
+    # install deps for the monorepo and build just the CLI package
+    yes | /usr/lib/node_modules/corepack/shims/pnpm install
+    /usr/lib/node_modules/corepack/shims/pnpm --dir ./codex-cli run build
+
+
+    # expose the built CLI globally
+    cd ./codex-cli
+    /usr/lib/node_modules/corepack/shims/pnpm link --global
+
+    mkdir -p "$HOME"/.bun/install/global
+    [[ ! -e "$HOME"/.bun/install/global/package.json ]] && echo '{ "name": "bun-global", "private": true }' > "$HOME"/.bun/install/global/package.json
+
+    cd "$functionEntryPWD"
+    _stop
+}
+_setup_codex-upstream() {
+    _setup_codex-npm "$@"
+    "$scriptAbsoluteLocation" _setup_codex_sequence-upstream "$@"
+}
+
+_setup_codex() {
+    _setup_codex-upstream "$@"
+}
+
+
+# ATTENTION: Full WebUI Codex may need 'ubDEBUG=true' to better diagnose and continue testing.
+# WARNING: CLI Codex may NOT work well with 'ubDEBUG=true'.
+# codex ... ubiquitous_bash ... debug
+#
+#export devfast=true
+#export skimfast=true
+#
+#export ub_setScriptChecksum_disable='true'
+##export ubDEBUG=true
+
+
+# https://github.com/openai/codex/issues/1189
+#codex --approval-mode full-auto --provider openrouter --model openai/codex-mini
+#
+#unset OPENAI_API_KEY
+#unset OPENROUTER_API_KEY
+#export OPENAI_BASE_URL="https://openrouter.ai/api/v1"
+#export OPENAI_API_KEY="sk-***-21"
+#codex --model openai/o4-mini
+#codex --model openai/codex-mini
+
+
+#--model codex-mini-latest
+#--model o3
+
+#alias codex='wsl -d ubdist codex'
+#alias codexNative=$(type -P codex 2>/dev/null)
+
+
+
+
+# WARNING: Mainline versions of CLI Codex apparently do NOT disable the sandbox if '--approval-mode full-auto' parameter is given.
+#export TMPDIR=/tmp ; 
+#export CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 ; codex --dangerously-auto-approve-everything
+#export CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 ; codex --dangerously-auto-approve-everything --approval-mode full-auto
+#alias codexAuto='export CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 ; codex --dangerously-auto-approve-everything --approval-mode full-auto'
+#alias codexForce='export CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 ; codex --dangerously-auto-approve-everything'
+alias codexAuto='CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 codex --dangerously-auto-approve-everything --approval-mode full-auto'
+alias codexForce='CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 codex --dangerously-auto-approve-everything'
+
+
+
+
+# ATTENTION: Override with 'ops.sh' , '_bashrc' , or similar, ONLY if uniquely necessary for a very unusual situation.
+#  ATTENTION: NOTICE: Otherwise, CLI Codex issues really should be very urgently reported as issues to both 'codex' and 'ubiquitous_bash' projects .
+# Assumes the usable upstream mainline 'node' and 'codex' installations are installed '/usr/bin' or similar, with conflicting (eg. not recent) or custom (eg. disable sandbox) versions installed under "$HOME" or similar.
+_codexBin-usr_local_bin_node() {
+    local currentDisableSandbox
+    currentDisableSandbox="false"
+
+    # Calling 'codexAuto' from Cygwin to WSL2 codex would not necessarily apply the environment variable. Infer always disabling sandbox implied with command line parameter .
+    local currentArg
+    for currentArg in "$@"
+    do
+        [[ "$currentArg" == "--dangerously-auto-approve-everything" ]] && currentDisableSandbox="true"
+    done
+
+    if ( [[ "$currentDisableSandbox" != "false" ]] || [[ -v CODEX_UNSAFE_ALLOW_NO_SANDBOX ]] ) && ( ( [[ ! -e /.dockerenv ]] && ! [[ -e /info_factoryName.txt ]] ) || grep 'ubDistBuild' /info-github > /dev/null 2>&1 || _if_cygwin )
+    then
+        #_messagePlain_warn
+        #_messageError
+        _messageError ' CAUTION: DANGER: Native codexAuto, codexForce, etc, may cause IRREPARABLE dist/OS BREAKAGE, filesystem DELETION , or network HARM ! ' >&2
+        echo 'Ctrl+c repeatedly to cancel!' >&2
+        echo 'wait: 5seconds: Ctrl+c repeatedly to cancel NOW!!!' >&2
+        sleep 4
+    fi
+
+    #[[ "$currentDisableSandbox" == "true" ]] && export CODEX_UNSAFE_ALLOW_NO_SANDBOX=1
+    
+
+    local currentExitStatus
+
+    if [[ -e "$HOME"/.local/share/pnpm/codex ]]
+    then
+        export PNPM_HOME="$HOME""/.local/share/pnpm"
+        case ":$PATH:" in
+            *":$PNPM_HOME:"*) ;;
+            *) export PATH="$PNPM_HOME:$PATH" ;;
+        esac
+        if [[ "$currentDisableSandbox" == "true" ]] || [[ "$CODEX_UNSAFE_ALLOW_NO_SANDBOX" == "1" ]]
+        then
+            CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 "$HOME"/.local/share/pnpm/codex "$@"
+            currentExitStatus="$?"
+            unset CODEX_UNSAFE_ALLOW_NO_SANDBOX
+            return "$currentExitStatus"
+        #else
+            #"$HOME"/.local/share/pnpm/codex "$@"
+            #currentExitStatus="$?"
+            #unset CODEX_UNSAFE_ALLOW_NO_SANDBOX
+            #return "$currentExitStatus"
+        fi
+    fi
+    if [[ "$currentDisableSandbox" == "true" ]] || [[ "$CODEX_UNSAFE_ALLOW_NO_SANDBOX" == "1" ]]
+    then
+        #CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 /usr/local/bin/node "$(type -P codex)" "$@"
+        #CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 /usr/local/bin/node /usr/local/bin/codex "$@"
+        CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 /usr/local/bin/node '/usr/lib/node_modules/@openai/codex/bin/codex.js' "$@"
+        currentExitStatus="$?"
+        unset CODEX_UNSAFE_ALLOW_NO_SANDBOX
+        return "$currentExitStatus"
+    else
+        #/usr/local/bin/node "$(type -P codex)" "$@"
+        #/usr/local/bin/node /usr/local/bin/codex "$@"
+        /usr/local/bin/node '/usr/local/lib/node_modules/@openai/codex/bin/codex.js' "$@"
+        currentExitStatus="$?"
+        unset CODEX_UNSAFE_ALLOW_NO_SANDBOX
+        return "$currentExitStatus"
+    fi
+}
+_codexBin-usr_bin_node() {
+    local currentDisableSandbox
+    currentDisableSandbox="false"
+
+    # Calling 'codexAuto' from Cygwin to WSL2 codex would not necessarily apply the environment variable. Infer always disabling sandbox implied with command line parameter .
+    local currentArg
+    for currentArg in "$@"
+    do
+        [[ "$currentArg" == "--dangerously-auto-approve-everything" ]] && currentDisableSandbox="true"
+    done
+
+    if ( [[ "$currentDisableSandbox" != "false" ]] || [[ -v CODEX_UNSAFE_ALLOW_NO_SANDBOX ]] ) && ( ( [[ ! -e /.dockerenv ]] && ! [[ -e /info_factoryName.txt ]] ) || grep 'ubDistBuild' /info-github > /dev/null 2>&1 || _if_cygwin )
+    then
+        #_messagePlain_warn
+        #_messageError
+        _messageError ' CAUTION: DANGER: Native codexAuto, codexForce, etc, may cause IRREPARABLE dist/OS BREAKAGE, filesystem DELETION , or network HARM ! ' >&2
+        echo 'Ctrl+c repeatedly to cancel!' >&2
+        echo 'wait: 5seconds: Ctrl+c repeatedly to cancel NOW!!!' >&2
+        sleep 4
+    fi
+
+    #[[ "$currentDisableSandbox" == "true" ]] && export CODEX_UNSAFE_ALLOW_NO_SANDBOX=1
+    
+
+    local currentExitStatus
+
+    if [[ -e "$HOME"/.local/share/pnpm/codex ]]
+    then
+        export PNPM_HOME="$HOME""/.local/share/pnpm"
+        case ":$PATH:" in
+            *":$PNPM_HOME:"*) ;;
+            *) export PATH="$PNPM_HOME:$PATH" ;;
+        esac
+        if [[ "$currentDisableSandbox" == "true" ]] || [[ "$CODEX_UNSAFE_ALLOW_NO_SANDBOX" == "1" ]]
+        then
+            CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 "$HOME"/.local/share/pnpm/codex "$@"
+            currentExitStatus="$?"
+            unset CODEX_UNSAFE_ALLOW_NO_SANDBOX
+            return "$currentExitStatus"
+        #else
+            #"$HOME"/.local/share/pnpm/codex "$@"
+            #currentExitStatus="$?"
+            #unset CODEX_UNSAFE_ALLOW_NO_SANDBOX
+            #return "$currentExitStatus"
+        fi
+    fi
+    if [[ "$currentDisableSandbox" == "true" ]] || [[ "$CODEX_UNSAFE_ALLOW_NO_SANDBOX" == "1" ]]
+    then
+        #CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 /usr/bin/node "$(type -P codex)" "$@"
+        #CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 /usr/bin/node /usr/bin/codex "$@"
+        CODEX_UNSAFE_ALLOW_NO_SANDBOX=1 /usr/bin/node '/usr/lib/node_modules/@openai/codex/bin/codex.js' "$@"
+        currentExitStatus="$?"
+        unset CODEX_UNSAFE_ALLOW_NO_SANDBOX
+        return "$currentExitStatus"
+    else
+        #/usr/bin/node "$(type -P codex)" "$@"
+        #/usr/bin/node /usr/bin/codex "$@"
+        /usr/bin/node '/usr/lib/node_modules/@openai/codex/bin/codex.js' "$@"
+        currentExitStatus="$?"
+        unset CODEX_UNSAFE_ALLOW_NO_SANDBOX
+        return "$currentExitStatus"
+    fi
+}
+
+
+if type -P codex > /dev/null 2>&1
+then
+    [[ -e /usr/local/bin/node ]] && alias codex=_codexBin-usr_local_bin_node
+    [[ -e /usr/bin/node ]] && alias codex=_codexBin-usr_bin_node
+fi
 
 
 
@@ -7357,6 +9958,27 @@ CZXWXcRMTo8EmM8i4d
 	_setupUbiquitous_accessories_here-nixenv-bashrc
 
 	
+}
+
+
+
+
+
+_setupUbiquitous_accessories_here-vimrc() {
+	cat << CZXWXcRMTo8EmM8i4d
+
+
+
+" ubcore
+
+" https://stackoverflow.com/questions/27871937/markdown-syntax-coloring-for-less-pager
+" https://www.benpickles.com/articles/88-vim-syntax-highlight-markdown-code-blocks
+" https://github.com/tpope/vim-markdown
+let g:markdown_fenced_languages = ['html', 'js=javascript', 'ruby', 'python', 'bash=sh']
+let g:markdown_minlines = 1750
+
+
+CZXWXcRMTo8EmM8i4d
 }
 
 
@@ -7583,12 +10205,12 @@ _setupUbiquitous_accessories_here-python_hook() {
 # ATTENTION: Without either 'exec(exec(open()))' or 'execfile()' , 'from ubcorerc_pythonrc import *' must take effect!
 # If 'exec(exec(open()))' is substituted for 'from ubcorerc_pythonrc import *' then copying home directory files independent of '.ubcore' 
 import os
-if os.path.exists("$ubcore_accessoriesFile_python"):
+if os.path.exists(r"$ubcore_accessoriesFile_python"):
 	import sys
 	import os
 	# https://stackoverflow.com/questions/2349991/how-to-import-other-python-files
-	sys.path.append(os.path.abspath("$ubcoreDir_accessories/python"))
-	from ubcorerc_pythonrc import *
+	sys.path.append(os.path.abspath(r"$ubcoreDir_accessories_python"))
+	from $ubcore_ubcorerc_pythonrc import *
 
 
 
@@ -7597,9 +10219,9 @@ if os.path.exists("$ubcore_accessoriesFile_python"):
 import sys
 # https://stackoverflow.com/questions/436198/what-is-an-alternative-to-execfile-in-python-3
 if sys.hexversion > 0x03000000:
-	exec('exec(open( "$ubcore_accessoriesFile_python_ubhome" ).read() )')
+	exec(r'exec(open( r"$ubcore_accessoriesFile_python_ubhome" ).read() )')
 else:
-	execfile("$ubcore_accessoriesFile_python_ubhome")
+	execfile(r"$ubcore_accessoriesFile_python_ubhome")
 
 
 
@@ -7613,9 +10235,11 @@ _setupUbiquitous_accessories_here-python_bashrc() {
 	cat << CZXWXcRMTo8EmM8i4d
 
 # Interactive bash shell will default to calling 'python3' while scripts invoking '#! /usr/bin/env python' or similar may still be given 'python2' equivalent.
-alias python=python3
+[[ "\$_PATH_pythonDir" == "" ]] && alias python=python3
 
-export PYTHONSTARTUP="$HOME"/.pythonrc
+[[ "\$_PATH_pythonDir" == "" ]] && [[ "\$_PYTHONSTARTUP" == "" ]] && export PYTHONSTARTUP="$HOME"/.pythonrc
+
+[[ "\$_PATH_pythonDir" != "" ]] && _set_msw_python_procedure
 
 CZXWXcRMTo8EmM8i4d
 }
@@ -7736,6 +10360,20 @@ CZXWXcRMTo8EmM8i4d
 
 
 
+_setupUbiquitous_accessories_here-convenience() {
+		cat << CZXWXcRMTo8EmM8i4d
+
+# Equivalence to Dockerfile .
+#alias RUN=_bin
+alias RUN=""
+#  #RUN ( echo test )
+
+CZXWXcRMTo8EmM8i4d
+
+}
+
+
+
 
 
 _setupUbiquitous_accessories_here-user_bashrc() {
@@ -7750,6 +10388,49 @@ if [[ -e "$HOME"/_bashrc ]]
 then
 	. "$HOME"/_bashrc
 fi
+
+CZXWXcRMTo8EmM8i4d
+
+}
+
+
+_setupUbiquitous_accessories_here-container_environment() {
+	
+	cat << CZXWXcRMTo8EmM8i4d
+
+# Coordinator/Worker, SSH Authorized
+if [[ "\$SSH_pub_Coordinator_01" != "" ]] || [[ "\$PUBLIC_KEY" != "" ]]
+then
+	_ubcore_add_authorized_SSH() {
+		[[ "\$1" == "" ]] && return 0
+
+		mkdir -p "$HOME"/.ssh
+		chmod 700 "$HOME"/.ssh 2> /dev/null
+		
+		local currentString=\$(printf '%s' "\$1" | awk '{print \$2}' | tr -dc 'a-zA-Z0-9')
+
+		[[ ! -e "$HOME"/.ssh/authorized_keys ]] && echo -n > "$HOME"/.ssh/authorized_keys && chmod 600 "$HOME"/.ssh/authorized_keys
+		if cat "$HOME"/.ssh/authorized_keys | tr -dc 'a-zA-Z0-9' | grep "\$currentString" > /dev/null 2>&1
+		then
+			return 0
+		else
+			echo "\$1" >> "$HOME"/.ssh/authorized_keys
+			chmod 600 "$HOME"/.ssh/authorized_keys
+			return 0
+		fi
+		return 1
+	}
+
+	_ubcore_add_authorized_SSH "\$PUBLIC_KEY"
+	
+	_ubcore_add_authorized_SSH "\$SSH_pub_Coordinator_01"
+	_ubcore_add_authorized_SSH "\$SSH_pub_Coordinator_02"
+	_ubcore_add_authorized_SSH "\$SSH_pub_Coordinator_03"
+
+	unset _ubcore_add_authorized_SSH
+fi
+
+[[ -e /.dockerenv ]] && git config --global --add safe.directory '*' > /dev/null 2>&1
 
 CZXWXcRMTo8EmM8i4d
 
@@ -7780,6 +10461,17 @@ _setupUbiquitous_accessories-plasma() {
 	chmod u+x "$HOME"/.config/plasma-workspace/env/profile.sh
 	
 	
+	return 0
+}
+
+_setupUbiquitous_accessories-vim() {
+	_messagePlain_nominal 'init: _setupUbiquitous_accessories-gnuoctave'
+	
+	if ! grep ubcore "$ubHome"/.vimrc > /dev/null 2>&1 && _messagePlain_probe 'vimrc'
+	then
+		_setupUbiquitous_accessories_here-vimrc >> "$ubHome"/.vimrc
+	fi
+
 	return 0
 }
 
@@ -7835,6 +10527,7 @@ _setupUbiquitous_accessories-python() {
 	
 	_setupUbiquitous_accessories_here-python > "$ubcore_accessoriesFile_python_ubhome"
 	
+	export ubcore_ubcorerc_pythonrc="ubcorerc_pythonrc"
 	
 	if ! grep ubcore "$ubHome"/.pythonrc > /dev/null 2>&1 && _messagePlain_probe 'pythonrc'
 	then
@@ -7867,6 +10560,9 @@ _setupUbiquitous_accessories() {
 
 	_setupUbiquitous_accessories-plasma "$@"
 
+
+	_setupUbiquitous_accessories-vim "$@"
+
 	
 	_setupUbiquitous_accessories-gnuoctave "$@"
 	
@@ -7888,13 +10584,19 @@ _setupUbiquitous_accessories_bashrc() {
 	
 	
 	_setupUbiquitous_accessories_here-coreoracle_bashrc "$@"
+
+
+	_setupUbiquitous_accessories_here-convenience "$@"
 	
 	
-	# WARNING: Python must remain last. Failure to hook python is a failure that must show as an error exit status from the users profile (a red "1" on the first line of first visual prompt command prompt).
+	# WARNING: Python should remain last if possible. Failure to hook python is a failure that must show as an error exit status from the users profile (a red "1" on the first line of first visual prompt command prompt).
+	#  WARNING: Do NOT use 'currentExitStatus_python_bashrc' or similar varaibles unless this exit status is really necessary. Performance cost will be significant. Do not attempt to use a 'return' statement, rather if attempting to implement this, instead run 'true' or 'false' at the end of the 'ubcorerc' script depending on the exit status. Discouraged.
 	_setupUbiquitous_accessories_here-python_bashrc "$@"
 	
 	
 	_setupUbiquitous_accessories_here-user_bashrc "$@"
+
+	_setupUbiquitous_accessories_here-container_environment "$@"
 	
 	#echo true
 }
@@ -7981,13 +10683,23 @@ PS1_lineNumber=""
 
 # WARNING: Importing complete 'ubiquitous_bash.sh' may cause other scripts to call functions inappropriate for their needs during "_test" and "_setup" .
 # This may be acceptable if the user has already run "_setup" from the imported script .
+ubDEBUG_current="\$ubDEBUG"
+export ubDEBUG="false"
 #export profileScriptLocation="$ubcoreUBdir"/ubiquitous_bash.sh
 export profileScriptLocation="$ubcoreUBdir"/ubcore.sh
 #export profileScriptLocation="$ubcoreUBdir"/lean.sh
 export profileScriptFolder="$ubcoreUBdir"
-[[ "\$scriptAbsoluteLocation" != "" ]] && . "\$scriptAbsoluteLocation" --parent _importShortcuts
-[[ "\$scriptAbsoluteLocation" == "" ]] && . "\$profileScriptLocation" --profile _importShortcuts
+if [[ "\$force_profileScriptLocation" == "" ]]
+then
+	[[ "\$scriptAbsoluteLocation" != "" ]] && . "\$scriptAbsoluteLocation" --parent _importShortcuts
+	[[ "\$scriptAbsoluteLocation" == "" ]] && . "\$profileScriptLocation" --profile _importShortcuts
+else
+	export profileScriptLocation="\$force_profileScriptLocation"
+	export profileScriptFolder="\$force_profileScriptFolder"
+	[[ "\$force_profileScriptLocation" != "" ]] && . "\$force_profileScriptLocation" --profile _importShortcuts
+fi
 [[ "\$ub_setScriptChecksum_disable" == 'true' ]] && export ub_setScriptChecksum_disable="" && unset ub_setScriptChecksum_disable
+export ubDEBUG="\$ubDEBUG_current"
 
 # Returns priority to normal.
 # Greater or equal, '_priority_app_pid_root' .
@@ -8045,6 +10757,23 @@ true
 
 CZXWXcRMTo8EmM8i4d
 
+
+	cat << CZXWXcRMTo8EmM8i4d
+
+if [[ "\$runDelete" != "" ]] && [[ "\$runDelete" == '/workspace/project'* ]]
+then
+	#/workspace/project/._run-factory_openai
+	rm -f "\$runDelete"
+	unset runDelete
+fi
+
+[[ -e /info_factoryMOTD.txt ]] && cat /info_factoryMOTD.txt
+#[[ -e /info_factoryMOTD.sh ]] && . /info_factoryMOTD.sh
+
+true
+
+CZXWXcRMTo8EmM8i4d
+
 }
 
 
@@ -8069,6 +10798,89 @@ _setupUbiquitous_resize() {
 	
 }
 
+
+
+_install_certs() {
+    _messageNormal 'install: certs'
+    if [[ $(id -u 2> /dev/null) == "0" ]] || [[ "$USER" == "root" ]] || _if_cygwin
+    then
+    
+        # Editing the Cygwin root filesystem itself, root permissions granted within Cygwin environment itself are effective.
+        sudo() {
+            [[ "$1" == "-n" ]] && shift
+            "$@"
+        }
+    fi
+
+    #"$HOME"/core/data/certs/
+    #/usr/local/share/ca-certificates/
+    #/etc/pki/ca-trust/source/anchors/
+
+    #update-ca-certificates
+    #update-ca-trust
+
+    _install_certs_cp_procedure() {
+        _messagePlain_nominal '_install_certs: install: '"$2"
+        [[ -e "$2" ]] && sudo -n cp -f "$1"/*.crt "$2"
+    }
+    _install_certs_cp() {
+        [[ -e /cygdrive/c/core ]] && mkdir -p /cygdrive/c/core/data/certs/
+        _install_certs_cp_procedure "$1" /cygdrive/c/core/data/certs/
+
+        mkdir -p "$HOME"/core/data/certs/
+        _install_certs_cp_procedure "$1" "$HOME"/core/data/certs/
+
+        _install_certs_cp_procedure "$1" /usr/local/share/ca-certificates/
+
+        _if_cygwin && _install_certs_cp_procedure "$1" /etc/pki/ca-trust/source/anchors/
+
+        return 0
+    }
+    _install_certs_write() {
+        if [[ -e "$scriptAbsoluteFolder"/_lib/kit/app/researchEngine/kit/certs ]]
+        then
+            _install_certs_cp "$scriptAbsoluteFolder"/_lib/kit/app/researchEngine/kit/certs
+            return
+        fi
+        if [[ -e "$scriptAbsoluteFolder"/_lib/ubiquitous_bash/_lib/kit/app/researchEngine/kit/certs ]]
+        then
+            _install_certs_cp "$scriptAbsoluteFolder"/_lib/ubiquitous_bash/_lib/kit/app/researchEngine/kit/certs
+            return
+        fi
+        if [[ -e "$scriptAbsoluteFolder"/_lib/ubDistBuild/_lib/ubiquitous_bash/_lib/kit/app/researchEngine/kit/certs ]]
+        then
+            _install_certs_cp "$scriptAbsoluteFolder"/_lib/ubDistBuild/_lib/ubiquitous_bash/_lib/kit/app/researchEngine/kit/certs
+            return
+        fi
+        return 1
+    }
+
+
+    _if_cygwin && sudo -n rm -f /etc/pki/tls/certs/*.0
+
+    _install_certs_write
+
+    # Setup scripts in constrained repetitive environments (ie. OpenAI Codex setup script) may multi-thread concurrent _setupUbiquitous with apt-get . This detects that, and prevents dpkg collision.
+    while pgrep '^dpkg$' > /dev/null 2>&1
+    do
+        sleep 1
+    done
+
+    local currentExitStatus="1"
+    ! _if_cygwin && sudo -n update-ca-certificates
+    [[ "$?" == "0" ]] && currentExitStatus="0"
+    _if_cygwin && sudo -n update-ca-trust
+    [[ "$?" == "0" ]] && currentExitStatus="0"
+
+    return "$currentExitStatus"
+}
+
+
+
+
+
+
+
 _configureLocal() {
 	_configureFile "$1" "_local"
 }
@@ -8086,16 +10898,41 @@ _resetOps() {
 }
 
 _gitPull_ubiquitous() {
+	local currentExitStatus_gitBest_pull="0"
+	local currentExitStatus_gitBest_submodule_update="0"
 	#git pull
 	_gitBest pull
+	currentExitStatus_gitBest_pull="$?"
+	_gitBest submodule update --recursive
+	currentExitStatus_gitBest_submodule_update="$?"
+	[[ "$currentExitStatus_gitBest_pull" != "0" ]] && return "$currentExitStatus_gitBest_pull"
+	[[ "$currentExitStatus_gitBest_submodule_update" != "0" ]] && return "$currentExitStatus_gitBest_submodule_update"
+	return 0
 }
 
 _gitClone_ubiquitous() {
+	local functionEntryPWD="$PWD"
+
+	local currentExitStatus_gitBest_clone="0"
+	local currentExitStatus_gitBest_submodule_update="0"
 	#git clone --depth 1 git@github.com:mirage335/ubiquitous_bash.git
 	_gitBest clone --recursive --depth 1 git@github.com:mirage335/ubiquitous_bash.git
+	currentExitStatus_gitBest_clone="$?"
+
+	! cd ubiquitous_bash && _messagePlain_bad 'bad: cd ubiquitous_bash' && return 1
+	_gitBest submodule update --recursive
+	currentExitStatus_gitBest_submodule_update="$?"
+	! cd "$functionEntryPWD" && _messagePlain_bad 'bad: cd '"$functionEntryPWD" && return 1
+
+	[[ "$currentExitStatus_gitBest_clone" != "0" ]] && return "$currentExitStatus_gitBest_clone"
+	[[ "$currentExitStatus_gitBest_submodule_update" != "0" ]] && return "$currentExitStatus_gitBest_submodule_update"
+	return 0
 }
 
 _selfCloneUbiquitous() {
+	local currentExitStatus
+	currentExitStatus="0"
+
 	"$scriptBin"/.ubrgbin.sh _ubrgbin_cpA "$scriptBin" "$ubcoreUBdir"/ > /dev/null 2>&1
 	cp -a "$scriptAbsoluteLocation" "$ubcoreUBdir"/lean.sh
 	cp -a "$scriptAbsoluteLocation" "$ubcoreUBdir"/ubcore.sh
@@ -8105,33 +10942,56 @@ _selfCloneUbiquitous() {
 	cp -a "$scriptAbsoluteLocation" "$ubcoreUBdir"/ubiquitous_bash.sh
 	
 	cp -a "$scriptAbsoluteFolder"/lean.py "$ubcoreUBdir"/lean.py > /dev/null 2>&1
+	[[ "$?" != "0" ]] && currentExitStatus="1"
+
+	mkdir -p "$ubcoreUBdir"/_lib/kit/app/researchEngine/kit/certs
+	if [[ -e "$scriptAbsoluteFolder"/_lib/kit/app/researchEngine/kit/certs ]]
+	then
+		cp -a "$scriptAbsoluteFolder"/_lib/kit/app/researchEngine/kit/certs/* "$ubcoreUBdir"/_lib/kit/app/researchEngine/kit/certs/
+	fi
+
+	return "$currentExitStatus"
 }
 
 _installUbiquitous() {
 	local localFunctionEntryPWD
 	localFunctionEntryPWD="$PWD"
 	
-	cd "$ubcoreDir"
+	! cd "$ubcoreDir" && _messagePlain_bad 'bad: cd $ubcoreUBdir' && return 1
 	
-	cd "$ubcoreUBdir"
-	_messagePlain_nominal 'attempt: git pull'
+	! cd "$ubcoreUBdir" && _messagePlain_bad 'bad: cd $ubcoreUBdir' && return 1
+	_messagePlain_nominal 'attempt: git pull: '"$PWD"
 	if [[ "$nonet" != "true" ]] && type git > /dev/null 2>&1
 	then
 		_gitBest_detect
 		
-		local ub_gitPullStatus
-		#git pull
-		_gitBest pull
-		ub_gitPullStatus="$?"
-		#[[ "$ub_gitPullStatus" != 0 ]] && git pull && ub_gitPullStatus="$?"
-		[[ "$ub_gitPullStatus" != 0 ]] && _gitBest pull && ub_gitPullStatus="$?"
-		! cd "$localFunctionEntryPWD" && return 1
-		
+		# CAUTION: After calling 'ubcp-cygwin-portable-installer' during 'build_ubcp' job of GitHub Actions 'build.yml', or similar devops/CI, etc, '/home/root/.ubcore/ubiquitous_bash' is a subdirectory at 'C:\...\ubiquitous_bash\_local\ubcp\cygwin\home\root\.ubcore\ubiquitous_bash' or similar.
+		#  DANGER: This causes MSWindows native 'git' binaries to perceive a git repository '.git' subdirectory already exists at the parent directory 'C:\...\ubiquitous_bash' , catastrophically causing 'git pull' to succeed, without populating the '/home/root/.ubcore/ubiquitous_bash' directory with 'ubiquitous_bash.sh' .
+		# Preventing that scenario, detect whether a '.git' subdirectory exists at "$ubcoreUBdir"/.git , which should also be the same as './.git' .
+		if [[ -e "$ubcoreUBdir"/.git ]] && [[ -e ./.git ]]
+		then
+			local ub_gitPullStatus
+			#git pull
+			_gitBest pull
+			ub_gitPullStatus="$?"
+			_gitBest submodule update --recursive
+			[[ "$?" != "0" ]] && ub_gitPullStatus="1"
+			#[[ "$ub_gitPullStatus" != 0 ]] && git pull && ub_gitPullStatus="$?"
+			if [[ "$ub_gitPullStatus" != 0 ]]
+			then
+				_gitBest pull
+				ub_gitPullStatus="$?"
+				_gitBest submodule update --recursive
+				[[ "$?" != "0" ]] && ub_gitPullStatus="1"
+			fi
+			! cd "$localFunctionEntryPWD" && return 1
+
 		[[ "$ub_gitPullStatus" == "0" ]] && _messagePlain_good 'pass: git pull' && cd "$localFunctionEntryPWD" && return 0
+		fi
 	fi
-	_messagePlain_warn 'fail: git pull'
+	_messagePlain_warn 'fail: git pull: '"$PWD"
 	
-	cd "$ubcoreDir"
+	! cd "$ubcoreDir" && _messagePlain_bad 'bad: cd $ubcoreDir' && return 1
 	_messagePlain_nominal 'attempt: git clone'
 	[[ "$nonet" != "true" ]] && type git > /dev/null 2>&1 && [[ ! -e ".git" ]] && [[ ! -e "$ubcoreUBdir"/.git ]] && _gitClone_ubiquitous && _messagePlain_good 'pass: git clone' && return 0
 	[[ "$nonet" != "true" ]] && type git > /dev/null 2>&1 && [[ ! -e ".git" ]] && [[ ! -e "$ubcoreUBdir"/.git ]] && _gitClone_ubiquitous && _messagePlain_good 'pass: git clone' && return 0
@@ -8153,11 +11013,14 @@ _installUbiquitous() {
 		[[ -e "$scriptAbsoluteFolder"/ubcore_compressed.sh ]] && rm -f "$ubcoreUBdir"/ubcore_compressed.sh > /dev/null 2>&1
 		[[ -e "$scriptAbsoluteFolder"/ubiquitous_bash_compressed.sh ]] && rm -f "$ubcoreUBdir"/ubiquitous_bash_compressed.sh > /dev/null 2>&1
 		[[ -e "$scriptAbsoluteFolder"/lean.py ]] && rm -f "$ubcoreUBdir"/lean.py > /dev/null 2>&1
+		#[[ -e "$scriptAbsoluteFolder"/_lib/kit/app/researchEngine/kit/certs/* ]] && rm -f "$ubcoreUBdir"/_lib/kit/app/researchEngine/kit/certs/* > /dev/null 2>&1
 		#git reset --hard
 		#git pull "$scriptAbsoluteFolder"
 		_gitBest pull "$scriptAbsoluteFolder"
 		_gitBest reset --hard
 		ub_gitPullStatus="$?"
+		_gitBest submodule update --recursive
+		[[ "$?" != "0" ]] && ub_gitPullStatus="1"
 		! cd "$localFunctionEntryPWD" && return 1
 		
 		[[ "$ub_gitPullStatus" == "0" ]] && _messagePlain_good 'pass: self git pull' && cd "$localFunctionEntryPWD" && return 0
@@ -8180,6 +11043,7 @@ _installUbiquitous() {
 
 _setupUbiquitous() {
 	_messageNormal "init: setupUbiquitous"
+	export ub_under_setupUbiquitous="true"
 	
 	if _if_cygwin
 	then
@@ -8199,7 +11063,7 @@ _setupUbiquitous() {
 	export ubcoreFile="$ubcoreDir"/.ubcorerc
 	
 	export ubcoreDir_accessories="$ubHome"/.ubcore/accessories
-	
+	export ubcoreDir_accessories_python="$ubcoreDir_accessories"/python
 	
 	# WARNING: Despite the name, do NOT point this to 'ubcore.sh' or similar. Full set of functions are expected from this file by some use cases!
 	export ubcoreUBdir="$ubcoreDir"/ubiquitous_bash
@@ -8275,6 +11139,9 @@ _setupUbiquitous() {
 	_messageNormal "install: setupUbiquitous_accessories"
 	
 	_setupUbiquitous_accessories "$@"
+
+
+	_install_certs "$@"
 	
 	
 	_messageNormal "request: setupUbiquitous_accessories , setupUbiquitous"
@@ -8888,6 +11755,13 @@ export tmpSelf=""
 # ATTENTION: CAUTION: Should only be used by a single unusual Cygwin override. Must be reset if used for any other purpose.
 #export descriptiveSelf=""
 
+
+# ATTENTION: Set 'dumbpath_prefix' within functions, with '_prog/core.sh' , 'ops.sh' , or similar, etc.
+# WARNING: Any prefix will break '8.3' compatibility (usually don't care, but could affect DosBox, etc).
+unset dumbpath_prefix
+
+
+
 #####Global variables.
 #Fixed unique identifier for ubiquitous bash created global resources, such as bootdisc images to be automaticaly mounted by guests. Should NEVER be changed.
 export ubiquitiousBashIDnano=uk4u
@@ -8959,9 +11833,9 @@ _get_ub_globalVars_sessionDerived() {
 
 export lowsessionid=$(echo -n "$sessionid" | tr A-Z a-z )
 
-# ATTENTION: CAUTION: Unusual Cygwin override to accommodate MSW network drive ( at least when provided by '_userVBox' ) !
 if [[ "$scriptAbsoluteFolder" == '/cygdrive/'* ]] && [[ -e /cygdrive ]] && uname -a | grep -i cygwin > /dev/null 2>&1 && [[ "$scriptAbsoluteFolder" != '/cygdrive/c'* ]] && [[ "$scriptAbsoluteFolder" != '/cygdrive/C'* ]]
 then
+	# ATTENTION: CAUTION: Unusual Cygwin override to accommodate MSW network drive ( at least when provided by '_userVBox' ) !
 	if [[ "$tmpSelf" == "" ]]
 	then
 		
@@ -8982,7 +11856,14 @@ then
 		true
 		
 	fi
-elif uname -a | grep -i 'microsoft' > /dev/null 2>&1 && uname -a | grep -i 'WSL2' > /dev/null 2>&1
+
+	#_override_msw_git
+	type _override_msw_git_CEILING > /dev/null 2>&1 && _override_msw_git_CEILING
+	#if [[ "$1" != "_setupUbiquitous" ]] && [[ "$ub_under_setupUbiquitous" != "true" ]] && type _write_configure_git_safe_directory_if_admin_owned > /dev/null 2>&1
+	#then
+		_write_configure_git_safe_directory_if_admin_owned "$scriptAbsoluteFolder"
+	#fi
+elif ( uname -a | grep -i 'microsoft' > /dev/null 2>&1 && uname -a | grep -i 'WSL2' > /dev/null 2>&1 ) || [[ -e /.dockerenv ]]
 then
 	if [[ "$tmpSelf" == "" ]]
 	then
@@ -9052,7 +11933,22 @@ then
 	fi
 fi
 
-#Essentially temporary tokens which may need to be reused. 
+export scriptCall_bash="$scriptAbsoluteFolder"'/_bash.bat'
+export scriptCall_bin="$scriptAbsoluteFolder"/_bin.bat
+if type cygpath > /dev/null 2>&1
+then
+    export scriptAbsoluteLocation_msw=$(cygpath -w "$scriptAbsoluteLocation")
+    export scriptAbsoluteFolder_msw=$(cygpath -w "$scriptAbsoluteFolder")
+
+	export scriptLocal_msw=$(cygpath -w "$scriptLocal")
+    export scriptLib_msw=$(cygpath -w "$scriptLib")
+    
+    export scriptCall_bash_msw="$scriptAbsoluteFolder_msw"'\_bash.bat'
+    export scriptCall_bin_msw="$scriptAbsoluteFolder_msw"'\_bin.bat'
+fi
+
+#Essentially temporary tokens which may need to be reused.
+# No, NOT AI tokens, predates widespread usage of that term.
 export scriptTokens="$scriptLocal"/.tokens
 
 #Reboot Detection Token Storage
@@ -12786,10 +15682,14 @@ _stop_stty_echo() {
 	#stty echo --file=/dev/tty > /dev/null 2>&1
 	
 	[[ "$ubFoundEchoStatus" != "" ]] && stty --file=/dev/tty "$ubFoundEchoStatus" 2> /dev/null
+
+	return 0
 }
 
 # DANGER: Use of "_stop" must NOT require successful "_start". Do NOT include actions which would not be safe if "_start" was not used or unsuccessful.
 _stop() {
+	if [[ "$ubDEBUG" == "true" ]] ; then set +x ; set +E ; set +o functrace ; set +o errtrace ; export -n SHELLOPTS 2>/dev/null || true ; trap '' RETURN ; trap - RETURN ; fi
+	
 	_stop_stty_echo
 	
 	_tryExec "_stop_prog"
@@ -12842,6 +15742,7 @@ _stop() {
 	
 	_safeRMR "$shortTmp"
 	_safeRMR "$safeTmp"
+	[[ "$fastTmp" != "" ]] && _safeRMR "$fastTmp"
 	
 	[[ -e "$safeTmp" ]] && sleep 0.1 && _safeRMR "$safeTmp"
 	[[ -e "$safeTmp" ]] && sleep 0.3 && _safeRMR "$safeTmp"
@@ -12881,6 +15782,10 @@ _stop() {
 			
 		rm -f "$currentAxelTmpFile"* > /dev/null 2>&1
 	fi
+
+	[[ -e "$scriptLocal"/python_nix.lock ]] && [[ $(head -c $(echo -n "$sessionid" | wc -c | tr -dc '0-9') "$scriptLocal"/python_nix.lock 2> /dev/null ) == "$sessionid" ]] && rm -f "$scriptLocal"/python_nix.lock > /dev/null 2>&1
+	[[ -e "$scriptLocal"/python_msw.lock ]] && [[ $(head -c $(echo -n "$sessionid" | wc -c | tr -dc '0-9') "$scriptLocal"/python_msw.lock 2> /dev/null ) == "$sessionid" ]] && rm -f "$scriptLocal"/python_msw.lock > /dev/null 2>&1
+	[[ -e "$scriptLocal"/python_cygwin.lock ]] && [[ $(head -c $(echo -n "$sessionid" | wc -c | tr -dc '0-9') "$scriptLocal"/python_cygwin.lock 2> /dev/null ) == "$sessionid" ]] && rm -f "$scriptLocal"/python_cygwin.lock > /dev/null 2>&1
 	
 	_stop_stty_echo
 	if [[ "$1" != "" ]]
@@ -13024,8 +15929,8 @@ _readLocked() {
 
 #Using _readLocked before any _createLocked operation is strongly recommended to remove any lock from prior UNIX session (ie. before latest reboot).
 _createLocked() {
-	[[ "$uDEBUG" == true ]] && caller 0 >> "$scriptLocal"/lock.log
-	[[ "$uDEBUG" == true ]] && echo -e '\t'"$sessionid"'\t'"$1" >> "$scriptLocal"/lock.log
+	[[ "$ubDEBUG" == true ]] && caller 0 >> "$scriptLocal"/lock.log
+	[[ "$ubDEBUG" == true ]] && echo -e '\t'"$sessionid"'\t'"$1" >> "$scriptLocal"/lock.log
 	
 	mkdir -p "$bootTmp"
 	
@@ -13040,7 +15945,7 @@ _createLocked() {
 	
 	if [[ -e "$lock_quicktmp"_"$lockUID" ]]
 	then
-		[[ "$uDEBUG" == true ]] && echo -e '\t'FAIL >> "$scriptLocal"/lock.log
+		[[ "$ubDEBUG" == true ]] && echo -e '\t'FAIL >> "$scriptLocal"/lock.log
 		rm -f "$lock_quicktmp"_"$lockUID" > /dev/null 2>&1
 		return 1
 	fi
@@ -13859,6 +16764,11 @@ _variableLocalTest_sequence() {
 	
 
 	variableLocalTest_evalTest() { local currentVariableNum=1 ; eval local currentVariable_${currentVariableNum}_currentData=PASS ; ( eval "[[ \$currentVariable_${currentVariableNum}_currentData == PASS ]]" && eval "[[ \$currentVariable_${currentVariableNum}_currentData != '' ]]" && eval "echo \$currentVariable_${currentVariableNum}_currentData" ) ;} ; variableLocalTest_evalTest > /dev/null ; [[ $(variableLocalTest_evalTest) != "PASS" ]] && _messageFAIL && _stop 1
+
+
+	! [[ $(currentVariable=currentValue /bin/bash --norc -c 'echoVariableTest() { echo $currentVariable ; } ; echoVariableTest') == "currentValue" ]] && _messageFAIL && _stop 1
+	! [[ $(currentVariable=currentValue currentVariable=currentValue /bin/bash --norc -c 'echoVariableTest() { echo $currentVariable ; } ; echoVariableTest') == "currentValue" ]] && _messageFAIL && _stop 1
+	! [[ $(currentVariable=currentValueA currentVariable=currentValueB /bin/bash --norc -c 'echoVariableTest() { echo $currentVariable ; } ; echoVariableTest') == "currentValueB" ]] && _messageFAIL && _stop 1
 
 	_stop
 }
@@ -14713,61 +17623,83 @@ _test-shell-cygwin() {
 	
 	local currentPathCount
 	currentPathCount=$(echo "$PATH" | grep -o ':' | wc -l | tr -dc '0-9')
-	if [[ "$currentPathCount" -gt 50 ]]
+	#if [[ "$currentPathCount" -gt 50 ]]
+	#if [[ "$currentPathCount" -gt 66 ]]
+	if [[ "$currentPathCount" -gt 99 ]]
 	then
 		echo 'fail: count: PATH: '"$currentPathCount"
 		_messageFAIL
 	fi
-	if [[ "$currentPathCount" -gt 44 ]]
+	#if [[ "$currentPathCount" -gt 66 ]]
+	if [[ "$currentPathCount" -gt 80 ]]
+	then
+		echo 'warn: count: PATH: '"$currentPathCount"
+		echo 'warn: MSWEXTPATH may be ignored'
+		_messagePlain_request 'request: reduce the length of PATH variable'
+	fi
+	#if [[ "$currentPathCount" -gt 44 ]]
+	if [[ "$currentPathCount" -gt 60 ]]
 	then
 		echo 'warn: count: PATH: '"$currentPathCount"
 		echo 'warn: MSWEXTPATH may be ignored'
 		_messagePlain_request 'request: reduce the length of PATH variable'
 	fi
 	
-	if [[ "$currentPathCount" -gt 32 ]]
+	if [[ "$currentPathCount" -gt 48 ]]
 	then
 		echo 'warn: count: PATH: '"$currentPathCount"
-		echo 'warn: MSWEXTPATH exceeds preferred 32'
+		echo 'warn: MSWEXTPATH exceeds preferred 48'
 		_messagePlain_request 'request: reduce the length of PATH variable'
-	fi
-	if [[ "$currentPathCount" -gt 34 ]]
-	then
-		echo 'warn: count: PATH: '"$currentPathCount"
-		echo 'warn: MSWEXTPATH exceeds preferred 34'
-		_messagePlain_request 'request: reduce the length of PATH variable'
-	fi
-	
-	
-	
-	local currentPathCount
-	currentPathCount=$(echo "$MSWEXTPATH" | grep -o ';\|:' | wc -l | tr -dc '0-9')
-	if [[ "$currentPathCount" -gt 50 ]] && [[ "$CI" == "" ]]
-	then
-		echo 'fail: count: MSWEXTPATH: '"$currentPathCount"
-		_messageFAIL
 	fi
 	if [[ "$currentPathCount" -gt 44 ]]
 	then
-		echo 'warn: count: MSWEXTPATH: '"$currentPathCount"
-		echo 'warn: MSWEXTPATH may be ignored by default'
+		echo 'warn: count: PATH: '"$currentPathCount"
+		echo 'warn: MSWEXTPATH exceeds preferred 44'
 		_messagePlain_request 'request: reduce the length of PATH variable'
 	fi
-	
-	
 	if [[ "$currentPathCount" -gt 32 ]]
 	then
-		echo 'warn: count: MSWEXTPATH: '"$currentPathCount"
+		echo 'warn: count: PATH: '"$currentPathCount"
 		echo 'warn: MSWEXTPATH exceeds preferred 32'
 		_messagePlain_request 'request: reduce the length of PATH variable'
 	fi
 	if [[ "$currentPathCount" -gt 34 ]]
 	then
-		echo 'warn: count: MSWEXTPATH: '"$currentPathCount"
+		echo 'warn: count: PATH: '"$currentPathCount"
 		echo 'warn: MSWEXTPATH exceeds preferred 34'
 		_messagePlain_request 'request: reduce the length of PATH variable'
 	fi
 	
+
+
+	# Discouraged. NOT guaranteed, may be removed if unmaintainable.
+	# Inheritance of variables as a means of communicating or passing parameters is not the point. Inheritance is tested to ensure an entirely different 'ubcp' environment, script, '$safeTmp', etc, is NOT used.
+	export ub_sanity_special="mustInherit"
+	if _if_cygwin
+	then
+		local currentResult
+		currentResult=""
+
+		local current_bin_bash
+		current_bin_bash=$(cygpath -w /bin/bash)
+
+		currentResult=$(cmd /C "$current_bin_bash" '-c' 'echo $ub_sanity_special')
+		[[ "$currentResult" != "mustInherit" ]] && echo 'fail: cmd /bin/bash: mustInherit' && _messageFAIL && return 1
+
+		currentResult=$(cmd /C "$current_bin_bash" '-c' 'echo "$safeTmp"')
+		[[ "$currentResult" != "$safeTmp" ]] && echo 'fail: cmd /bin/bash: inherit: safeTmp' && _messageFAIL && return 1
+
+
+		current_bin_bash=$(cygpath -w /bin/bash | sed 's/\\/\\\\/g')
+
+		currentResult=$(_powershell -Command "$current_bin_bash"" -c 'echo "'"$ub_sanity_special"'"'")
+		[[ "$currentResult" != "mustInherit" ]] && echo 'fail: powershell /bin/bash: mustInherit' && _messageFAIL && return 1
+
+		currentResult=$(_powershell -Command "$current_bin_bash"" -c 'echo "'"$safeTmp"'"'")
+		[[ "$currentResult" != "$safeTmp" ]] && echo 'fail: powershell /bin/bash: inherit: safeTmp' && _messageFAIL && return 1
+	fi
+	unset ub_sanity_special
+
 	
 	
 	# Although use case specific (eg. flight sim with usual desktop applications installed) test cases may be necessary for MSW, to avoid ambiguity in expectations that every test includes an explicit PASS statement, a call to '_messagePASS' is still given.
@@ -14822,6 +17754,7 @@ _test() {
 	then
 		if _typeDep 'apt-get'
 		then
+			apt-get -y update
 			apt-get -y install sudo
 		fi
 	fi
@@ -14831,6 +17764,7 @@ _test() {
 	then
 		if _typeDep 'apt-get'
 		then
+			sudo -n apt-get -y update
 			sudo -n apt-get -y install bc
 		fi
 	fi
@@ -14908,6 +17842,9 @@ _test() {
 	_getDep cksum
 	
 	_getDep wget
+	_getDep curl
+	_wantGetDep aria2c
+	_wantGetDep axel
 	_getDep grep
 	_getDep fgrep
 	_getDep sed
@@ -16493,48 +19430,58 @@ import os
 #os.system("$HOME/.ubcore/ubiquitous_bash/ubcore.sh _bash -i ")
 #currentArguments = [currentArguments] if isinstance(currentArguments, str) else currentArguments
 #print(['ubiquitous_bash.sh', '_bash'] + currentArguments)
-def _bash(currentArguments = ['-i'], currentPrint = False, current_ubiquitous_bash = "ubiquitous_bash.sh"):
-	if current_ubiquitous_bash == "ubiquitous_bash.sh":
-		if os.path.exists(os.environ['HOME'] + "/.ubcore/ubiquitous_bash/ubcore.sh"):
-			current_ubiquitous_bash = (os.environ['HOME'] + "/.ubcore/ubiquitous_bash/ubcore.sh")
-	if current_ubiquitous_bash == "ubiquitous_bash.sh":
-		if os.path.exists("/cygdrive/c/core/infrastructure/ubiquitous_bash/ubcore.sh"):
-			current_ubiquitous_bash = "/cygdrive/c/core/infrastructure/ubiquitous_bash/ubcore.sh"
-	if current_ubiquitous_bash == "ubiquitous_bash.sh":
-		if os.path.exists("/cygdrive/c/core/infrastructure/lean/lean.sh"):
-			current_ubiquitous_bash = "/cygdrive/c/core/infrastructure/lean/lean.sh"
-	currentArguments = ['-i'] if currentArguments == '-i' else currentArguments
-	if isinstance(currentArguments, str):
-		# WARNING: Discouraged.
-		if not currentArguments == '-i':
-			currentProc = subprocess.Popen(current_ubiquitous_bash + " _bash " + currentArguments, stdout=subprocess.PIPE, universal_newlines=True, shell=True)
-			(currentOut, currentErr) = currentProc.communicate()
-			currentProc.wait()
-			currentOut = currentOut.rstrip('\n')
-			if currentPrint == True:
-				print(currentOut)
-				return (currentOut), currentProc.returncode
-		else:
-			currentProc = subprocess.Popen(current_ubiquitous_bash + " _bash " + currentArguments, universal_newlines=True, shell=True)
-			(currentOut, currentErr) = currentProc.communicate()
-			currentProc.wait()
-		return (currentOut), currentProc.returncode
-	else:
-		if not currentArguments == ['-i']:
-			currentArguments = [currentArguments] if isinstance(currentArguments, str) else currentArguments
-			currentProc = subprocess.Popen([current_ubiquitous_bash, '_bash'] + currentArguments, stdout=subprocess.PIPE, universal_newlines=True)
-			(currentOut, currentErr) = currentProc.communicate()
-			currentProc.wait()
-			currentOut = currentOut.rstrip('\n')
-			if currentPrint == True:
-				print(currentOut)
-				return (currentOut), currentProc.returncode
-		else:
-			currentArguments = [currentArguments] if isinstance(currentArguments, str) else currentArguments
-			currentProc = subprocess.Popen([current_ubiquitous_bash, '_bash'] + currentArguments, universal_newlines=True)
-			(currentOut, currentErr) = currentProc.communicate()
-			currentProc.wait()
-		return (currentOut), currentProc.returncode
+# ATTENTION: WARNING: Enjoy this python code. The '_bash' and '_bin' function are quite possibly, even probably, and for actual reasons for every line of code being annoying, the worst python code that will ever be written by people. In plainer language, only mess with parts of this code for which you have stopped to fully understand exactly why every negation, if/else, return, print, etc, is in the exact order that it is.
+def _bash(currentArguments = ['-i'], currentPrint = False, current_ubiquitous_bash = "ubiquitous_bash.sh", interactive=True):
+    if current_ubiquitous_bash == "ubiquitous_bash.sh":
+        if os.path.exists(os.environ.get("scriptCall_bash_msw", "").replace('\\', '/')):
+            current_ubiquitous_bash = os.environ.get("scriptCall_bash_msw", "").replace('\\', '/')
+    if current_ubiquitous_bash == "ubiquitous_bash.sh":
+        if os.path.exists(os.environ.get("scriptAbsoluteLocation", "")):
+            current_ubiquitous_bash = os.environ.get("scriptAbsoluteLocation", "")
+    if current_ubiquitous_bash == "ubiquitous_bash.sh":
+        if os.path.exists(os.environ['HOME'] + "/.ubcore/ubiquitous_bash/ubcore.sh"):
+            current_ubiquitous_bash = (os.environ['HOME'] + "/.ubcore/ubiquitous_bash/ubcore.sh")
+    if current_ubiquitous_bash == "ubiquitous_bash.sh":
+        if os.path.exists("/cygdrive/c/core/infrastructure/ubiquitous_bash/ubcore.sh"):
+            current_ubiquitous_bash = "/cygdrive/c/core/infrastructure/ubiquitous_bash/ubcore.sh"
+    if current_ubiquitous_bash == "ubiquitous_bash.sh":
+        if os.path.exists("/cygdrive/c/core/infrastructure/ubiquitous_bash/lean.sh"):
+            current_ubiquitous_bash = "/cygdrive/c/core/infrastructure/ubiquitous_bash/lean.sh"
+    currentArguments = ['-i'] if currentArguments == '-i' else currentArguments
+    if isinstance(currentArguments, str):
+    # WARNING: Discouraged.
+        if not ( ( currentArguments == '-i' ) or ( currentArguments == '' ) or ( interactive == True ) ):
+            # ATTENTION: WARNING: Use of 'stdout=subprocess.PIPE' is NOT compatible with interactive shell!
+            currentProc = subprocess.Popen(current_ubiquitous_bash + " _bash " + currentArguments, stdout=subprocess.PIPE, universal_newlines=True, shell=True)
+            (currentOut, currentErr) = currentProc.communicate()
+            currentProc.wait()
+            currentOut = currentOut.rstrip('\n')
+            if currentPrint == True:
+                print(currentOut)
+                return (currentOut), currentProc.returncode
+        else:
+            currentProc = subprocess.Popen(current_ubiquitous_bash + " _bash " + currentArguments, universal_newlines=True, shell=True)
+            (currentOut, currentErr) = currentProc.communicate()
+            currentProc.wait()
+        return (currentOut), currentProc.returncode
+    else:
+        if not ( ( currentArguments == ['-i'] ) or ( currentArguments == [''] ) or ( interactive == True ) ):
+            currentArguments = [currentArguments] if isinstance(currentArguments, str) else currentArguments
+            # ATTENTION: WARNING: Use of 'stdout=subprocess.PIPE' is NOT compatible with interactive shell!
+            currentProc = subprocess.Popen([current_ubiquitous_bash, '_bash'] + currentArguments, stdout=subprocess.PIPE, universal_newlines=True)
+            (currentOut, currentErr) = currentProc.communicate()
+            currentProc.wait()
+            currentOut = currentOut.rstrip('\n')
+            if currentPrint == True:
+                print(currentOut)
+                return (currentOut), currentProc.returncode
+        else:
+            if ( currentArguments == [''] ): currentArguments = ['-i']
+            currentArguments = [currentArguments] if isinstance(currentArguments, str) else currentArguments
+            currentProc = subprocess.Popen([current_ubiquitous_bash, '_bash'] + currentArguments, universal_newlines=True)
+            (currentOut, currentErr) = currentProc.communicate()
+            currentProc.wait()
+        return (currentOut), currentProc.returncode
 
 
 
@@ -16558,48 +19505,61 @@ import os
 #_bin('_bash')
 #print( _bin('_false', False)[1] )
 #_bin("_getScriptAbsoluteLocation", True, os.path.expanduser("~/core/infrastructure/ubiquitous_bash/ubiquitous_bash.sh"))
-def _bin(currentArguments = [''], currentPrint = False, current_ubiquitous_bash = "ubiquitous_bash.sh"):
-	if current_ubiquitous_bash == "ubiquitous_bash.sh":
-		if os.path.exists(os.environ['HOME'] + "/.ubcore/ubiquitous_bash/ubcore.sh"):
-			current_ubiquitous_bash = (os.environ['HOME'] + "/.ubcore/ubiquitous_bash/ubcore.sh")
-	if current_ubiquitous_bash == "ubiquitous_bash.sh":
-		if os.path.exists("/cygdrive/c/core/infrastructure/ubiquitous_bash/ubcore.sh"):
-			current_ubiquitous_bash = "/cygdrive/c/core/infrastructure/ubiquitous_bash/ubcore.sh"
-	if current_ubiquitous_bash == "ubiquitous_bash.sh":
-		if os.path.exists("/cygdrive/c/core/infrastructure/lean/lean.sh"):
-			current_ubiquitous_bash = "/cygdrive/c/core/infrastructure/lean/lean.sh"
-	currentArguments = [''] if currentArguments == '' else currentArguments
-	if isinstance(currentArguments, str):
-		# WARNING: Discouraged.
-		if not ( ( currentArguments == '/bin/bash -i' ) or ( currentArguments == '/bin/bash' ) ):
-			currentProc = subprocess.Popen(current_ubiquitous_bash + " _bin " + currentArguments, stdout=subprocess.PIPE, universal_newlines=True, shell=True)
-			(currentOut, currentErr) = currentProc.communicate()
-			currentProc.wait()
-			currentOut = currentOut.rstrip('\n')
-			if currentPrint == True:
-				print(currentOut)
-				return (currentOut), currentProc.returncode
-		else:
-			currentProc = subprocess.Popen(current_ubiquitous_bash + " _bin " + currentArguments, universal_newlines=True, shell=True)
-			(currentOut, currentErr) = currentProc.communicate()
-			currentProc.wait()
-		return (currentOut), currentProc.returncode
-	else:
-		if not (  ( currentArguments == ['/bin/bash', '-i'] ) or ( currentArguments == ['/bin/bash'] ) or ( currentArguments == ['_qalculate', ''] ) or ( currentArguments == ['_qalculate'] ) or ( currentArguments == ['_octave', ''] ) or ( currentArguments == ['_octave'] )  ):
-			currentArguments = [currentArguments] if isinstance(currentArguments, str) else currentArguments
-			currentProc = subprocess.Popen([current_ubiquitous_bash, '_bin'] + currentArguments, stdout=subprocess.PIPE, universal_newlines=True)
-			(currentOut, currentErr) = currentProc.communicate()
-			currentProc.wait()
-			currentOut = currentOut.rstrip('\n')
-			if currentPrint == True:
-				print(currentOut)
-				return (currentOut), currentProc.returncode
-		else:
-			currentArguments = [currentArguments] if isinstance(currentArguments, str) else currentArguments
-			currentProc = subprocess.Popen([current_ubiquitous_bash, '_bin'] + currentArguments, universal_newlines=True)
-			(currentOut, currentErr) = currentProc.communicate()
-			currentProc.wait()
-		return (currentOut), currentProc.returncode
+# ATTENTION: WARNING: Enjoy this python code. The '_bash' and '_bin' function are quite possibly, even probably, and for actual reasons for every line of code being annoying, the worst python code that will ever be written by people. In plainer language, only mess with parts of this code for which you have stopped to fully understand exactly why every negation, if/else, return, print, etc, is in the exact order that it is.
+def _bin(currentArguments = [''], currentPrint = False, current_ubiquitous_bash = "ubiquitous_bash.sh", interactive=False):
+    if current_ubiquitous_bash == "ubiquitous_bash.sh":
+        if os.path.exists(os.environ.get("scriptCall_bash_msw", "").replace('\\', '/')):
+            current_ubiquitous_bash = os.environ.get("scriptCall_bash_msw", "").replace('\\', '/')
+    if current_ubiquitous_bash == "ubiquitous_bash.sh":
+        if os.path.exists(os.environ.get("scriptAbsoluteLocation", "")):
+            current_ubiquitous_bash = os.environ.get("scriptAbsoluteLocation", "")
+    if current_ubiquitous_bash == "ubiquitous_bash.sh":
+        if os.path.exists(os.environ['HOME'] + "/.ubcore/ubiquitous_bash/ubcore.sh"):
+            current_ubiquitous_bash = (os.environ['HOME'] + "/.ubcore/ubiquitous_bash/ubcore.sh")
+    if current_ubiquitous_bash == "ubiquitous_bash.sh":
+        if os.path.exists("/cygdrive/c/core/infrastructure/ubiquitous_bash/ubcore.sh"):
+            current_ubiquitous_bash = "/cygdrive/c/core/infrastructure/ubiquitous_bash/ubcore.sh"
+    if current_ubiquitous_bash == "ubiquitous_bash.sh":
+        if os.path.exists("/cygdrive/c/core/infrastructure/ubiquitous_bash/lean.sh"):
+            current_ubiquitous_bash = "/cygdrive/c/core/infrastructure/ubiquitous_bash/lean.sh"
+    # ATTENTION: Comment out next python line of code to test this code with an empty string.
+    #./lean.py "_bin('', currentPrint=True)"
+    currentArguments = [''] if currentArguments == '' else currentArguments
+    if isinstance(currentArguments, str):
+        # WARNING: Discouraged.
+        if not ( ( ( currentArguments == '/bin/bash -i' ) or ( currentArguments == '/bin/bash' ) or ( currentArguments == '_bash' ) or ( currentArguments == '' ) ) or ( interactive == True ) ) :
+            # ATTENTION: WARNING: Use of 'stdout=subprocess.PIPE' is NOT compatible with interactive shell!
+            currentProc = subprocess.Popen(current_ubiquitous_bash + " _bin " + currentArguments, stdout=subprocess.PIPE, universal_newlines=True, shell=True)
+            (currentOut, currentErr) = currentProc.communicate()
+            currentProc.wait()
+            currentOut = currentOut.rstrip('\n')
+            if currentPrint == True:
+                print(currentOut)
+                return (currentOut), currentProc.returncode
+        else:
+            if ( currentArguments == '' ): currentArguments = '_bash'
+            currentProc = subprocess.Popen(current_ubiquitous_bash + " _bin " + currentArguments, universal_newlines=True, shell=True)
+            (currentOut, currentErr) = currentProc.communicate()
+            currentProc.wait()
+        return (currentOut), currentProc.returncode
+    else:
+        if not ( ( ( currentArguments == ['/bin/bash', '-i'] ) or ( currentArguments == ['/bin/bash'] ) or ( currentArguments == ['_bash'] ) or ( currentArguments == ['_bash', '-i'] ) or ( currentArguments == ['_qalculate', ''] ) or ( currentArguments == ['_qalculate'] ) or ( currentArguments == ['_octave', ''] ) or ( currentArguments == ['_octave'] ) or ( currentArguments == [''] ) ) or ( interactive == True ) ):
+            currentArguments = [currentArguments] if isinstance(currentArguments, str) else currentArguments
+            # ATTENTION: WARNING: Use of 'stdout=subprocess.PIPE' is NOT compatible with interactive shell!
+            currentProc = subprocess.Popen([current_ubiquitous_bash, '_bin'] + currentArguments, stdout=subprocess.PIPE, universal_newlines=True)
+            (currentOut, currentErr) = currentProc.communicate()
+            currentProc.wait()
+            currentOut = currentOut.rstrip('\n')
+            if currentPrint == True:
+                print(currentOut)
+                return (currentOut), currentProc.returncode
+        else:
+            if ( currentArguments == [''] ): currentArguments = ['_bash']
+            currentArguments = [currentArguments] if isinstance(currentArguments, str) else currentArguments
+            currentProc = subprocess.Popen([current_ubiquitous_bash, '_bin'] + currentArguments, universal_newlines=True)
+            (currentOut, currentErr) = currentProc.communicate()
+            currentProc.wait()
+        return (currentOut), currentProc.returncode
 
 # ATTENTION: Only intended for indirect calls.
 # https://stackoverflow.com/questions/5067604/determine-function-name-from-within-that-function-without-using-traceback
@@ -16675,15 +19635,54 @@ def _octave(currentString = [], currentArguments = [], currentPrint = False, cur
 
 
 
-import readline # optional, will allow Up/Down/History in the console
+if sys.platform == 'win32':
+    try:
+        import pyreadline3 as readline
+    except ImportError:
+        readline = None
+else:
+    try:
+        import readline # optional, will allow Up/Down/History in the console
+    except ImportError:
+        readline = None
 import code
+
+# ATTRIBUTION-AI: ChatGPT o3  2025-04-19
+def _enable_readline():
+    """
+    Make sure arrow keys, history and TAB completion work in the
+    interpreter that we embed with code.InteractiveConsole.
+    """
+    try:
+        import readline, rlcompleter, atexit, os
+        # basic key bindings
+        readline.parse_and_bind('tab: complete')
+        # persistent history file
+        histfile = os.path.expanduser('~/.pyhistory')
+        if os.path.exists(histfile):
+            readline.read_history_file(histfile)
+        atexit.register(readline.write_history_file, histfile)
+    except ImportError:
+        # readline (or pyreadline on Windows) is not available
+        pass
+
+
+
+
 #_python()
 # https://stackoverflow.com/questions/5597836/embed-create-an-interactive-python-shell-inside-a-python-program
 def _python():
-	variables = globals().copy()
-	variables.update(locals())
-	shell = code.InteractiveConsole(variables)
-	shell.interact()
+    _enable_readline()
+    variables = globals().copy()
+    variables.update(locals())
+    shell = code.InteractiveConsole(variables)
+    # ATTRIBUTION-AI: ChatGPT 4.1  2025-04-19
+    if os.name == 'nt':  # True on Windows
+        print(" Press Ctrl+D twice (or Ctrl+Z then Enter) to exit this Python shell.")
+    if os.name == 'posix':
+        print(" Press Ctrl+D twice (or Ctrl+Z then Enter) to exit this Python shell.")
+    # ATTRIBUTION: NOT AI !
+    shell.interact()
 
 
 
@@ -16692,33 +19691,117 @@ import os
 import socket
 import string
 import re
-#if sys.hexversion < 0x03060000:
-#	exit(1)
-# https://www.codementor.io/@arpitbhayani/personalize-your-python-prompt-13ts4kw6za
-# https://stackoverflow.com/questions/4271740/how-can-i-use-python-to-get-the-system-hostname
-# https://bugs.python.org/issue20359
-#os.environ['PWD']
-#os.path.expanduser(os.getcwd())
-#\033[0;35;47mpython-%d\033[0m
-#return "\033[92mIn [%d]:\033[0m " % (self.line)
-#return ">>> "
-#return "\033[1;94m|\033[91m#:\033[1;93m%s\033[1;92m@%s\033[1;94m)-%s(\033[1;95m\033[0;35;47mpython-%s\033[0m\033[1;94m)\033[1;96m|\n\033[1;94m|\033[1;97m[%s]\n\033[1;94m|\033[1;96m%d\033[1;94m) \033[1;96m>\033[0m " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion), re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
-#return "\033[1;94m|\033[91m#:\033[1;93m%s\033[1;92m@%s\033[1;94m)-%s(\033[1;95m\033[0;35;47mpython-%s\033[0m\033[1;94m)\033[1;96m|\n\033[1;94m|\033[1;97m[%s]\n\033[1;94m|%d\033[1;94m) \033[1;96m>\033[0m " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion), re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
-#os.environ['USER']
-#os.getenv('USER','root')
-class ubPythonPS1(object):
-	def __init__(self):
-		self.line = 0
 
-	def __str__(self):
-		self.line += 1
-		if self.line == 1:
-			return "\x01\033[1;94m\x02|\x01\033[91m\x02#:\x01\033[1;93m\x02%s\x01\033[1;92m\x02@%s\x01\033[1;94m\x02)-%s(\x01\033[1;95m\x02\x01\033[0;35;47m\x02python-%s\x01\033[0m\x02\x01\033[1;94m\x02)\x01\033[1;96m\x02|\n\x01\033[1;94m\x02|\x01\033[1;97m\x02[%s]\n\x01\033[1;94m\x02|\x01\033[1;96m\x02%d\x01\033[1;94m\x02) \x01\033[1;96m\x02>\x01\033[0m\x02 " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion), re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
-		else:
-			return "\x01\033[1;94m\x02|\x01\033[91m\x02#:\x01\033[1;93m\x02%s\x01\033[1;92m\x02@%s\x01\033[1;94m\x02)-%s(\x01\033[1;95m\x02\x01\033[0;35;47m\x02python-%s\x01\033[0m\x02\x01\033[1;94m\x02)\x01\033[1;96m\x02|\n\x01\033[1;94m\x02|\x01\033[1;97m\x02[%s]\n\x01\033[1;94m\x02|%d\x01\033[1;94m\x02) \x01\033[1;96m\x02>\x01\033[0m\x02 " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion), re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
+# ATTRIBUTION-AI: OpRt_.nvidia/llama-3.1-nemotron-ultra-253b-v1:free  2025-04-18  (partially)
+# Determine if running on Windows
+is_windows = os.name == 'nt'
 
-sys.ps1 = ubPythonPS1()
-sys.ps2 = "\x01\033[0;96m\x02|...\x01\033[0m\x02 "
+# ATTRIBUTION-AI: OpRt_.nvidia/llama-3.1-nemotron-ultra-253b-v1:free  2025-04-18  (partially)
+# Attempt to import colorama if on Windows
+use_colorama = False
+if is_windows:
+    try:
+        from colorama import init, Fore, Back, Style
+        init(autoreset=True)
+        use_colorama = True
+    except ImportError:
+        pass  # Silently proceed without colorama if import fails
+
+# Color definitions (use ANSI if not on Windows or colorama is not used)
+if use_colorama:
+    # ATTRIBUTION-AI: OpRt_.nvidia/llama-3.1-nemotron-ultra-253b-v1:free  2025-04-18  (partially)  ( also the preceeding line  if use_colorama:  )
+    class ubPythonPS1(object):
+        def __init__(self):
+            self.line = 0
+
+        def __str__(self):
+            self.line += 1
+            user = os.getenv('USER', 'root')
+            hostname = socket.gethostname()
+            cloud_net_name = os.environ.get('prompt_cloudNetName', '')
+            #py_version = f"v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+            ## ATTRIBUTION-AI: OpRt_.nvidia/llama-3.1-nemotron-ultra-253b-v1:free  2025-04-19
+            #py_version = f"v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}" if not os.getenv('VIRTUAL_ENV_PROMPT') else os.getenv('VIRTUAL_ENV_PROMPT', '')
+            # ATTRIBUTION-AI: ChatGPT o3  2025-04-19
+            py_version = os.getenv("VIRTUAL_ENV_PROMPT") or f"Python-v{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+            cwd = os.path.expanduser(os.getcwd())
+
+            home_dir = os.environ.get('HOME', os.environ.get('USERPROFILE', ''))
+            if home_dir:
+                cwd = re.sub(f'^{re.escape(home_dir)}', '~', cwd)
+
+            # Color definitions (matched to ANSI colors)
+            blue = Fore.BLUE
+            red = Fore.RED
+            green = Fore.GREEN  # Hostname color
+            yellow = Fore.YELLOW
+            magenta = Fore.MAGENTA  # Python version color
+            cyan = Fore.CYAN
+            white = Fore.WHITE
+            reset = Style.RESET_ALL
+            bg_white = Back.WHITE
+
+            if self.line == 1:
+                prompt = (
+                    f"{blue}|{red}#{red}:{yellow}{user}{green}@{green}{hostname}{blue})-{cloud_net_name}({magenta}{bg_white}{py_version}{reset}{blue}){cyan}|\n"
+                    #f"{blue}|{white}[{cwd}]\n"
+                    f"{white}{cwd}\n"
+                    f"{blue}|{cyan}{self.line}{blue}) {cyan}> {reset}"
+                )
+            else:
+                prompt = (
+                    f"{blue}|{red}#{red}:{yellow}{user}{green}@{green}{hostname}{blue})-{cloud_net_name}({magenta}{bg_white}{py_version}{reset}{blue}){cyan}|\n"
+                    #f"{blue}|{white}[{cwd}]\n"
+                    f"{white}{cwd}\n"
+                    f"{blue}|{blue}{self.line}{blue}) {cyan}> {reset}"
+                )
+            return prompt
+
+    sys.ps1 = ubPythonPS1()
+    sys.ps2 = f"{Fore.CYAN}|...{Style.RESET_ALL} "
+else:
+    # ATTRIBUTION: NOT AI !
+    #if sys.hexversion < 0x03060000:
+    #	exit(1)
+    # https://www.codementor.io/@arpitbhayani/personalize-your-python-prompt-13ts4kw6za
+    # https://stackoverflow.com/questions/4271740/how-can-i-use-python-to-get-the-system-hostname
+    # https://bugs.python.org/issue20359
+    #os.environ['PWD']
+    #os.path.expanduser(os.getcwd())
+    #\033[0;35;47mpython-%d\033[0m
+    #return "\033[92mIn [%d]:\033[0m " % (self.line)
+    #return ">>> "
+    #return "\033[1;94m|\033[91m#:\033[1;93m%s\033[1;92m@%s\033[1;94m)-%s(\033[1;95m\033[0;35;47mpython-%s\033[0m\033[1;94m)\033[1;96m|\n\033[1;94m|\033[1;97m[%s]\n\033[1;94m|\033[1;96m%d\033[1;94m) \033[1;96m>\033[0m " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion), re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
+    #return "\033[1;94m|\033[91m#:\033[1;93m%s\033[1;92m@%s\033[1;94m)-%s(\033[1;95m\033[0;35;47mpython-%s\033[0m\033[1;94m)\033[1;96m|\n\033[1;94m|\033[1;97m[%s]\n\033[1;94m|%d\033[1;94m) \033[1;96m>\033[0m " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion), re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
+    #os.environ['USER']
+    #os.getenv('USER','root')
+    class ubPythonPS1(object):
+        def __init__(self):
+            self.line = 0
+
+        def __str__(self):
+            self.line += 1
+            if self.line == 1:
+                #return "\x01\033[1;94m\x02|\x01\033[91m\x02#:\x01\033[1;93m\x02%s\x01\033[1;92m\x02@%s\x01\033[1;94m\x02)-%s(\x01\033[1;95m\x02\x01\033[0;35;47m\x02python-%s\x01\033[0m\x02\x01\033[1;94m\x02)\x01\033[1;96m\x02|\n\x01\033[1;94m\x02|\x01\033[1;97m\x02[%s]\n\x01\033[1;94m\x02|\x01\033[1;96m\x02%d\x01\033[1;94m\x02) \x01\033[1;96m\x02>\x01\033[0m\x02 " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion), re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
+                #return "\x01\033[1;94m\x02|\x01\033[91m\x02#:\x01\033[1;93m\x02%s\x01\033[1;92m\x02@%s\x01\033[1;94m\x02)-%s(\x01\033[1;95m\x02\x01\033[0;35;47m\x02python-%s\x01\033[0m\x02\x01\033[1;94m\x02)\x01\033[1;96m\x02|\n\x01\033[1;97m\x02%s\n\x01\033[1;94m\x02|\x01\033[1;96m\x02%d\x01\033[1;94m\x02) \x01\033[1;96m\x02>\x01\033[0m\x02 " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion), re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
+                # ATTRIBUTION-AI: OpRt_.nvidia/llama-3.1-nemotron-ultra-253b-v1:free  2025-04-19
+                return "\x01\033[1;94m\x02|\x01\033[91m\x02#:\x01\033[1;93m\x02%s\x01\033[1;92m\x02@%s\x01\033[1;94m\x02)-%s(\x01\033[1;95m\x02\x01\033[0;35;47m\x02python-%s\x01\033[0m\x02\x01\033[1;94m\x02)\x01\033[1;96m\x02|\n\x01\033[1;97m\x02%s\n\x01\033[1;94m\x02|\x01\033[1;96m\x02%d\x01\033[1;94m\x02) \x01\033[1;96m\x02>\x01\033[0m\x02 " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion) if 'VIRTUAL_ENV_PROMPT' not in os.environ or not os.environ['VIRTUAL_ENV_PROMPT'] else os.environ['VIRTUAL_ENV_PROMPT'], re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
+            else:
+                #return "\x01\033[1;94m\x02|\x01\033[91m\x02#:\x01\033[1;93m\x02%s\x01\033[1;92m\x02@%s\x01\033[1;94m\x02)-%s(\x01\033[1;95m\x02\x01\033[0;35;47m\x02python-%s\x01\033[0m\x02\x01\033[1;94m\x02)\x01\033[1;96m\x02|\n\x01\033[1;94m\x02|\x01\033[1;97m\x02[%s]\n\x01\033[1;94m\x02|%d\x01\033[1;94m\x02) \x01\033[1;96m\x02>\x01\033[0m\x02 " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion), re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
+                #return "\x01\033[1;94m\x02|\x01\033[91m\x02#:\x01\033[1;93m\x02%s\x01\033[1;92m\x02@%s\x01\033[1;94m\x02)-%s(\x01\033[1;95m\x02\x01\033[0;35;47m\x02python-%s\x01\033[0m\x02\x01\033[1;94m\x02)\x01\033[1;96m\x02|\n\x01\033[1;97m\x02%s\n\x01\033[1;94m\x02|%d\x01\033[1;94m\x02) \x01\033[1;96m\x02>\x01\033[0m\x02 " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion), re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
+                # ATTRIBUTION-AI: OpRt_.nvidia/llama-3.1-nemotron-ultra-253b-v1:free  2025-04-19
+                return "\x01\033[1;94m\x02|\x01\033[91m\x02#:\x01\033[1;93m\x02%s\x01\033[1;92m\x02@%s\x01\033[1;94m\x02)-%s(\x01\033[1;95m\x02\x01\033[0;35;47m\x02python-%s\x01\033[0m\x02\x01\033[1;94m\x02)\x01\033[1;96m\x02|\n\x01\033[1;97m\x02%s\n\x01\033[1;94m\x02|%d\x01\033[1;94m\x02) \x01\033[1;96m\x02>\x01\033[0m\x02 " % (os.getenv('USER','root'), socket.gethostname(), os.environ.get('prompt_cloudNetName', ''), hex(sys.hexversion) if 'VIRTUAL_ENV_PROMPT' not in os.environ or not os.environ['VIRTUAL_ENV_PROMPT'] else os.environ['VIRTUAL_ENV_PROMPT'], re.sub('^%s' % os.environ['HOME'], '~', os.path.expanduser(os.getcwd()) ), self.line)
+
+    sys.ps1 = ubPythonPS1()
+    sys.ps2 = "\x01\033[0;96m\x02|...\x01\033[0m\x02 "
+
+
+# ATTRIBUTION-AI: OpRt_.nvidia/llama-3.1-nemotron-ultra-253b-v1:free  2025-04-18 (only the next line  if is_windows and not use_colorama:  )
+if is_windows and not use_colorama:
+    # ATTRIBUTION: NOT AI !
+    # https://www.codementor.io/@arpitbhayani/personalize-your-python-prompt-13ts4kw6za
+    sys.ps1 = '>>> '
+    sys.ps2 = '... '
 
 #_python()
 
@@ -16951,6 +20034,8 @@ then
 		stty echo --file=/dev/tty > /dev/null 2>&1
 		
 		#[[ "$ubFoundEchoStatus" != "" ]] && stty --file=/dev/tty "$ubFoundEchoStatus" 2> /dev/null
+
+		return 0
 	}
 	_stop() {
 		_stop_stty_echo
@@ -16992,6 +20077,12 @@ fi
 # DANGER: Implemented to prevent 'compile.sh' from attempting to run functions from 'ops.sh'. No other valid use currently known or anticipated!
 if [[ "$ub_ops_disable" != 'true' ]]
 then
+	# WARNING: CAUTION: Use sparingly and carefully . Allows a user to globally override functions for all 'ubiquitous_bash' scripts, projects, etc.
+	if [[ -e "$HOME"/_bashrc ]]
+	then
+		. "$HOME"/_bashrc
+	fi
+	
 	#Override functions with external definitions from a separate file if available.
 	#if [[ -e "./ops" ]]
 	#then
@@ -17105,12 +20196,33 @@ _wrap() {
 
 #Wrapper function to launch arbitrary commands within the ubiquitous_bash environment, including its PATH with scriptBin.
 _bin() {
+	# Less esoteric than calling '_bash _bash', but calling '_bin _bin' is still not useful, and filtered out for Python scripts which may call either 'ubiquitous_bash.sh' or '_bash.bat' interchangeably.
+	#  CAUTION: Shifting redundant '_bash' parameters is necessary for some Python scripts.
+	if [[ "$1" == ${FUNCNAME[0]} ]] && [[ "$2" == ${FUNCNAME[0]} ]]
+	then
+		shift
+		shift
+	else
+		[[ "$1" == ${FUNCNAME[0]} ]] && shift
+	fi
+
 	_safe_declare_uid
 	
 	"$@"
 }
 #Mostly intended to launch bash prompt for MSW/Cygwin users.
 _bash() {
+	# CAUTION: NEVER call _bash _bash , etc . This is different from calling '_bash "$scriptAbsoluteLocation" _bash', or '_bash -c bash -i' (not that those are known workable or useful either), cannot possibly provide any useful functionality (since 'bash' called by '_bash' is in the same environment), will only cause issues for no benefit, so don't.
+	# ATTENTION: In practice, this can happen incidentally, due to calling '_bash.bat' instead of 'ubiquitous_bash.sh' to call '_bash' function, since MSW would not be able to run 'ubiquitous_bash.sh' without an anchor batch script properly calling Cygwin bash.exe . Python scripts which may call either 'ubiquitous_bash.sh' or '_bash.bat' interchangeably benefit from this, because the '_bash' parameter does not need to change depending on Native/MSW or UNIX/Linux. Since there is no useful purpose to calling '_bash _bash', etc, simply always dismissing the redundant '_bash' parameter is reasonable.
+	#  CAUTION: Shifting redundant '_bash' parameters is necessary for some Python scripts.
+	if [[ "$1" == "_bash" ]] && [[ "$2" == "_bash" ]]
+	then
+		shift
+		shift
+	else
+		[[ "$1" == "_bash" ]] && shift
+	fi
+
 	_safe_declare_uid
 	
 	local currentIsCygwin
@@ -17125,6 +20237,22 @@ _bash() {
 	[[ "$ub_scope_name" != "" ]] && _scopePrompt
 	
 	_safe_declare_uid
+
+
+	## CAUTION: Usually STUPID AND DANGEROUS . No production use. Exclusively for 'ubiquitous_bash' itself development.
+	## Proper use of embedded scripts, '--embed', etc, is provided by the '_scope' functions, etc, intended for such purposes in almost all cases.
+	##
+	## WARNING: May be untested. May break 'python', 'bash', 'octave', etc. May break any '.bashrc', '.ubcorerc', python hooks, other hooks, etc. May break '_setupUbiquitous'.
+	## Bad idea. Very specialized. Broken inheritance.
+	##
+	## No known use.
+	## Functions, etc, are NOT inherited by bash terminal from script.
+	##
+	#if [[ "$1" == "--norc" ]] && [[ "$2" == "-i" ]] && [[ "$scriptAbsoluteLocation" == *"ubcore.sh" ]]
+	#then
+		#bash "$@"
+		#return
+	#fi
 	
 	
 	[[ "$1" == '-i' ]] && shift
@@ -17241,8 +20369,42 @@ then
 	then
 		if [[ "$scriptLinkCommand" == '_'* ]]
 		then
+			if [[ "$ubDEBUG" == "true" ]]
+			then
+				# ATTRIBUTION-AI: ChatGPT o3  2025-06-06
+				exec 3>&2
+				#export BASH_XTRACEFD=3
+				set   -o functrace
+				set   -o errtrace
+				# May break _test_pipefail_sequence .
+				#export SHELLOPTS
+				trap '
+  set -E +x
+  call_line=${BASH_LINENO[0]}
+  call_file=${BASH_SOURCE[1]}
+  [[ $call_file == "$PWD/"* ]] && call_file=${call_file#"$PWD/"}
+  func_name=${FUNCNAME[0]:-MAIN}
+
+  if [[ "$call_line" != "0" ]] && [[ func_name != "MAIN()" ]]
+  then
+	# extract the source line and strip leading blanks
+	call_text=$(sed -n "${call_line}{s/^[[:space:]]*//;p}" "$call_file")
+
+	printf "<<<STEPOUT<<< RETURN %s() <- %s:%d : %s  status=%d\n" \
+			"$func_name"        "$call_file" \
+			"$call_line"        "$call_text" \
+			"$?" >&3
+  fi
+  set -E -x
+' RETURN
+				set -E -x
+				#set -x
+			fi
+			
 			"$scriptLinkCommand" "$@"
 			internalFunctionExitStatus="$?"
+
+			if [[ "$ubDEBUG" == "true" ]] ; then set +x ; set +E ; set +o functrace ; set +o errtrace ; export -n SHELLOPTS 2>/dev/null || true ; trap '' RETURN ; trap - RETURN ; fi
 			
 			#Exit if not imported into existing shell, or bypass requested, else fall through to subsequent return.
 			if [[ "$ub_import" != "true" ]] || [[ "$ub_import_param" == "--bypass" ]] || [[ "$ub_import_param" == "--compressed" ]]
@@ -17262,8 +20424,41 @@ then
 	# && [[ "$1" != "_test" ]] && [[ "$1" != "_setup" ]] && [[ "$1" != "_build" ]] && [[ "$1" != "_vector" ]] && [[ "$1" != "_setupCommand" ]] && [[ "$1" != "_setupCommand_meta" ]] && [[ "$1" != "_setupCommands" ]] && [[ "$1" != "_find_setupCommands" ]] && [[ "$1" != "_setup_anchor" ]] && [[ "$1" != "_anchor" ]] && [[ "$1" != "_package" ]] && [[ "$1" != *"_prog" ]] && [[ "$1" != "_main" ]] && [[ "$1" != "_collect" ]] && [[ "$1" != "_enter" ]] && [[ "$1" != "_launch" ]] && [[ "$1" != "_default" ]] && [[ "$1" != "_experiment" ]]
 	if [[ "$1" == '_'* ]] && type "$1" > /dev/null 2>&1 && [[ "$1" != "_test" ]] && [[ "$1" != "_setup" ]] && [[ "$1" != "_build" ]] && [[ "$1" != "_vector" ]] && [[ "$1" != "_setupCommand" ]] && [[ "$1" != "_setupCommand_meta" ]] && [[ "$1" != "_setupCommands" ]] && [[ "$1" != "_find_setupCommands" ]] && [[ "$1" != "_setup_anchor" ]] && [[ "$1" != "_anchor" ]] && [[ "$1" != "_package" ]] && [[ "$1" != *"_prog" ]] && [[ "$1" != "_main" ]] && [[ "$1" != "_collect" ]] && [[ "$1" != "_enter" ]] && [[ "$1" != "_launch" ]] && [[ "$1" != "_default" ]] && [[ "$1" != "_experiment" ]]
 	then
+		if [[ "$ubDEBUG" == "true" ]]
+		then
+			# ATTRIBUTION-AI: ChatGPT o3  2025-06-06
+			exec 3>&2
+			#export BASH_XTRACEFD=3
+			set   -o functrace
+			set   -o errtrace
+			# May break _test_pipefail_sequence .
+			#export SHELLOPTS
+			trap '
+  set -E +x
+  call_line=${BASH_LINENO[0]}
+  call_file=${BASH_SOURCE[1]}
+  [[ $call_file == "$PWD/"* ]] && call_file=${call_file#"$PWD/"}
+  func_name=${FUNCNAME[0]:-MAIN}
+
+  if [[ "$call_line" != "0" ]] && [[ func_name != "MAIN()" ]]
+  then
+    # extract the source line and strip leading blanks
+    call_text=$(sed -n "${call_line}{s/^[[:space:]]*//;p}" "$call_file")
+
+    printf "<<<STEPOUT<<< RETURN %s() <- %s:%d : %s  status=%d\n" \
+            "$func_name"        "$call_file" \
+            "$call_line"        "$call_text" \
+            "$?" >&3
+  fi
+' RETURN
+			set -E -x
+			#set -x
+		fi
+		
 		"$@"
 		internalFunctionExitStatus="$?"
+		
+		if [[ "$ubDEBUG" == "true" ]] ; then set +x ; set +E ; set +o functrace ; set +o errtrace ; export -n SHELLOPTS 2>/dev/null || true ; trap '' RETURN ; trap - RETURN ; fi
 		
 		#Exit if not imported into existing shell, or bypass requested, else fall through to subsequent return.
 		if [[ "$ub_import" != "true" ]] || [[ "$ub_import_param" == "--bypass" ]] || [[ "$ub_import_param" == "--compressed" ]]

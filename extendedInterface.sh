@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+if [[ "$ubDEBUG" == "true" ]] ; then set +x ; set +E ; set +o functrace ; set +o errtrace ; export -n SHELLOPTS 2>/dev/null || true ; trap '' RETURN ; trap - RETURN ; fi
+
 [[ "$PATH" != *"/usr/local/bin"* ]] && [[ -e "/usr/local/bin" ]] && export PATH=/usr/local/bin:"$PATH"
 [[ "$PATH" != *"/usr/bin"* ]] && [[ -e "/usr/bin" ]] && export PATH=/usr/bin:"$PATH"
 [[ "$PATH" != *"/bin:"* ]] && [[ -e "/bin" ]] && export PATH=/bin:"$PATH"
@@ -856,20 +858,21 @@ _cygwin_translation_rootFileParameter() {
 
 #Critical prerequsites.
 _getAbsolute_criticalDep() {
-	#  ! type realpath > /dev/null 2>&1 && return 1
-	! type readlink > /dev/null 2>&1 && return 1
-	! type dirname > /dev/null 2>&1 && return 1
-	! type basename > /dev/null 2>&1 && return 1
+	#  ! type realpath > /dev/null 2>&1 && exit 1
+	! type readlink > /dev/null 2>&1 && exit 1
+	! type dirname > /dev/null 2>&1 && exit 1
+	! type basename > /dev/null 2>&1 && exit 1
 	
 	#Known to succeed under BusyBox (OpenWRT), NetBSD, and common Linux variants. No known failure modes. Extra precaution.
-	! readlink -f . > /dev/null 2>&1 && return 1
+	! readlink -f . > /dev/null 2>&1 && exit 1
 	
-	! echo 'qwerty123.git' | grep '\.git$' > /dev/null 2>&1 && return 1
-	echo 'qwerty1234git' | grep '\.git$' > /dev/null 2>&1 && return 1
+	! echo 'qwerty123.git' | grep '\.git$' > /dev/null 2>&1 && exit 1
+	echo 'qwerty1234git' | grep '\.git$' > /dev/null 2>&1 && exit 1
 	
 	return 0
 }
-! _getAbsolute_criticalDep && exit 1
+#! _getAbsolute_criticalDep && exit 1
+_getAbsolute_criticalDep
 
 #Retrieves absolute path of current script, while maintaining symlinks, even when "./" would translate with "readlink -f" into something disregarding symlinked components in $PWD.
 #However, will dereference symlinks IF the script location itself is a symlink. This is to allow symlinking to scripts to function normally.
@@ -1322,6 +1325,48 @@ _command_safeBackup() {
 
 
 
+# Suggested for files used as Inter-Process Communication (IPC) or similar indicators (eg. temporary download files recently in progress).
+# Works around files that may not be deleted by 'rm -f' when expected (ie. due to Cygwin/MSW file locking).
+# ATTRIBUTION-AI: OpRt_.deepseek/deepseek-r1-distill-llama-70b  2025-03-27  (partial)
+_destroy_lock() {
+    [[ "$1" == "" ]] && return 0
+
+    # Fraction of   2GB part file  divided by  1MB/s optical-disc write speed   .
+    local currentLockWait="1250"
+
+    local current_anyFilesExists
+    local currentFile
+    
+    
+    local currentIteration=0
+    for ((currentIteration=0; currentIteration<"$currentLockWait"; currentIteration++))
+    do
+        rm -f "$@" > /dev/null 2>&1
+
+        current_anyFilesExists="false"
+        for currentFile in "$@"
+        do
+            [[ -e "$currentFile" ]] && current_anyFilesExists="true"
+        done
+
+        if [[ "$current_anyFilesExists" == "false" ]]
+        then
+            return 0
+            break
+        fi
+
+        # DANGER: Does NOT use _safeEcho . Do NOT use with external input!
+        ( echo "STACK_FAIL STACK_FAIL STACK_FAIL: software: wait: rm: exists: file: ""$@" >&2 ) > /dev/null
+        sleep 1
+    done
+
+    [[ "$currentIteration" != "0" ]] && sleep 7
+    return 1
+}
+
+
+
+
 # Equivalent to 'mv -n' with an error exit status if file cannot be overwritten.
 # https://unix.stackexchange.com/questions/248544/mv-move-file-only-if-destination-does-not-exist
 _moveconfirm() {
@@ -1526,11 +1571,15 @@ _permissions_ubiquitous_repo() {
 	return 0
 }
 
-_test_permissions_ubiquitous-cygwin() {
+_test_permissions_ubiquitous-exception() {
+	_if_cygwin && echo 'warn: accepted: cygwin: permissions' && return 0
+
+	# Possible shared filesystem mount without correct permissions from the host .
+	[[ -e /.dockerenv ]] && echo 'warn: accepted: docker: permissions' && return 0
+
+
 	! _if_cygwin && _stop 1
 	#  ! _if_cygwin && _stop "$1"
-	
-	_if_cygwin && echo 'warn: accepted: cygwin: permissions' && return 0
 }
 
 #Checks whether currently set "$scriptBin" and similar locations are actually safe.
@@ -1538,10 +1587,10 @@ _test_permissions_ubiquitous-cygwin() {
 _test_permissions_ubiquitous() {
 	[[ ! -e "$scriptAbsoluteFolder" ]] && _stop 1
 	
-	! _permissions_directory_checkForPath "$scriptAbsoluteFolder" && _test_permissions_ubiquitous-cygwin 1
+	! _permissions_directory_checkForPath "$scriptAbsoluteFolder" && _test_permissions_ubiquitous-exception 1
 	
-	[[ -e "$scriptBin" ]] && ! _permissions_directory_checkForPath "$scriptBin" && _test_permissions_ubiquitous-cygwin 1
-	[[ -e "$scriptBundle" ]] && ! _permissions_directory_checkForPath "$scriptBundle" && _test_permissions_ubiquitous-cygwin 1
+	[[ -e "$scriptBin" ]] && ! _permissions_directory_checkForPath "$scriptBin" && _test_permissions_ubiquitous-exception 1
+	[[ -e "$scriptBundle" ]] && ! _permissions_directory_checkForPath "$scriptBundle" && _test_permissions_ubiquitous-exception 1
 	
 	return 0
 }
@@ -1750,10 +1799,12 @@ _visualPrompt_promptCommand() {
 	if [[ "$PS1_lineNumber" == '1' ]]
 	then
 		# https://unix.stackexchange.com/questions/266921/is-it-possible-to-use-ansi-color-escape-codes-in-bash-here-documents
-		PS1_lineNumberText=$(echo -e -n '\E[1;36m'1)
 		#PS1_lineNumberText=$(echo -e -n '\E[1;36m'1)
-		#PS1_lineNumberText=$(echo -e -n '\[\033[01;36m\]'1)
-		#PS1_lineNumberText=$(echo -e -n '\033[01;36m'1)
+		##PS1_lineNumberText=$(echo -e -n '\E[1;36m'1)
+		##PS1_lineNumberText=$(echo -e -n '\[\033[01;36m\]'1)
+		##PS1_lineNumberText=$(echo -e -n '\033[01;36m'1)
+
+		PS1_lineNumberText=$(echo -e -n '\E[1;36;109m'1)
 	fi
 }
 
@@ -1762,10 +1813,32 @@ _visualPrompt() {
 	currentHostname="$HOSTNAME"
 	
 	[[ -e /etc/hostname ]] && export currentHostname=$(cat /etc/hostname)
+
+	local currentHostname_concatenate
+
+	[[ "$RUNPOD_POD_ID" != "" ]] && currentHostname_concatenate='runpod--'
+
+	if [[ -e /info_factoryName.txt ]]
+	then
+		currentHostname_concatenate=$(cat /info_factoryName.txt)
+		currentHostname_concatenate="$currentHostname_concatenate"'--'
+	fi
+
+	[[ "$RUNPOD_POD_ID" != "" ]] && currentHostname_concatenate="$currentHostname_concatenate""$RUNPOD_POD_ID"'--'
+
+	[[ "$RUNPOD_PUBLIC_IP" != "" ]] && currentHostname_concatenate="$currentHostname_concatenate""$RUNPOD_PUBLIC_IP"'--'
+	#if [[ "$RUNPOD_PUBLIC_IP" != "" ]]
+	#then
+		#export currentHostname_concatenate="$currentHostname_concatenate"$(wget -qO- https://icanhazip.com/ | tr -dc '0-9a-fA-F:.')'--'
+	#fi
+	
+	export currentHostname="$currentHostname_concatenate""$currentHostname"
+	
 	
 	
 	export currentChroot=
 	[[ "$chrootName" != "" ]] && export currentChroot="$chrootName"
+	#[[ "$VIRTUAL_ENV_PROMPT" != "" ]] && export currentChroot=python_"$VIRTUAL_ENV_PROMPT"
 	
 	
 	#+%H:%M:%S\ %Y-%m-%d\ Q%q
@@ -1795,28 +1868,125 @@ _visualPrompt() {
 	#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u\[\033[01;32m\]@\h\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$PS1_lineNumberText\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
 	
 	
+	export prompt_specialInfo=""
+
+	# ATTRIBUTION-AI: ChatGPT o3 (high)  2025-05-06
+	#We want to see 'RTX 2000 Ada 16GB' and 'RTX 4090 16GB' , not just 'RTX 2000 16GB' . Please revise.
+	#
+	# RTX 2000 Ada 16GB
+	# RTX 2000 16GB
+	#
+	_filter_nvidia_smi_gpuInfo() {
+		# write the capacities any way you like:
+		#             ↓ commas, spaces or a mixture ↓
+		local sizes='2,3,4,6,8,10,11,12,16,20,24,32,40,48,56,64,80,94,96,128,141,180,192,256,320,384,512,640,768,896,1024,1280,1536,1792,2048'
+
+		awk -F', *' -v sizes="$sizes" '
+			BEGIN {
+				# accept both commas and blanks as separators
+				n = split(sizes, S, /[ ,]+/)
+			}
+			{
+				# ----- tidy up the model name -----
+				name = $1
+				gsub(/NVIDIA |GeForce |Laptop GPU|[[:space:]]+Generation/, "", name)
+				gsub(/  +/, " ", name)
+				sub(/^ +| +$/, "", name)
+
+				# ----- MiB -> decimal GB -----
+				mib   = $2 + 0
+				bytes = mib * 1048576
+				decGB = bytes / 1e9     # decimal gigabytes
+
+				# pick the nearest marketing size
+				best = S[1]
+				diff = (decGB > S[1] ? decGB - S[1] : S[1] - decGB)
+
+				for (i = 2; i <= n; i++) {
+					d = (decGB > S[i] ? decGB - S[i] : S[i] - decGB)
+					if (d < diff) { diff = d; best = S[i] }
+				}
+
+				printf "%s %dGB\n", name, best
+			}'
+	}
+
+
+	if type nvidia-smi > /dev/null 2>&1
+	then
+		export prompt_specialInfo=$(
+			nvidia-smi --query-gpu=name,memory.total --format=csv,noheader,nounits | _filter_nvidia_smi_gpuInfo
+		)
+	fi
+
+	if _if_wsl && [[ -e "/mnt/c/Windows/System32/cmd.exe" ]] && /mnt/c/Windows/System32/cmd.exe /C where nvidia-smi > /dev/null 2>&1
+	then
+		export prompt_specialInfo=$(
+			( cd /mnt/c ; /mnt/c/Windows/System32/cmd.exe /C nvidia-smi --query-gpu=name,memory.total --format=csv,noheader,nounits 2>/dev/null | _filter_nvidia_smi_gpuInfo )
+		)
+	fi
+
 	if [[ "$SHELL" == *"/nix/store/"*"/bin/bash"* ]]
 	then
-		export prompt_nixShell="nixShell"
-	else
-		export prompt_nixShell=""
+		export prompt_specialInfo="nixShell"
 	fi
 	
 	#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${debian_chroot:+($debian_chroot)}\[\033[01;33m\]\u\[\033[01;32m\]@\h\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
 	
 	
 	
+	#if _if_cygwin
+	#then
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	#elif ( uname -a | grep -i 'microsoft' > /dev/null 2>&1 || uname -a | grep -i 'WSL2' > /dev/null 2>&1 )
+	#then
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"-wsl2'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	#else
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '	
+	#fi
+	
+
+
+	# NOTICE: ATTENTION: Bright colors. More compatible with older terminals (in theory).
+	#
+	# https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+	# Slightly darker yellow will be more printable on white background (ie. Pandoc rendering from HTML from asciinema cat ).
+	#01;33m
+	#38;5;214m
+	#
+	#\[\033[01;33m\]
+	#'\[\e[01;33m\e[38;5;214m\]'
+	#'\[\033[01;33m\033[38;5;214m\]'
+	#if _if_cygwin
+	#then
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;214m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	#elif ( uname -a | grep -i 'microsoft' > /dev/null 2>&1 || uname -a | grep -i 'WSL2' > /dev/null 2>&1 )
+	#then
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;214m\]\u\[\033[01;32m\]@'"$currentHostname"-wsl2'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+	#else
+		#export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;214m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '	
+	#fi
+
+	# ATTRIBUTION-AI: ChatGPT o4-mini-high  2025-06-29 .
+	#echo -e "\033[01;40m\033[01;36m\033[01;34m|\033[01;31m0:(exampleChroot)\033[01;33m\033[38;5;214muser\033[01;32m@exampleHost\033[01;36m\033[01;34m)\033[01;36m\033[01;34m-cloudNet(\033[01;35mvenv\033[01;34m)\033[01;36m|\033[00mINFO\n\033[01;40m\033[01;36m\033[01;34m\033[37m/home/user\033[00m\n\033[01;36m\033[01;34m|1\033[01;34m \033[36m> \033[00m"
+
+
+
+	# NOTICE: ATTENTION: Color saturation reduced. Similar benefits, delineating separate information strings and command prompts between commands.
+	# Less distracting.
+	
 	if _if_cygwin
 	then
-		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|\[\033[01;31m\]\[\033[38;5;138m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;179m\]\u\[\033[01;32m\033[38;5;108m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\033[38;5;96m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]\[\033[37m\033[38;5;253m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]\[\033[38;5;109m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\033[38;5;103m\]) \[\033[36m\]\[\033[38;5;109m\]'""'>\[\033[00m\] '
 	elif ( uname -a | grep -i 'microsoft' > /dev/null 2>&1 || uname -a | grep -i 'WSL2' > /dev/null 2>&1 )
 	then
-		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"-wsl2'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]\[\033[37m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '
+		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|\[\033[01;31m\]\[\033[38;5;138m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;179m\]\u\[\033[01;32m\033[38;5;108m\]@'"$currentHostname"-wsl2'\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\033[38;5;96m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]\[\033[37m\033[38;5;253m\]\w\[\033[00m\]\n\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]\[\033[38;5;109m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\033[38;5;103m\]) \[\033[36m\]\[\033[38;5;109m\]'""'>\[\033[00m\] '
 	else
-		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[01;31m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\]\u\[\033[01;32m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[01;34m\])\[\033[01;36m\]\[\033[01;34m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\]$(date +%H:%M:%S\.%d)\[\033[01;34m\])\[\033[01;36m\]|\[\033[00m\]'"$prompt_nixShell"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[01;34m\]|\[\033[37m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[01;34m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\]) \[\033[36m\]'""'>\[\033[00m\] '	
+		export PS1='\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|\[\033[01;31m\]\[\033[38;5;138m\]${?}:${currentChroot:+($currentChroot)}\[\033[01;33m\033[38;5;179m\]\u\[\033[01;32m\033[38;5;108m\]@'"$currentHostname"'\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]-'"$prompt_cloudNetName"'(\[\033[01;35m\033[38;5;96m\]$(([[ "$VIRTUAL_ENV_PROMPT" != "" ]] && echo -n "$VIRTUAL_ENV_PROMPT") || date +%H:%M:%S\.%d)\[\033[01;34m\033[38;5;103m\])\[\033[01;36m\]\[\033[38;5;109m\]|\[\033[00m\]'"$prompt_specialInfo"'\n\[\033[01;40m\]\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|\[\033[37m\033[38;5;253m\][\w]\[\033[00m\]\n\[\033[01;36m\]\[\033[38;5;109m\]\[\033[01;34m\033[38;5;103m\]|$([[ "$PS1_lineNumber" == "1" ]] && echo -e -n '"'"'\[\033[01;36m\]\[\033[38;5;109m\]'"'"'$PS1_lineNumber || echo -e -n $PS1_lineNumber)\[\033[01;34m\033[38;5;103m\]) \[\033[36m\]\[\033[38;5;109m\]'""'>\[\033[00m\] '	
 	fi
+
 	
-	#export PS1="$prompt_nixShell""$PS1"
+	#export PS1="$prompt_specialInfo""$PS1"
 }
 
 
@@ -1943,7 +2113,7 @@ _request_visualPrompt() {
 #! _wget_githubRelease "owner/repo" "" "file.ext"
 
 
-#_wget_githubRelease_join "soaringDistributions/Llama-augment_bundle" "" "llama-3.1-8b-instruct-abliterated.Q4_K_M.gguf"
+#_wget_githubRelease_join "soaringDistributions/Llama-3-augment_bundle" "" "llama-3.1-8b-instruct-abliterated.Q4_K_M.gguf"
 
 
 
@@ -2133,6 +2303,7 @@ _curl_githubAPI_releases_page() {
 	local current_curl_args
 	current_curl_args=()
 	[[ "$GH_TOKEN" != "" ]] && current_curl_args+=( -H "Authorization: Bearer $GH_TOKEN" )
+	#current_curl_args+=( -H "Accept: application/octet-stream" )
 	current_curl_args+=( -S )
 	current_curl_args+=( -s )
 
@@ -2176,6 +2347,162 @@ _curl_githubAPI_releases_page() {
 
 	[[ "$currentPage" == "" ]] && return 1
 	return 0
+}
+# WARNING: No production use. May be untested.
+#  Rapidly skips part files which are not upstream, using only a single page from the GitHub API, saving time and API calls.
+# Not guaranteed reliable. Structure of this non-essential function is provider-specific, code is written ad-hoc.
+# Duplicates much code from other functions:
+#  '_wget_githubRelease_procedure-address-curl'
+#  '_wget_githubRelease_procedure-address_fromTag-curl'
+#  '_wget_githubRelease-address-backend-curl'
+#env maxCurrentPart=63 ./ubiquitous_bash.sh _curl_githubAPI_releases_join-skip soaringDistributions/ubDistBuild spring package_image.tar.flx
+#env maxCurrentPart=63 ./ubiquitous_bash.sh _curl_githubAPI_releases_join-skip soaringDistributions/ubDistBuild latest package_image.tar.flx
+_curl_githubAPI_releases_join-skip() {
+	# Similar retry logic for all similar functions: _wget_githubRelease-URL-curl, _wget_githubRelease-URL-gh .
+	( _messagePlain_nominal "$currentStream"'\/\/\/\/ init: _curl_githubAPI_releases_join-skip' >&2 ) > /dev/null
+	( _messagePlain_probe_safe _curl_githubAPI_releases_join-skip "$@" >&2 ) > /dev/null
+
+    # ATTENTION: WARNING: Unusually, api_address_type , is a monolithic variable NEVER exported . Keep local, and do NOT use for any other purpose.
+    [[ "$GH_TOKEN" != "" ]] && local api_address_type="api_url"
+	[[ "$GH_TOKEN" == "" ]] && local api_address_type="url"
+
+	local currentPartDownload
+	currentPartDownload=""
+
+	local currentExitStatus=1
+
+	local currentIteration=0
+
+	#[[ "$currentPartDownload" == "" ]] || 
+	while ( [[ "$currentExitStatus" != "0" ]] ) && [[ "$currentIteration" -lt "$githubRelease_retriesMax" ]]
+	do
+		currentPartDownload=""
+
+		if [[ "$currentIteration" != "0" ]]
+		then
+			( _messagePlain_warn 'warn: BAD: RETRY: _curl_githubAPI_releases_join-skip: _curl_githubAPI_releases_join_procedure-skip: currentIteration != 0' >&2 ) > /dev/null
+			sleep "$githubRelease_retriesWait"
+		fi
+
+		( _messagePlain_probe _curl_githubAPI_releases_join_procedure-skip >&2 ) > /dev/null
+		currentPartDownload=$(_curl_githubAPI_releases_join_procedure-skip "$@")
+		currentExitStatus="$?"
+
+		let currentIteration=currentIteration+1
+	done
+	
+	_safeEcho_newline "$currentPartDownload"
+
+	[[ "$currentIteration" -ge "$githubRelease_retriesMax" ]] && ( _messagePlain_bad 'bad: FAIL: _curl_githubAPI_releases_join-skip: maxRetries' >&2 ) > /dev/null && return 1
+
+	return 0
+}
+#env maxCurrentPart=63 ./ubiquitous_bash.sh _curl_githubAPI_releases_join_procedure-skip soaringDistributions/ubDistBuild spring package_image.tar.flx
+#env maxCurrentPart=63 ./ubiquitous_bash.sh _curl_githubAPI_releases_join_procedure-skip soaringDistributions/ubDistBuild latest package_image.tar.flx
+_curl_githubAPI_releases_join_procedure-skip() {
+	local currentAbsoluteRepo="$1"
+	local currentReleaseLabel="$2"
+	local currentFile="$3"
+
+	[[ "$currentAbsoluteRepo" == "" ]] && return 1
+	[[ "$currentReleaseLabel" == "" ]] && currentReleaseLabel="latest"
+	[[ "$currentFile" == "" ]] && return 1
+
+
+	local currentExitStatus_tmp=0
+	local currentExitStatus=0
+
+
+	local currentPart
+	local currentAddress
+
+
+	if [[ "$currentReleaseLabel" == "latest" ]]
+	then
+		local currentData
+		local currentData_page
+		
+		#(set -o pipefail ; _curl_githubAPI_releases_page "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile")
+		#return
+
+		currentData_page=$(set -o pipefail ; _curl_githubAPI_releases_page "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		currentExitStatus="$?"
+
+		currentData="$currentData_page"
+
+		[[ "$currentExitStatus" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: currentExitStatus' >&2 ) > /dev/null && return "$currentExitStatus"
+		
+		[[ "$currentData" == "" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: empty: currentData' >&2 ) > /dev/null && return 1
+
+		#( set -o pipefail ; _safeEcho_newline "$currentData" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile" | head -n 1 )
+		#currentExitStatus_tmp="$?"
+
+		# ###
+		for currentPart in $(seq -f "%02g" 0 "$maxCurrentPart" | sort -r)
+		do
+			currentAddress=$(set -o pipefail ; _safeEcho_newline "$currentData" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile".part"$currentPart" | head -n 1)
+			currentExitStatus_tmp="$?"
+
+			[[ "$currentExitStatus_tmp" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: pipefail: _jq_github_browser_download_address: currentExitStatus_tmp' >&2 ) > /dev/null && return "$currentExitStatus_tmp"
+
+			[[ "$currentAddress" != "" ]] && echo "$currentPart" && return 0
+		done
+
+		
+		# ### ATTENTION: No part files found is not 'skip' but FAIL .
+		[[ "$currentAddress" == "" ]] && ( _messagePlain_bad 'bad: FAIL: _curl_githubAPI_releases_join-skip: empty: _safeEcho_newline | _jq_github_browser_download_address' >&2 ) > /dev/null && return 1
+		
+		return 0
+	else
+		local currentData
+		currentData=""
+		
+		local currentData_page
+		currentData_page="doNotMatch"
+		
+		local currentIteration
+		currentIteration=1
+		
+		# ATTRIBUTION-AI: Many-Chat 2025-03-23
+		# Alternative detection of empty array, as suggested by AI LLM .
+		#[[ $(jq 'length' <<< "$currentData_page") -gt 0 ]]
+		while ( [[ "$currentData_page" != "" ]] && [[ $(_safeEcho_newline "$currentData_page" | tr -dc 'a-zA-Z\[\]' | sed '/^$/d') != $(echo 'WwoKXQo=' | base64 -d | tr -dc 'a-zA-Z\[\]') ]] ) && ( [[ "$currentIteration" -le "1" ]] || ( [[ "$GH_TOKEN" != "" ]] && [[ "$currentIteration" -le "3" ]] ) )
+		do
+			currentData_page=$(set -o pipefail ; _curl_githubAPI_releases_page "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" "$currentIteration")
+			currentExitStatus_tmp="$?"
+			[[ "$currentIteration" == "1" ]] && currentExitStatus="$currentExitStatus_tmp"
+			currentData="$currentData"'
+'"$currentData_page"
+
+            ( _messagePlain_probe "_wget_githubRelease_procedure-address-curl: ""$currentIteration" >&2 ) > /dev/null
+            #( _safeEcho_newline "$currentData" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile" | head -n 1 >&2 ) > /dev/null
+            [[ "$currentIteration" -ge 4 ]] && ( _safeEcho_newline "$currentData_page" >&2 ) > /dev/null
+
+			let currentIteration=currentIteration+1
+		done
+
+		#( set -o pipefail ; _safeEcho_newline "$currentData" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile" | head -n 1 )
+		#currentExitStatus_tmp="$?"
+
+		# ###
+		for currentPart in $(seq -f "%02g" 0 "$maxCurrentPart" | sort -r)
+		do
+			currentAddress=$( set -o pipefail ; _safeEcho_newline "$currentData" | _jq_github_browser_download_address "" "$currentReleaseLabel" "$currentFile".part"$currentPart" | head -n 1 )
+			currentExitStatus_tmp="$?"
+
+			[[ "$currentExitStatus" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: _curl_githubAPI_releases_page: currentExitStatus' >&2 ) > /dev/null && return "$currentExitStatus"
+			[[ "$currentExitStatus_tmp" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: pipefail: _jq_github_browser_download_address: currentExitStatus_tmp' >&2 ) > /dev/null && return "$currentExitStatus_tmp"
+			[[ "$currentData" == "" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease_procedure-address-curl: empty: currentData' >&2 ) > /dev/null && return 1
+
+			[[ "$currentAddress" != "" ]] && echo "$currentPart" && return 0
+		done
+
+		
+		# ### ATTENTION: No part files found is not 'skip' but FAIL .
+		[[ "$currentAddress" == "" ]] && ( _messagePlain_bad 'bad: FAIL: _curl_githubAPI_releases_join-skip: empty: _safeEcho_newline | _jq_github_browser_download_address' >&2 ) > /dev/null && return 1
+		
+        return 0
+	fi
 }
 _wget_githubRelease_procedure-address-curl() {
 	local currentAbsoluteRepo="$1"
@@ -2232,7 +2559,7 @@ _wget_githubRelease_procedure-address-curl() {
 		#[[ $(jq 'length' <<< "$currentData_page") -gt 0 ]]
 		while ( [[ "$currentData_page" != "" ]] && [[ $(_safeEcho_newline "$currentData_page" | tr -dc 'a-zA-Z\[\]' | sed '/^$/d') != $(echo 'WwoKXQo=' | base64 -d | tr -dc 'a-zA-Z\[\]') ]] ) && ( [[ "$currentIteration" -le "1" ]] || ( [[ "$GH_TOKEN" != "" ]] && [[ "$currentIteration" -le "3" ]] ) )
 		do
-			currentData_page=$(_curl_githubAPI_releases_page "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" "$currentIteration")
+			currentData_page=$(set -o pipefail ; _curl_githubAPI_releases_page "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" "$currentIteration")
 			currentExitStatus_tmp="$?"
 			[[ "$currentIteration" == "1" ]] && currentExitStatus="$currentExitStatus_tmp"
 			currentData="$currentData"'
@@ -2616,7 +2943,8 @@ _gh_download() {
 
 	[[ "$currentOutParameter" == "-O" ]] && [[ "$currentOutFile" == "" ]] && _messagePlain_bad 'bad: fail: unexpected: unspecified: currentOutFile' && return 1
 
-	[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 	# CAUTION: Assumed 'false' by 'rotten' !
 	# (ie. 'rotten' does NOT support Cygwin/MSW)
@@ -2690,6 +3018,7 @@ _gh_downloadURL() {
 	[[ "$currentOutParameter" == "-O" ]] && [[ "$currentOutFile" == "" ]] && _messagePlain_bad 'bad: fail: unexpected: unspecified: currentOutFile' && return 1
 
 	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile"
+	##[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 	local currentExitStatus=1
 	#currentExitStatus=1
@@ -2707,6 +3036,7 @@ _gh_downloadURL() {
 
 		# CAUTION: Do NOT translate file parameter (ie. for Cygwin/MSW) for an underlying backend function (ie. '_gh_download') - that will be done by underlying backend function if at all. Similarly, also do NOT state '--clobber' or similar parameters to backend function.
 		#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile"
+		##[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 		( _messagePlain_probe_safe _gh_download "$currentAbsoluteRepo" "$currentTagName" "$currentFile" -O "$currentOutFile" "$@" >&2 ) > /dev/null
 		_gh_download "$currentAbsoluteRepo" "$currentTagName" "$currentFile" -O "$currentOutFile" "$@"
 		currentExitStatus="$?"
@@ -2748,16 +3078,22 @@ _wget_githubRelease-stdout() {
 	then
 		currentExitStatus=$(cat "$currentAxelTmpFile".FAIL)
 		( [[ "$currentExitStatus" == "" ]] || [[ "$currentExitStatus" = "0" ]] || [[ "$currentExitStatus" = "0"* ]] ) && currentExitStatus=1
-		rm -f "$currentAxelTmpFile".PASS > /dev/null 2>&1
-		rm -f "$currentAxelTmpFile".FAIL > /dev/null 2>&1
-		rm -f "$currentAxelTmpFile" > /dev/null 2>&1
+		#rm -f "$currentAxelTmpFile".PASS > /dev/null 2>&1
+		_destroy_lock "$currentAxelTmpFile".PASS
+		#rm -f "$currentAxelTmpFile".FAIL > /dev/null 2>&1
+		_destroy_lock "$currentAxelTmpFile".FAIL
+		#rm -f "$currentAxelTmpFile" > /dev/null 2>&1
+		_destroy_lock "$currentAxelTmpFile"
 		return "$currentExitStatus"
 		#return 1
 	fi
 	[[ "$FORCE_DIRECT" != "true" ]] && cat "$currentAxelTmpFile"
-	rm -f "$currentAxelTmpFile" > /dev/null 2>&1
-	rm -f "$currentAxelTmpFile".PASS > /dev/null 2>&1
-	rm -f "$currentAxelTmpFile".FAIL > /dev/null 2>&1
+	#rm -f "$currentAxelTmpFile" > /dev/null 2>&1
+	_destroy_lock "$currentAxelTmpFile"
+	#rm -f "$currentAxelTmpFile".PASS > /dev/null 2>&1
+	_destroy_lock "$currentAxelTmpFile".PASS
+	#rm -f "$currentAxelTmpFile".FAIL > /dev/null 2>&1
+	_destroy_lock "$currentAxelTmpFile".FAIL
 	return 0
 }
 _wget_githubRelease_procedure-stdout() {
@@ -2854,18 +3190,20 @@ _wget_githubRelease_procedure() {
 	#[[ "$currentOutParameter" == "-O" ]] && [[ "$currentOutFile" == "" ]] && currentOutFile="$currentFile"
 	[[ "$currentOutParameter" == "-O" ]] && [[ "$currentOutFile" == "" ]] && ( _messagePlain_bad 'bad: fail: unexpected: unspecified: currentOutFile' >&2 ) > /dev/null && return 1
 
-	[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
     local currentExitStatus=1
 
     # Discouraged .
     if [[ "$FORCE_WGET" == "true" ]]
     then
+		local currentURL_typeSelected=""
         _warn_githubRelease_FORCE_WGET
         #local currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 		local currentURL
-		[[ "$GH_TOKEN" != "" ]] && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
-		[[ "$GH_TOKEN" == "" ]] && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" != "" ]] && currentURL_typeSelected="api_url" && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" == "" ]] && currentURL_typeSelected="url" && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 
         #"$GH_TOKEN"
         #"$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" "$currentOutFile"
@@ -2877,11 +3215,12 @@ _wget_githubRelease_procedure() {
 	# Discouraged . Benefits of multi-part-per-file downloading are less essential given that files are split into <2GB chunks.
 	if [[ "$FORCE_AXEL" != "" ]] # && [[ "$MANDATORY_HASH" == "true" ]]
     then
+		local currentURL_typeSelected=""
         ( _messagePlain_warn 'warn: WARNING: FORCE_AXEL not empty' >&2 ; echo 'FORCE_AXEL may have similar effects to FORCE_WGET and should not be necessary.' >&2  ) > /dev/null
         #local currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 		local currentURL
-		[[ "$GH_TOKEN" != "" ]] && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
-		[[ "$GH_TOKEN" == "" ]] && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" != "" ]] && currentURL_typeSelected="api_url" && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" == "" ]] && currentURL_typeSelected="url" && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 
 		[[ "$FORCE_DIRECT" == "true" ]] && ( _messagePlain_bad 'bad: fail: FORCE_AXEL==true is NOT compatible with FORCE_DIRECT==true' >&2 ) > /dev/null && return 1
 
@@ -2908,11 +3247,12 @@ _wget_githubRelease_procedure() {
 
     if ! _if_gh
     then
+		local currentURL_typeSelected=""
         ( _messagePlain_warn 'warn: WARNING: FALLBACK: wget/curl' >&2 ) > /dev/null
         #local currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 		local currentURL
-		[[ "$GH_TOKEN" != "" ]] && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
-		[[ "$GH_TOKEN" == "" ]] && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" != "" ]] && currentURL_typeSelected="api_url" && currentURL=$(_wget_githubRelease-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+		[[ "$GH_TOKEN" == "" ]] && currentURL_typeSelected="url" && currentURL=$(_wget_githubRelease-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 
         #"$GH_TOKEN"
         #"$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile" "$currentOutFile"
@@ -2929,11 +3269,13 @@ _wget_githubRelease_procedure-curl() {
     ( _messagePlain_probe_safe "currentOutFile= ""$currentOutFile" >&2 ) > /dev/null
 
 	# ATTENTION: Better if the loop does this only once. Resume may be possible.
-	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	##[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
     local current_curl_args
 	current_curl_args=()
 	[[ "$GH_TOKEN" != "" ]] && current_curl_args+=( -H "Authorization: Bearer $GH_TOKEN" )
+	current_curl_args+=( -H "Accept: application/octet-stream" )
 	current_curl_args+=( -S )
 	current_curl_args+=( -s )
 	#current_curl_args+=( --clobber )
@@ -2987,7 +3329,8 @@ _wget_githubRelease_loop-curl() {
 	( _messagePlain_nominal "$currentStream"'\/\/\/\/\/ \/\/\/\/ init: _wget_githubRelease_loop-curl' >&2 ) > /dev/null
 	( _messagePlain_probe_safe _wget_githubRelease_loop-curl "$@" >&2 ) > /dev/null
 
-	[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 	local currentExitStatus=1
 
@@ -3029,7 +3372,8 @@ _wget_githubRelease_procedure-axel() {
     ( _messagePlain_probe_safe "FORCE_AXEL= ""$FORCE_AXEL" >&2 ) > /dev/null
 
 	# ATTENTION: Better if the loop does this only once. Resume may be possible.
-	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	##[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 	#aria2c --timeout=180 --max-tries=25 --retry-wait=15 "$@"
     ##_messagePlain_probe _aria2c_bin_githubRelease -x "$currentForceAxel" --async-dns=false -o "$currentAxelTmpFileRelative".tmp1 --disable-ipv6=false "${currentURL_array_reversed[$currentIteration]}" >&2
@@ -3039,6 +3383,8 @@ _wget_githubRelease_procedure-axel() {
     local current_axel_args
 	current_axel_args=()
 	##[[ "$GH_TOKEN" != "" ]] && current_axel_args+=( -H "Authorization: Bearer $GH_TOKEN" )
+	[[ "$GH_TOKEN" != "" ]] && current_axel_args+=( --header="Authorization: token $GH_TOKEN" )
+	current_axel_args+=( --header="Accept: application/octet-stream" )
 	#current_axel_args+=( --quiet=true )
 	#current_axel_args+=( --timeout=180 --max-tries=25 --retry-wait=15 )
     current_axel_args+=( --stderr=true --summary-interval=0 --console-log-level=error --async-dns=false )
@@ -3047,19 +3393,27 @@ _wget_githubRelease_procedure-axel() {
 	local currentExitStatus_ipv4=1
 	local currentExitStatus_ipv6=1
 
-	( _messagePlain_probe '_wget_githubRelease_procedure-axel: IPv6' >&2 ) > /dev/null
-    ( _messagePlain_probe_safe aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" >&2 ) > /dev/null
-	#aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL"
-	# WARNING: May be untested.
-	( set -o pipefail ; aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" 2> >(tail -n 40 >&2) )
-	currentExitStatus_ipv6="$?"
+	#( _messagePlain_probe '_wget_githubRelease_procedure-axel: IPv6' >&2 ) > /dev/null
+	( _messagePlain_probe '_wget_githubRelease_procedure-axel: IPv6 (false)' >&2 ) > /dev/null
+    #( _messagePlain_probe_safe aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" >&2 ) > /dev/null
+	##aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL"
+	## WARNING: May be untested.
+	##( set -o pipefail ; aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" 2> >(tail -n 40 >&2) )
+	#( set -o pipefail ; aria2c --disable-ipv6=false "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" > "$currentOutFile".log 2>&1 )
+	#currentExitStatus_ipv6="$?"
+	#( tail -n 40 "$currentOutFile".log >&2 )
+	#rm -f "$currentOutFile".log > /dev/null 2>&1
+	false
     if [[ "$currentExitStatus_ipv6" != "0" ]]
     then
         ( _messagePlain_probe '_wget_githubRelease_procedure-axel: IPv4' >&2 ) > /dev/null
         ( _messagePlain_probe_safe aria2c --disable-ipv6=true "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" >&2 ) > /dev/null
         #aria2c --disable-ipv6=true "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL"
-        ( set -o pipefail ; aria2c --disable-ipv6=true "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" 2> >(tail -n 40 >&2) )
+        #( set -o pipefail ; aria2c --disable-ipv6=true "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" 2> >(tail -n 40 >&2) )
+		( set -o pipefail ; aria2c --disable-ipv6=true "${current_axel_args[@]}" -d "$currentOutDir" -o "$currentOutFile_relative" "$currentURL" > "$currentOutFile".log 2>&1 )
         currentExitStatus_ipv4="$?"
+		( tail -n 40 "$currentOutFile".log >&2 )
+		rm -f "$currentOutFile".log > /dev/null 2>&1
     fi
 
 	if [[ "$currentExitStatus_ipv6" != "0" ]] && [[ "$currentExitStatus_ipv4" != "0" ]]
@@ -3073,6 +3427,24 @@ _wget_githubRelease_procedure-axel() {
 
     [[ ! -e "$currentOutFile" ]] && [[ "$currentOutFile" != "-" ]] && _bad_fail_githubRelease_missing && return 1
 
+	# WARNING: Partial download is FAIL, but aria2c may set exit status '0' (ie. true). Return FALSE in this case.
+	#if ls -1 "$scriptAbsoluteFolder"/$(_axelTmp).aria2* > /dev/null 2>&1
+	#if ls -1 "$currentAxelTmpFile".aria2* > /dev/null 2>&1
+	#if ls -1 "$scriptAbsoluteFolder"/.m_axelTmp_"$currentStream"_"$currentAxelTmpFileUID".aria2* > /dev/null 2>&1
+	if ls -1 "$currentOutFile".aria2* > /dev/null 2>&1
+	then
+		return 1
+	fi
+
+	# Disabled (commented out). Contradictory state of PASS with part files remaining should terminate script with FAIL , _stop , exit , etc .
+	# ie.
+	##  _messagePlain_bad 'bad: FAIL: currentAxelTmpFile*: EXISTS !'
+	##  _messageError 'FAIL'
+	##_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).part*
+	#_destroy_lock "$scriptAbsoluteFolder"/.m_axelTmp_"$currentStream"_"$currentAxelTmpFileUID".part*
+	##_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).aria2*
+	#_destroy_lock "$scriptAbsoluteFolder"/.m_axelTmp_"$currentStream"_"$currentAxelTmpFileUID".aria2*
+
     return 0
 }
 _wget_githubRelease_loop-axel() {
@@ -3080,7 +3452,8 @@ _wget_githubRelease_loop-axel() {
 	( _messagePlain_nominal "$currentStream"'\/\/\/\/\/ \/\/\/\/ init: _wget_githubRelease_loop-axel' >&2 ) > /dev/null
 	( _messagePlain_probe_safe _wget_githubRelease_loop-axel "$@" >&2 ) > /dev/null
 
-	[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 	local currentExitStatus=1
 
@@ -3146,7 +3519,8 @@ _wget_githubRelease_join() {
 		shift
 	fi
 
-	[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	#[[ "$currentOutFile" != "-" ]] && rm -f "$currentOutFile" > /dev/null 2>&1
+	[[ "$currentOutFile" != "-" ]] && _destroy_lock "$currentOutFile"
 
 
 	# ATTENTION
@@ -3207,8 +3581,19 @@ _wget_githubRelease_join_sequence-stdout() {
 	local currentStream_wait
 	local currentBusyStatus
 
-	# CAUTION: Any greater than 50 is not expected to serve any purpose, may exhaust expected API rate limits, may greatly delay download, and may disrupt subsequent API requests. Any less than 50 may fall below the ~100GB capacity that is both expected necessary for some complete toolchains and at the limit of ~100GB archival quality optical disc .
-	local maxCurrentPart=50
+	# CAUTION: Any greater than 50 is not expected to serve any purpose, may exhaust expected API rate limits, may greatly delay download, and may disrupt subsequent API requests. Any less than 50 may fall below the ~100GB capacity that is both expected necessary for some complete toolchains and at the limit of ~100GB archival quality optical disc (ie. M-Disc) .
+	#local maxCurrentPart=50
+
+	# ATTENTION: Graceful degradation to a maximum part count of 49 can be achieved by reducing API calls using the _curl_githubAPI_releases_join-skip function. That single API call can get 100 results, leaving 49 unused API calls remaining to get API_URL addresses to download 49 parts. Files larger than ~200GB are likely rare, specialized.
+	#local maxCurrentPart=98
+
+	# ATTENTION: In practice, 128GB storage media - reputable brand BD-XL near-archival quality optical disc, SSDs, etc - is the maximum file size that is convenient.
+	# '1997537280' bytes truncate/tail
+	# https://en.wikipedia.org/wiki/Blu-ray
+	#  '128,001,769,472' ... 'Bytes'
+	# https://fy.chalmers.se/~appro/linux/DVD+RW/Blu-ray/
+	#  'only inner spare area of 256MB'
+	local maxCurrentPart=63
 
 
     local currentExitStatus=1
@@ -3253,6 +3638,8 @@ _wget_githubRelease_join_sequence-stdout() {
         #local currentAxelTmpFileRelative=.m_axelTmp_"$currentStream"_$(_uid 14)
 	    #local currentAxelTmpFile="$scriptAbsoluteFolder"/"$currentAxelTmpFileRelative"
 
+		maxCurrentPart=$(_curl_githubAPI_releases_join-skip "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
+
         currentPart=""
         for currentPart in $(seq -f "%02g" 0 "$maxCurrentPart" | sort -r)
         do
@@ -3260,11 +3647,18 @@ _wget_githubRelease_join_sequence-stdout() {
             then
 				# ATTENTION: Could expect to use the 'API_URL' function in both cases, since we are not using the resulting URL except to 'skip'/'download' .
 				#currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
-				[[ "$GH_TOKEN" != "" ]] && currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
-				[[ "$GH_TOKEN" == "" ]] && currentSkip=$(_wget_githubRelease-skip-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
-                #[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
-                #[[ "$?" != "0" ]] && currentSkip="skip"
-                [[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+				if [[ "$GH_TOKEN" != "" ]]
+				then
+					currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
+					#[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
+					#[[ "$?" != "0" ]] && currentSkip="skip"
+					[[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+				else
+					currentSkip=$(_wget_githubRelease-skip-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
+					#[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
+					#[[ "$?" != "0" ]] && currentSkip="skip"
+					[[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+				fi
             fi
             
             [[ "$currentSkip" == "skip" ]] && continue
@@ -3292,6 +3686,7 @@ _wget_githubRelease_join_sequence-stdout() {
 	# ### ATTENTION: _if_buffer (IMPLICIT)
 
 	# NOTICE: Parallel downloads may, if necessary, be adapted to first cache a list of addresses (ie. URLs) to download. API rate limits could then have as much time as possible to recover before subsequent commands (eg. analysis of builds). Such a cache must be filled with addresses BEFORE the download loop.
+	#  However, at best, this can only be used with non-ephemeral 'browser_download_url' addresses .
 
 
 	export currentAxelTmpFileUID="$(_uid 14)"
@@ -3314,6 +3709,7 @@ _wget_githubRelease_join_sequence-stdout() {
 	_set_wget_githubRelease-detect "$@"
 	currentSkip="skip"
 
+	maxCurrentPart=$(_curl_githubAPI_releases_join-skip "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile")
 
 	currentPart=""
 	for currentPart in $(seq -f "%02g" 0 "$maxCurrentPart" | sort -r)
@@ -3324,15 +3720,22 @@ _wget_githubRelease_join_sequence-stdout() {
 			# ATTENTION: Could expect to use the 'API_URL' function in both cases, since we are not using the resulting URL except to 'skip'/'download' .
 			#currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
 			##currentSkip=$([[ "$currentPart" -gt "17" ]] && echo 'skip' ; true)
-			[[ "$GH_TOKEN" != "" ]] && currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
-			[[ "$GH_TOKEN" == "" ]] && currentSkip=$(_wget_githubRelease-skip-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
-			
-			#[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
-			#[[ "$?" != "0" ]] && currentSkip="skip"
-			[[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+			if [[ "$GH_TOKEN" != "" ]]
+			then
+				currentSkip=$(_wget_githubRelease-skip-API_URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
+				#[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
+				#[[ "$?" != "0" ]] && currentSkip="skip"
+				[[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+			else
+				currentSkip=$(_wget_githubRelease-skip-URL-curl "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part"$currentPart")
+				#[[ "$?" != "0" ]] && ( _messagePlain_bad 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null && ( _messageError 'FAIL' >&2 ) > /dev/null && exit 1
+				#[[ "$?" != "0" ]] && currentSkip="skip"
+				[[ "$?" != "0" ]] && ( _messagePlain_warn 'bad: FAIL: _wget_githubRelease-skip-API_URL-curl' >&2 ) > /dev/null
+			fi
 		fi
 		
 		[[ "$currentSkip" == "skip" ]] && continue
+
 
 		#[[ "$currentExitStatus" == "0" ]] || 
 		if [[ "$currentSkip" != "skip" ]]
@@ -3373,10 +3776,23 @@ _wget_githubRelease_join_sequence-stdout() {
 	#( _messagePlain_probe_var currentStream >&2 ) > /dev/null
 
 		# Stream must have written PASS/FAIL file .
-		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  outputLOOP: WAIT: PASS/FAIL ... currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
+		local currentDiagnosticIteration_outputLOOP_wait=0
+		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  outputLOOP: WAIT:  P_A_S_S/F_A_I_L  ... currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
 		while ! [[ -e "$scriptAbsoluteFolder"/$(_axelTmp).busy ]] || ( ! [[ -e "$scriptAbsoluteFolder"/$(_axelTmp).PASS ]] && ! [[ -e "$scriptAbsoluteFolder"/$(_axelTmp).FAIL ]] )
 		do
 			sleep 1
+
+			let currentDiagnosticIteration_outputLOOP_wait=currentDiagnosticIteration_outputLOOP_wait+1
+			if [[ "$currentDiagnosticIteration_outputLOOP_wait" -gt 15 ]]
+			then
+				currentDiagnosticIteration_outputLOOP_wait=0
+				( _messagePlain_probe "diagnostic_outputLOOP_wait: pid: ""$!" >&2 ) > /dev/null
+				# ATTRIBUTION-AI: ChatGPT 4.5-preview 2025-03-29
+				#( echo "diagnostic_outputLOOP_wait: checking filenames exactly as seen by script: |$scriptAbsoluteFolder/$(_axelTmp).busy| and |$scriptAbsoluteFolder/$(_axelTmp).PASS|" >&2 ) > /dev/null
+				#( ls -l "$scriptAbsoluteFolder"/$(_axelTmp).* >&2 )
+				#stat "$scriptAbsoluteFolder"/$(_axelTmp).busy >&2 || ( echo 'diagnostic_outputLOOP_wait: '"stat busy - file truly doesn't exist at this name!" >&2 )
+				#stat "$scriptAbsoluteFolder"/$(_axelTmp).PASS >&2 || ( echo 'diagnostic_outputLOOP_wait: '"stat PASS - file truly doesn't exist at this name!" >&2 )
+			fi
 		done
 		
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  outputLOOP: OUTPUT  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
@@ -3389,8 +3805,13 @@ _wget_githubRelease_join_sequence-stdout() {
 		[[ -e "$scriptAbsoluteFolder"/$(_axelTmp).FAIL ]] && [[ "$currentSkip" != "skip" ]] && ( _messageError 'FAIL' >&2 ) > /dev/null && return 1
 
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  outputLOOP: DELETE  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp) > /dev/null 2>&1
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp).busy > /dev/null 2>&1
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp) > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp)
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp).busy > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).busy
+
+		#_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).*
+		#_destroy_lock "$scriptAbsoluteFolder"/.m_axelTmp_"$currentStream"_"$currentAxelTmpFileUID".*
 
 		let currentStream=currentStream+1
 		[[ "$currentStream" -gt "$currentStream_max" ]] && currentStream="$currentStream_min"
@@ -3460,8 +3881,10 @@ _wget_githubRelease_join_sequence-parallel() {
 		[[ -e "$scriptAbsoluteFolder"/$(_axelTmp).FAIL ]] && [[ "$currentSkip" != "skip" ]] && ( _messageError 'FAIL' >&2 ) > /dev/null && return 1
 
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  downloadLOOP: DELETE  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp).PASS > /dev/null 2>&1
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp).FAIL > /dev/null 2>&1
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp).PASS > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).PASS
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp).FAIL > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).FAIL
 
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  downloadLOOP: DELAY: stagger, Inter-Process Communication, _stop  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
 		# Staggered Delay.
@@ -3474,6 +3897,14 @@ _wget_githubRelease_join_sequence-parallel() {
 		
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  downloadLOOP: DOWNLOAD  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
 		export currentAxelTmpFile="$scriptAbsoluteFolder"/$(_axelTmp)
+		if ls -1 "$currentAxelTmpFile"* > /dev/null 2>&1
+		then
+			( _messagePlain_bad 'bad: FAIL: currentAxelTmpFile*: EXISTS !' >&2 ) > /dev/null
+			echo "1" > "$currentAxelTmpFile".FAIL
+			_messageError 'FAIL' >&2
+			exit 1
+			return 1
+		fi
 		"$scriptAbsoluteLocation" _wget_githubRelease_procedure-join "$currentAbsoluteRepo" "$currentReleaseLabel" "$currentFile".part$(printf "%02g" "$currentPart") &
 		echo "$!" > "$scriptAbsoluteFolder"/$(_axelTmp).pid
 
@@ -3500,8 +3931,10 @@ _wget_githubRelease_join_sequence-parallel() {
 		done
 
 		( _messagePlain_nominal '\/\/\/\/\/ \/\/\/  download: DELETE ...  currentStream='"$currentStream" >&2 ) > /dev/null
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp).PASS > /dev/null 2>&1
-		rm -f "$scriptAbsoluteFolder"/$(_axelTmp).FAIL > /dev/null 2>&1
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp).PASS > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).PASS
+		#rm -f "$scriptAbsoluteFolder"/$(_axelTmp).FAIL > /dev/null 2>&1
+		_destroy_lock "$scriptAbsoluteFolder"/$(_axelTmp).FAIL
 	done
 
 	( _messagePlain_nominal '\/\/\/\/\/ \/\/\/\/  download: WAIT PID  ...  currentPart='"$currentPart"' currentStream='"$currentStream" >&2 ) > /dev/null
@@ -3568,7 +4001,9 @@ _wget_githubRelease_procedure-join() {
         sleep 1
     done
 
-    [[ "$currentAxelTmpFile" != "" ]] && rm -f "$currentAxelTmpFile".*
+	# WARNING: Already inevitable (due to _stop , etc).
+    #[[ "$currentAxelTmpFile" != "" ]] && rm -f "$currentAxelTmpFile".*
+	[[ "$currentAxelTmpFile" != "" ]] && _destroy_lock "$currentAxelTmpFile".*
 
     #unset currentAxelTmpFile
 
@@ -3711,9 +4146,9 @@ _get_ub_globalVars_sessionDerived() {
 
 export lowsessionid=$(echo -n "$sessionid" | tr A-Z a-z )
 
-# ATTENTION: CAUTION: Unusual Cygwin override to accommodate MSW network drive ( at least when provided by '_userVBox' ) !
 if [[ "$scriptAbsoluteFolder" == '/cygdrive/'* ]] && [[ -e /cygdrive ]] && uname -a | grep -i cygwin > /dev/null 2>&1 && [[ "$scriptAbsoluteFolder" != '/cygdrive/c'* ]] && [[ "$scriptAbsoluteFolder" != '/cygdrive/C'* ]]
 then
+	# ATTENTION: CAUTION: Unusual Cygwin override to accommodate MSW network drive ( at least when provided by '_userVBox' ) !
 	if [[ "$tmpSelf" == "" ]]
 	then
 		
@@ -3734,7 +4169,14 @@ then
 		true
 		
 	fi
-elif uname -a | grep -i 'microsoft' > /dev/null 2>&1 && uname -a | grep -i 'WSL2' > /dev/null 2>&1
+
+	#_override_msw_git
+	type _override_msw_git_CEILING > /dev/null 2>&1 && _override_msw_git_CEILING
+	#if [[ "$1" != "_setupUbiquitous" ]] && [[ "$ub_under_setupUbiquitous" != "true" ]] && type _write_configure_git_safe_directory_if_admin_owned > /dev/null 2>&1
+	#then
+		_write_configure_git_safe_directory_if_admin_owned "$scriptAbsoluteFolder"
+	#fi
+elif ( uname -a | grep -i 'microsoft' > /dev/null 2>&1 && uname -a | grep -i 'WSL2' > /dev/null 2>&1 ) || [[ -e /.dockerenv ]]
 then
 	if [[ "$tmpSelf" == "" ]]
 	then
@@ -3804,7 +4246,22 @@ then
 	fi
 fi
 
-#Essentially temporary tokens which may need to be reused. 
+export scriptCall_bash="$scriptAbsoluteFolder"'/_bash.bat'
+export scriptCall_bin="$scriptAbsoluteFolder"/_bin.bat
+if type cygpath > /dev/null 2>&1
+then
+    export scriptAbsoluteLocation_msw=$(cygpath -w "$scriptAbsoluteLocation")
+    export scriptAbsoluteFolder_msw=$(cygpath -w "$scriptAbsoluteFolder")
+
+	export scriptLocal_msw=$(cygpath -w "$scriptLocal")
+    export scriptLib_msw=$(cygpath -w "$scriptLib")
+    
+    export scriptCall_bash_msw="$scriptAbsoluteFolder_msw"'\_bash.bat'
+    export scriptCall_bin_msw="$scriptAbsoluteFolder_msw"'\_bin.bat'
+fi
+
+#Essentially temporary tokens which may need to be reused.
+# No, NOT AI tokens, predates widespread usage of that term.
 export scriptTokens="$scriptLocal"/.tokens
 
 #Reboot Detection Token Storage
@@ -4091,10 +4548,14 @@ _stop_stty_echo() {
 	#stty echo --file=/dev/tty > /dev/null 2>&1
 	
 	[[ "$ubFoundEchoStatus" != "" ]] && stty --file=/dev/tty "$ubFoundEchoStatus" 2> /dev/null
+
+	return 0
 }
 
 # DANGER: Use of "_stop" must NOT require successful "_start". Do NOT include actions which would not be safe if "_start" was not used or unsuccessful.
 _stop() {
+	if [[ "$ubDEBUG" == "true" ]] ; then set +x ; set +E ; set +o functrace ; set +o errtrace ; export -n SHELLOPTS 2>/dev/null || true ; trap '' RETURN ; trap - RETURN ; fi
+	
 	_stop_stty_echo
 	
 	_tryExec "_stop_prog"
@@ -4147,6 +4608,7 @@ _stop() {
 	
 	_safeRMR "$shortTmp"
 	_safeRMR "$safeTmp"
+	[[ "$fastTmp" != "" ]] && _safeRMR "$fastTmp"
 	
 	[[ -e "$safeTmp" ]] && sleep 0.1 && _safeRMR "$safeTmp"
 	[[ -e "$safeTmp" ]] && sleep 0.3 && _safeRMR "$safeTmp"
@@ -4186,6 +4648,10 @@ _stop() {
 			
 		rm -f "$currentAxelTmpFile"* > /dev/null 2>&1
 	fi
+
+	[[ -e "$scriptLocal"/python_nix.lock ]] && [[ $(head -c $(echo -n "$sessionid" | wc -c | tr -dc '0-9') "$scriptLocal"/python_nix.lock 2> /dev/null ) == "$sessionid" ]] && rm -f "$scriptLocal"/python_nix.lock > /dev/null 2>&1
+	[[ -e "$scriptLocal"/python_msw.lock ]] && [[ $(head -c $(echo -n "$sessionid" | wc -c | tr -dc '0-9') "$scriptLocal"/python_msw.lock 2> /dev/null ) == "$sessionid" ]] && rm -f "$scriptLocal"/python_msw.lock > /dev/null 2>&1
+	[[ -e "$scriptLocal"/python_cygwin.lock ]] && [[ $(head -c $(echo -n "$sessionid" | wc -c | tr -dc '0-9') "$scriptLocal"/python_cygwin.lock 2> /dev/null ) == "$sessionid" ]] && rm -f "$scriptLocal"/python_cygwin.lock > /dev/null 2>&1
 	
 	_stop_stty_echo
 	if [[ "$1" != "" ]]
@@ -4329,8 +4795,8 @@ _readLocked() {
 
 #Using _readLocked before any _createLocked operation is strongly recommended to remove any lock from prior UNIX session (ie. before latest reboot).
 _createLocked() {
-	[[ "$uDEBUG" == true ]] && caller 0 >> "$scriptLocal"/lock.log
-	[[ "$uDEBUG" == true ]] && echo -e '\t'"$sessionid"'\t'"$1" >> "$scriptLocal"/lock.log
+	[[ "$ubDEBUG" == true ]] && caller 0 >> "$scriptLocal"/lock.log
+	[[ "$ubDEBUG" == true ]] && echo -e '\t'"$sessionid"'\t'"$1" >> "$scriptLocal"/lock.log
 	
 	mkdir -p "$bootTmp"
 	
@@ -4345,7 +4811,7 @@ _createLocked() {
 	
 	if [[ -e "$lock_quicktmp"_"$lockUID" ]]
 	then
-		[[ "$uDEBUG" == true ]] && echo -e '\t'FAIL >> "$scriptLocal"/lock.log
+		[[ "$ubDEBUG" == true ]] && echo -e '\t'FAIL >> "$scriptLocal"/lock.log
 		rm -f "$lock_quicktmp"_"$lockUID" > /dev/null 2>&1
 		return 1
 	fi
@@ -5164,6 +5630,11 @@ _variableLocalTest_sequence() {
 	
 
 	variableLocalTest_evalTest() { local currentVariableNum=1 ; eval local currentVariable_${currentVariableNum}_currentData=PASS ; ( eval "[[ \$currentVariable_${currentVariableNum}_currentData == PASS ]]" && eval "[[ \$currentVariable_${currentVariableNum}_currentData != '' ]]" && eval "echo \$currentVariable_${currentVariableNum}_currentData" ) ;} ; variableLocalTest_evalTest > /dev/null ; [[ $(variableLocalTest_evalTest) != "PASS" ]] && _messageFAIL && _stop 1
+
+
+	! [[ $(currentVariable=currentValue /bin/bash --norc -c 'echoVariableTest() { echo $currentVariable ; } ; echoVariableTest') == "currentValue" ]] && _messageFAIL && _stop 1
+	! [[ $(currentVariable=currentValue currentVariable=currentValue /bin/bash --norc -c 'echoVariableTest() { echo $currentVariable ; } ; echoVariableTest') == "currentValue" ]] && _messageFAIL && _stop 1
+	! [[ $(currentVariable=currentValueA currentVariable=currentValueB /bin/bash --norc -c 'echoVariableTest() { echo $currentVariable ; } ; echoVariableTest') == "currentValueB" ]] && _messageFAIL && _stop 1
 
 	_stop
 }
@@ -6018,61 +6489,83 @@ _test-shell-cygwin() {
 	
 	local currentPathCount
 	currentPathCount=$(echo "$PATH" | grep -o ':' | wc -l | tr -dc '0-9')
-	if [[ "$currentPathCount" -gt 50 ]]
+	#if [[ "$currentPathCount" -gt 50 ]]
+	#if [[ "$currentPathCount" -gt 66 ]]
+	if [[ "$currentPathCount" -gt 99 ]]
 	then
 		echo 'fail: count: PATH: '"$currentPathCount"
 		_messageFAIL
 	fi
-	if [[ "$currentPathCount" -gt 44 ]]
+	#if [[ "$currentPathCount" -gt 66 ]]
+	if [[ "$currentPathCount" -gt 80 ]]
+	then
+		echo 'warn: count: PATH: '"$currentPathCount"
+		echo 'warn: MSWEXTPATH may be ignored'
+		_messagePlain_request 'request: reduce the length of PATH variable'
+	fi
+	#if [[ "$currentPathCount" -gt 44 ]]
+	if [[ "$currentPathCount" -gt 60 ]]
 	then
 		echo 'warn: count: PATH: '"$currentPathCount"
 		echo 'warn: MSWEXTPATH may be ignored'
 		_messagePlain_request 'request: reduce the length of PATH variable'
 	fi
 	
-	if [[ "$currentPathCount" -gt 32 ]]
+	if [[ "$currentPathCount" -gt 48 ]]
 	then
 		echo 'warn: count: PATH: '"$currentPathCount"
-		echo 'warn: MSWEXTPATH exceeds preferred 32'
+		echo 'warn: MSWEXTPATH exceeds preferred 48'
 		_messagePlain_request 'request: reduce the length of PATH variable'
-	fi
-	if [[ "$currentPathCount" -gt 34 ]]
-	then
-		echo 'warn: count: PATH: '"$currentPathCount"
-		echo 'warn: MSWEXTPATH exceeds preferred 34'
-		_messagePlain_request 'request: reduce the length of PATH variable'
-	fi
-	
-	
-	
-	local currentPathCount
-	currentPathCount=$(echo "$MSWEXTPATH" | grep -o ';\|:' | wc -l | tr -dc '0-9')
-	if [[ "$currentPathCount" -gt 50 ]] && [[ "$CI" == "" ]]
-	then
-		echo 'fail: count: MSWEXTPATH: '"$currentPathCount"
-		_messageFAIL
 	fi
 	if [[ "$currentPathCount" -gt 44 ]]
 	then
-		echo 'warn: count: MSWEXTPATH: '"$currentPathCount"
-		echo 'warn: MSWEXTPATH may be ignored by default'
+		echo 'warn: count: PATH: '"$currentPathCount"
+		echo 'warn: MSWEXTPATH exceeds preferred 44'
 		_messagePlain_request 'request: reduce the length of PATH variable'
 	fi
-	
-	
 	if [[ "$currentPathCount" -gt 32 ]]
 	then
-		echo 'warn: count: MSWEXTPATH: '"$currentPathCount"
+		echo 'warn: count: PATH: '"$currentPathCount"
 		echo 'warn: MSWEXTPATH exceeds preferred 32'
 		_messagePlain_request 'request: reduce the length of PATH variable'
 	fi
 	if [[ "$currentPathCount" -gt 34 ]]
 	then
-		echo 'warn: count: MSWEXTPATH: '"$currentPathCount"
+		echo 'warn: count: PATH: '"$currentPathCount"
 		echo 'warn: MSWEXTPATH exceeds preferred 34'
 		_messagePlain_request 'request: reduce the length of PATH variable'
 	fi
 	
+
+
+	# Discouraged. NOT guaranteed, may be removed if unmaintainable.
+	# Inheritance of variables as a means of communicating or passing parameters is not the point. Inheritance is tested to ensure an entirely different 'ubcp' environment, script, '$safeTmp', etc, is NOT used.
+	export ub_sanity_special="mustInherit"
+	if _if_cygwin
+	then
+		local currentResult
+		currentResult=""
+
+		local current_bin_bash
+		current_bin_bash=$(cygpath -w /bin/bash)
+
+		currentResult=$(cmd /C "$current_bin_bash" '-c' 'echo $ub_sanity_special')
+		[[ "$currentResult" != "mustInherit" ]] && echo 'fail: cmd /bin/bash: mustInherit' && _messageFAIL && return 1
+
+		currentResult=$(cmd /C "$current_bin_bash" '-c' 'echo "$safeTmp"')
+		[[ "$currentResult" != "$safeTmp" ]] && echo 'fail: cmd /bin/bash: inherit: safeTmp' && _messageFAIL && return 1
+
+
+		current_bin_bash=$(cygpath -w /bin/bash | sed 's/\\/\\\\/g')
+
+		currentResult=$(_powershell -Command "$current_bin_bash"" -c 'echo "'"$ub_sanity_special"'"'")
+		[[ "$currentResult" != "mustInherit" ]] && echo 'fail: powershell /bin/bash: mustInherit' && _messageFAIL && return 1
+
+		currentResult=$(_powershell -Command "$current_bin_bash"" -c 'echo "'"$safeTmp"'"'")
+		[[ "$currentResult" != "$safeTmp" ]] && echo 'fail: powershell /bin/bash: inherit: safeTmp' && _messageFAIL && return 1
+	fi
+	unset ub_sanity_special
+
 	
 	
 	# Although use case specific (eg. flight sim with usual desktop applications installed) test cases may be necessary for MSW, to avoid ambiguity in expectations that every test includes an explicit PASS statement, a call to '_messagePASS' is still given.
@@ -6127,6 +6620,7 @@ _test() {
 	then
 		if _typeDep 'apt-get'
 		then
+			apt-get -y update
 			apt-get -y install sudo
 		fi
 	fi
@@ -6136,6 +6630,7 @@ _test() {
 	then
 		if _typeDep 'apt-get'
 		then
+			sudo -n apt-get -y update
 			sudo -n apt-get -y install bc
 		fi
 	fi
@@ -6213,6 +6708,9 @@ _test() {
 	_getDep cksum
 	
 	_getDep wget
+	_getDep curl
+	_wantGetDep aria2c
+	_wantGetDep axel
 	_getDep grep
 	_getDep fgrep
 	_getDep sed
@@ -6914,16 +7412,41 @@ _resetOps() {
 }
 
 _gitPull_ubiquitous() {
+	local currentExitStatus_gitBest_pull="0"
+	local currentExitStatus_gitBest_submodule_update="0"
 	#git pull
 	_gitBest pull
+	currentExitStatus_gitBest_pull="$?"
+	_gitBest submodule update --recursive
+	currentExitStatus_gitBest_submodule_update="$?"
+	[[ "$currentExitStatus_gitBest_pull" != "0" ]] && return "$currentExitStatus_gitBest_pull"
+	[[ "$currentExitStatus_gitBest_submodule_update" != "0" ]] && return "$currentExitStatus_gitBest_submodule_update"
+	return 0
 }
 
 _gitClone_ubiquitous() {
+	local functionEntryPWD="$PWD"
+
+	local currentExitStatus_gitBest_clone="0"
+	local currentExitStatus_gitBest_submodule_update="0"
 	#git clone --depth 1 git@github.com:mirage335/ubiquitous_bash.git
 	_gitBest clone --recursive --depth 1 git@github.com:mirage335/ubiquitous_bash.git
+	currentExitStatus_gitBest_clone="$?"
+
+	! cd ubiquitous_bash && _messagePlain_bad 'bad: cd ubiquitous_bash' && return 1
+	_gitBest submodule update --recursive
+	currentExitStatus_gitBest_submodule_update="$?"
+	! cd "$functionEntryPWD" && _messagePlain_bad 'bad: cd '"$functionEntryPWD" && return 1
+
+	[[ "$currentExitStatus_gitBest_clone" != "0" ]] && return "$currentExitStatus_gitBest_clone"
+	[[ "$currentExitStatus_gitBest_submodule_update" != "0" ]] && return "$currentExitStatus_gitBest_submodule_update"
+	return 0
 }
 
 _selfCloneUbiquitous() {
+	local currentExitStatus
+	currentExitStatus="0"
+
 	"$scriptBin"/.ubrgbin.sh _ubrgbin_cpA "$scriptBin" "$ubcoreUBdir"/ > /dev/null 2>&1
 	cp -a "$scriptAbsoluteLocation" "$ubcoreUBdir"/lean.sh
 	cp -a "$scriptAbsoluteLocation" "$ubcoreUBdir"/ubcore.sh
@@ -6933,33 +7456,56 @@ _selfCloneUbiquitous() {
 	cp -a "$scriptAbsoluteLocation" "$ubcoreUBdir"/ubiquitous_bash.sh
 	
 	cp -a "$scriptAbsoluteFolder"/lean.py "$ubcoreUBdir"/lean.py > /dev/null 2>&1
+	[[ "$?" != "0" ]] && currentExitStatus="1"
+
+	mkdir -p "$ubcoreUBdir"/_lib/kit/app/researchEngine/kit/certs
+	if [[ -e "$scriptAbsoluteFolder"/_lib/kit/app/researchEngine/kit/certs ]]
+	then
+		cp -a "$scriptAbsoluteFolder"/_lib/kit/app/researchEngine/kit/certs/* "$ubcoreUBdir"/_lib/kit/app/researchEngine/kit/certs/
+	fi
+
+	return "$currentExitStatus"
 }
 
 _installUbiquitous() {
 	local localFunctionEntryPWD
 	localFunctionEntryPWD="$PWD"
 	
-	cd "$ubcoreDir"
+	! cd "$ubcoreDir" && _messagePlain_bad 'bad: cd $ubcoreUBdir' && return 1
 	
-	cd "$ubcoreUBdir"
-	_messagePlain_nominal 'attempt: git pull'
+	! cd "$ubcoreUBdir" && _messagePlain_bad 'bad: cd $ubcoreUBdir' && return 1
+	_messagePlain_nominal 'attempt: git pull: '"$PWD"
 	if [[ "$nonet" != "true" ]] && type git > /dev/null 2>&1
 	then
 		_gitBest_detect
 		
-		local ub_gitPullStatus
-		#git pull
-		_gitBest pull
-		ub_gitPullStatus="$?"
-		#[[ "$ub_gitPullStatus" != 0 ]] && git pull && ub_gitPullStatus="$?"
-		[[ "$ub_gitPullStatus" != 0 ]] && _gitBest pull && ub_gitPullStatus="$?"
-		! cd "$localFunctionEntryPWD" && return 1
-		
+		# CAUTION: After calling 'ubcp-cygwin-portable-installer' during 'build_ubcp' job of GitHub Actions 'build.yml', or similar devops/CI, etc, '/home/root/.ubcore/ubiquitous_bash' is a subdirectory at 'C:\...\ubiquitous_bash\_local\ubcp\cygwin\home\root\.ubcore\ubiquitous_bash' or similar.
+		#  DANGER: This causes MSWindows native 'git' binaries to perceive a git repository '.git' subdirectory already exists at the parent directory 'C:\...\ubiquitous_bash' , catastrophically causing 'git pull' to succeed, without populating the '/home/root/.ubcore/ubiquitous_bash' directory with 'ubiquitous_bash.sh' .
+		# Preventing that scenario, detect whether a '.git' subdirectory exists at "$ubcoreUBdir"/.git , which should also be the same as './.git' .
+		if [[ -e "$ubcoreUBdir"/.git ]] && [[ -e ./.git ]]
+		then
+			local ub_gitPullStatus
+			#git pull
+			_gitBest pull
+			ub_gitPullStatus="$?"
+			_gitBest submodule update --recursive
+			[[ "$?" != "0" ]] && ub_gitPullStatus="1"
+			#[[ "$ub_gitPullStatus" != 0 ]] && git pull && ub_gitPullStatus="$?"
+			if [[ "$ub_gitPullStatus" != 0 ]]
+			then
+				_gitBest pull
+				ub_gitPullStatus="$?"
+				_gitBest submodule update --recursive
+				[[ "$?" != "0" ]] && ub_gitPullStatus="1"
+			fi
+			! cd "$localFunctionEntryPWD" && return 1
+
 		[[ "$ub_gitPullStatus" == "0" ]] && _messagePlain_good 'pass: git pull' && cd "$localFunctionEntryPWD" && return 0
+		fi
 	fi
-	_messagePlain_warn 'fail: git pull'
+	_messagePlain_warn 'fail: git pull: '"$PWD"
 	
-	cd "$ubcoreDir"
+	! cd "$ubcoreDir" && _messagePlain_bad 'bad: cd $ubcoreDir' && return 1
 	_messagePlain_nominal 'attempt: git clone'
 	[[ "$nonet" != "true" ]] && type git > /dev/null 2>&1 && [[ ! -e ".git" ]] && [[ ! -e "$ubcoreUBdir"/.git ]] && _gitClone_ubiquitous && _messagePlain_good 'pass: git clone' && return 0
 	[[ "$nonet" != "true" ]] && type git > /dev/null 2>&1 && [[ ! -e ".git" ]] && [[ ! -e "$ubcoreUBdir"/.git ]] && _gitClone_ubiquitous && _messagePlain_good 'pass: git clone' && return 0
@@ -6981,11 +7527,14 @@ _installUbiquitous() {
 		[[ -e "$scriptAbsoluteFolder"/ubcore_compressed.sh ]] && rm -f "$ubcoreUBdir"/ubcore_compressed.sh > /dev/null 2>&1
 		[[ -e "$scriptAbsoluteFolder"/ubiquitous_bash_compressed.sh ]] && rm -f "$ubcoreUBdir"/ubiquitous_bash_compressed.sh > /dev/null 2>&1
 		[[ -e "$scriptAbsoluteFolder"/lean.py ]] && rm -f "$ubcoreUBdir"/lean.py > /dev/null 2>&1
+		#[[ -e "$scriptAbsoluteFolder"/_lib/kit/app/researchEngine/kit/certs/* ]] && rm -f "$ubcoreUBdir"/_lib/kit/app/researchEngine/kit/certs/* > /dev/null 2>&1
 		#git reset --hard
 		#git pull "$scriptAbsoluteFolder"
 		_gitBest pull "$scriptAbsoluteFolder"
 		_gitBest reset --hard
 		ub_gitPullStatus="$?"
+		_gitBest submodule update --recursive
+		[[ "$?" != "0" ]] && ub_gitPullStatus="1"
 		! cd "$localFunctionEntryPWD" && return 1
 		
 		[[ "$ub_gitPullStatus" == "0" ]] && _messagePlain_good 'pass: self git pull' && cd "$localFunctionEntryPWD" && return 0
@@ -7008,6 +7557,7 @@ _installUbiquitous() {
 
 _setupUbiquitous() {
 	_messageNormal "init: setupUbiquitous"
+	export ub_under_setupUbiquitous="true"
 	
 	if _if_cygwin
 	then
@@ -7027,7 +7577,7 @@ _setupUbiquitous() {
 	export ubcoreFile="$ubcoreDir"/.ubcorerc
 	
 	export ubcoreDir_accessories="$ubHome"/.ubcore/accessories
-	
+	export ubcoreDir_accessories_python="$ubcoreDir_accessories"/python
 	
 	# WARNING: Despite the name, do NOT point this to 'ubcore.sh' or similar. Full set of functions are expected from this file by some use cases!
 	export ubcoreUBdir="$ubcoreDir"/ubiquitous_bash
@@ -7103,6 +7653,9 @@ _setupUbiquitous() {
 	_messageNormal "install: setupUbiquitous_accessories"
 	
 	_setupUbiquitous_accessories "$@"
+
+
+	_install_certs "$@"
 	
 	
 	_messageNormal "request: setupUbiquitous_accessories , setupUbiquitous"
@@ -7829,6 +8382,8 @@ then
 		stty echo --file=/dev/tty > /dev/null 2>&1
 		
 		#[[ "$ubFoundEchoStatus" != "" ]] && stty --file=/dev/tty "$ubFoundEchoStatus" 2> /dev/null
+
+		return 0
 	}
 	_stop() {
 		_stop_stty_echo
@@ -7870,6 +8425,12 @@ fi
 # DANGER: Implemented to prevent 'compile.sh' from attempting to run functions from 'ops.sh'. No other valid use currently known or anticipated!
 if [[ "$ub_ops_disable" != 'true' ]]
 then
+	# WARNING: CAUTION: Use sparingly and carefully . Allows a user to globally override functions for all 'ubiquitous_bash' scripts, projects, etc.
+	if [[ -e "$HOME"/_bashrc ]]
+	then
+		. "$HOME"/_bashrc
+	fi
+	
 	#Override functions with external definitions from a separate file if available.
 	#if [[ -e "./ops" ]]
 	#then
@@ -7983,12 +8544,33 @@ _wrap() {
 
 #Wrapper function to launch arbitrary commands within the ubiquitous_bash environment, including its PATH with scriptBin.
 _bin() {
+	# Less esoteric than calling '_bash _bash', but calling '_bin _bin' is still not useful, and filtered out for Python scripts which may call either 'ubiquitous_bash.sh' or '_bash.bat' interchangeably.
+	#  CAUTION: Shifting redundant '_bash' parameters is necessary for some Python scripts.
+	if [[ "$1" == ${FUNCNAME[0]} ]] && [[ "$2" == ${FUNCNAME[0]} ]]
+	then
+		shift
+		shift
+	else
+		[[ "$1" == ${FUNCNAME[0]} ]] && shift
+	fi
+
 	_safe_declare_uid
 	
 	"$@"
 }
 #Mostly intended to launch bash prompt for MSW/Cygwin users.
 _bash() {
+	# CAUTION: NEVER call _bash _bash , etc . This is different from calling '_bash "$scriptAbsoluteLocation" _bash', or '_bash -c bash -i' (not that those are known workable or useful either), cannot possibly provide any useful functionality (since 'bash' called by '_bash' is in the same environment), will only cause issues for no benefit, so don't.
+	# ATTENTION: In practice, this can happen incidentally, due to calling '_bash.bat' instead of 'ubiquitous_bash.sh' to call '_bash' function, since MSW would not be able to run 'ubiquitous_bash.sh' without an anchor batch script properly calling Cygwin bash.exe . Python scripts which may call either 'ubiquitous_bash.sh' or '_bash.bat' interchangeably benefit from this, because the '_bash' parameter does not need to change depending on Native/MSW or UNIX/Linux. Since there is no useful purpose to calling '_bash _bash', etc, simply always dismissing the redundant '_bash' parameter is reasonable.
+	#  CAUTION: Shifting redundant '_bash' parameters is necessary for some Python scripts.
+	if [[ "$1" == "_bash" ]] && [[ "$2" == "_bash" ]]
+	then
+		shift
+		shift
+	else
+		[[ "$1" == "_bash" ]] && shift
+	fi
+
 	_safe_declare_uid
 	
 	local currentIsCygwin
@@ -8003,6 +8585,22 @@ _bash() {
 	[[ "$ub_scope_name" != "" ]] && _scopePrompt
 	
 	_safe_declare_uid
+
+
+	## CAUTION: Usually STUPID AND DANGEROUS . No production use. Exclusively for 'ubiquitous_bash' itself development.
+	## Proper use of embedded scripts, '--embed', etc, is provided by the '_scope' functions, etc, intended for such purposes in almost all cases.
+	##
+	## WARNING: May be untested. May break 'python', 'bash', 'octave', etc. May break any '.bashrc', '.ubcorerc', python hooks, other hooks, etc. May break '_setupUbiquitous'.
+	## Bad idea. Very specialized. Broken inheritance.
+	##
+	## No known use.
+	## Functions, etc, are NOT inherited by bash terminal from script.
+	##
+	#if [[ "$1" == "--norc" ]] && [[ "$2" == "-i" ]] && [[ "$scriptAbsoluteLocation" == *"ubcore.sh" ]]
+	#then
+		#bash "$@"
+		#return
+	#fi
 	
 	
 	[[ "$1" == '-i' ]] && shift
@@ -8119,8 +8717,42 @@ then
 	then
 		if [[ "$scriptLinkCommand" == '_'* ]]
 		then
+			if [[ "$ubDEBUG" == "true" ]]
+			then
+				# ATTRIBUTION-AI: ChatGPT o3  2025-06-06
+				exec 3>&2
+				#export BASH_XTRACEFD=3
+				set   -o functrace
+				set   -o errtrace
+				# May break _test_pipefail_sequence .
+				#export SHELLOPTS
+				trap '
+  set -E +x
+  call_line=${BASH_LINENO[0]}
+  call_file=${BASH_SOURCE[1]}
+  [[ $call_file == "$PWD/"* ]] && call_file=${call_file#"$PWD/"}
+  func_name=${FUNCNAME[0]:-MAIN}
+
+  if [[ "$call_line" != "0" ]] && [[ func_name != "MAIN()" ]]
+  then
+	# extract the source line and strip leading blanks
+	call_text=$(sed -n "${call_line}{s/^[[:space:]]*//;p}" "$call_file")
+
+	printf "<<<STEPOUT<<< RETURN %s() <- %s:%d : %s  status=%d\n" \
+			"$func_name"        "$call_file" \
+			"$call_line"        "$call_text" \
+			"$?" >&3
+  fi
+  set -E -x
+' RETURN
+				set -E -x
+				#set -x
+			fi
+			
 			"$scriptLinkCommand" "$@"
 			internalFunctionExitStatus="$?"
+
+			if [[ "$ubDEBUG" == "true" ]] ; then set +x ; set +E ; set +o functrace ; set +o errtrace ; export -n SHELLOPTS 2>/dev/null || true ; trap '' RETURN ; trap - RETURN ; fi
 			
 			#Exit if not imported into existing shell, or bypass requested, else fall through to subsequent return.
 			if [[ "$ub_import" != "true" ]] || [[ "$ub_import_param" == "--bypass" ]] || [[ "$ub_import_param" == "--compressed" ]]
@@ -8140,8 +8772,41 @@ then
 	# && [[ "$1" != "_test" ]] && [[ "$1" != "_setup" ]] && [[ "$1" != "_build" ]] && [[ "$1" != "_vector" ]] && [[ "$1" != "_setupCommand" ]] && [[ "$1" != "_setupCommand_meta" ]] && [[ "$1" != "_setupCommands" ]] && [[ "$1" != "_find_setupCommands" ]] && [[ "$1" != "_setup_anchor" ]] && [[ "$1" != "_anchor" ]] && [[ "$1" != "_package" ]] && [[ "$1" != *"_prog" ]] && [[ "$1" != "_main" ]] && [[ "$1" != "_collect" ]] && [[ "$1" != "_enter" ]] && [[ "$1" != "_launch" ]] && [[ "$1" != "_default" ]] && [[ "$1" != "_experiment" ]]
 	if [[ "$1" == '_'* ]] && type "$1" > /dev/null 2>&1 && [[ "$1" != "_test" ]] && [[ "$1" != "_setup" ]] && [[ "$1" != "_build" ]] && [[ "$1" != "_vector" ]] && [[ "$1" != "_setupCommand" ]] && [[ "$1" != "_setupCommand_meta" ]] && [[ "$1" != "_setupCommands" ]] && [[ "$1" != "_find_setupCommands" ]] && [[ "$1" != "_setup_anchor" ]] && [[ "$1" != "_anchor" ]] && [[ "$1" != "_package" ]] && [[ "$1" != *"_prog" ]] && [[ "$1" != "_main" ]] && [[ "$1" != "_collect" ]] && [[ "$1" != "_enter" ]] && [[ "$1" != "_launch" ]] && [[ "$1" != "_default" ]] && [[ "$1" != "_experiment" ]]
 	then
+		if [[ "$ubDEBUG" == "true" ]]
+		then
+			# ATTRIBUTION-AI: ChatGPT o3  2025-06-06
+			exec 3>&2
+			#export BASH_XTRACEFD=3
+			set   -o functrace
+			set   -o errtrace
+			# May break _test_pipefail_sequence .
+			#export SHELLOPTS
+			trap '
+  set -E +x
+  call_line=${BASH_LINENO[0]}
+  call_file=${BASH_SOURCE[1]}
+  [[ $call_file == "$PWD/"* ]] && call_file=${call_file#"$PWD/"}
+  func_name=${FUNCNAME[0]:-MAIN}
+
+  if [[ "$call_line" != "0" ]] && [[ func_name != "MAIN()" ]]
+  then
+    # extract the source line and strip leading blanks
+    call_text=$(sed -n "${call_line}{s/^[[:space:]]*//;p}" "$call_file")
+
+    printf "<<<STEPOUT<<< RETURN %s() <- %s:%d : %s  status=%d\n" \
+            "$func_name"        "$call_file" \
+            "$call_line"        "$call_text" \
+            "$?" >&3
+  fi
+' RETURN
+			set -E -x
+			#set -x
+		fi
+		
 		"$@"
 		internalFunctionExitStatus="$?"
+		
+		if [[ "$ubDEBUG" == "true" ]] ; then set +x ; set +E ; set +o functrace ; set +o errtrace ; export -n SHELLOPTS 2>/dev/null || true ; trap '' RETURN ; trap - RETURN ; fi
 		
 		#Exit if not imported into existing shell, or bypass requested, else fall through to subsequent return.
 		if [[ "$ub_import" != "true" ]] || [[ "$ub_import_param" == "--bypass" ]] || [[ "$ub_import_param" == "--compressed" ]]

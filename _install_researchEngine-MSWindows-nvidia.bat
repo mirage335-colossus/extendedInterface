@@ -644,7 +644,7 @@ export anchorName=$(basename "$anchorScriptAbsoluteLocation" | sed 's/\.bat$//g'
 
 
 export anchorSourceDir="extendedInterface"
-export anchorSource="extendedInterface.sh"
+export anchorSource="ubiquitous_bash.sh"
 export anchorSourcePath="$anchorSourceDir"/"$anchorSource"
 
 export anchorLabName=anchorLabName
@@ -1394,7 +1394,7 @@ SET "MSWanchorName=%~n0"
 REM Typically set automatically by '_anchor' function.
 SET "MSWanchorSourceDir=extendedInterface"
 
-SET "MSWanchorSource=extendedInterface.sh"
+SET "MSWanchorSource=ubiquitous_bash.sh"
 
 if not "%MSWanchorSourceDir%"=="ubiquitous_bash" (
 	if "%MSWanchorSource%"=="lean.sh" (

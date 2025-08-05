@@ -8271,9 +8271,9 @@ _anchor_special() {
 
 
 	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_install_researchEngine-MSWindows.bat
-	"$scriptAbsoluteFolder"/extendedInterface.sh _anchor_configure "$scriptAbsoluteFolder"/_install_researchEngine-MSWindows.bat
+	"$scriptAbsoluteFolder"/ubiquitous_bash.sh _anchor_configure "$scriptAbsoluteFolder"/_install_researchEngine-MSWindows.bat
 	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_install_researchEngine-MSWindows-nvidia.bat
-	"$scriptAbsoluteFolder"/extendedInterface.sh _anchor_configure "$scriptAbsoluteFolder"/_install_researchEngine-MSWindows-nvidia.bat
+	"$scriptAbsoluteFolder"/ubiquitous_bash.sh _anchor_configure "$scriptAbsoluteFolder"/_install_researchEngine-MSWindows-nvidia.bat
 }
 
 

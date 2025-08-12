@@ -8201,6 +8201,24 @@ _setup_install_procedure() {
 
 
 
+	# ATTRIBUTION-AI: WebUI-ChatGPT-5-Thinking  2025-08-12
+
+	#reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_vscode" /v "" /d "Open with VSCode" /f
+	#reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_vscode\command" /v "" /d "cmd.exe /s /c \"cd /d \"%V\" && start \"\" \"C:\Users\mirag\AppData\Local\Programs\Microsoft VS Code\Code.exe\" .\"" /f
+
+	#reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_vscode" /v "" /d "Open with VSCode" /f
+	#reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_vscode\command" /v "" /d "cmd.exe /s /c \"cd /d \"%V\" && start \"\" \"C:\Users\mirag\AppData\Local\Programs\Microsoft VS Code\Code.exe\" .\"" /f
+
+
+	reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_vscode" /v "" /d "Open with VSCode" /f
+	reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_vscode\command" /v "" /d "cmd.exe /s /c \"pushd \"%V\" && start \"\" \"C:\Users\mirag\AppData\Local\Programs\Microsoft VS Code\Code.exe\" .\"" /f
+
+	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_vscode" /v "" /d "Open with VSCode" /f
+	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_vscode\command" /v "" /d "cmd.exe /s /c \"pushd \"%V\" && start \"\" \"C:\Users\mirag\AppData\Local\Programs\Microsoft VS Code\Code.exe\" .\"" /f
+
+
+
+
 	_messagePlain_probe_cmd _self_gitMad
 	#_setup_install-permissions "$@"
 

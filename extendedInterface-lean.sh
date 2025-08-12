@@ -39,7 +39,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='3620520443'
-export ub_setScriptChecksum_contents='3999419132'
+export ub_setScriptChecksum_contents='2097456044'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -18982,6 +18982,24 @@ _setup_install_procedure() {
 
 	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash-admin" /v "" /d "Open with ubcp-bash-admin" /f
 	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_ubcp-bash-admin\command" /v "" /d "nircmdc elevate cmd /c \"cd \"%V\" && C:\_bash.bat\"" /f
+
+
+
+	# ATTRIBUTION-AI: WebUI-ChatGPT-5-Thinking  2025-08-12
+
+	#reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_vscode" /v "" /d "Open with VSCode" /f
+	#reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_vscode\command" /v "" /d "cmd.exe /s /c \"cd /d \"%V\" && start \"\" \"C:\Users\mirag\AppData\Local\Programs\Microsoft VS Code\Code.exe\" .\"" /f
+
+	#reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_vscode" /v "" /d "Open with VSCode" /f
+	#reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_vscode\command" /v "" /d "cmd.exe /s /c \"cd /d \"%V\" && start \"\" \"C:\Users\mirag\AppData\Local\Programs\Microsoft VS Code\Code.exe\" .\"" /f
+
+
+	reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_vscode" /v "" /d "Open with VSCode" /f
+	reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_vscode\command" /v "" /d "cmd.exe /s /c \"pushd \"%V\" && start \"\" \"C:\Users\mirag\AppData\Local\Programs\Microsoft VS Code\Code.exe\" .\"" /f
+
+	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_vscode" /v "" /d "Open with VSCode" /f
+	reg add "HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWith_vscode\command" /v "" /d "cmd.exe /s /c \"pushd \"%V\" && start \"\" \"C:\Users\mirag\AppData\Local\Programs\Microsoft VS Code\Code.exe\" .\"" /f
+
 
 
 

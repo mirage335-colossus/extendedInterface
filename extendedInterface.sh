@@ -8186,6 +8186,10 @@ _setup_install_procedure() {
 
 
 
+	_messagePlain_probe_cmd unzip -o "$scriptAbsoluteFolder"/support/000-OS/MSW/InputLeap-terminate.zip -d /cygdrive/c/core/installations/
+
+
+
 
 	reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_ubcp-bash" /v "" /d "Open with ubcp-bash" /f
 	reg add "HKEY_CLASSES_ROOT\Directory\shell\OpenWith_ubcp-bash\command" /v "" /d "C:\_bash.bat" /f

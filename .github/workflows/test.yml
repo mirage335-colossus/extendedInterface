@@ -75,6 +75,13 @@ jobs:
         run: |
           type rclone
         timeout-minutes: 90
+
+      - name: report! cygwin links
+        shell: bash
+        timeout-minutes: 240
+        run: |
+          ./_bin _report_cygwin_links | tee /_report_cygwin_links-mitigate.log
+
       - name: test-lean
         shell: bash
         run: |
@@ -161,6 +168,13 @@ jobs:
           ls
           Get-CimInstance -ClassName Win32_LogicalDisk | Select-Object -Property DeviceID,@{'Name' = 'FreeSpace (GB)'
           Expression= { [int]($_.FreeSpace / 1GB) }}
+
+      - name: report! cygwin links
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          .\_bin _report_cygwin_links | tee /_report_cygwin_links-mitigate.log
+
       - name: _test
         shell: pwsh
         timeout-minutes: 240
@@ -244,6 +258,13 @@ jobs:
           ls
           Get-CimInstance -ClassName Win32_LogicalDisk | Select-Object -Property DeviceID,@{'Name' = 'FreeSpace (GB)'
           Expression= { [int]($_.FreeSpace / 1GB) }}
+
+      - name: report! cygwin links
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          .\_bin _report_cygwin_links | tee /_report_cygwin_links-mitigate.log
+
       - name: _test
         shell: pwsh
         timeout-minutes: 240
@@ -325,6 +346,13 @@ jobs:
           ls
           Get-CimInstance -ClassName Win32_LogicalDisk | Select-Object -Property DeviceID,@{'Name' = 'FreeSpace (GB)'
           Expression= { [int]($_.FreeSpace / 1GB) }}
+
+      - name: report! cygwin links
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          .\_bin _report_cygwin_links | tee /_report_cygwin_links-mitigate.log
+
       - name: _test
         shell: pwsh
         timeout-minutes: 240

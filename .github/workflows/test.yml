@@ -80,6 +80,11 @@ jobs:
         run: |
           #export devfast="true"
           ./_lib/ubiquitous_bash/lean.sh _test | sudo -n tee /_test-lean.log
+      - name: test_https
+        shell: bash
+        run: |
+          #export devfast="true"
+          ./_lib/ubiquitous_bash/lean.sh _test_https | sudo -n tee /_test_https.log
         timeout-minutes: 90
       - name: _compile
         shell: bash
@@ -172,6 +177,22 @@ jobs:
           {
           echo true | Out-Null
           }
+      - name: _test_https
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          #Set-Item -Path Env:devfast -Value ("true")
+          cd C:\core\infrastructure\ubiquitous_bash\
+          ./_test_https | tee /_test_https
+          $SEL = cat /_test_https | Select-String -Pattern 'FAIL' -CaseSensitive -SimpleMatch
+          if ($SEL -ne $null)
+          {
+          cat /bin/false/pwsh
+          }
+          else
+          {
+          echo true | Out-Null
+          }
   test_ubcp_dump_mswLatest:
     runs-on: windows-latest
     #runs-on: windows-2022
@@ -238,6 +259,21 @@ jobs:
           {
           echo true | Out-Null
           }
+      - name: _test_https
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          #Set-Item -Path Env:devfast -Value ("true")
+          ./_test_https | tee /_test_https.log
+          $SEL = cat /_test_https.log | Select-String -Pattern 'FAIL' -CaseSensitive -SimpleMatch
+          if ($SEL -ne $null)
+          {
+          cat /bin/false/pwsh
+          }
+          else
+          {
+          echo true | Out-Null
+          }
   test_ubcp_dump_mswLTS:
     #runs-on: windows-latest
     runs-on: windows-2022
@@ -296,6 +332,21 @@ jobs:
           #Set-Item -Path Env:devfast -Value ("true")
           ./_test | tee /_test.log
           $SEL = cat /_test.log | Select-String -Pattern 'FAIL' -CaseSensitive -SimpleMatch
+          if ($SEL -ne $null)
+          {
+          cat /bin/false/pwsh
+          }
+          else
+          {
+          echo true | Out-Null
+          }
+      - name: _test_https
+        shell: pwsh
+        timeout-minutes: 240
+        run: |
+          #Set-Item -Path Env:devfast -Value ("true")
+          ./_test_https | tee /_test_https.log
+          $SEL = cat /_test_https.log | Select-String -Pattern 'FAIL' -CaseSensitive -SimpleMatch
           if ($SEL -ne $null)
           {
           cat /bin/false/pwsh

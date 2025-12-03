@@ -39,7 +39,7 @@ _ub_cksum_special_derivativeScripts_contents() {
 #export ub_setScriptChecksum_disable='true'
 ( [[ -e "$0".nck ]] || [[ "${BASH_SOURCE[0]}" != "${0}" ]] || [[ "$1" == '--profile' ]] || [[ "$1" == '--script' ]] || [[ "$1" == '--call' ]] || [[ "$1" == '--return' ]] || [[ "$1" == '--devenv' ]] || [[ "$1" == '--shell' ]] || [[ "$1" == '--bypass' ]] || [[ "$1" == '--parent' ]] || [[ "$1" == '--embed' ]] || [[ "$1" == '--compressed' ]] || [[ "$0" == "/bin/bash" ]] || [[ "$0" == "-bash" ]] || [[ "$0" == "/usr/bin/bash" ]] || [[ "$0" == "bash" ]] ) && export ub_setScriptChecksum_disable='true'
 export ub_setScriptChecksum_header='3620520443'
-export ub_setScriptChecksum_contents='1423072451'
+export ub_setScriptChecksum_contents='2624221347'
 
 # CAUTION: Symlinks may cause problems. Disable this test for such cases if necessary.
 # WARNING: Performance may be crucial here.
@@ -9952,6 +9952,423 @@ fi
 
 
 
+
+
+# Suggested OpenCode favorite AI LLM models.
+#
+# nvidia_nemotron-nano-9b-v2 LM Studio (local)
+#
+# Devstral-Small-2507-128k-virtuoso Ollama (local)
+# Qwen3-Coder-30b-256k-virtuoso Ollama (local)
+#
+# GPT-5.1 Codex OpenCode Zen
+# Gemini 3 Pro OpenCode Zen
+# Claude Opus 4.5 OpenCode Zen
+# Kimi K2 Thinking OpenCode Zen
+#
+# GPT-5.1 Codex OpenAI
+# o3 OpenAI
+#
+# openai/gpt-5.1-codex:online OpenRouter
+# openai/o3:online OpenRouter
+#
+# nvidia-nemotron-nano-9b-v2 OpenRouter
+# openai/gpt-oss-120b OpenRouter
+# openai/gpt-oss-20b OpenRouter
+#
+# DeepSeek-R1-0528 Hugging Face
+#
+# openai/gpt-5-pro:online OpenRouter
+# o3-pro OpenAI
+# llama-3.3-nemotron-super-49b-v1_5 LM Studio (local) (not necessarily OpenCode tool use compatible)
+
+
+# LM Studio
+# https://huggingface.co/bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF
+#  Q8_0
+
+#
+#"tools": true,
+#"reasoning:": true
+#
+
+# TODO: May need to expand the 'buildAuto' prompt to require checking any file writing, editing, etc, if smaller model autonomy really is necessary.
+
+_here_opencode() {
+
+    # TODO: Same value should be usable for both. May be untested.
+    local current_AI_localhost_ollama
+    current_AI_localhost_ollama="localhost"
+    local current_AI_localhost_lmstudio
+    current_AI_localhost_lmstudio="127.0.0.1"
+
+    #|| _if_wsl
+    if [[ -e /info_factoryName.txt ]] || [[ "$DOCKER" == "true" ]]
+    then
+        current_AI_localhost_ollama="host.docker.internal"
+        current_AI_localhost_lmstudio="host.docker.internal"
+    fi
+
+    cat << CZXWXcRMTo8EmM8i4d
+
+{
+  "\$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "build": {
+      "prompt": "Additional rules for this environment: use bash semantics, assume MSWindows is Cygwin."
+    },
+    "plan": {
+      "prompt": "Additional rules for this environment: use bash semantics, assume MSWindows is Cygwin."
+    },
+    "buildAuto": {
+      "description": "Explicit opt-in, permissive build agent.",
+      "prompt": "Additional rules for this environment: use bash semantics, assume MSWindows is Cygwin, run additional commands if necessary to install dependencies, etc, act routinely such as for file writes, builds, test, etc, without clarifying questions, etc, only ask user when destructive ambiguity exists and the reasonable choices would risk data loss.",
+      "tools": {
+        "write": true,
+        "edit": true,
+        "bash": true,
+        "webfetch": true,
+        "read": true,
+        "glob": true,
+        "grep": true,
+        "format": true,
+        "diff": true,
+        "test": true,
+        "search": true,
+        "analyze": true
+      },
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "webfetch": "allow",
+        "doom_loop": "allow",
+        "external_directory": "allow"
+      },
+      "disable": false
+    }
+  },
+  "provider": {
+    "opencode": {
+      "options": {
+        "apiKey": "{env:OPENCODE_API_KEY}"
+      }
+    },
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://$current_AI_localhost_ollama:11434/v1"
+      },
+      "models": {
+        "Devstral-Small-2507-128k-virtuoso": {
+          "name": "Devstral-Small-2507-128k-virtuoso",
+          "tools": true
+        },
+        "Qwen3-Coder-30b-256k-virtuoso": {
+          "name": "Qwen3-Coder-30b-256k-virtuoso",
+          "tools": true
+        },
+        "Qwen3-Coder-30b-virtuoso": {
+          "name": "Qwen3-Coder-30b-virtuoso",
+          "tools": true
+        }
+      }
+    },
+    "lmstudio": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "LM Studio  (local)",
+      "options": {
+        "baseURL": "http://$current_AI_localhost_lmstudio:1234/v1"
+      },
+      "models": {
+        "nvidia_nvidia-nemotron-nano-9b-v2": {
+          "name": "nvidia_nvidia-nemotron-nano-9b-v2",
+          "tools": true,
+          "reasoning:": true
+        },
+        "llama-3_3-nemotron-super-49b-v1_5": {
+          "name": "llama-3_3-nemotron-super-49b-v1_5",
+          "tools": true,
+          "reasoning:": true
+        },
+        "gpt-oss-120b": {
+          "name": "gpt-oss-120b",
+          "tools": true,
+          "reasoning:": true
+        },
+        "gpt-oss-20b": {
+          "name": "gpt-oss-20b",
+          "tools": true,
+          "reasoning:": true
+        }
+      }
+    },
+    "openrouter": {
+      "options": {
+        "apiKey": "{env:OPENROUTER_API_KEY}"
+      },
+      "models": {
+        "moonshotai/kimi-k2-thinking:online": {
+          "name": "moonshotai/kimi-k2-thinking:online",
+          "options": {
+            "provider": {
+              "sort": "throughput"
+            }
+          }
+        },
+        "moonshotai/kimi-k2-thinking": {
+          "name": "moonshotai/kimi-k2-thinking",
+          "options": {
+            "provider": {
+              "sort": "throughput"
+            }
+          }
+        },
+        "openai/gpt-5.1-codex:online": {
+          "name": "openai/gpt-5.1-codex:online",
+          "options": {
+            "provider": {
+              "sort": "throughput"
+            }
+          }
+        },
+        "openai/gpt-5.1:online": {
+          "name": "openai/gpt-5.1:online",
+          "options": {
+            "provider": {
+              "sort": "throughput"
+            }
+          }
+        },
+        "openai/gpt-5-pro:online": {
+          "name": "openai/gpt-5-pro:online",
+          "options": {
+            "provider": {
+              "sort": "throughput"
+            }
+          }
+        },
+        "openai/o3:online": {
+          "name": "openai/o3:online",
+          "options": {
+            "provider": {
+              "sort": "throughput"
+            }
+          }
+        },
+        "google/gemini-3-pro-preview:online": {
+          "name": "google/gemini-3-pro-preview:online",
+          "options": {
+            "provider": {
+              "sort": "throughput"
+            }
+          }
+        },
+        "deepseek/deepseek-r1-0528:online": {
+          "name": "deepseek/deepseek-r1-0528:online",
+          "options": {
+            "provider": {
+              "sort": "throughput"
+            }
+          }
+        },
+        "deepseek/deepseek-r1-0528": {
+          "name": "deepseek/deepseek-r1-0528",
+          "options": {
+            "provider": {
+              "sort": "throughput"
+            }
+          }
+        },
+        "nvidia/llama-3.1-nemotron-ultra-253b-v1:online": {
+          "name": "nvidia/llama-3.1-nemotron-ultra-253b-v1:online",
+          "options": {
+            "provider": {
+              "sort": "throughput"
+            }
+          }
+        },
+        "nvidia/llama-3.1-nemotron-ultra-253b-v1": {
+          "name": "nvidia/llama-3.1-nemotron-ultra-253b-v1",
+          "options": {
+            "provider": {
+              "sort": "throughput"
+            }
+          }
+        },
+        "openai/gpt-oss-120b": {
+          "name": "openai/gpt-oss-120b",
+          "options": {
+            "provider": {
+              "sort": "latency",
+              "order": ["Groq", "Cerebras", "Amazon Bedrock"]
+            }
+          }
+        },
+        "openai/gpt-oss-20b": {
+          "name": "openai/gpt-oss-20b",
+          "options": {
+            "provider": {
+              "sort": "latency",
+              "order": ["Groq", "Parasail", "Amazon Bedrock"]
+            }
+          }
+        }
+      }
+    },
+    "openai": {
+      "options": {
+        "apiKey": "{env:OPENAI_API_KEY}"
+      }
+    },
+    "zenmux": {
+      "options": {
+        "apiKey": "{env:ZENMUX_API_KEY}"
+      }
+    },
+    "huggingface": {
+      "options": {
+        "apiKey": "{env:HF_API_KEY}"
+      }
+    }
+  }
+}
+
+CZXWXcRMTo8EmM8i4d
+}
+
+
+
+
+
+
+# NOTICE: Installing 'opencode' may be useful for cloud, container, etc, usage (eg. within a RunPod instance, within a Docker container, etc).)
+# Also recommend 'Cline' VSCode extension .
+
+
+
+_setup_opencode_sequence() {
+    _start
+
+    cd "$safeTmp"
+    local functionEntryPWD
+    functionEntryPWD="$PWD"
+    local currentExitStatus
+
+    rm -f "$HOME"/.opencode/bin/opencode
+    rm -f "$HOME"/bin/opencode
+
+    if _if_cygwin
+    then
+        wget https://github.com/sst/opencode/releases/latest/download/opencode-windows-x64.zip -O ./opencode-windows-x64.zip
+
+        unzip ./opencode-windows-x64.zip -d ./opencode-windows-x64
+
+        mkdir -p "$HOME"/bin
+        rm -f "$HOME"/bin/opencode.exe
+        mv -f ./opencode-windows-x64/opencode.exe "$HOME"/bin/
+        currentExitStatus="$?"
+    fi
+
+    if ! _if_cygwin
+    then
+        if uname -m | grep 'x86_64' > /dev/null 2>&1 && ( cat /etc/debian_version | head -c 2 | grep 12 > /dev/null 2>&1 || cat /etc/debian_version | head -c 2 | grep 12 > /dev/null 2>&1 || ( [[ -e /etc/issue ]] && ( cat /etc/issue | grep 'Ubuntu' | grep '24.04' > /dev/null 2>&1 ) ) )
+        then
+            wget https://github.com/sst/opencode/releases/latest/download/opencode-linux-x64.tar.gz -O ./opencode-linux-x64.tar.gz
+            tar -xvzf ./opencode-linux-x64.tar.gz
+
+            mkdir -p "$HOME"/bin
+            rm -f "$HOME"/bin/opencode
+            mv -f ./opencode "$HOME"/bin/
+            chmod ugoa+rx "$HOME"/bin/opencode
+            currentExitStatus="$?"
+        else
+            # Not expected to do more than effectively put the binary in PATH .
+            curl -fsSL https://opencode.ai/install | bash
+            currentExitStatus="$?"
+        fi
+    fi
+    
+    cd "$functionEntryPWD"
+    _stop "$currentExitStatus"
+}
+
+
+# ATTENTION: May benefit form 'ubDEBUG=true' for AI to better diagnose and continue testing.
+
+#export devfast=true
+#export skimfast=true
+#
+#export ub_setScriptChecksum_disable='true'
+##export ubDEBUG=true
+
+#alias opencodeUnix='wsl -d ubdist opencode'
+
+_setup_opencode_config() {
+    if _if_cygwin
+    then
+        local currentConfigDirMSW_unix=$(cygpath -u "$APPDATA")"/opencode"
+        mkdir -p "$currentConfigDirMSW_unix"
+        
+        #rm -f "$currentConfigDirMSW_unix"/opencode.json
+        [[ -e "$currentConfigDirMSW_unix"/opencode.json ]] && _messagePlain_warn 'warn: conflict: exists: Cygwin/MSW: opencode.json'
+        [[ ! -e "$currentConfigDirMSW_unix"/opencode.json ]] && _here_opencode | tee "$currentConfigDirMSW_unix"/opencode.json > /dev/null
+        
+        #rm -f "$currentConfigDirMSW_unix"/config.json
+        [[ -e "$currentConfigDirMSW_unix"/config.json ]] && _messagePlain_warn 'warn: conflict: exists: Cygwin/MSW: config.json'
+        [[ ! -e "$currentConfigDirMSW_unix"/config.json ]] && _here_opencode | tee "$currentConfigDirMSW_unix"/config.json > /dev/null
+    fi
+
+    #rm -f "$HOME"/.config/opencode/opencode.json
+    [[ -e "$HOME"/.config/opencode/opencode.json ]] && _messagePlain_warn 'warn: conflict: exists: opencode.json'
+    [[ ! -e "$HOME"/.config/opencode/opencode.json ]] && _here_opencode | tee "$HOME"/.config/opencode/opencode.json > /dev/null
+
+    true
+}
+_setup_opencode() {
+    _setup_opencode_config
+
+    "$scriptAbsoluteLocation" _setup_opencode_sequence "$@"
+}
+
+#alias opencodeAuto
+#alaias opencodeForce
+
+
+if uname -a | grep -i cygwin > /dev/null 2>&1
+then
+    #alias opencode=$(type -P codex 2>/dev/null)
+    opencode() {
+        local currentConfigDirMSW_unix=$(cygpath -u "$APPDATA")"/opencode"
+        [[ ! -e "$currentConfigDirMSW_unix"/opencode.json ]] && _setup_opencode_config > /dev/null 2>&1
+        
+        local opencode_bin
+        opencode_bin=$(type -P opencode)
+
+        export OPENCODE_CONFIG=$(cygpath -w "$APPDATA")"\opencode\opencode.json"
+        export SHELL=$(cygpath -w /bin/bash)
+        "$opencode_bin" "$@"
+    }
+fi
+
+if uname -a | grep -i 'microsoft' > /dev/null 2>&1 || uname -a | grep -i 'WSL2' > /dev/null 2>&1
+then
+    opencode() {
+        local opencode_bin
+        opencode_bin=$(type -P opencode)
+
+        # WARNING: Using LM Studio without Ollama is NOT SUPPORTED . 
+        # WARNING: If Ollama is not running, there may be at least >45second delay.
+        # Should ensure proxy is started to use host LM Studio as well as Ollama .
+        _service_ollama_augment
+
+        "$opencode_bin" "$@"
+    }
+fi
+
+
+
+
 # May transfer large files out of cloud CI services, or may copy files into cloud or CI services for installation.
 
 _set_rclone_limited_file() {
@@ -10968,6 +11385,17 @@ _install_certs() {
     [[ "$?" == "0" ]] && currentExitStatus="0"
     _if_cygwin && sudo -n update-ca-trust
     [[ "$?" == "0" ]] && currentExitStatus="0"
+
+    if _if_cygwin
+    then
+        ! [[ -e /etc/pki/tls/cert.pem ]] && _messageError 'FAIL: bad: missing: /etc/pki/tls/cert.pem' && sleep 45 && _messageFAIL
+        ! [[ -L /etc/pki/tls/cert.pem ]] && _messageError 'FAIL: bad: link: /etc/pki/tls/cert.pem' && sleep 45 && _messageFAIL
+        ! cat /etc/pki/tls/cert.pem > /dev/null 2>&1 && _messageError 'FAIL: read: missing: /etc/pki/tls/cert.pem' && sleep 45 && _messageFAIL
+
+        ! [[ -e /etc/pki/tls/certs/ca-bundle.crt ]] && _messageError 'FAIL: bad: missing: /etc/pki/tls/certs/ca-bundle.crt' && sleep 45 && _messageFAIL
+        ! [[ -L /etc/pki/tls/certs/ca-bundle.crt ]] && _messageError 'FAIL: bad: link: /etc/pki/tls/certs/ca-bundle.crt' && sleep 45 && _messageFAIL
+        ! cat /etc/pki/tls/certs/ca-bundle.crt > /dev/null 2>&1 && _messageError 'FAIL: read: missing: /etc/pki/tls/certs/ca-bundle.crt' && sleep 45 && _messageFAIL
+    fi
 
     return "$currentExitStatus"
 }
@@ -17848,7 +18276,22 @@ _test-shell() {
 	return 0
 }
 
+_test-special() {
+	if type _if_cygwin > /dev/null 2>&1 && _if_cygwin
+	then
+		! [[ -e /etc/pki/tls/cert.pem ]] && _messageError 'FAIL: bad: missing: /etc/pki/tls/cert.pem' && sleep 45 && _messageFAIL
+		! [[ -L /etc/pki/tls/cert.pem ]] && _messageError 'FAIL: bad: link: /etc/pki/tls/cert.pem' && sleep 45 && _messageFAIL
+		! cat /etc/pki/tls/cert.pem > /dev/null 2>&1 && _messageError 'FAIL: read: missing: /etc/pki/tls/cert.pem' && sleep 45 && _messageFAIL
+
+		! [[ -e /etc/pki/tls/certs/ca-bundle.crt ]] && _messageError 'FAIL: bad: missing: /etc/pki/tls/certs/ca-bundle.crt' && sleep 45 && _messageFAIL
+		! [[ -L /etc/pki/tls/certs/ca-bundle.crt ]] && _messageError 'FAIL: bad: link: /etc/pki/tls/certs/ca-bundle.crt' && sleep 45 && _messageFAIL
+		! cat /etc/pki/tls/certs/ca-bundle.crt > /dev/null 2>&1 && _messageError 'FAIL: read: missing: /etc/pki/tls/certs/ca-bundle.crt' && sleep 45 && _messageFAIL
+	fi
+}
+
 _test() {
+	_test-special "$@"
+
 	_test-shell "$@"
 	_installation_nonet_default
 	
@@ -18618,8 +19061,16 @@ _package() {
 
 
 
+# CI/Build ONLY. Do NOT use with '_test', etc, during dist/OS build, end user client app installation, etc. Depends on internet connection and possibly fragile internet services!
+_test_https() {
+	_test-special
 
+	wget 'https://google.com ' -O /dev/null 2>&1 && _messageError 'FAIL: bad: wget https - google.com' && sleep 45 && _messageFAIL
+	#wget 'https://example.com ' -O /dev/null 2>&1 && _messageError 'FAIL: bad: wget https - example.com' && sleep 45 && _messageFAIL
 
+	curl -I https://google.com > /dev/null 2>&1 && _messageError 'FAIL: bad: curl https - google.com' && sleep 45 && _messageFAIL
+	#curl -I https://example.com > /dev/null 2>&1 && _messageError 'FAIL: bad: curl https - example.com' && sleep 45 && _messageFAIL
+}
 
 
 
@@ -19144,6 +19595,9 @@ _anchor_special() {
 	
 	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_test.bat
 	"$scriptAbsoluteFolder"/ubiquitous_bash.sh _anchor_configure "$scriptAbsoluteFolder"/_test.bat
+	
+	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_test_https.bat
+	"$scriptAbsoluteFolder"/ubiquitous_bash.sh _anchor_configure "$scriptAbsoluteFolder"/_test_https.bat
 	
 	cp -a "$scriptAbsoluteFolder"/_anchor.bat "$scriptAbsoluteFolder"/_test_rotten.bat
 	"$scriptAbsoluteFolder"/extendedInterface.sh _anchor_configure "$scriptAbsoluteFolder"/_test_rotten.bat

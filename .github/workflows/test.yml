@@ -80,7 +80,7 @@ jobs:
         shell: bash
         timeout-minutes: 240
         run: |
-          ./_bin _report_cygwin_links | tee /_report_cygwin_links-mitigate.log
+          ./_bin _report_cygwin_links | tee /_report_cygwin_links.log
 
       - name: test-lean
         shell: bash
@@ -173,7 +173,7 @@ jobs:
         shell: pwsh
         timeout-minutes: 240
         run: |
-          .\_bin _report_cygwin_links | tee /_report_cygwin_links-mitigate.log
+          .\_bin _report_cygwin_links | tee /_report_cygwin_links.log
 
       - name: _test
         shell: pwsh
@@ -263,7 +263,7 @@ jobs:
         shell: pwsh
         timeout-minutes: 240
         run: |
-          .\_bin _report_cygwin_links | tee /_report_cygwin_links-mitigate.log
+          .\_bin _report_cygwin_links | tee /_report_cygwin_links.log
 
       - name: _test
         shell: pwsh
@@ -351,7 +351,7 @@ jobs:
         shell: pwsh
         timeout-minutes: 240
         run: |
-          .\_bin _report_cygwin_links | tee /_report_cygwin_links-mitigate.log
+          .\_bin _report_cygwin_links | tee /_report_cygwin_links.log
 
       - name: _test
         shell: pwsh

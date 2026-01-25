@@ -111,10 +111,11 @@ Section "Install"
   SetOutPath "C:\core\infrastructure\extendedInterface"
   File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface\*"
 
-  SetOutPath "C:\core\infrastructure\extendedInterface\_local\ubcp"
-  File /r "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\ubcp\*"
-  
-  CopyFiles "C:\core\infrastructure\extendedInterface\_local\ubcp\*" "C:\core\infrastructure\ubcp\"
+  ; rmh Disable windows-style copy to avoid corrupting symlinks to certs in ubcp 
+  ; SetOutPath "C:\core\infrastructure\extendedInterface\_local\ubcp"
+  ; File /r "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\ubcp\*"
+  ; CopyFiles "C:\core\infrastructure\extendedInterface\_local\ubcp\*" "C:\core\infrastructure\ubcp\"
+  ; FUTURE: extract of ubiquitous_bash and _bash.bat likely redundant with package extract. Consider removing later. 
 
   SetOutPath "C:\core\infrastructure\ubiquitous_bash"
   File /r "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\ubiquitous_bash\*"
@@ -122,10 +123,24 @@ Section "Install"
   SetOutPath "C:\core\infrastructure\"
   File "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\_bash.bat"
 
+  ; rmh Deploy ubcp, ubiquitous_bash, and _bash.bat directly to C:\core\infrastructure\ to avoid windows-style copy issues with symlinks to certs in ubcp
+  SetOutPath "C:\core\infrastructure\extendedInterface\_local"
+  File "..\..\..\extendedInterface-accessories\integrations\ubcp\package_ubcp-core.7z"
 
+  ; rmh Deploy Windows 7Zip CLI 
+  SetOutPath "$TEMP\extendedInterface_bundle\7zip"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\7zip\*"
+  ; rmh trigger failure if file is missing
+  IfFileExists "$TEMP\extendedInterface_bundle\7zip\7zr.exe" +2
+    Abort "7zr.exe missing from $TEMP\extendedInterface_bundle\7zip"
 
-
-  
+  ; rmh Use nsExec as with ubDistBuild to extract Cygwin. This action must precede any cygwin calls.
+  ; We are skipping the _local intermediate location and we extract directly to C:\core\infrastructure\ so the archive’s top-level folders land in their final runtime locations. 
+  nsExec::ExecToLog '"$TEMP\extendedInterface_bundle\7zip\7zr.exe" x "C:\core\infrastructure\extendedInterface\_local\package_ubcp-core.7z" -o"C:\core\infrastructure\" -y'
+  ; These file trees are now in place 
+  ;   C:\core\infrastructure\ubcp\
+  ;   C:\core\infrastructure\ubiquitous_bash\
+  ;   C:\core\infrastructure\_bash.bat
 
   ;;ATTENTION
   ;IfFileExists "C:\core\infrastructure\ubcp-home-backup-$0" 0 +3

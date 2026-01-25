@@ -94,10 +94,10 @@ jobs:
         run: |
           # rmh Retain package to be unpacked after next step creates installer via NSIS 
           # rm -f ../extendedInterface-accessories/integrations/ubcp/package_ubcp-core.7z
-          ./ubiquitous_bash.sh _build_extendedInterface-build
 
           # rmh stage Windows 7zr payload for NSIS 
           # FUTURE mirror from ubDistBuild_bundle until available in extendedInterface_bundle
+          set -euo pipefail
           dst="../extendedInterface-accessories/parts/extendedInterface_bundle/7zip"
           mkdir -p "$dst"
 
@@ -110,7 +110,11 @@ jobs:
 
           cp -a "$tmp/7zip/." "$dst/"
           # rmh trigger failure if the file is missing 
+          ls -la ../extendedInterface-accessories/parts/extendedInterface_bundle/7zip
           test -f "../extendedInterface-accessories/parts/extendedInterface_bundle/7zip/7zr.exe"
+
+          # rmh Create build image after all artifacts are present 
+          ./ubiquitous_bash.sh _build_extendedInterface-build
 
       - name: release!
         uses: softprops/action-gh-release@v1

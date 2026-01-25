@@ -117,11 +117,12 @@ Section "Install"
   ; CopyFiles "C:\core\infrastructure\extendedInterface\_local\ubcp\*" "C:\core\infrastructure\ubcp\"
   ; FUTURE: extract of ubiquitous_bash and _bash.bat likely redundant with package extract. Consider removing later. 
 
-  SetOutPath "C:\core\infrastructure\ubiquitous_bash"
-  File /r "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\ubiquitous_bash\*"
+  ; rmh Disable ubiquitous_bash and _bash.bat direct copy as redundant with package extract 
+  ; SetOutPath "C:\core\infrastructure\ubiquitous_bash"
+  ; File /r "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\ubiquitous_bash\*"
 
-  SetOutPath "C:\core\infrastructure\"
-  File "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\_bash.bat"
+  ; SetOutPath "C:\core\infrastructure\"
+  ; File "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\_bash.bat"
 
   ; rmh Deploy ubcp, ubiquitous_bash, and _bash.bat directly to C:\core\infrastructure\ to avoid windows-style copy issues with symlinks to certs in ubcp
   SetOutPath "C:\core\infrastructure\extendedInterface\_local"

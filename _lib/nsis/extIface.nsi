@@ -1,4 +1,4 @@
-
+;===== Top matter - NSIS installer script for extendedInterface =====
 ; ATTRIBUTION - May be largely attributable to ChatGPT-4/copilot used by mirage335 .
 ; ATTRIBUTION - https://nsis.sourceforge.io/Sample_installation_script_for_an_application
 ; ATTRIBUTION - https://nsis.sourceforge.io/A_simple_installer_with_start_menu_shortcut_and_uninstaller
@@ -360,6 +360,7 @@ Section "Install"
   ;ExecWait '"$5" /C ""C:\core\infrastructure\ubiquitous_bash\_bin.bat" _bin _messagePlain_probe_cmd chmod 600 /home/root/.ssh/id_*'
   ;ExecWait '"$5" /C ""C:\core\infrastructure\ubiquitous_bash\_bin.bat" _bin _messagePlain_probe_cmd chmod 755 /home/root/.ssh/id_*.pub'
   ;_setup_install-permissions
+  #todo is the $0 below needed? 
   ExecWait '"$5" /C "C:\core\infrastructure\ubiquitous_bash\_bin.bat" _bin /cygdrive/c/core/infrastructure/extendedInterface/ubiquitous_bash.sh _setup_install-permissions $0'
   DetailPrint '"$0"'
   !insertmacro CoreLog ".. Ran /cygdrive/c/core/infrastructure/extendedInterface/ubiquitous_bash.sh _setup_install-permissions $0" 

@@ -5,10 +5,11 @@
 ; ATTRIBUTION - https://nsis.sourceforge.io/Embedding_other_installers
 ; ATTRIBUTION - https://stackoverflow.com/questions/3265141/executing-batch-file-in-nsis-installer
 
-;===== Enable a disk log with timestamp =====
+;===== Enable disk log with timestamp using standard NSIS plugin =====
 !include "FileFunc.nsh"
-!insertmacro GetTime
+!insertmacro GetTime 
 
+;===== Define custom logging function ===== 
 !macro CoreLog TEXT
   CreateDirectory "C:\core\logs"
 
@@ -37,6 +38,7 @@
     FileClose $9
 !macroend
 
+;===== Front matter =====
 ; Ask for elevated privileges to write c:\core 
 RequestExecutionLevel admin
 ; Reqire a /S to enable silent install 
@@ -58,6 +60,7 @@ OutFile "..\..\..\extIface.exe"
 !define INSTALLSIZE 2900000
 ;!define INSTALLSIZE 6500000
 
+; Uncomment the following line to enable single-stream compression yeilding smaller installer size but slower install times. 
 ;/SOLID
 SetCompressor /FINAL lzma
 
@@ -66,12 +69,12 @@ Page license
 ;Page directory
 Page instfiles
 
+
 ;===== Install Section ===== 
 Section "Install"
   !insertmacro CoreLog "== Starting extendedInterface installer "
-
-  ; Set all-users scope for installed files and registry entries
   SetShellVarContext all
+
 
   ; Old code & comments 
   ;https://stackoverflow.com/questions/2565215/checking-if-the-application-is-running-in-nsis-before-uninstalling
@@ -87,12 +90,12 @@ Section "Install"
   ExecWait "cmd /c for /f $\"tokens=1,2$\" %i in ('tasklist') do (if /i %i EQU bash.exe fsutil file createnew $TEMP\extIface_bashExe.bzy 0)"
   IfFileExists $TEMP\extIface_bashExe.bzy 0 notRunningInstall
     ;we have atleast one main window active
-    !insertmacro CoreLog "Detected running bash.exe process. Please close bash.exe and retry."
+    !insertmacro CoreLog "** Detected running bash.exe process. Please close bash.exe and retry."
     MessageBox MB_OK|MB_ICONEXCLAMATION "Please close  bash.exe  and retry." /SD IDOK
     Abort
   notRunningInstall:
   !macroEnd
-  ; Run the macro we just defined to check for running bash.exe 
+  ; Run the macro we just define to check for running bash.exe
   !insertmacro IsRunningInstall
   !insertmacro CoreLog ".. All bash processes closed."
 
@@ -104,6 +107,7 @@ Section "Install"
   System::Call 'ADVAPI32::CryptReleaseContext(ir1,i0)i'
   IntCmp $0 0 0 +3
   IntOp $0 $0 * -1
+
   ; Rename the folder pair 
   ;GUARD - Ensures non-random path '*-prev' is not occupied - presently.
   Rename "C:\core\infrastructure\extendedInterface-home-backup-prev" "C:\core\infrastructure\extendedInterface-home-backup-prev-$0"
@@ -111,7 +115,7 @@ Section "Install"
   DetailPrint "$0"
   Sleep 2500
 
-  ; Rename former _local copies of extendedInterface and cygwin homes backup to unique names 
+  ; Rename former _local copies of extendedInterface and cygwin home to unique name 
   ; Generate a random alphanumeric string
   System::Call 'KERNEL32::GetTickCount()i.r0'
   System::Call 'ADVAPI32::CryptAcquireContext(i0,t""i0,i0,i0,i0)i.r1'
@@ -127,7 +131,7 @@ Section "Install"
   Sleep 2500
   !insertmacro CoreLog ".. Renamed old home backups."
 
-  ; Remove old installed files
+  ; Remove old installed files 
   RMDir /r "C:\core\infrastructure\extendedInterface"
   ;RMDir /r /REBOOTOK "C:\core\infrastructure\extendedInterface"
   RMDir /r "C:\core\infrastructure\ubcp"
@@ -136,44 +140,58 @@ Section "Install"
   ;RMDir /r /REBOOTOK "C:\core\infrastructure\ubiquitous_bash"
   RMDir /r "C:\core\infrastructure\_bash.bat"
   ;RMDir /r /REBOOTOK "C:\core\infrastructure\_bash.bat"
-  !insertmacro CoreLog ".. Removed old installed files."
+  !insertmacro CoreLog ".. Removed old installed files." ####
 
-  ; Copy new installed files 
+  ;===== Copy new installed files =====
   SetOutPath "C:\core\infrastructure\extendedInterface"
   File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface\*"
   !insertmacro CoreLog ".. Copied extendedInterface files to C:\core\infrastructure\extendedInterface."
 
-  SetOutPath "C:\core\infrastructure\extendedInterface\_local\ubcp"
-  File /r "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\ubcp\*"
-  !insertmacro CoreLog ".. Copied ubcp files to C:\core\infrastructure\extendedInterface\_local\ubcp."
-  
-  CopyFiles "C:\core\infrastructure\extendedInterface\_local\ubcp\*" "C:\core\infrastructure\ubcp\"
-  !insertmacro CoreLog ".. Copied _local\ubcp files to C:\core\infrastructure\ubcp."
+  ; rmh Disable windows-style copy to avoid corrupting symlinks to certs in ubcp 
+  ; SetOutPath "C:\core\infrastructure\extendedInterface\_local\ubcp"
+  ; File /r "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\ubcp\*"
+  ; CopyFiles "C:\core\infrastructure\extendedInterface\_local\ubcp\*" "C:\core\infrastructure\ubcp\"
+  ; rmh Disable ubiquitous_bash and _bash.bat direct copy as redundant with package extract 
+  ; SetOutPath "C:\core\infrastructure\ubiquitous_bash"
+  ; File /r "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\ubiquitous_bash\*"
+  ; SetOutPath "C:\core\infrastructure\"
+  ; File "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\_bash.bat"
 
-  SetOutPath "C:\core\infrastructure\ubiquitous_bash"
-  File /r "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\ubiquitous_bash\*"
-  !insertmacro CoreLog ".. Copied ubiquitous_bash from ubcp\package_ubcp-core to C:\core\infrastructure\ubiquitous_bash."
-  
-  SetOutPath "C:\core\infrastructure\"
-  File "..\..\..\extendedInterface-accessories\parts\ubcp\package_ubcp-core\_bash.bat"
-  !insertmacro CoreLog ".. Copied _bash.bat from ubcp\package_ubcp-core to C:\core\infrastructure\_bash.bat."
- 
-  ; Old code & comments 
+  ; rmh Deploy ubcp, ubiquitous_bash, and _bash.bat directly to C:\core\infrastructure\ to avoid windows-style copy issues with symlinks to certs in ubcp
+  SetOutPath "C:\core\infrastructure\extendedInterface\_local"
+  File "..\..\..\extendedInterface-accessories\integrations\ubcp\package_ubcp-core.7z"
+  !insertmacro CoreLog ".. Copied package_ubcp-core.7z to C:\core\infrastructure\extendedInterface\_local"
+
+  ; rmh Deploy Windows 7Zip CLI 
+  SetOutPath "$TEMP\extendedInterface_bundle\7zip"
+  File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\7zip\*"
+  ; rmh trigger failure if file is missing
+  IfFileExists "$TEMP\extendedInterface_bundle\7zip\7zr.exe" +2
+    Abort "7zr.exe missing from $TEMP\extendedInterface_bundle\7zip"
+  !insertmacro CoreLog ".. Copied 7zr.exe to $TEMP\extendedInterface_bundle\7zip"
+
+  ; rmh Use nsExec as with ubDistBuild to extract Cygwin. This action must precede any cygwin calls.
+  ; We are skipping the _local intermediate location and we extract directly to C:\core\infrastructure\ so the archive’s top-level folders land in their final runtime locations. 
+  nsExec::ExecToLog '"$TEMP\extendedInterface_bundle\7zip\7zr.exe" x "C:\core\infrastructure\extendedInterface\_local\package_ubcp-core.7z" -o"C:\core\infrastructure\" -y'
+  !insertmacro CoreLog ".. Extracted ubcp, ubiquitous_bash, and _bash.bat from package_ubcp-core.7z to C:\core\infrastructure\"
+  ; These file trees are now in place 
+  ;   C:\core\infrastructure\ubcp\
+  ;   C:\core\infrastructure\ubiquitous_bash\
+  ;   C:\core\infrastructure\_bash.bat
+
+  ; Old code and comments 
   ;;ATTENTION
   ;IfFileExists "C:\core\infrastructure\ubcp-home-backup-$0" 0 +3
   ;Delete "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home"
   ;CopyFiles "C:\core\infrastructure\extendedInterface-home-backup-$0\*" "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home\"
-
   ;;ATTENTION
   ;IfFileExists "C:\core\infrastructure\ubcp-home-backup-$0" 0 +3
   ;Delete "C:\core\infrastructure\ubcp\cygwin\home"
   ;CopyFiles "C:\core\infrastructure\ubcp-home-backup-$0\*" "C:\core\infrastructure\ubcp\cygwin\home\"
-
   ;;ATTENTION
   ;IfFileExists "C:\core\infrastructure\ubcp-home-backup-uninstalled" 0 +3
   ;Delete "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home"
   ;CopyFiles "C:\core\infrastructure\extendedInterface-home-backup-uninstalled\*" "C:\core\infrastructure\extendedInterface\_local\ubcp\cygwin\home\"
-
   ;;ATTENTION
   ;IfFileExists "C:\core\infrastructure\ubcp-home-backup-uninstalled" 0 +3
   ;Delete "C:\core\infrastructure\ubcp\cygwin\home"
@@ -205,10 +223,10 @@ Section "Install"
   ; 'Extra Monitors DO Hurt Your Gaming Performance'
   ;  'If the contents of that window need to be changing, all that optimization goes out the window.'
   ;ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\ShowSecondsInSystemClock\Show Seconds In System Clock.reg"
-
+  
   ; May be needed for DLSS , which may now be more relevant for simulators.
   ;ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableHardwareAssistedGPUScheduling\Hardware Accelerated GPU Scheduling - Disable.reg"
-  
+   
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\zSettings\updates-getLatest\Turn_ON_Get_latest_updates_as_soon_as_they_are_available.reg"
   
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\HardwareEnforcedStackProtection\Enable_Kernel_Mode_Hardware_Enforced_Stack_Protection.reg"
@@ -219,7 +237,7 @@ Section "Install"
     
   ;RegEdit seems ineffective for this.
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableNewsAndInterests\Disable-AllowNewsAndInterests.reg"
-
+  
   ExecWait "regedit.exe /s C:\core\infrastructure\extendedInterface\support\000-OS\MSW\disableExplorerAutoComplete\disableExplorerAutoComplete.reg"
   !insertmacro CoreLog ".. Applied registry tweaks."
 
@@ -231,7 +249,7 @@ Section "Install"
   ; Setup Command Prompt shortcut 
   ExpandEnvStrings $5 %COMSPEC%
 
-  ; Run companion install scripts 
+  ; Run companion installer scripts 
   ExecWait '"$5" /C "C:\core\infrastructure\extendedInterface\support\000-OS\MSW\FreeCAD_NewDocument\install.bat"'
   ;ExecWait "cmd.exe /c C:\core\infrastructure\extendedInterface\support\000-OS\MSW\FreeCAD_NewDocument\install.bat"
   ;CreateDirectory "$WINDIR\ShellNew"
@@ -253,7 +271,7 @@ Section "Install"
   File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\nircmd\*"
   !insertmacro CoreLog ".. Copied Kate, _bash.bat, nircmd helpers to C:\ and %WINDIR%."
 
-  # OpenSSH-Win64-v9.2.2.0.msi
+  ; OpenSSH-Win64-v9.2.2.0.msi
   ;start /wait
   SetOutPath "$TEMP\extendedInterface_bundle\openssh"
   File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\openssh\*"
@@ -262,8 +280,8 @@ Section "Install"
   IfSilent 0 +2
   ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\openssh\OpenSSH-Win64-v9.2.2.0.msi" /passive /norestart'
   !insertmacro CoreLog ".. Installed OpenSSH."
-  
-  # gh_2.38.0_windows_amd64.msi
+    
+  ; gh_2.38.0_windows_amd64.msi
   ;start /wait
   SetOutPath "$TEMP\extendedInterface_bundle\gh"
   File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\gh\*"
@@ -272,8 +290,8 @@ Section "Install"
   IfSilent 0 +2
   ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\gh\gh_2.38.0_windows_amd64.msi" /passive /norestart'
   !insertmacro CoreLog ".. Installed GitHub CLI."
-
-  ; Old qalculate installer
+  
+  ; Old qalculate installer version 
   ;start /wait
   #SetOutPath "$TEMP\extendedInterface_bundle\qalculate"
   #File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\qalculate\*"
@@ -282,7 +300,7 @@ Section "Install"
   #IfSilent 0 +2
   #ExecWait '"msiexec" /i "$TEMP\extendedInterface_bundle\qalculate\qalculate-4.7.0-x64.msi" /passive /norestart'
 
-  ; New qalculate installer
+  ; New qalculate installer version
   ;start /wait
   SetOutPath "$TEMP\extendedInterface_bundle\qalculate"
   File /r "..\..\..\extendedInterface-accessories\parts\extendedInterface_bundle\qalculate\*"
@@ -386,11 +404,12 @@ Section "Install"
   !insertmacro CoreLog ".. Opened README-installer.pdf."
   !insertmacro CoreLog "== extendedInterface installer portion completed successfully."
 
-  # Uninstaller - See function un.onInit and section "uninstall" for configuration
+  ; ===== Uninstaller setup =====
+  ; Uninstaller - See function un.onInit and section "uninstall" for configuration
 	writeUninstaller "C:\core\infrastructure\extIface-uninst.exe"
   !insertmacro CoreLog ".. Wrote uninstaller to C:\core\infrastructure\extIface-uninst.exe"
 
-  # Start Menu
+  ; Start Menu
 	;createDirectory "$SMPROGRAMS\${COMPANYNAME}"
 	;createShortCut "$SMPROGRAMS\${COMPANYNAME}\${APPNAME}.lnk" "$INSTDIR\app.exe" "" "$INSTDIR\logo.ico"
  
@@ -412,12 +431,11 @@ Section "Install"
 	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "NoRepair" 1
 	# Set the INSTALLSIZE constant (!defined at the top of this script) so Add/Remove Programs can accurately report the size
 	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${COMPANYNAME} ${APPNAME}" "EstimatedSize" ${INSTALLSIZE}
-  !insertmacro CoreLog ".. Wrote registry uninstall information."
+  !insertmacro CoreLog ".. Completed Uninstaller Registry setup."
   !insertmacro CoreLog "== Installation of extendedInterface completed successfully."
 
 SectionEnd
-
-
+; ===== End of Logging & Comment changes =====
 
 function un.onInit
 	SetShellVarContext all
